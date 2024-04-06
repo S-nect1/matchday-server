@@ -21,4 +21,24 @@ public class UserClub {
     private String position;
     private LocalDate joinDate;
     private String category;
+
+    public static UserClub createLeaderUserClub(User user, Club club) {
+        UserClub userClub = new UserClub();
+        userClub.user = user;
+        userClub.club = club;
+        userClub.position = "leader";
+        userClub.joinDate = LocalDate.now();
+        //카테고리?
+        return userClub;
+    }
+
+    public static UserClub createUserClub(User user, Club club) {
+        UserClub userClub = new UserClub();
+        userClub.user = user;
+        userClub.club = club;
+        userClub.position = "member";
+        userClub.joinDate = LocalDate.now();
+        //카테고리?
+        return userClub;
+    }
 }
