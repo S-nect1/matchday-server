@@ -1,10 +1,8 @@
 package com.example.moim.jwt;
 
 import com.example.moim.exception.InvalidTokenException;
-import io.jsonwebtoken.Claims;
-import io.jsonwebtoken.Jws;
+import com.example.moim.user.dto.userDetailsImpl;
 import io.jsonwebtoken.Jwts;
-import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -29,34 +27,45 @@ public class JWTUtil {
     private static final String ACCESS_TOKEN_SUBJECT = "AccessToken";
     private static final String REFRESH_TOKEN_SUBJECT = "RefreshToken";
     private static final String ID_CLAIM = "id";
+    private static final String ROLE_CLAIM = "role";
     
     public JWTUtil(@Value("${jwt.secretKey}")String secret) {
         secretKey = new SecretKeySpec(secret.getBytes(StandardCharsets.UTF_8), Jwts.SIG.HS256.key().build().getAlgorithm());
     }
     
-    public String createAccessToken(Long userId) {
+    public String createAccessToken(userDetailsImpl userDetails) {
         return Jwts.builder()
                 .subject(ACCESS_TOKEN_SUBJECT)
-                .claim(ID_CLAIM, userId)
+                .claim(ID_CLAIM, userDetails.getUserId())
+                .claim(ROLE_CLAIM, userDetails.getRole())
                 .issuedAt(new Date(System.currentTimeMillis()))
                 .expiration(new Date(System.currentTimeMillis() + accessTokenExpirationPeriod))
                 .signWith(secretKey, Jwts.SIG.HS256)
                 .compact();
     }
     
-    public String createRefreshToken(){
-        Date now = new Date();
-        
+    public String createRefreshToken(userDetailsImpl userDetails){
         return Jwts.builder()
                 .subject(REFRESH_TOKEN_SUBJECT)
-                .expiration(new Date(now.getTime() + refreshTokenExpirationPeriod))
+                .claim(ID_CLAIM, userDetails.getUserId())
+                .claim(ROLE_CLAIM, userDetails.getRole())
+                .issuedAt(new Date(System.currentTimeMillis()))
+                .expiration(new Date(System.currentTimeMillis() + refreshTokenExpirationPeriod))
                 .signWith(secretKey, Jwts.SIG.HS512)
                 .compact();
     }
     
     public Long getUserId(String token) {
         try {
-            return Jwts.parser().verifyWith(secretKey).build().parseSignedClaims(token).getPayload().get("ID_CLAIM", Long.class);
+            return Jwts.parser().verifyWith(secretKey).build().parseSignedClaims(token).getPayload().get(ID_CLAIM, Long.class);
+        } catch (Exception e) {
+            throw new InvalidTokenException("유효하지 않은 엑세스 토큰입니다.");
+        }
+    }
+
+    public String getRole(String token) {
+        try {
+            return Jwts.parser().verifyWith(secretKey).build().parseSignedClaims(token).getPayload().get(ROLE_CLAIM, String.class);
         } catch (Exception e) {
             throw new InvalidTokenException("유효하지 않은 엑세스 토큰입니다.");
         }

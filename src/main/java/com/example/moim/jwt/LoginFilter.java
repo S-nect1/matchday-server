@@ -1,10 +1,9 @@
 package com.example.moim.jwt;
 
-import com.example.moim.user.dto.CustomUserDetails;
+import com.example.moim.user.dto.userDetailsImpl;
 import com.example.moim.user.dto.LoginInput;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.servlet.FilterChain;
-import jakarta.servlet.ServletInputStream;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
@@ -29,20 +28,16 @@ public class LoginFilter extends UsernamePasswordAuthenticationFilter {
         LoginInput loginDTO;
         try {
             ObjectMapper objectMapper = new ObjectMapper();
-            ServletInputStream inputStream = request.getInputStream();
-            String messageBody = StreamUtils.copyToString(inputStream, StandardCharsets.UTF_8);
-            loginDTO = objectMapper.readValue(messageBody, LoginInput.class);
+            loginDTO = objectMapper.readValue(StreamUtils.copyToString(request.getInputStream(), StandardCharsets.UTF_8), LoginInput.class);
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
-        
-        //클라이언트 요청에서 username, password 추출
-        String username = loginDTO.getEmail();
-        String password = loginDTO.getPassword();
-        System.out.println("email = " + password);
         setUsernameParameter("email");
-        //스프링 시큐리티에서 username과 password를 검증하기 위해서는 token에 담아야 함
-        UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(username, password, null);
+        //클라이언트 요청에서 email, password 추출
+        String email = loginDTO.getEmail();
+        String password = loginDTO.getPassword();
+        //스프링 시큐리티에서 email password를 검증하기 위해서는 token에 담아야 함
+        UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(email, password, null);
         
         //token에 담은 검증을 위한 AuthenticationManager로 전달
         Authentication authenticate = authenticationManager.authenticate(authToken);
@@ -52,15 +47,20 @@ public class LoginFilter extends UsernamePasswordAuthenticationFilter {
     //로그인 성공시 실행하는 메소드 (여기서 JWT를 발급하면 됨)
     @Override
     protected void successfulAuthentication(HttpServletRequest request, HttpServletResponse response, FilterChain chain, Authentication authentication) {
-        CustomUserDetails customUserDetails = (CustomUserDetails) authentication.getPrincipal();
-        response.addHeader("Authorization", "Bearer " + jwtUtil.createAccessToken(customUserDetails.getUserId()));
+        userDetailsImpl userDetailsImpl = (userDetailsImpl) authentication.getPrincipal();
+        response.addHeader("Authorization", "Bearer " + jwtUtil.createAccessToken(userDetailsImpl));
+//
+//        //응답 설정
+//        response.setHeader("access", access);
+//        response.addCookie(createCookie("refresh", refresh));
+//        response.setStatus(HttpStatus.OK.value());
     }
     
     //로그인 실패시 실행하는 메소드
     @Override
     protected void unsuccessfulAuthentication(HttpServletRequest request, HttpServletResponse response, AuthenticationException failed) {
         System.out.println("failed = " + failed);
-        response.setStatus(400);
+        response.setStatus(401);
     }
     
 }

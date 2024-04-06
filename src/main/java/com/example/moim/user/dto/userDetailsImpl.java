@@ -9,14 +9,19 @@ import java.util.ArrayList;
 import java.util.Collection;
 
 @RequiredArgsConstructor
-public class CustomUserDetails implements UserDetails {
-    
+public class userDetailsImpl implements UserDetails {
+
     private final User user;
     
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         Collection<GrantedAuthority> collection = new ArrayList<>();
-        collection.add((GrantedAuthority) () -> user.getRole().toString());
+        collection.add(new GrantedAuthority() {
+            @Override
+            public String getAuthority() {
+                return user.getRole().toString();
+            }
+        });
         return collection;
     }
     
@@ -32,6 +37,14 @@ public class CustomUserDetails implements UserDetails {
     
     public Long getUserId() {
         return user.getId();
+    }
+
+    public User getUser() {
+        return user;
+    }
+
+    public String getRole() {
+        return user.getRole().toString();
     }
     
     @Override

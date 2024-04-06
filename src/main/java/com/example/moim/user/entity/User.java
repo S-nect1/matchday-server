@@ -2,7 +2,7 @@ package com.example.moim.user.entity;
 
 import com.example.moim.club.entity.UserClub;
 import com.example.moim.notification.entity.Notification;
-import com.example.moim.user.dto.JoinDTO;
+import com.example.moim.user.dto.JoinInput;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -36,11 +36,17 @@ public class User {
     @OneToMany(mappedBy = "targetUser", cascade = CascadeType.REMOVE)
     private List<Notification> notifications = new ArrayList<>();
     
-    public static User createUser(JoinDTO joinDTO) {
+    public static User createUser(JoinInput joinInput) {
         User user = new User();
-        user.email = joinDTO.getEmail();
-        user.password = joinDTO.getPassword();
+        user.email = joinInput.getEmail();
+        user.password = joinInput.getPassword();
         user.role = Role.USER;
         return user;
+    }
+
+    public void setIdAtJWTFilter(Long id, String role) {
+        this.id = id;
+        this.password = "temppassword";
+        this.role = Role.valueOf(role.toUpperCase());
     }
 }
