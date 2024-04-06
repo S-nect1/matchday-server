@@ -1,2 +1,5 @@
-package com.example.moim.user.entity;public class Role {
+package com.example.moim.user.entity;
+
+public enum Role {
+    USER, ADMIN;
 }

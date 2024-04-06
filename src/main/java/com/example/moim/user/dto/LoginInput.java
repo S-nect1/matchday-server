@@ -1,2 +1,9 @@
-package com.example.moim.user.dto;public class loginInput {
+package com.example.moim.user.dto;
+
+import lombok.Data;
+
+@Data
+public class LoginInput {
+    private String email;
+    private String password;
 }
