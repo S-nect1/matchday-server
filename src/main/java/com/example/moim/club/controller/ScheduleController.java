@@ -18,8 +18,8 @@ public class ScheduleController {
         return scheduleService.saveSchedule(scheduleInput);
     }
 
-    @GetMapping("/schedule/{date}")
-    public List<ScheduleOutput> scheduleFind(@PathVariable Integer date, @RequestParam Long clubId) {
-        return scheduleService.findSchedule(date, clubId);
+    @GetMapping("/schedule")
+    public List<ScheduleOutput> scheduleFind(@ModelAttribute ScheduleSearchInput scheduleSearchInput) {
+        return scheduleService.findSchedule(scheduleSearchInput.getDate(), scheduleSearchInput.getClubId());
     }
 }
