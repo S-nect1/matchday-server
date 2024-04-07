@@ -14,6 +14,6 @@ public class ScheduleOutput {
         this.id = schedule.getId();
         this.title = schedule.getTitle();
         this.location = schedule.getLocation();
-        this.period = schedule.getStartTime().toLocalTime().toString() + "~" + schedule.getEndTime().toLocalTime().toString();
+        this.period = schedule.getStartTime().toLocalTime().toString() + " ~ " + schedule.getEndTime().toLocalTime().toString();
     }
 }

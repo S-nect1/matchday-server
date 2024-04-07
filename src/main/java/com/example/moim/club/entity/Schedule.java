@@ -22,6 +22,8 @@ public class Schedule {
     private LocalDateTime startTime;
     private LocalDateTime endTime;
     private int personnel;//참여인원수
+    private int attend;
+    private int nonAttend;
 
     public static Schedule createSchedule(Club club, ScheduleInput scheduleInput) {
         Schedule schedule = new Schedule();

@@ -1,5 +1,6 @@
 package com.example.moim.club.service;
 
+import com.example.moim.club.dto.ScheduleDetailOutput;
 import com.example.moim.club.dto.ScheduleInput;
 import com.example.moim.club.dto.ScheduleOutput;
 import com.example.moim.club.entity.Schedule;
@@ -29,6 +30,10 @@ public class ScheduleService {
                 LocalDateTime.of(date / 100, date % 100, 1, 0, 0, 0).minusDays(6),
                 LocalDateTime.of(date / 100, date % 100, Month.of(date % 100).minLength(), 23, 59, 59).plusDays(6))
                 .stream().map(ScheduleOutput::new).collect(Collectors.toList());
+    }
+
+    public ScheduleDetailOutput findScheduleDetail(Long id) {
+        return new ScheduleDetailOutput(scheduleRepository.findById(id).get());
 
     }
 }
