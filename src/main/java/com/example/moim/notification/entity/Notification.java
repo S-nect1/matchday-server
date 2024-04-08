@@ -1,5 +1,6 @@
 package com.example.moim.notification.entity;
 
+import com.example.moim.global.entity.BaseEntity;
 import com.example.moim.user.entity.User;
 import jakarta.persistence.*;
 import lombok.Getter;
@@ -8,7 +9,7 @@ import lombok.NoArgsConstructor;
 @Entity
 @Getter
 @NoArgsConstructor
-public class Notification {
+public class Notification extends BaseEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;

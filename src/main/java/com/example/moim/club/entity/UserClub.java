@@ -1,5 +1,6 @@
 package com.example.moim.club.entity;
 
+import com.example.moim.global.entity.BaseEntity;
 import com.example.moim.user.entity.User;
 import jakarta.persistence.*;
 import lombok.Getter;
@@ -10,7 +11,7 @@ import java.time.LocalDate;
 @Entity
 @Getter
 @NoArgsConstructor
-public class UserClub {
+public class UserClub extends BaseEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;

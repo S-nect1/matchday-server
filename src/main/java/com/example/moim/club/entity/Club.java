@@ -1,6 +1,7 @@
 package com.example.moim.club.entity;
 
 import com.example.moim.club.dto.ClubInput;
+import com.example.moim.global.entity.BaseEntity;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -11,7 +12,7 @@ import java.util.List;
 @Entity
 @Getter
 @NoArgsConstructor
-public class Club {
+public class Club extends BaseEntity {
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private String title;

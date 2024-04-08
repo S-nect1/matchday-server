@@ -1,6 +1,7 @@
 package com.example.moim.user.entity;
 
 import com.example.moim.club.entity.UserClub;
+import com.example.moim.global.entity.BaseEntity;
 import com.example.moim.notification.entity.Notification;
 import com.example.moim.user.dto.JoinInput;
 import jakarta.persistence.*;
@@ -13,7 +14,7 @@ import java.util.List;
 @Entity
 @Getter
 @NoArgsConstructor
-public class User {
+public class User extends BaseEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "user_id")
