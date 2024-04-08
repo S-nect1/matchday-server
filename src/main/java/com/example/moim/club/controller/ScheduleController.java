@@ -1,11 +1,10 @@
 package com.example.moim.club.controller;
 
-import com.example.moim.club.dto.ScheduleDetailOutput;
-import com.example.moim.club.dto.ScheduleInput;
-import com.example.moim.club.dto.ScheduleOutput;
-import com.example.moim.club.dto.ScheduleSearchInput;
+import com.example.moim.club.dto.*;
 import com.example.moim.club.service.ScheduleService;
+import com.example.moim.user.dto.userDetailsImpl;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -30,4 +29,13 @@ public class ScheduleController {
         return scheduleService.findScheduleDetail(id);
     }
 
+    @PatchMapping("/schedule/vote")
+    public void scheduleVote(@RequestBody ScheduleVoteInput scheduleVoteInput) {
+        scheduleService.voteSchedule(scheduleVoteInput);
+    }
+
+    @PostMapping("/schedule/comment")
+    public void scheduleVote(@RequestBody CommentInput commentInput, @AuthenticationPrincipal userDetailsImpl userDetailsImpl) {
+        scheduleService.saveComment(commentInput, userDetailsImpl.getUser());
+    }
 }

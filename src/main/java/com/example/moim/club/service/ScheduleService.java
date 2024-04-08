@@ -1,13 +1,15 @@
 package com.example.moim.club.service;
 
-import com.example.moim.club.dto.ScheduleDetailOutput;
-import com.example.moim.club.dto.ScheduleInput;
-import com.example.moim.club.dto.ScheduleOutput;
+import com.example.moim.club.dto.*;
+import com.example.moim.club.entity.Comment;
 import com.example.moim.club.entity.Schedule;
 import com.example.moim.club.repository.ClubRepository;
+import com.example.moim.club.repository.CommentRepository;
 import com.example.moim.club.repository.ScheduleRepository;
+import com.example.moim.user.entity.User;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.time.Month;
@@ -19,6 +21,7 @@ import java.util.stream.Collectors;
 public class ScheduleService {
     private final ClubRepository clubRepository;
     private final ScheduleRepository scheduleRepository;
+    private final CommentRepository commentRepository;
 
     public ScheduleOutput saveSchedule(ScheduleInput scheduleInput) {
         Schedule schedule = scheduleRepository.save(Schedule.createSchedule(clubRepository.findById(scheduleInput.getClubId()).get(), scheduleInput));
@@ -33,7 +36,18 @@ public class ScheduleService {
     }
 
     public ScheduleDetailOutput findScheduleDetail(Long id) {
-        return new ScheduleDetailOutput(scheduleRepository.findById(id).get());
+        Schedule schedule = scheduleRepository.findById(id).get();
+        return new ScheduleDetailOutput(schedule, commentRepository.findBySchedule(schedule).stream().map(CommentOutput::new).collect(Collectors.toList()));
 
+    }
+
+    @Transactional
+    public void voteSchedule(ScheduleVoteInput scheduleVoteInput) {
+        scheduleRepository.findById(scheduleVoteInput.getId()).get().vote(scheduleVoteInput.getAttendance());
+
+    }
+
+    public void saveComment(CommentInput commentInput, User user) {
+        commentRepository.save(Comment.createComment(user, scheduleRepository.findById(commentInput.getId()).get(), commentInput.getContents()));
     }
 }
