@@ -61,7 +61,7 @@ jobs:
           key: ${{ vars.HOST_KEY }}
           port: ${{ vars.HOST_PORT }}
           script: |
-            docker rm -f moim
-            docker image rm ${{ vars.DOCKER_REPO }} -f
-            docker pull ${{ vars.DOCKER_REPO }}
-            docker run --name moim --network host -d -v ~/moimPhoto/:/moimPhoto/ -p 8080:8080 ${{ vars.DOCKER_REPO }} --restart on-failure
+            sudo docker rm -f moim
+            sudo docker image rm ${{ vars.DOCKER_REPO }} -f
+            sudo docker pull ${{ vars.DOCKER_REPO }}
+            sudo docker run --name moim --network host -d -v ~/moimPhoto/:/moimPhoto/ -p 8080:8080 ${{ vars.DOCKER_REPO }} --restart on-failure
