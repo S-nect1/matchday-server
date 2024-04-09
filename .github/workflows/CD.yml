@@ -58,7 +58,7 @@ jobs:
         with:
           host: ${{ vars.HOST }}
           username: ${{ vars.HOST_USERNAME }}
-          password: ${{ vars.HOST_KEY }}
+          key: ${{ vars.HOST_KEY }}
           port: ${{ vars.HOST_PORT }}
           script: |
             docker rm -f moim
