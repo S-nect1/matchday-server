@@ -1,8 +1,6 @@
 package com.example.moim.club.dto;
 
-import com.example.moim.club.entity.Award;
 import com.example.moim.club.entity.Club;
-import com.example.moim.club.entity.Schedule;
 import lombok.Data;
 
 import java.util.List;
@@ -14,8 +12,8 @@ public class ClubOutput {
     private String explanation;
     private String profileImg;
     private String backgroundImg;
-    private List<Schedule> scheduleList;
-    private List<Award> awardList;
+    private List<ScheduleOutput> scheduleList;
+    private List<AwardOutput> awardList;
     private List<UserClubOutput> userClubOutputList;
 
     public ClubOutput(Club club) {
@@ -26,14 +24,14 @@ public class ClubOutput {
         this.backgroundImg = club.getBackgroundImgPath();
     }
 
-    public ClubOutput(Club club, List<UserClubOutput> userClubOutputList) {
+    public ClubOutput(Club club, List<UserClubOutput> userClubOutputList, List<ScheduleOutput> scheduleOutputs, List<AwardOutput> awardOutputs) {
         this.id = club.getId();
         this.title = club.getTitle();
         this.explanation = club.getExplanation();
         this.profileImg = club.getProfileImgPath();
         this.backgroundImg = club.getBackgroundImgPath();
-//        this.scheduleList = scheduleList;
-//        this.awardList = awardList;
+        this.scheduleList = scheduleOutputs;
+        this.awardList = awardOutputs;
         this.userClubOutputList = userClubOutputList;
     }
 }
