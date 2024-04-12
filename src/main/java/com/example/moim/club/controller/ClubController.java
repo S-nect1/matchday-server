@@ -8,13 +8,15 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
+import java.io.IOException;
+
 @RestController
 @RequiredArgsConstructor
 public class ClubController {
     private final ClubService clubService;
 
     @PostMapping("/club")
-    public ClubOutput clubSave(@AuthenticationPrincipal userDetailsImpl userDetailsImpl, @RequestBody ClubInput clubInput) {
+    public ClubOutput clubSave(@AuthenticationPrincipal userDetailsImpl userDetailsImpl, @ModelAttribute ClubInput clubInput) throws IOException {
         return clubService.saveClub(userDetailsImpl.getUser(), clubInput);
     }
 

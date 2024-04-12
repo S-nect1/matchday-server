@@ -23,12 +23,12 @@ public class Club extends BaseEntity {
     @OneToMany(mappedBy = "club", cascade = CascadeType.REMOVE)
     private List<UserClub> userClub = new ArrayList<>();
 
-    public static Club createClub(ClubInput clubInput) {
+    public static Club createClub(ClubInput clubInput, String profileImgPath, String backImgPath) {
         Club club = new Club();
         club.title = clubInput.getTitle();
         club.explanation = clubInput.getExplanation();
-        club.profileImgPath = clubInput.getProfileImg();//base64디코딩 필요
-        club.backgroundImgPath = clubInput.getBackgroundImg();
+        club.profileImgPath = profileImgPath;
+        club.backgroundImgPath = backImgPath;
         return club;
     }
 }
