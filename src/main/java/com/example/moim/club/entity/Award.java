@@ -1,5 +1,6 @@
 package com.example.moim.club.entity;
 
+import com.example.moim.club.dto.AwardInput;
 import com.example.moim.global.entity.BaseEntity;
 import jakarta.persistence.*;
 import lombok.Getter;
@@ -16,4 +17,18 @@ public class Award extends BaseEntity {
     private Club club;
     private String title;
     private int priority;
+    private String imgPath;
+
+    public Award(Club club, AwardInput awardInput) {
+        this.club = club;
+        this.title = awardInput.getTitle();
+        this.priority = awardInput.getPriority();
+        this.imgPath = awardInput.getImgPath();
+    }
+
+    public void changeAward(AwardInput awardInput) {
+        this.imgPath = awardInput.getImgPath();
+        this.title = awardInput.getTitle();
+        this.priority = awardInput.getPriority();
+    }
 }
