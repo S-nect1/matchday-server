@@ -20,4 +20,6 @@ public interface UserClubRepository extends JpaRepository<UserClub, Long> {
     List<UserClub> findAllByClub(@Param("club") Club club);
 
     Optional<UserClub> findByClubAndUser(Club club, User user);
+
+    List<UserClub> findByUser(User user);
 }

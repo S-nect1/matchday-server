@@ -1,5 +1,7 @@
 package com.example.moim.user.service;
 
+import com.example.moim.club.repository.UserClubRepository;
+import com.example.moim.user.dto.MyClubOutput;
 import com.example.moim.user.dto.UserOutput;
 import com.example.moim.user.entity.User;
 import com.example.moim.user.repository.UserRepository;
@@ -9,10 +11,13 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @Service
 @RequiredArgsConstructor
 public class UserService {
     private final UserRepository userRepository;
+    private final UserClubRepository userClubRepository;
     private final BCryptPasswordEncoder bCryptPasswordEncoder;
     
     public void joinProcess(JoinInput joinInput) {
@@ -25,6 +30,10 @@ public class UserService {
 
     public UserOutput findUser(User user) {
         return new UserOutput(userRepository.findById(user.getId()).get());
+    }
+
+    public List<MyClubOutput> findUserClub(User user) {
+        return userClubRepository.findByUser(user).stream().map(MyClubOutput::new).toList();
     }
 
 }

@@ -1,5 +1,6 @@
 package com.example.moim.user.controller;
 
+import com.example.moim.user.dto.MyClubOutput;
 import com.example.moim.user.dto.UserOutput;
 import com.example.moim.user.dto.userDetailsImpl;
 import com.example.moim.user.dto.JoinInput;
@@ -11,9 +12,11 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.List;
+
 @RestController
 @RequiredArgsConstructor
-public class UserController {
+public class UserController implements UserControllerDocs{
     private final UserService userService;
     
     @PostMapping("/join")
@@ -26,6 +29,11 @@ public class UserController {
     @GetMapping("/user")
     public UserOutput userFind(@AuthenticationPrincipal userDetailsImpl userDetailsImpl) {
         return userService.findUser(userDetailsImpl.getUser());
+    }
+
+    @GetMapping("/user/club")
+    public List<MyClubOutput> userClubFind(@AuthenticationPrincipal userDetailsImpl userDetailsImpl) {
+        return userService.findUserClub(userDetailsImpl.getUser());
     }
 
 //    @GetMapping("/check")
