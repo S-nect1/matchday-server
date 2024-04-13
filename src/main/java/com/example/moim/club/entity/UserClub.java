@@ -29,7 +29,7 @@ public class UserClub extends BaseEntity {
         userClub.club = club;
         userClub.position = "leader";
         userClub.joinDate = LocalDate.now();
-        //카테고리?
+        userClub.category = "manager";
         return userClub;
     }
 
@@ -39,6 +39,7 @@ public class UserClub extends BaseEntity {
         userClub.club = club;
         userClub.position = "member";
         userClub.joinDate = LocalDate.now();
+        userClub.category = "manager";
         //카테고리?
         return userClub;
     }
