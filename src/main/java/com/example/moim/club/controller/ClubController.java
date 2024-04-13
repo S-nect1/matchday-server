@@ -1,9 +1,6 @@
 package com.example.moim.club.controller;
 
-import com.example.moim.club.dto.ClubInput;
-import com.example.moim.club.dto.ClubOutput;
-import com.example.moim.club.dto.ClubUserUpdateInput;
-import com.example.moim.club.dto.UserClubOutput;
+import com.example.moim.club.dto.*;
 import com.example.moim.club.service.ClubService;
 import com.example.moim.user.dto.userDetailsImpl;
 import lombok.RequiredArgsConstructor;
@@ -33,4 +30,13 @@ public class ClubController implements ClubControllerDocs{
         return clubService.findClub(id);
     }
 
+    @PatchMapping(value = "/club/profile", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    public void profileImgUpdate(@AuthenticationPrincipal userDetailsImpl userDetailsImpl, @ModelAttribute ClubImgInput clubImgInput) throws IOException {
+        clubService.updateProfileImg(clubImgInput);
+    }
+
+    @PatchMapping(value = "/club/background", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    public void backgroundImgUpdate(@AuthenticationPrincipal userDetailsImpl userDetailsImpl, @ModelAttribute ClubImgInput clubImgInput) throws IOException {
+        clubService.updateBackgroundImg(clubImgInput);
+    }
 }

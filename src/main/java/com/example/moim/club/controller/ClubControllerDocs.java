@@ -1,9 +1,6 @@
 package com.example.moim.club.controller;
 
-import com.example.moim.club.dto.ClubInput;
-import com.example.moim.club.dto.ClubOutput;
-import com.example.moim.club.dto.ClubUserUpdateInput;
-import com.example.moim.club.dto.UserClubOutput;
+import com.example.moim.club.dto.*;
 import com.example.moim.user.dto.userDetailsImpl;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -24,4 +21,10 @@ public interface ClubControllerDocs {
 
     @Operation(summary = "모임 정보 조회")
     ClubOutput clubFind(@AuthenticationPrincipal userDetailsImpl userDetailsImpl, @PathVariable Long id);
+
+    @Operation(summary = "모임 프사 변경")
+    void profileImgUpdate(@AuthenticationPrincipal userDetailsImpl userDetailsImpl, @ModelAttribute ClubImgInput clubImgInput) throws IOException;
+
+    @Operation(summary = "모임 배경사진 변경")
+    void backgroundImgUpdate(@AuthenticationPrincipal userDetailsImpl userDetailsImpl, @ModelAttribute ClubImgInput clubImgInput) throws IOException;
 }

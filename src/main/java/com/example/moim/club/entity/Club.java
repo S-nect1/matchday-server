@@ -31,4 +31,12 @@ public class Club extends BaseEntity {
         club.backgroundImgPath = backImgPath;
         return club;
     }
+
+    public void changeProfileImg(String newImgPath) {
+        this.profileImgPath = newImgPath;
+    }
+
+    public void changeBackgroundImg(String newImgPath) {
+        this.backgroundImgPath = newImgPath;
+    }
 }

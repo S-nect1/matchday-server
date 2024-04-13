@@ -14,6 +14,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.io.File;
 import java.io.IOException;
 import java.util.List;
 
@@ -46,5 +47,22 @@ public class ClubService {
         List<ScheduleOutput> scheduleOutputs = scheduleRepository.findTop5ByClub(club).stream().map(ScheduleOutput::new).toList();
         List<AwardOutput> awardOutputs = awardRepository.findByClub(club).stream().map(AwardOutput::new).toList();
         return new ClubOutput(club, userClubOutputs, scheduleOutputs, awardOutputs);
+    }
+
+    @Transactional
+    public void updateProfileImg(ClubImgInput clubImgInput) throws IOException {
+        Club club = clubRepository.findById(clubImgInput.getId()).get();
+        if (club.getProfileImgPath() != null) {
+            new File(club.getProfileImgPath()).delete();
+        }
+        club.changeProfileImg(fileStore.storeFile(clubImgInput.getImg()));
+    }
+
+    public void updateBackgroundImg(ClubImgInput clubImgInput) throws IOException {
+        Club club = clubRepository.findById(clubImgInput.getId()).get();
+        if (club.getBackgroundImgPath() != null) {
+            new File(club.getBackgroundImgPath()).delete();
+        }
+        club.changeBackgroundImg(fileStore.storeFile(clubImgInput.getImg()));
     }
 }
