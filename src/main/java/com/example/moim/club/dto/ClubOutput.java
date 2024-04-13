@@ -17,32 +17,32 @@ public class ClubOutput {
     private String backgroundImg;
     private List<ScheduleOutput> scheduleList;
     private List<AwardOutput> awardList;
-    private List<UserClubOutput> userClubOutputList;
+    private List<UserClubOutput> userList;
 
     public ClubOutput(Club club) {
         this.id = club.getId();
         this.title = club.getTitle();
         this.explanation = club.getExplanation();
         try {
-            this.profileImg = Base64.getEncoder().encodeToString(new FileUrlResource("file:" + club.getProfileImgPath()).getContentAsByteArray());
-            this.backgroundImg = Base64.getEncoder().encodeToString(new FileUrlResource("file:" + club.getBackgroundImgPath()).getContentAsByteArray());
+            this.profileImg = Base64.getEncoder().encodeToString(new FileUrlResource(club.getProfileImgPath()).getContentAsByteArray());
+            this.backgroundImg = Base64.getEncoder().encodeToString(new FileUrlResource(club.getBackgroundImgPath()).getContentAsByteArray());
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
     }
 
-    public ClubOutput(Club club, List<UserClubOutput> userClubOutputList, List<ScheduleOutput> scheduleOutputs, List<AwardOutput> awardOutputs) {
+    public ClubOutput(Club club, List<UserClubOutput> userList, List<ScheduleOutput> scheduleOutputs, List<AwardOutput> awardOutputs) {
         this.id = club.getId();
         this.title = club.getTitle();
         this.explanation = club.getExplanation();
         try {
-            this.profileImg = Base64.getEncoder().encodeToString(new FileUrlResource("file:" + club.getProfileImgPath()).getContentAsByteArray());
-            this.backgroundImg = Base64.getEncoder().encodeToString(new FileUrlResource("file:" + club.getBackgroundImgPath()).getContentAsByteArray());
+            this.profileImg = Base64.getEncoder().encodeToString(new FileUrlResource(club.getProfileImgPath()).getContentAsByteArray());
+            this.backgroundImg = Base64.getEncoder().encodeToString(new FileUrlResource(club.getBackgroundImgPath()).getContentAsByteArray());
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
         this.scheduleList = scheduleOutputs;
         this.awardList = awardOutputs;
-        this.userClubOutputList = userClubOutputList;
+        this.userList = userList;
     }
 }

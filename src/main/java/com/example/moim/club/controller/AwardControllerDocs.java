@@ -20,7 +20,7 @@ public interface AwardControllerDocs {
     @Operation(summary = "수상내역 수정")
     AwardOutput awardUpdate(@AuthenticationPrincipal userDetailsImpl userDetailsImpl,@RequestBody AwardInput awardInput);
 
-    @Operation(summary = "수상내역 조회")
+    @Operation(summary = "수상내역 조회", description = "order 는 created, priority중 하나 ex) /award/6?order=created")
     List<AwardOutput> awardFind(@PathVariable Long clubId, @RequestParam String order);
 
     @Operation(summary = "수상내역 제거")
