@@ -8,5 +8,5 @@ public class AwardInput {
     private Long clubId;
     private String title;
     private Integer priority;
-    private String imgPath;
+    private String imgPath;//앱에 있는 이미지중 어떤거 쓸건지
 }

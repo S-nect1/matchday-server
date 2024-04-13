@@ -12,7 +12,7 @@ import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
-public class AwardController {
+public class AwardController implements AwardControllerDocs{
     private final AwardService awardService;
 
     @PostMapping("/award")

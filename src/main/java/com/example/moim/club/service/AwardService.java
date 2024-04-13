@@ -34,6 +34,7 @@ public class AwardService {
     public List<AwardOutput> findAward(Long clubId, String order) {
         return awardRepository.findByClubOrderBy(clubRepository.findById(clubId).get(), order).stream().map(AwardOutput::new).collect(Collectors.toList());
     }
+
     @Transactional
     public void removeAward(Long id) {
         awardRepository.deleteById(id);

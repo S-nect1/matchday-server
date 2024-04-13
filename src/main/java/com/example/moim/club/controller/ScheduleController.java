@@ -11,7 +11,7 @@ import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
-public class ScheduleController {
+public class ScheduleController implements ScheduleControllerDocs{
     private final ScheduleService scheduleService;
 
     @PostMapping("/schedule")
@@ -35,7 +35,7 @@ public class ScheduleController {
     }
 
     @PostMapping("/schedule/comment")
-    public void scheduleVote(@RequestBody CommentInput commentInput, @AuthenticationPrincipal userDetailsImpl userDetailsImpl) {
+    public void scheduleComment(@RequestBody CommentInput commentInput, @AuthenticationPrincipal userDetailsImpl userDetailsImpl) {
         scheduleService.saveComment(commentInput, userDetailsImpl.getUser());
     }
 }
