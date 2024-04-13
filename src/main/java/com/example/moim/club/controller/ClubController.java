@@ -7,6 +7,7 @@ import com.example.moim.club.dto.UserClubOutput;
 import com.example.moim.club.service.ClubService;
 import com.example.moim.user.dto.userDetailsImpl;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.MediaType;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
@@ -14,16 +15,16 @@ import java.io.IOException;
 
 @RestController
 @RequiredArgsConstructor
-public class ClubController {
+public class ClubController implements ClubControllerDocs{
     private final ClubService clubService;
 
-    @PostMapping("/club")
+    @PostMapping(value = "/club", consumes = MediaType.MULTIPART_FORM_DATA_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     public ClubOutput clubSave(@AuthenticationPrincipal userDetailsImpl userDetailsImpl, @ModelAttribute ClubInput clubInput) throws IOException {
         return clubService.saveClub(userDetailsImpl.getUser(), clubInput);
     }
 
     @PatchMapping("/club/users")
-    public UserClubOutput clubUserUpdate(@AuthenticationPrincipal userDetailsImpl userDetailsImpl, @RequestBody ClubUserUpdateInput clubInput) throws IOException {
+    public UserClubOutput clubUserUpdate(@AuthenticationPrincipal userDetailsImpl userDetailsImpl, @RequestBody ClubUserUpdateInput clubInput) {
         return clubService.updateClubUser(clubInput);
     }
 
