@@ -9,8 +9,10 @@ import com.example.moim.club.repository.ScheduleRepository;
 import com.example.moim.club.repository.UserClubRepository;
 import com.example.moim.global.util.FileStore;
 import com.example.moim.user.entity.User;
+import com.example.moim.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.io.IOException;
 import java.util.List;
@@ -22,12 +24,20 @@ public class ClubService {
     private final UserClubRepository userClubRepository;
     private final ScheduleRepository scheduleRepository;
     private final AwardRepository awardRepository;
+    private final UserRepository userRepository;
     private final FileStore fileStore;
 
     public ClubOutput saveClub(User user, ClubInput clubInput) throws IOException {
         Club club = clubRepository.save(Club.createClub(clubInput, fileStore.storeFile(clubInput.getProfileImg()), fileStore.storeFile(clubInput.getBackgroundImg())));
         userClubRepository.save(UserClub.createLeaderUserClub(user, club));
         return new ClubOutput(club);
+    }
+
+    @Transactional
+    public UserClubOutput updateClubUser(ClubUserUpdateInput clubInput) {
+        UserClub userClub = userClubRepository.findByClubAndUser(clubRepository.findById(clubInput.getId()).get(), userRepository.findById(clubInput.getUserId()).get()).get();
+        userClub.changeUserClub(clubInput.getPosition(), clubInput.getCategory());
+        return new UserClubOutput(userClub);
     }
 
     public ClubOutput findClub(Long id) {

@@ -2,6 +2,8 @@ package com.example.moim.club.controller;
 
 import com.example.moim.club.dto.ClubInput;
 import com.example.moim.club.dto.ClubOutput;
+import com.example.moim.club.dto.ClubUserUpdateInput;
+import com.example.moim.club.dto.UserClubOutput;
 import com.example.moim.club.service.ClubService;
 import com.example.moim.user.dto.userDetailsImpl;
 import lombok.RequiredArgsConstructor;
@@ -18,6 +20,11 @@ public class ClubController {
     @PostMapping("/club")
     public ClubOutput clubSave(@AuthenticationPrincipal userDetailsImpl userDetailsImpl, @ModelAttribute ClubInput clubInput) throws IOException {
         return clubService.saveClub(userDetailsImpl.getUser(), clubInput);
+    }
+
+    @PatchMapping("/club/users")
+    public UserClubOutput clubUserUpdate(@AuthenticationPrincipal userDetailsImpl userDetailsImpl, @RequestBody ClubUserUpdateInput clubInput) throws IOException {
+        return clubService.updateClubUser(clubInput);
     }
 
     @GetMapping("/club/{id}")

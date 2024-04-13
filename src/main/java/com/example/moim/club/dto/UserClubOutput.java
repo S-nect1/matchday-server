@@ -7,6 +7,7 @@ import java.time.LocalDate;
 
 @Data
 public class UserClubOutput {
+    private Long userId;
     private String name;
     private String category;
     private String position;
@@ -15,6 +16,7 @@ public class UserClubOutput {
     private String phone;
 
     public UserClubOutput(UserClub userClub) {
+        this.userId = userClub.getId();
         this.name = userClub.getUser().getName();
         this.category = userClub.getCategory();
         this.position = userClub.getPosition();

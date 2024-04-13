@@ -2,12 +2,14 @@ package com.example.moim.club.repository;
 
 import com.example.moim.club.entity.Club;
 import com.example.moim.club.entity.UserClub;
+import com.example.moim.user.entity.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import java.util.Optional;
 
 @Repository
 public interface UserClubRepository extends JpaRepository<UserClub, Long> {
@@ -16,4 +18,6 @@ public interface UserClubRepository extends JpaRepository<UserClub, Long> {
             " join fetch uc.user u" +
             " where uc.club = :club")
     List<UserClub> findAllByClub(@Param("club") Club club);
+
+    Optional<UserClub> findByClubAndUser(Club club, User user);
 }

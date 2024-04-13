@@ -42,4 +42,9 @@ public class UserClub extends BaseEntity {
         //카테고리?
         return userClub;
     }
+
+    public void changeUserClub(String position, String category) {
+        this.position = position;
+        this.category = category;
+    }
 }
