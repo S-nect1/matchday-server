@@ -57,6 +57,7 @@ public class ClubService {
         }
         club.changeProfileImg(fileStore.storeFile(clubImgInput.getImg()));
     }
+
     @Transactional
     public void updateBackgroundImg(ClubImgInput clubImgInput) throws IOException {
         Club club = clubRepository.findById(clubImgInput.getId()).get();
