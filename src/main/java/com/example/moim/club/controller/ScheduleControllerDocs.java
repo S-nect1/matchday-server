@@ -14,7 +14,7 @@ import java.util.List;
 @Tag(name = "일정 api")
 public interface ScheduleControllerDocs {
     @Operation(summary = "일정 생성", description = "startTime, endTime 형식은 yyyy-MM-dd HH:mm")
-    ScheduleOutput scheduleSave(@RequestBody ScheduleInput scheduleInput);
+    ScheduleOutput scheduleSave(@RequestBody ScheduleInput scheduleInput, @AuthenticationPrincipal userDetailsImpl userDetailsImpl);
 
     @Operation(summary = "일정 조회", description = "쿼리파라미터 예시: /schedule?date=202404&clubId=6")
     List<ScheduleOutput> scheduleFind(@ModelAttribute ScheduleSearchInput scheduleSearchInput);

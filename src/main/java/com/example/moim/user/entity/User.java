@@ -2,7 +2,7 @@ package com.example.moim.user.entity;
 
 import com.example.moim.club.entity.UserClub;
 import com.example.moim.global.entity.BaseEntity;
-import com.example.moim.notification.entity.Notification;
+import com.example.moim.notification.entity.Notifications;
 import com.example.moim.user.dto.JoinInput;
 import jakarta.persistence.*;
 import lombok.Getter;
@@ -35,7 +35,7 @@ public class User extends BaseEntity {
     @OneToMany(mappedBy = "user", cascade = CascadeType.REMOVE)
     private List<UserClub> userClub = new ArrayList<>();
     @OneToMany(mappedBy = "targetUser", cascade = CascadeType.REMOVE)
-    private List<Notification> notifications = new ArrayList<>();
+    private List<Notifications> notifications = new ArrayList<>();
     
     public static User createUser(JoinInput joinInput) {
         User user = new User();

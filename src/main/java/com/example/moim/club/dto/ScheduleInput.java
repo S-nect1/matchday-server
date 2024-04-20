@@ -9,7 +9,6 @@ import java.time.LocalDateTime;
 public class ScheduleInput {
     private Long clubId;
     private String title;
-    private String contents;
     private String location;
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm", timezone = "Asia/Seoul")
     private LocalDateTime startTime;

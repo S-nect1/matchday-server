@@ -20,7 +20,6 @@ public class Schedule extends BaseEntity {
     @ManyToOne(fetch = FetchType.LAZY)
     private Club club;
     private String title;
-    private String contents;
     private String location;
     private LocalDateTime startTime;
     private LocalDateTime endTime;
@@ -35,7 +34,6 @@ public class Schedule extends BaseEntity {
         Schedule schedule = new Schedule();
         schedule.club = club;
         schedule.title = scheduleInput.getTitle();
-        schedule.contents = scheduleInput.getContents();
         schedule.location = scheduleInput.getLocation();
         schedule.startTime = scheduleInput.getStartTime();
         schedule.endTime = scheduleInput.getEndTime();

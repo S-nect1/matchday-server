@@ -6,8 +6,11 @@ import com.example.moim.club.entity.Schedule;
 import com.example.moim.club.repository.ClubRepository;
 import com.example.moim.club.repository.CommentRepository;
 import com.example.moim.club.repository.ScheduleRepository;
+import com.example.moim.notification.dto.ScheduleSaveEvent;
 import com.example.moim.user.entity.User;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -16,15 +19,18 @@ import java.time.Month;
 import java.util.List;
 import java.util.stream.Collectors;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class ScheduleService {
     private final ClubRepository clubRepository;
     private final ScheduleRepository scheduleRepository;
     private final CommentRepository commentRepository;
+    private final ApplicationEventPublisher eventPublisher;
 
-    public ScheduleOutput saveSchedule(ScheduleInput scheduleInput) {
+    public ScheduleOutput saveSchedule(ScheduleInput scheduleInput, User user) {
         Schedule schedule = scheduleRepository.save(Schedule.createSchedule(clubRepository.findById(scheduleInput.getClubId()).get(), scheduleInput));
+        eventPublisher.publishEvent(new ScheduleSaveEvent(schedule, user));
         return new ScheduleOutput(schedule);
     }
 

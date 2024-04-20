@@ -15,8 +15,8 @@ public class ScheduleController implements ScheduleControllerDocs{
     private final ScheduleService scheduleService;
 
     @PostMapping("/schedule")
-    public ScheduleOutput scheduleSave(@RequestBody ScheduleInput scheduleInput) {
-        return scheduleService.saveSchedule(scheduleInput);
+    public ScheduleOutput scheduleSave(@RequestBody ScheduleInput scheduleInput, @AuthenticationPrincipal userDetailsImpl userDetailsImpl) {
+        return scheduleService.saveSchedule(scheduleInput, userDetailsImpl.getUser());
     }
 
     @GetMapping("/schedule")
