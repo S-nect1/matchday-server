@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 
 import java.util.List;
 
-@Tag(name = "회원 api", description = "로그인 api는 /login, 입력값은 {\"email\":\"string\", \"password\":\"string\"}")
+@Tag(name = "회원 api", description = "로그인 api는 /login, 입력값은 {\"email\":\"string\", \"password\":\"string\"} 로그인 성공시 응답 헤더 Authorization 에 jwt 발급")
 public interface UserControllerDocs {
 
     @Operation(summary = "회원가입", description = "필요 파라미터 : 이메일, 비밀번호")

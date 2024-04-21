@@ -13,7 +13,7 @@ import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
-public class NotificationController {
+public class NotificationController implements NotificationControllerDocs{
     private final NotificationService notificationService;
 
     @GetMapping(value = "/notice")
