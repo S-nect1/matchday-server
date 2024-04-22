@@ -6,7 +6,9 @@ import com.example.moim.notification.service.NotificationService;
 import com.example.moim.user.dto.userDetailsImpl;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
@@ -24,5 +26,10 @@ public class NotificationController implements NotificationControllerDocs{
     @GetMapping("/notices")
     public List<NotificationOutput> noticeFind(@AuthenticationPrincipal userDetailsImpl userDetailsImpl) {
         return notificationService.findNotice(userDetailsImpl.getUser());
+    }
+
+    @DeleteMapping("/notices/{id}")
+    public void noticeRemove(@AuthenticationPrincipal userDetailsImpl userDetailsImpl, @PathVariable Long id) {
+        notificationService.removeNotice(id);
     }
 }

@@ -6,6 +6,7 @@ import com.example.moim.notification.repository.NotificationRepository;
 import com.example.moim.user.entity.User;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -20,5 +21,10 @@ public class NotificationService {
 
     public List<NotificationOutput> findNotice(User user) {
         return notificationRepository.findByTargetUser(user).stream().map(NotificationOutput::new).toList();
+    }
+
+    @Transactional
+    public void removeNotice(Long id) {
+        notificationRepository.deleteById(id);
     }
 }
