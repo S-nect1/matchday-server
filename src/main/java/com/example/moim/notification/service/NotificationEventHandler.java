@@ -1,6 +1,7 @@
 package com.example.moim.notification.service;
 
 import com.example.moim.notification.dto.ScheduleSaveEvent;
+import com.example.moim.notification.dto.ScheduleVoteEvent;
 import com.example.moim.notification.entity.Notifications;
 import com.example.moim.notification.repository.NotificationRepository;
 import lombok.RequiredArgsConstructor;
@@ -8,6 +9,9 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.event.EventListener;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.transaction.event.TransactionalEventListener;
 
 @Slf4j
 @Component
@@ -17,12 +21,18 @@ public class NotificationEventHandler {
 
     @Async
     @EventListener
-    public void handleEvaluateBooksEvent(ScheduleSaveEvent scheduleSaveEvent) {
+    public void handleScheduleSaveEvent(ScheduleSaveEvent scheduleSaveEvent) {
         log.info("이벤트 들어옴");
         sendNotification(Notifications.createScheduleSaveNotification(scheduleSaveEvent));
     }
 
-
+    @Async
+    @Transactional(propagation = Propagation.REQUIRES_NEW)
+    @TransactionalEventListener
+    public void handleScheduleVoteEvent(ScheduleVoteEvent scheduleVoteEvent) {
+        log.info("이벤트 들어옴");
+        sendNotification(Notifications.createScheduleVoteNotification(scheduleVoteEvent));
+    }
 
     private void sendNotification(Notifications notification) {
 //        Message message = Message.builder()

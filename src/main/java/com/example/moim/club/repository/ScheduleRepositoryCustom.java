@@ -8,4 +8,6 @@ import java.util.List;
 
 public interface ScheduleRepositoryCustom {
     List<Schedule> findByClubAndTime(Club club, LocalDateTime startTime, LocalDateTime endTime);
+
+    Schedule findScheduleById(Long id);
 }

@@ -8,6 +8,7 @@ import jakarta.persistence.EntityManager;
 import java.time.LocalDateTime;
 import java.util.List;
 
+import static com.example.moim.club.entity.QClub.*;
 import static com.example.moim.club.entity.QSchedule.*;
 
 public class ScheduleRepositoryImpl implements ScheduleRepositoryCustom {
@@ -25,5 +26,14 @@ public class ScheduleRepositoryImpl implements ScheduleRepositoryCustom {
                 .orderBy(schedule.startTime.asc())
                 .where(schedule.club.eq(club), schedule.startTime.goe(startTime), schedule.endTime.loe(endTime))
                 .fetch();
+    }
+
+    @Override
+    public Schedule findScheduleById(Long id) {
+        return queryFactory
+                .selectFrom(schedule)
+                .join(schedule.club, club).fetchJoin()
+                .where(schedule.id.eq(id))
+                .fetchOne();
     }
 }

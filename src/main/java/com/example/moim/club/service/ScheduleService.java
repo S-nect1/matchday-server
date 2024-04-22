@@ -7,6 +7,7 @@ import com.example.moim.club.repository.ClubRepository;
 import com.example.moim.club.repository.CommentRepository;
 import com.example.moim.club.repository.ScheduleRepository;
 import com.example.moim.notification.dto.ScheduleSaveEvent;
+import com.example.moim.notification.dto.ScheduleVoteEvent;
 import com.example.moim.user.entity.User;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -48,9 +49,12 @@ public class ScheduleService {
     }
 
     @Transactional
-    public void voteSchedule(ScheduleVoteInput scheduleVoteInput) {
-        scheduleRepository.findById(scheduleVoteInput.getId()).get().vote(scheduleVoteInput.getAttendance());
-
+    public void voteSchedule(ScheduleVoteInput scheduleVoteInput, User user) {
+        Schedule schedule = scheduleRepository.findScheduleById(scheduleVoteInput.getId());
+        schedule.vote(scheduleVoteInput.getAttendance());
+        if (scheduleVoteInput.getAttendance()) {
+            eventPublisher.publishEvent(new ScheduleVoteEvent(schedule, user));
+        }
     }
 
     public void saveComment(CommentInput commentInput, User user) {

@@ -23,7 +23,7 @@ public interface ScheduleControllerDocs {
     ScheduleDetailOutput scheduleDetailFind(@PathVariable Long id);
 
     @Operation(summary = "일정 참가 투표", description = "참가면 attendance = true, 불참은 false")
-    void scheduleVote(@RequestBody ScheduleVoteInput scheduleVoteInput);
+    void scheduleVote(@RequestBody ScheduleVoteInput scheduleVoteInput, @AuthenticationPrincipal userDetailsImpl userDetailsImpl);
 
     @Operation(summary = "일정 댓글", description = "id는 일정 id")
     void scheduleComment(@RequestBody CommentInput commentInput, @AuthenticationPrincipal userDetailsImpl userDetailsImpl);

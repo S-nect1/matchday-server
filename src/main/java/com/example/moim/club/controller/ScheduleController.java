@@ -30,8 +30,8 @@ public class ScheduleController implements ScheduleControllerDocs{
     }
 
     @PatchMapping("/schedule/vote")
-    public void scheduleVote(@RequestBody ScheduleVoteInput scheduleVoteInput) {
-        scheduleService.voteSchedule(scheduleVoteInput);
+    public void scheduleVote(@RequestBody ScheduleVoteInput scheduleVoteInput, @AuthenticationPrincipal userDetailsImpl userDetailsImpl) {
+        scheduleService.voteSchedule(scheduleVoteInput, userDetailsImpl.getUser());
     }
 
     @PostMapping("/schedule/comment")
