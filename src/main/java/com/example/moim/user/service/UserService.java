@@ -24,12 +24,12 @@ public class UserService {
     private final AuthenticationManager authenticationManager;
     private final JWTUtil jwtUtil;
     
-    public void signup(JoinInput joinInput) {
-        joinInput.setPassword(bCryptPasswordEncoder.encode(joinInput.getPassword()));
-        if (userRepository.existsByEmail(joinInput.getEmail())) {
+    public void signup(SignupInput signupInput) {
+        signupInput.setPassword(bCryptPasswordEncoder.encode(signupInput.getPassword()));
+        if (userRepository.existsByEmail(signupInput.getEmail())) {
             throw new EntityExistsException("이미 가입된 계정입니다");
         }
-        userRepository.save(User.createUser(joinInput));
+        userRepository.save(User.createUser(signupInput));
     }
 
     public String login(LoginInput loginInput) {

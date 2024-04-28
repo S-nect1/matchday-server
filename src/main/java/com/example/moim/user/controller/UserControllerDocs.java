@@ -19,7 +19,7 @@ public interface UserControllerDocs {
     @Operation(summary = "회원가입")
     @ApiResponse(responseCode = "200", description = "OK", content = @Content(schema = @Schema(implementation = String.class)))
     @ApiResponse(responseCode = "409", description = "중복회원가입시 409 에러코드와 메세지 응답", content = @Content(schema = @Schema(implementation = ErrorResult.class)))
-    String signup(@RequestBody JoinInput joinInput);
+    String signup(@RequestBody SignupInput signupInput);
 
     @Operation(summary = "로그인", description = "로그인 성공시 응답 헤더 Authorization 에 jwt 발급")
     @ApiResponse(responseCode = "200", description = "OK", content = @Content(schema = @Schema))

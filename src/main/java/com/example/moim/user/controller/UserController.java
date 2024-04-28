@@ -1,10 +1,9 @@
 package com.example.moim.user.controller;
 
-import com.example.moim.user.dto.MyClubOutput;
-import com.example.moim.user.dto.UserOutput;
-import com.example.moim.user.dto.userDetailsImpl;
-import com.example.moim.user.dto.JoinInput;
+import com.example.moim.user.dto.*;
 import com.example.moim.user.service.UserService;
+import jakarta.servlet.http.HttpServletResponse;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -18,11 +17,10 @@ import java.util.List;
 @RequiredArgsConstructor
 public class UserController implements UserControllerDocs{
     private final UserService userService;
-    
-    @PostMapping("/join")
-    public String join(@RequestBody JoinInput joinInput) {
-        System.out.println(joinInput.getEmail());
-        userService.joinProcess(joinInput);
+
+    @PostMapping("/user")
+    public String signup(@RequestBody @Valid SignupInput signupInput) {
+        userService.signup(signupInput);
         return "ok";
     }
 
