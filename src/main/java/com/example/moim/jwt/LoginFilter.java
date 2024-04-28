@@ -20,8 +20,9 @@ import java.nio.charset.StandardCharsets;
 
 @RequiredArgsConstructor
 @Slf4j
+                            //현재 사용 중지
 public class LoginFilter extends UsernamePasswordAuthenticationFilter {
-    
+
     private final AuthenticationManager authenticationManager;
     private final JWTUtil jwtUtil;
 
