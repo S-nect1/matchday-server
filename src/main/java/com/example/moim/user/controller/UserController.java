@@ -26,6 +26,11 @@ public class UserController implements UserControllerDocs{
         return "ok";
     }
 
+    @PostMapping("/user/login")
+    public void login(@RequestBody LoginInput loginInput, HttpServletResponse response) {
+        response.addHeader("Authorization", "Bearer " + userService.login(loginInput));
+    }
+
     @GetMapping("/user")
     public UserOutput userFind(@AuthenticationPrincipal userDetailsImpl userDetailsImpl) {
         return userService.findUser(userDetailsImpl.getUser());

@@ -1,13 +1,15 @@
 package com.example.moim.user.service;
 
 import com.example.moim.club.repository.UserClubRepository;
-import com.example.moim.user.dto.MyClubOutput;
-import com.example.moim.user.dto.UserOutput;
+import com.example.moim.jwt.JWTUtil;
+import com.example.moim.user.dto.*;
 import com.example.moim.user.entity.User;
 import com.example.moim.user.repository.UserRepository;
-import com.example.moim.user.dto.JoinInput;
 import jakarta.persistence.EntityExistsException;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -19,13 +21,23 @@ public class UserService {
     private final UserRepository userRepository;
     private final UserClubRepository userClubRepository;
     private final BCryptPasswordEncoder bCryptPasswordEncoder;
+    private final AuthenticationManager authenticationManager;
+    private final JWTUtil jwtUtil;
     
-    public void joinProcess(JoinInput joinInput) {
+    public void signup(JoinInput joinInput) {
         joinInput.setPassword(bCryptPasswordEncoder.encode(joinInput.getPassword()));
-        if (userRepository.existsByEmailAndPassword(joinInput.getEmail(), joinInput.getPassword())) {
+        if (userRepository.existsByEmail(joinInput.getEmail())) {
             throw new EntityExistsException("이미 가입된 계정입니다");
         }
         userRepository.save(User.createUser(joinInput));
+    }
+
+    public String login(LoginInput loginInput) {
+        //스프링 시큐리티에서 email password를 검증하기 위해서는 token에 담아야 함
+        UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(loginInput.getEmail(), loginInput.getPassword(), null);
+        //token에 담은 검증을 위한 AuthenticationManager로 전달
+        Authentication authenticate = authenticationManager.authenticate(authToken);
+        return jwtUtil.createAccessToken((userDetailsImpl) authenticate.getPrincipal());
     }
 
     public UserOutput findUser(User user) {
