@@ -22,7 +22,6 @@ public class User extends BaseEntity {
     private String email;
     private String password;
     private String name;
-    private String nickname;
     private String birthday;
     @Enumerated(EnumType.STRING)
     private Gender gender;
