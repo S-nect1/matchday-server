@@ -13,13 +13,13 @@ import java.io.IOException;
 
 @Tag(name = "모임 api")
 public interface ClubControllerDocs {
-    @Operation(summary = "모임 생성", description = "profileImg, backgroundImg는 Base64 디코딩 필요")
+    @Operation(summary = "모임 생성", description = "응답으로 받는 profileImg, backgroundImg는 Base64 디코딩 필요")
     ClubOutput clubSave(@AuthenticationPrincipal userDetailsImpl userDetailsImpl, @ModelAttribute ClubInput clubInput) throws IOException;
 
     @Operation(summary = "모임 회원 직책, 분류 수정")
     UserClubOutput clubUserUpdate(@AuthenticationPrincipal userDetailsImpl userDetailsImpl, @RequestBody ClubUserUpdateInput clubInput);
 
-    @Operation(summary = "모임 정보 조회", description = "profileImg, backgroundImg는 Base64 디코딩 필요")
+    @Operation(summary = "모임 정보 조회", description = "응답으로 받는 profileImg, backgroundImg는 Base64 디코딩 필요")
     ClubOutput clubFind(@AuthenticationPrincipal userDetailsImpl userDetailsImpl, @PathVariable Long id);
 
     @Operation(summary = "모임 프사 변경")

@@ -3,6 +3,7 @@ package com.example.moim.club.controller;
 import com.example.moim.club.dto.*;
 import com.example.moim.club.service.ClubService;
 import com.example.moim.user.dto.userDetailsImpl;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.MediaType;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -16,7 +17,7 @@ public class ClubController implements ClubControllerDocs{
     private final ClubService clubService;
 
     @PostMapping(value = "/club", consumes = MediaType.MULTIPART_FORM_DATA_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-    public ClubOutput clubSave(@AuthenticationPrincipal userDetailsImpl userDetailsImpl, @ModelAttribute ClubInput clubInput) throws IOException {
+    public ClubOutput clubSave(@AuthenticationPrincipal userDetailsImpl userDetailsImpl, @ModelAttribute @Valid ClubInput clubInput) throws IOException {
         return clubService.saveClub(userDetailsImpl.getUser(), clubInput);
     }
 
