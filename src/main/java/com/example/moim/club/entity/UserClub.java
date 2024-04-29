@@ -45,7 +45,11 @@ public class UserClub extends BaseEntity {
     }
 
     public void changeUserClub(String position, String category) {
-        this.position = position;
-        this.category = category;
+        if (position != null) {
+            this.position = position;
+        }
+        if (category != null) {
+            this.category = category;
+        }
     }
 }
