@@ -3,6 +3,7 @@ package com.example.moim.club.controller;
 import com.example.moim.club.dto.*;
 import com.example.moim.club.service.ScheduleService;
 import com.example.moim.user.dto.userDetailsImpl;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
@@ -15,7 +16,7 @@ public class ScheduleController implements ScheduleControllerDocs{
     private final ScheduleService scheduleService;
 
     @PostMapping("/schedule")
-    public ScheduleOutput scheduleSave(@RequestBody ScheduleInput scheduleInput, @AuthenticationPrincipal userDetailsImpl userDetailsImpl) {
+    public ScheduleOutput scheduleSave(@RequestBody @Valid ScheduleInput scheduleInput, @AuthenticationPrincipal userDetailsImpl userDetailsImpl) {
         return scheduleService.saveSchedule(scheduleInput, userDetailsImpl.getUser());
     }
 
@@ -35,7 +36,7 @@ public class ScheduleController implements ScheduleControllerDocs{
     }
 
     @PostMapping("/schedule/comment")
-    public void scheduleComment(@RequestBody CommentInput commentInput, @AuthenticationPrincipal userDetailsImpl userDetailsImpl) {
+    public void scheduleComment(@RequestBody @Valid CommentInput commentInput, @AuthenticationPrincipal userDetailsImpl userDetailsImpl) {
         scheduleService.saveComment(commentInput, userDetailsImpl.getUser());
     }
 }
