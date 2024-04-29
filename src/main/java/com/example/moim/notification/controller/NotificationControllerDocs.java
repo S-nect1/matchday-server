@@ -6,6 +6,7 @@ import com.example.moim.user.dto.userDetailsImpl;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.web.bind.annotation.PathVariable;
 
 import java.util.List;
 
@@ -17,4 +18,7 @@ public interface NotificationControllerDocs {
 
     @Operation(summary = "알림 조회")
     List<NotificationOutput> noticeFind(@AuthenticationPrincipal userDetailsImpl userDetailsImpl);
+
+    @Operation(summary = "알림 삭제")
+    void noticeRemove(@AuthenticationPrincipal userDetailsImpl userDetailsImpl, @PathVariable Long id);
 }
