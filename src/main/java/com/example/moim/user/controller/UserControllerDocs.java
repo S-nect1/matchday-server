@@ -22,7 +22,7 @@ public interface UserControllerDocs {
     @ApiResponse(responseCode = "409", description = "중복회원가입시 409 에러코드와 메세지 응답", content = @Content(schema = @Schema(implementation = ErrorResult.class)))
     String signup(@RequestBody @Valid SignupInput signupInput);
 
-    @Operation(summary = "로그인", description = "로그인 성공시 응답 헤더 Authorization 에 jwt 발급")
+    @Operation(summary = "로그인", description = "로그인 성공시 응답 헤더 Authorization 에 jwt 발급, 로그인시 fcm 토큰 넣어서 요청")
     @ApiResponse(responseCode = "200", description = "OK", content = @Content(schema = @Schema))
     @ApiResponse(responseCode = "404", description = "로그인 정보 틀리면 404 에러코드와 메세지 응답", content = @Content(schema = @Schema(implementation = ErrorResult.class)))
     void login(@RequestBody LoginInput loginInput, HttpServletResponse response);

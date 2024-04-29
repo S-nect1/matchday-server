@@ -9,7 +9,7 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 
 import java.util.List;
 
-@Tag(name = "알림 api")
+@Tag(name = "알림 api", description = "푸시 알림은 fcm 사용")
 public interface NotificationControllerDocs {
 
     @Operation(summary = "새로운 알림 있는지 체크")
