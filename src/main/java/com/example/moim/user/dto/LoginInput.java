@@ -11,4 +11,5 @@ public class LoginInput {
     private String email;
     @NotBlank
     private String password;
+    private String fcmToken;
 }

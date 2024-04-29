@@ -9,9 +9,9 @@ import jakarta.persistence.EntityExistsException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.Authentication;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -32,12 +32,17 @@ public class UserService {
         userRepository.save(User.createUser(signupInput));
     }
 
+    @Transactional
     public String login(LoginInput loginInput) {
         //스프링 시큐리티에서 email password를 검증하기 위해서는 token에 담아야 함
         UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(loginInput.getEmail(), loginInput.getPassword(), null);
         //token에 담은 검증을 위한 AuthenticationManager로 전달
-        Authentication authenticate = authenticationManager.authenticate(authToken);
-        return jwtUtil.createAccessToken((userDetailsImpl) authenticate.getPrincipal());
+        userDetailsImpl userDetails = (userDetailsImpl) authenticationManager.authenticate(authToken).getPrincipal();
+        if (loginInput.getFcmToken() != null) {
+            userDetails.getUser().setFcmToken(loginInput.getFcmToken());
+        }
+
+        return jwtUtil.createAccessToken(userDetails);
     }
 
     public UserOutput findUser(User user) {

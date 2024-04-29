@@ -30,6 +30,7 @@ public class User extends BaseEntity {
     @Enumerated(EnumType.STRING)
     private Role role;
     private String refreshToken;
+    private String fcmToken;
     
     @OneToMany(mappedBy = "user", cascade = CascadeType.REMOVE)
     private List<UserClub> userClub = new ArrayList<>();
@@ -52,5 +53,9 @@ public class User extends BaseEntity {
         this.id = id;
         this.password = "temppassword";
         this.role = Role.valueOf(role.toUpperCase());
+    }
+
+    public void setFcmToken(String fcmToken) {
+        this.fcmToken = fcmToken;
     }
 }
