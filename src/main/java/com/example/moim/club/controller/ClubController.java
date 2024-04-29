@@ -32,12 +32,12 @@ public class ClubController implements ClubControllerDocs{
     }
 
     @PatchMapping(value = "/club/profile", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    public void profileImgUpdate(@AuthenticationPrincipal userDetailsImpl userDetailsImpl, @ModelAttribute ClubImgInput clubImgInput) throws IOException {
+    public void profileImgUpdate(@AuthenticationPrincipal userDetailsImpl userDetailsImpl, @ModelAttribute @Valid ClubImgInput clubImgInput) throws IOException {
         clubService.updateProfileImg(clubImgInput);
     }
 
     @PatchMapping(value = "/club/background", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    public void backgroundImgUpdate(@AuthenticationPrincipal userDetailsImpl userDetailsImpl, @ModelAttribute ClubImgInput clubImgInput) throws IOException {
+    public void backgroundImgUpdate(@AuthenticationPrincipal userDetailsImpl userDetailsImpl, @ModelAttribute @Valid ClubImgInput clubImgInput) throws IOException {
         clubService.updateBackgroundImg(clubImgInput);
     }
 }
