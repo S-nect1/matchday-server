@@ -30,6 +30,6 @@ public class AwardRepositoryImpl implements AwardRepositoryCustom {
         if (order.equals("created")) {
             return award.createdDate.desc();
         }
-        return award.priority.asc();
+        return award.priority.desc();
     }
 }

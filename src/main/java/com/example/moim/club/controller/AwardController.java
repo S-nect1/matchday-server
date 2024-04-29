@@ -4,6 +4,7 @@ import com.example.moim.club.dto.AwardInput;
 import com.example.moim.club.dto.AwardOutput;
 import com.example.moim.club.service.AwardService;
 import com.example.moim.user.dto.userDetailsImpl;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
@@ -16,12 +17,12 @@ public class AwardController implements AwardControllerDocs{
     private final AwardService awardService;
 
     @PostMapping("/award")
-    public AwardOutput awardAdd(@AuthenticationPrincipal userDetailsImpl userDetailsImpl, @RequestBody AwardInput awardInput) {
+    public AwardOutput awardAdd(@AuthenticationPrincipal userDetailsImpl userDetailsImpl, @RequestBody @Valid AwardInput awardInput) {
         return awardService.addAward(awardInput);
     }
 
     @PatchMapping("/award")
-    public AwardOutput awardUpdate(@AuthenticationPrincipal userDetailsImpl userDetailsImpl,@RequestBody AwardInput awardInput) {
+    public AwardOutput awardUpdate(@AuthenticationPrincipal userDetailsImpl userDetailsImpl,@RequestBody @Valid AwardInput awardInput) {
         return awardService.updateAward(awardInput);
     }
 
