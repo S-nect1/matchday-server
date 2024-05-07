@@ -35,6 +35,19 @@ public class ClubService {
     }
 
     @Transactional
+    public ClubOutput updateClub(User user, ClubUpdateInput clubUpdateInput) throws IOException {
+        Club club = clubRepository.findById(clubUpdateInput.getId()).get();
+        if (club.getProfileImgPath() != null) {
+            new File(club.getProfileImgPath()).delete();
+        }
+        if (club.getBackgroundImgPath() != null) {
+            new File(club.getBackgroundImgPath()).delete();
+        }
+        club.UpdateClub(clubUpdateInput, fileStore.storeFile(clubUpdateInput.getProfileImg()), fileStore.storeFile(clubUpdateInput.getBackgroundImg()));
+        return new ClubOutput(club);
+    }
+
+    @Transactional
     public UserClubOutput updateClubUser(ClubUserUpdateInput clubInput) {
         UserClub userClub = userClubRepository.findByClubAndUser(clubRepository.findById(clubInput.getId()).get(), userRepository.findById(clubInput.getUserId()).get()).get();
         userClub.changeUserClub(clubInput.getPosition(), clubInput.getCategory());

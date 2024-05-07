@@ -1,6 +1,7 @@
 package com.example.moim.club.entity;
 
 import com.example.moim.club.dto.ClubInput;
+import com.example.moim.club.dto.ClubUpdateInput;
 import com.example.moim.global.entity.BaseEntity;
 import jakarta.persistence.*;
 import lombok.Getter;
@@ -41,5 +42,13 @@ public class Club extends BaseEntity {
 
     public void changeBackgroundImg(String newImgPath) {
         this.backgroundImgPath = newImgPath;
+    }
+
+    public void UpdateClub(ClubUpdateInput clubUpdateInput, String profileImgPath, String backImgPath) {
+        this.title = clubUpdateInput.getTitle();
+        this.explanation = clubUpdateInput.getExplanation();
+        this.introduction = clubUpdateInput.getIntroduction();
+        this.profileImgPath = profileImgPath;
+        this.backgroundImgPath = backImgPath;
     }
 }
