@@ -26,6 +26,9 @@ public class FileStore {
     }
 
     public String storeFile(MultipartFile multipartFile) throws IOException {
+        if (multipartFile == null ||multipartFile.isEmpty()) {
+            return null;
+        }
         String fullPath = getFullPath(UUID.randomUUID() + "." + extractExt(multipartFile.getOriginalFilename()));
         multipartFile.transferTo(new File(fullPath));
         return fullPath;

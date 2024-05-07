@@ -17,6 +17,8 @@ public class Club extends BaseEntity {
     private Long id;
     private String title;
     private String explanation;
+    @Column(length = 500)
+    private String introduction;
     private String profileImgPath;
     private String backgroundImgPath;
     
@@ -27,6 +29,7 @@ public class Club extends BaseEntity {
         Club club = new Club();
         club.title = clubInput.getTitle();
         club.explanation = clubInput.getExplanation();
+        club.introduction = clubInput.getIntroduction();
         club.profileImgPath = profileImgPath;
         club.backgroundImgPath = backImgPath;
         return club;
