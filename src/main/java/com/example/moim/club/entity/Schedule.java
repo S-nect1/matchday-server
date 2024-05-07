@@ -24,6 +24,8 @@ public class Schedule extends BaseEntity {
     private LocalDateTime startTime;
     private LocalDateTime endTime;
     private int personnel;//참여인원수
+    private String category;
+    private String note;
     private int attend;
     private int nonAttend;
 
@@ -38,6 +40,10 @@ public class Schedule extends BaseEntity {
         schedule.startTime = scheduleInput.getStartTime();
         schedule.endTime = scheduleInput.getEndTime();
         schedule.personnel = scheduleInput.getPersonnel();
+        schedule.category = scheduleInput.getCategory();
+        if (scheduleInput.getNote() != null) {
+            schedule.note = scheduleInput.getNote();
+        }
         schedule.attend = 0;
         schedule.nonAttend = 0;
         return schedule;
