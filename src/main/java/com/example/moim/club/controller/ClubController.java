@@ -38,7 +38,7 @@ public class ClubController implements ClubControllerDocs{
 
     @GetMapping("/club/{id}")
     public ClubOutput clubFind(@AuthenticationPrincipal userDetailsImpl userDetailsImpl, @PathVariable Long id) {
-        return clubService.findClub(id);
+        return clubService.findClub(id, userDetailsImpl.getUser());
     }
 
     @PatchMapping(value = "/club/profile", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)

@@ -10,6 +10,7 @@ import java.util.List;
 
 @Data
 public class ClubOutput {
+    private String userCategoryInClub;
     private Long id;
     private String title;
     private String explanation;
@@ -36,7 +37,25 @@ public class ClubOutput {
         }
     }
 
-    public ClubOutput(Club club, List<UserClubOutput> userList, List<ScheduleOutput> scheduleOutputs, List<AwardOutput> awardOutputs) {
+    public ClubOutput(Club club, String category) {
+        this.userCategoryInClub = category;
+        this.id = club.getId();
+        this.title = club.getTitle();
+        this.explanation = club.getExplanation();
+        try {
+            if (club.getProfileImgPath() != null) {
+                this.profileImg = Base64.getEncoder().encodeToString(new FileUrlResource(club.getProfileImgPath()).getContentAsByteArray());
+            }
+            if (club.getBackgroundImgPath() != null) {
+                this.backgroundImg = Base64.getEncoder().encodeToString(new FileUrlResource(club.getBackgroundImgPath()).getContentAsByteArray());
+            }
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    public ClubOutput(Club club, List<UserClubOutput> userList, List<ScheduleOutput> scheduleOutputs, List<AwardOutput> awardOutputs, String category) {
+        this.userCategoryInClub = category;
         this.id = club.getId();
         this.title = club.getTitle();
         this.explanation = club.getExplanation();

@@ -30,8 +30,8 @@ public class ClubService {
 
     public ClubOutput saveClub(User user, ClubInput clubInput) throws IOException {
         Club club = clubRepository.save(Club.createClub(clubInput, fileStore.storeFile(clubInput.getProfileImg()), fileStore.storeFile(clubInput.getBackgroundImg())));
-        userClubRepository.save(UserClub.createLeaderUserClub(user, club));
-        return new ClubOutput(club);
+        UserClub userClub = userClubRepository.save(UserClub.createLeaderUserClub(user, club));
+        return new ClubOutput(club, userClub.getCategory());
     }
 
     @Transactional
@@ -58,12 +58,13 @@ public class ClubService {
         return new UserClubOutput(userClub);
     }
 
-    public ClubOutput findClub(Long id) {
+    public ClubOutput findClub(Long id, User user) {
         Club club = clubRepository.findById(id).get();
         List<UserClubOutput> userClubOutputs = userClubRepository.findAllByClub(club).stream().map(UserClubOutput::new).toList();
-        List<ScheduleOutput> scheduleOutputs = scheduleRepository.findTop5ByClub(club).stream().map(ScheduleOutput::new).toList();
+        List<ScheduleOutput> scheduleOutputs = scheduleRepository.findTop5ByClubOrderByCreatedDateDesc(club).stream().map(ScheduleOutput::new).toList();
         List<AwardOutput> awardOutputs = awardRepository.findByClub(club).stream().map(AwardOutput::new).toList();
-        return new ClubOutput(club, userClubOutputs, scheduleOutputs, awardOutputs);
+        UserClub userClub = userClubRepository.findByClubAndUser(club, user).get();
+        return new ClubOutput(club, userClubOutputs, scheduleOutputs, awardOutputs, userClub.getCategory());
     }
 
     @Transactional
