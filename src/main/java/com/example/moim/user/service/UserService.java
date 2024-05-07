@@ -33,7 +33,7 @@ public class UserService {
     }
 
     @Transactional
-    public String login(LoginInput loginInput) {
+    public LoginOutput login(LoginInput loginInput) {
         //스프링 시큐리티에서 email password를 검증하기 위해서는 token에 담아야 함
         UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(loginInput.getEmail(), loginInput.getPassword(), null);
         //token에 담은 검증을 위한 AuthenticationManager로 전달
@@ -41,8 +41,7 @@ public class UserService {
         if (loginInput.getFcmToken() != null) {
             userDetails.getUser().setFcmToken(loginInput.getFcmToken());
         }
-
-        return jwtUtil.createAccessToken(userDetails);
+        return new LoginOutput(userDetails.getUser(), jwtUtil.createAccessToken(userDetails));
     }
 
     public UserOutput findUser(User user) {

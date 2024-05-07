@@ -25,8 +25,10 @@ public class UserController implements UserControllerDocs{
     }
 
     @PostMapping("/user/login")
-    public void login(@RequestBody @Valid LoginInput loginInput, HttpServletResponse response) {
-        response.addHeader("Authorization", "Bearer " + userService.login(loginInput));
+    public UserOutput login(@RequestBody @Valid LoginInput loginInput, HttpServletResponse response) {
+        LoginOutput loginOutput = userService.login(loginInput);
+        response.addHeader("Authorization", "Bearer " + loginOutput.getAccessToken());
+        return new UserOutput(loginOutput);
     }
 
     @GetMapping("/user")
