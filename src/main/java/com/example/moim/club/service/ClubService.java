@@ -47,6 +47,10 @@ public class ClubService {
         return new ClubOutput(club);
     }
 
+    public UserClubOutput saveClubUser(User user, ClubUserSaveInput clubUserSaveInput) {
+        return new UserClubOutput(userClubRepository.save(UserClub.createUserClub(user, clubRepository.findById(clubUserSaveInput.getClubId()).get())));
+    }
+
     @Transactional
     public UserClubOutput updateClubUser(ClubUserUpdateInput clubInput) {
         UserClub userClub = userClubRepository.findByClubAndUser(clubRepository.findById(clubInput.getId()).get(), userRepository.findById(clubInput.getUserId()).get()).get();

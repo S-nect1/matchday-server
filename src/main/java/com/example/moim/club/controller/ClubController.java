@@ -26,6 +26,11 @@ public class ClubController implements ClubControllerDocs{
         return clubService.updateClub(userDetailsImpl.getUser(), clubUpdateInput);
     }
 
+    @PostMapping("/club/users")
+    public UserClubOutput clubUserSave(@AuthenticationPrincipal userDetailsImpl userDetailsImpl, @RequestBody ClubUserSaveInput clubUserSaveInput) {
+        return clubService.saveClubUser(userDetailsImpl.getUser(), clubUserSaveInput);
+    }
+
     @PatchMapping("/club/users")
     public UserClubOutput clubUserUpdate(@AuthenticationPrincipal userDetailsImpl userDetailsImpl, @RequestBody ClubUserUpdateInput clubInput) {
         return clubService.updateClubUser(clubInput);

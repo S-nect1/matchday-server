@@ -19,6 +19,9 @@ public interface ClubControllerDocs {
     @Operation(summary = "모임 수정", description = "응답으로 받는 profileImg, backgroundImg는 Base64 디코딩 필요")
     ClubOutput clubUpdate(@AuthenticationPrincipal userDetailsImpl userDetailsImpl, @ModelAttribute ClubUpdateInput clubUpdateInput) throws IOException;
 
+    @Operation(summary = "모임 가입")
+    UserClubOutput clubUserSave(@AuthenticationPrincipal userDetailsImpl userDetailsImpl, @RequestBody ClubUserSaveInput clubInput);
+
     @Operation(summary = "모임 회원 직책, 분류 수정")
     UserClubOutput clubUserUpdate(@AuthenticationPrincipal userDetailsImpl userDetailsImpl, @RequestBody ClubUserUpdateInput clubInput);
 
