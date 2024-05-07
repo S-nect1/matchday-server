@@ -20,6 +20,11 @@ public class ScheduleController implements ScheduleControllerDocs{
         return scheduleService.saveSchedule(scheduleInput, userDetailsImpl.getUser());
     }
 
+    @PatchMapping("/schedule")
+    public ScheduleOutput scheduleUpdate(@RequestBody ScheduleUpdateInput scheduleUpdateInput, @AuthenticationPrincipal userDetailsImpl userDetailsImpl) {
+        return scheduleService.updateSchedule(scheduleUpdateInput);
+    }
+
     @GetMapping("/schedule")
     public List<ScheduleOutput> scheduleFind(@ModelAttribute ScheduleSearchInput scheduleSearchInput) {
         return scheduleService.findSchedule(scheduleSearchInput.getDate(), scheduleSearchInput.getClubId());

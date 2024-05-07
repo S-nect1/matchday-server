@@ -1,6 +1,7 @@
 package com.example.moim.club.entity;
 
 import com.example.moim.club.dto.ScheduleInput;
+import com.example.moim.club.dto.ScheduleUpdateInput;
 import com.example.moim.global.entity.BaseEntity;
 import jakarta.persistence.*;
 import lombok.Getter;
@@ -28,6 +29,7 @@ public class Schedule extends BaseEntity {
     private String note;
     private int attend;
     private int nonAttend;
+    private int undecided;
 
     @OneToMany(mappedBy = "schedule", cascade = CascadeType.REMOVE)
     private List<Comment> comment = new ArrayList<>();
@@ -46,14 +48,29 @@ public class Schedule extends BaseEntity {
         }
         schedule.attend = 0;
         schedule.nonAttend = 0;
+        schedule.undecided = 0;
         return schedule;
     }
 
-    public void vote(Boolean attendance) {
-        if (attendance) {
+    public void vote(String attendance) {
+        if (attendance.equals("attend")) {
             this.attend += 1;
-        } else {
+        } else if (attendance.equals("absent")) {
             this.nonAttend += 1;
+        } else {
+            this.undecided += 1;
+        }
+    }
+
+    public void updateSchedule(ScheduleUpdateInput scheduleUpdateInput) {
+        this.title = scheduleUpdateInput.getTitle();
+        this.location = scheduleUpdateInput.getLocation();
+        this.startTime = scheduleUpdateInput.getStartTime();
+        this.endTime = scheduleUpdateInput.getEndTime();
+        this.personnel = scheduleUpdateInput.getPersonnel();
+        this.category = scheduleUpdateInput.getCategory();
+        if (scheduleUpdateInput.getNote() != null) {
+            this.note = scheduleUpdateInput.getNote();
         }
     }
 }

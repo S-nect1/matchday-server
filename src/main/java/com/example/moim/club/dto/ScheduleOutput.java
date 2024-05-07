@@ -3,11 +3,14 @@ package com.example.moim.club.dto;
 import com.example.moim.club.entity.Schedule;
 import lombok.Data;
 
+import java.time.LocalDate;
+
 @Data
 public class ScheduleOutput {
     private Long id;
     private String title;
     private String location;
+    private LocalDate date;
     private String period;
     private int personnel;
     private String category;
@@ -17,6 +20,7 @@ public class ScheduleOutput {
         this.id = schedule.getId();
         this.title = schedule.getTitle();
         this.location = schedule.getLocation();
+        this.date = schedule.getStartTime().toLocalDate();
         this.period = schedule.getStartTime().toLocalTime().toString() + " ~ " + schedule.getEndTime().toLocalTime().toString();
         this.personnel = schedule.getPersonnel();
         this.category = schedule.getCategory();

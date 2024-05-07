@@ -5,5 +5,5 @@ import lombok.Data;
 @Data
 public class ScheduleVoteInput {
     private Long id;
-    private Boolean attendance;
+    private String attendance;
 }

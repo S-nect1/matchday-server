@@ -35,6 +35,13 @@ public class ScheduleService {
         return new ScheduleOutput(schedule);
     }
 
+    @Transactional
+    public ScheduleOutput updateSchedule(ScheduleUpdateInput scheduleUpdateInput) {
+        Schedule schedule = scheduleRepository.findById(scheduleUpdateInput.getId()).get();
+        schedule.updateSchedule(scheduleUpdateInput);
+        return new ScheduleOutput(schedule);
+    }
+
     public List<ScheduleOutput> findSchedule(Integer date, Long clubId) {
         return scheduleRepository.findByClubAndTime(clubRepository.findById(clubId).get(),
                 LocalDateTime.of(date / 100, date % 100, 1, 0, 0, 0).minusDays(6),
@@ -52,7 +59,7 @@ public class ScheduleService {
     public void voteSchedule(ScheduleVoteInput scheduleVoteInput, User user) {
         Schedule schedule = scheduleRepository.findScheduleById(scheduleVoteInput.getId());
         schedule.vote(scheduleVoteInput.getAttendance());
-        if (scheduleVoteInput.getAttendance()) {
+        if (scheduleVoteInput.getAttendance().equals("attend")) {
             eventPublisher.publishEvent(new ScheduleVoteEvent(schedule, user));
         }
     }
