@@ -1,7 +1,7 @@
 package com.example.moim.jwt;
 
 import com.example.moim.user.entity.User;
-import com.example.moim.user.dto.userDetailsImpl;
+import com.example.moim.user.dto.UserDetailsImpl;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -55,7 +55,7 @@ public class JWTFilter extends OncePerRequestFilter {
         user.setIdAtJWTFilter(jwtUtil.getUserId(token), jwtUtil.getRole(token));
 
         //UserDetails에 회원 정보 객체 담기
-        userDetailsImpl userDetailsImpl = new userDetailsImpl(user);
+        UserDetailsImpl userDetailsImpl = new UserDetailsImpl(user);
 
         //스프링 시큐리티 인증 토큰 생성
         Authentication authToken = new UsernamePasswordAuthenticationToken(userDetailsImpl, null, userDetailsImpl.getAuthorities());

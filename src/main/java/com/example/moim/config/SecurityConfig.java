@@ -1,5 +1,6 @@
 package com.example.moim.config;
 
+import com.example.moim.jwt.JwtExceptionFilter;
 import com.example.moim.jwt.JWTFilter;
 import com.example.moim.jwt.JWTUtil;
 import com.example.moim.jwt.LoginFilter;
@@ -79,6 +80,9 @@ public class SecurityConfig {
         //필터 추가 LoginFilter()는 인자를 받음 (AuthenticationManager() 메소드에 authenticationConfiguration 객체를 넣어야 함) 따라서 등록 필요
         httpSecurity
                 .addFilterAt(new LoginFilter(authenticationManager(authenticationConfiguration), jwtUtil), UsernamePasswordAuthenticationFilter.class);
+
+        httpSecurity
+                .addFilterBefore(new JwtExceptionFilter(), JWTFilter.class);
         
         //세션 설정
         httpSecurity.sessionManagement((session) -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS));

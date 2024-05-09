@@ -1,6 +1,6 @@
 package com.example.moim.jwt;
 
-import com.example.moim.user.dto.userDetailsImpl;
+import com.example.moim.user.dto.UserDetailsImpl;
 import com.example.moim.user.dto.LoginInput;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.servlet.FilterChain;
@@ -49,7 +49,7 @@ public class LoginFilter extends UsernamePasswordAuthenticationFilter {
     //로그인 성공시 실행하는 메소드 (여기서 JWT를 발급하면 됨)
     @Override
     protected void successfulAuthentication(HttpServletRequest request, HttpServletResponse response, FilterChain chain, Authentication authentication) {
-        userDetailsImpl userDetailsImpl = (userDetailsImpl) authentication.getPrincipal();
+        UserDetailsImpl userDetailsImpl = (UserDetailsImpl) authentication.getPrincipal();
         response.addHeader("Authorization", "Bearer " + jwtUtil.createAccessToken(userDetailsImpl));
 //
 //        //응답 설정

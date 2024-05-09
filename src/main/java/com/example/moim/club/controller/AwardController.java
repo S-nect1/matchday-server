@@ -3,7 +3,7 @@ package com.example.moim.club.controller;
 import com.example.moim.club.dto.AwardInput;
 import com.example.moim.club.dto.AwardOutput;
 import com.example.moim.club.service.AwardService;
-import com.example.moim.user.dto.userDetailsImpl;
+import com.example.moim.user.dto.UserDetailsImpl;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -17,12 +17,12 @@ public class AwardController implements AwardControllerDocs{
     private final AwardService awardService;
 
     @PostMapping("/award")
-    public AwardOutput awardAdd(@AuthenticationPrincipal userDetailsImpl userDetailsImpl, @RequestBody @Valid AwardInput awardInput) {
+    public AwardOutput awardAdd(@AuthenticationPrincipal UserDetailsImpl userDetailsImpl, @RequestBody @Valid AwardInput awardInput) {
         return awardService.addAward(awardInput);
     }
 
     @PatchMapping("/award")
-    public AwardOutput awardUpdate(@AuthenticationPrincipal userDetailsImpl userDetailsImpl,@RequestBody @Valid AwardInput awardInput) {
+    public AwardOutput awardUpdate(@AuthenticationPrincipal UserDetailsImpl userDetailsImpl, @RequestBody @Valid AwardInput awardInput) {
         return awardService.updateAward(awardInput);
     }
 
@@ -32,7 +32,7 @@ public class AwardController implements AwardControllerDocs{
     }
 
     @DeleteMapping("/award/{id}")
-    public void awardRemove(@AuthenticationPrincipal userDetailsImpl userDetailsImpl,@PathVariable Long id) {
+    public void awardRemove(@AuthenticationPrincipal UserDetailsImpl userDetailsImpl, @PathVariable Long id) {
         awardService.removeAward(id);
     }
 }

@@ -1,7 +1,7 @@
 package com.example.moim.jwt;
 
 import com.example.moim.exception.InvalidTokenException;
-import com.example.moim.user.dto.userDetailsImpl;
+import com.example.moim.user.dto.UserDetailsImpl;
 import io.jsonwebtoken.Jwts;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
@@ -33,7 +33,7 @@ public class JWTUtil {
         secretKey = new SecretKeySpec(secret.getBytes(StandardCharsets.UTF_8), Jwts.SIG.HS256.key().build().getAlgorithm());
     }
     
-    public String createAccessToken(userDetailsImpl userDetails) {
+    public String createAccessToken(UserDetailsImpl userDetails) {
         return Jwts.builder()
                 .subject(ACCESS_TOKEN_SUBJECT)
                 .claim(ID_CLAIM, userDetails.getUserId())
@@ -44,7 +44,7 @@ public class JWTUtil {
                 .compact();
     }
     
-    public String createRefreshToken(userDetailsImpl userDetails){
+    public String createRefreshToken(UserDetailsImpl userDetails){
         return Jwts.builder()
                 .subject(REFRESH_TOKEN_SUBJECT)
                 .claim(ID_CLAIM, userDetails.getUserId())
