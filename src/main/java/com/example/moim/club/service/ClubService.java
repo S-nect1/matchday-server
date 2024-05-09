@@ -7,6 +7,7 @@ import com.example.moim.club.repository.AwardRepository;
 import com.example.moim.club.repository.ClubRepository;
 import com.example.moim.club.repository.ScheduleRepository;
 import com.example.moim.club.repository.UserClubRepository;
+import com.example.moim.exception.club.ClubPermissionException;
 import com.example.moim.global.util.FileStore;
 import com.example.moim.user.entity.User;
 import com.example.moim.user.repository.UserRepository;
@@ -37,6 +38,11 @@ public class ClubService {
     @Transactional
     public ClubOutput updateClub(User user, ClubUpdateInput clubUpdateInput) throws IOException {
         Club club = clubRepository.findById(clubUpdateInput.getId()).get();
+        UserClub userClub = userClubRepository.findByClubAndUser(club, user).get();
+        if (!(userClub.getCategory().equals("creator") || userClub.getCategory().equals("admin"))) {
+            throw new ClubPermissionException("모임 정보를 수정할 권한이 없습니다.");
+        }
+
         if (club.getProfileImgPath() != null) {
             new File(club.getProfileImgPath()).delete();
         }
@@ -51,11 +57,21 @@ public class ClubService {
         return new UserClubOutput(userClubRepository.save(UserClub.createUserClub(user, clubRepository.findById(clubUserSaveInput.getClubId()).get())));
     }
 
+//    public UserClubOutput inviteClubUser(User user, ClubInviteInput clubInviteInput) {
+//        userRepository.findById(clubInviteInput.getUser().)
+//    }
+
     @Transactional
-    public UserClubOutput updateClubUser(ClubUserUpdateInput clubInput) {
-        UserClub userClub = userClubRepository.findByClubAndUser(clubRepository.findById(clubInput.getId()).get(), userRepository.findById(clubInput.getUserId()).get()).get();
-        userClub.changeUserClub(clubInput.getPosition(), clubInput.getCategory());
-        return new UserClubOutput(userClub);
+    public UserClubOutput updateClubUser(User user, ClubUserUpdateInput clubInput) {
+        Club club = clubRepository.findById(clubInput.getId()).get();
+        UserClub userClub = userClubRepository.findByClubAndUser(club, user).get();
+        if (!(userClub.getCategory().equals("creator") || userClub.getCategory().equals("admin"))) {
+            throw new ClubPermissionException("모임 멤버 권한을 수정할 권한이 없습니다.");
+        }
+
+        UserClub changeUserClub = userClubRepository.findByClubAndUser(club, userRepository.findById(clubInput.getUserId()).get()).get();
+        changeUserClub.changeUserClub(clubInput.getPosition(), clubInput.getCategory());
+        return new UserClubOutput(changeUserClub);
     }
 
     public ClubOutput findClub(Long id, User user) {
