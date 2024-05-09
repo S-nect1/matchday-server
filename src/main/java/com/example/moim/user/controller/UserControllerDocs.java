@@ -28,8 +28,8 @@ public interface UserControllerDocs {
     UserOutput login(@RequestBody LoginInput loginInput, HttpServletResponse response);
 
     @Operation(summary = "마이페이지 회원 정보 조회")
-    UserOutput userFind(@AuthenticationPrincipal userDetailsImpl userDetailsImpl);
+    UserOutput userFind(@AuthenticationPrincipal UserDetailsImpl userDetailsImpl);
 
     @Operation(summary = "내가 속한 모임 조회")
-    List<MyClubOutput> userClubFind(@AuthenticationPrincipal userDetailsImpl userDetailsImpl);
+    List<MyClubOutput> userClubFind(@AuthenticationPrincipal UserDetailsImpl userDetailsImpl);
 }

@@ -32,12 +32,12 @@ public class UserController implements UserControllerDocs{
     }
 
     @GetMapping("/user")
-    public UserOutput userFind(@AuthenticationPrincipal userDetailsImpl userDetailsImpl) {
+    public UserOutput userFind(@AuthenticationPrincipal UserDetailsImpl userDetailsImpl) {
         return userService.findUser(userDetailsImpl.getUser());
     }
 
     @GetMapping("/user/club")
-    public List<MyClubOutput> userClubFind(@AuthenticationPrincipal userDetailsImpl userDetailsImpl) {
+    public List<MyClubOutput> userClubFind(@AuthenticationPrincipal UserDetailsImpl userDetailsImpl) {
         return userService.findUserClub(userDetailsImpl.getUser());
     }
 

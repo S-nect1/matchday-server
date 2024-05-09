@@ -2,7 +2,7 @@ package com.example.moim.user.service;
 
 import com.example.moim.user.entity.User;
 import com.example.moim.user.repository.UserRepository;
-import com.example.moim.user.dto.userDetailsImpl;
+import com.example.moim.user.dto.UserDetailsImpl;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -22,7 +22,7 @@ public class userDetailsServiceImpl implements UserDetailsService {
         
         if (user != null) {
             //UserDetails에 담아서 return하면 AutneticationManager가 검증 함
-            return new userDetailsImpl(user);
+            return new UserDetailsImpl(user);
         }
         throw new UsernameNotFoundException("loadUserByUsername");
     }
