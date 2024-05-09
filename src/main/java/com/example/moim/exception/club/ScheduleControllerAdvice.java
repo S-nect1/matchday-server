@@ -20,4 +20,9 @@ public class ScheduleControllerAdvice {
     public ResponseEntity<ErrorResult> HttpMessageNotReadableExHandle(HttpMessageNotReadableException e) {
         return new ResponseEntity<>(new ErrorResult(e.getMessage()), HttpStatus.BAD_REQUEST);
     }
+
+    @ExceptionHandler
+    public ResponseEntity<ErrorResult> ClubPermissionExHandle(ClubPermissionException e) {
+        return new ResponseEntity<>(new ErrorResult(e.getMessage()), HttpStatus.UNAUTHORIZED);
+    }
 }

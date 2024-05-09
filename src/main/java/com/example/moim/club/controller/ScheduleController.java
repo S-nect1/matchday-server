@@ -22,7 +22,7 @@ public class ScheduleController implements ScheduleControllerDocs{
 
     @PatchMapping("/schedule")
     public ScheduleOutput scheduleUpdate(@RequestBody ScheduleUpdateInput scheduleUpdateInput, @AuthenticationPrincipal UserDetailsImpl userDetailsImpl) {
-        return scheduleService.updateSchedule(scheduleUpdateInput);
+        return scheduleService.updateSchedule(scheduleUpdateInput, userDetailsImpl.getUser());
     }
 
     @GetMapping("/schedule")

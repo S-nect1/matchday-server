@@ -10,6 +10,7 @@ import java.time.LocalDateTime;
 
 @Data
 public class ScheduleUpdateInput {
+    private Long clubId;
     private Long id;
     @NotBlank(message = "일정 제목을 입력해주세요.")
     private String title;

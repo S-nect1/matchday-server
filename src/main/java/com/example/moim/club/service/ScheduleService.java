@@ -1,11 +1,15 @@
 package com.example.moim.club.service;
 
 import com.example.moim.club.dto.*;
+import com.example.moim.club.entity.Club;
 import com.example.moim.club.entity.Comment;
 import com.example.moim.club.entity.Schedule;
+import com.example.moim.club.entity.UserClub;
 import com.example.moim.club.repository.ClubRepository;
 import com.example.moim.club.repository.CommentRepository;
 import com.example.moim.club.repository.ScheduleRepository;
+import com.example.moim.club.repository.UserClubRepository;
+import com.example.moim.exception.club.ClubPermissionException;
 import com.example.moim.notification.dto.ScheduleSaveEvent;
 import com.example.moim.notification.dto.ScheduleVoteEvent;
 import com.example.moim.user.entity.User;
@@ -26,17 +30,28 @@ import java.util.stream.Collectors;
 public class ScheduleService {
     private final ClubRepository clubRepository;
     private final ScheduleRepository scheduleRepository;
+    private final UserClubRepository userClubRepository;
     private final CommentRepository commentRepository;
     private final ApplicationEventPublisher eventPublisher;
 
     public ScheduleOutput saveSchedule(ScheduleInput scheduleInput, User user) {
+        UserClub userClub = userClubRepository.findByClubAndUser(clubRepository.findById(scheduleInput.getClubId()).get(), user).get();
+        if (!(userClub.getCategory().equals("creator") || userClub.getCategory().equals("admin"))) {
+            throw new ClubPermissionException("모임 일정을 만들 권한이 없습니다.");
+        }
+
         Schedule schedule = scheduleRepository.save(Schedule.createSchedule(clubRepository.findById(scheduleInput.getClubId()).get(), scheduleInput));
         eventPublisher.publishEvent(new ScheduleSaveEvent(schedule, user));
         return new ScheduleOutput(schedule);
     }
 
     @Transactional
-    public ScheduleOutput updateSchedule(ScheduleUpdateInput scheduleUpdateInput) {
+    public ScheduleOutput updateSchedule(ScheduleUpdateInput scheduleUpdateInput, User user) {
+        UserClub userClub = userClubRepository.findByClubAndUser(clubRepository.findById(scheduleUpdateInput.getClubId()).get(), user).get();
+        if (!(userClub.getCategory().equals("creator") || userClub.getCategory().equals("admin"))) {
+            throw new ClubPermissionException("모임 일정을 수정할 권한이 없습니다.");
+        }
+
         Schedule schedule = scheduleRepository.findById(scheduleUpdateInput.getId()).get();
         schedule.updateSchedule(scheduleUpdateInput);
         return new ScheduleOutput(schedule);
