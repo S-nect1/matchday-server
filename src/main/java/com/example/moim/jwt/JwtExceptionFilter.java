@@ -4,6 +4,7 @@ import com.example.moim.exception.ErrorResult;
 import com.example.moim.exception.InvalidTokenException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.jsonwebtoken.ExpiredJwtException;
+import io.jsonwebtoken.MalformedJwtException;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -24,6 +25,8 @@ public class JwtExceptionFilter extends OncePerRequestFilter {
             setErrorResponse(response, new ErrorResult("login expired"));
         }catch (InvalidTokenException | IllegalArgumentException e){
             //유효하지 않은 토큰
+            setErrorResponse(response, new ErrorResult(e.getMessage()));
+        } catch (MalformedJwtException e){
             setErrorResponse(response, new ErrorResult(e.getMessage()));
         }
     }
