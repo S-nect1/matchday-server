@@ -27,7 +27,7 @@ public class JwtExceptionFilter extends OncePerRequestFilter {
             //유효하지 않은 토큰
             setErrorResponse(response, new ErrorResult(e.getMessage()));
         } catch (MalformedJwtException e){
-            setErrorResponse(response, new ErrorResult(e.getMessage() + "\n token = " + request.getHeader("Authorization").split(" ")[1]));
+            setErrorResponse(response, new ErrorResult(e.getMessage() + "   token = " + request.getHeader("Authorization").split(" ")[1]));
         }
     }
     //new ErrorResult(e.getMessage()), HttpStatus.BAD_REQUEST
