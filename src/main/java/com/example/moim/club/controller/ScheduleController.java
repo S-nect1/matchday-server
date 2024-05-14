@@ -5,6 +5,7 @@ import com.example.moim.club.service.ScheduleService;
 import com.example.moim.user.dto.UserDetailsImpl;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.MediaType;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
@@ -15,7 +16,7 @@ import java.util.List;
 public class ScheduleController implements ScheduleControllerDocs{
     private final ScheduleService scheduleService;
 
-    @PostMapping("/schedule")
+    @PostMapping(value = "/schedule")
     public ScheduleOutput scheduleSave(@RequestBody @Valid ScheduleInput scheduleInput, @AuthenticationPrincipal UserDetailsImpl userDetailsImpl) {
         return scheduleService.saveSchedule(scheduleInput, userDetailsImpl.getUser());
     }
@@ -25,7 +26,7 @@ public class ScheduleController implements ScheduleControllerDocs{
         return scheduleService.updateSchedule(scheduleUpdateInput, userDetailsImpl.getUser());
     }
 
-    @GetMapping("/schedule")
+    @GetMapping(value = "/schedule", produces = MediaType.APPLICATION_JSON_VALUE)
     public List<ScheduleOutput> scheduleFind(@ModelAttribute ScheduleSearchInput scheduleSearchInput) {
         return scheduleService.findSchedule(scheduleSearchInput.getDate(), scheduleSearchInput.getClubId());
     }

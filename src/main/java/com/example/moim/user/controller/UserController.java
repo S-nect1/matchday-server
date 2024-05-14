@@ -5,6 +5,7 @@ import com.example.moim.user.service.UserService;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.MediaType;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -31,12 +32,12 @@ public class UserController implements UserControllerDocs{
         return new UserOutput(loginOutput);
     }
 
-    @GetMapping("/user")
+    @GetMapping(value = "/user", produces = MediaType.APPLICATION_JSON_VALUE)
     public UserOutput userFind(@AuthenticationPrincipal UserDetailsImpl userDetailsImpl) {
         return userService.findUser(userDetailsImpl.getUser());
     }
 
-    @GetMapping("/user/club")
+    @GetMapping(value = "/user/club", produces = MediaType.APPLICATION_JSON_VALUE)
     public List<MyClubOutput> userClubFind(@AuthenticationPrincipal UserDetailsImpl userDetailsImpl) {
         return userService.findUserClub(userDetailsImpl.getUser());
     }
