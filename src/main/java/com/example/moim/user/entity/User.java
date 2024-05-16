@@ -29,7 +29,6 @@ public class User extends BaseEntity {
     private String imgPath;
     @Enumerated(EnumType.STRING)
     private Role role;
-    private String refreshToken;
     private String fcmToken;
     
     @OneToMany(mappedBy = "user", cascade = CascadeType.REMOVE)

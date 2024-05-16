@@ -19,13 +19,9 @@ public class JWTUtil {
     @Value("${jwt.access.expiration}")
     private Long accessTokenExpirationPeriod;
     
-    @Value("${jwt.refresh.expiration}")
-    private Long refreshTokenExpirationPeriod;
-    
     private final SecretKey secretKey;
     
     private static final String ACCESS_TOKEN_SUBJECT = "AccessToken";
-    private static final String REFRESH_TOKEN_SUBJECT = "RefreshToken";
     private static final String ID_CLAIM = "id";
     private static final String ROLE_CLAIM = "role";
     
@@ -44,16 +40,16 @@ public class JWTUtil {
                 .compact();
     }
     
-    public String createRefreshToken(UserDetailsImpl userDetails){
-        return Jwts.builder()
-                .subject(REFRESH_TOKEN_SUBJECT)
-                .claim(ID_CLAIM, userDetails.getUserId())
-                .claim(ROLE_CLAIM, userDetails.getRole())
-                .issuedAt(new Date(System.currentTimeMillis()))
-                .expiration(new Date(System.currentTimeMillis() + refreshTokenExpirationPeriod))
-                .signWith(secretKey, Jwts.SIG.HS512)
-                .compact();
-    }
+//    public String createRefreshToken(UserDetailsImpl userDetails){
+//        return Jwts.builder()
+//                .subject(REFRESH_TOKEN_SUBJECT)
+//                .claim(ID_CLAIM, userDetails.getUserId())
+//                .claim(ROLE_CLAIM, userDetails.getRole())
+//                .issuedAt(new Date(System.currentTimeMillis()))
+//                .expiration(new Date(System.currentTimeMillis() + refreshTokenExpirationPeriod))
+//                .signWith(secretKey, Jwts.SIG.HS512)
+//                .compact();
+//    }
     
     public Long getUserId(String token) {
         try {
