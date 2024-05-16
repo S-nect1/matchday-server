@@ -3,7 +3,6 @@ package com.example.moim.config;
 import com.example.moim.jwt.JwtExceptionFilter;
 import com.example.moim.jwt.JWTFilter;
 import com.example.moim.jwt.JWTUtil;
-import com.example.moim.jwt.LoginFilter;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
@@ -69,17 +68,14 @@ public class SecurityConfig {
         httpSecurity.httpBasic(AbstractHttpConfigurer::disable);
         //경로별 인가 작업
         httpSecurity.authorizeHttpRequests((auth) -> auth
-                .requestMatchers("/", "/user/login", "/user", "/error", "/swagger-ui.html", "/swagger-ui/**", "/v3/**").permitAll()
+                .requestMatchers("/", "/user/login", "/user", "/user/google", "/error",
+                        "/swagger-ui.html", "/swagger-ui/**", "/v3/**").permitAll()
                 .requestMatchers("/admin").hasAuthority("ADMIN")
                 .anyRequest().authenticated());
 
         //JWTFilter 등록
         httpSecurity
-                .addFilterBefore(new JWTFilter(jwtUtil), LoginFilter.class);
-        
-        //필터 추가 LoginFilter()는 인자를 받음 (AuthenticationManager() 메소드에 authenticationConfiguration 객체를 넣어야 함) 따라서 등록 필요
-        httpSecurity
-                .addFilterAt(new LoginFilter(authenticationManager(authenticationConfiguration), jwtUtil), UsernamePasswordAuthenticationFilter.class);
+                .addFilterBefore(new JWTFilter(jwtUtil), UsernamePasswordAuthenticationFilter.class);
 
         httpSecurity
                 .addFilterBefore(new JwtExceptionFilter(), JWTFilter.class);
