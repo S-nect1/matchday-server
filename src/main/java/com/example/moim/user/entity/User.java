@@ -4,7 +4,9 @@ import com.example.moim.club.entity.UserClub;
 import com.example.moim.global.entity.BaseEntity;
 import com.example.moim.notification.entity.Notifications;
 import com.example.moim.user.dto.GoogleUserSignup;
+import com.example.moim.user.dto.KakaoUserSignup;
 import com.example.moim.user.dto.SignupInput;
+import com.example.moim.user.dto.SocialSignupInput;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -67,6 +69,16 @@ public class User extends BaseEntity {
         user.role = Role.USER;
         return user;
     }
+
+    public void fillUserInfo(SocialSignupInput socialSignupInput) {
+        this.name = socialSignupInput.getName();
+        this.birthday = socialSignupInput.getBirthday();
+        this.phone = socialSignupInput.getPhone();
+        if (socialSignupInput.getFcmToken() != null) {
+            this.fcmToken = socialSignupInput.getFcmToken();
+        }
+    }
+
     public void setIdAtJWTFilter(Long id, String role) {
         this.id = id;
         this.password = "temppassword";

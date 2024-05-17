@@ -2,7 +2,7 @@ package com.example.moim.user.controller;
 
 import com.example.moim.user.dto.*;
 import com.example.moim.user.service.UserService;
-import com.example.moim.user.service.GoogleUserService;
+import com.example.moim.user.service.SocialLoginService;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -16,7 +16,7 @@ import java.util.List;
 @RequiredArgsConstructor
 public class UserController implements UserControllerDocs{
     private final UserService userService;
-    private final GoogleUserService googleUserService;
+    private final SocialLoginService socialLoginService;
 
     @PostMapping("/user")
     public String signup(@RequestBody @Valid SignupInput signupInput) {
@@ -43,7 +43,7 @@ public class UserController implements UserControllerDocs{
 
     @GetMapping("user/google")
     public UserOutput googleLogin(@RequestParam String code, HttpServletResponse response) {
-        LoginOutput loginOutput = googleUserService.googleLogin(code);
+        LoginOutput loginOutput = socialLoginService.googleLogin(code);
         response.addHeader("Authorization", "Bearer " + loginOutput.getAccessToken());
         return new UserOutput(loginOutput);
     }
@@ -53,5 +53,10 @@ public class UserController implements UserControllerDocs{
         LoginOutput loginOutput = socialLoginService.kakoLogin(code);
         response.addHeader("Authorization", "Bearer " + loginOutput.getAccessToken());
         return new UserOutput(loginOutput);
+    }
+
+    @PostMapping("/user/info")
+    public void userInfoSave(@AuthenticationPrincipal UserDetailsImpl userDetailsImpl, @RequestBody @Valid SocialSignupInput socialSignupInput) {
+        userService.saveUserInfo(userDetailsImpl.getUser(), socialSignupInput);
     }
 }

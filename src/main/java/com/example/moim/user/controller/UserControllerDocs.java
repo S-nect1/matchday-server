@@ -39,4 +39,7 @@ public interface UserControllerDocs {
 
     @Operation(summary = "카카오 계정으로 회원가입/로그인", description = "로그인 성공시 응답 헤더 Authorization 에 jwt 발급")
     UserOutput kakaoLogin(@RequestParam String code, HttpServletResponse response);
+
+    @Operation(summary = "소셜로그인 후 유저 정보 입력", description = "")
+    void userInfoSave(@AuthenticationPrincipal UserDetailsImpl userDetailsImpl, @RequestBody @Valid SocialSignupInput socialSignupInput);
 }
