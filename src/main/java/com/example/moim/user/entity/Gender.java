@@ -7,6 +7,11 @@ public enum Gender {
     
     @JsonCreator
     public static Gender from(String gender){
+        if(gender.equals("male")){
+            gender = "man";
+        } else if(gender.equals("female")){
+            gender = "woman";
+        }
         return Gender.valueOf(gender.toUpperCase());
     }
 }

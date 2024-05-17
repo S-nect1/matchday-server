@@ -3,6 +3,7 @@ package com.example.moim.user.entity;
 import com.example.moim.club.entity.UserClub;
 import com.example.moim.global.entity.BaseEntity;
 import com.example.moim.notification.entity.Notifications;
+import com.example.moim.user.dto.GoogleUserSignup;
 import com.example.moim.user.dto.SignupInput;
 import jakarta.persistence.*;
 import lombok.Getter;
@@ -29,7 +30,6 @@ public class User extends BaseEntity {
     private String imgPath;
     @Enumerated(EnumType.STRING)
     private Role role;
-    private String refreshToken;
     private String fcmToken;
     
     @OneToMany(mappedBy = "user", cascade = CascadeType.REMOVE)
@@ -45,6 +45,17 @@ public class User extends BaseEntity {
         user.birthday = signupInput.getBirthday();
         user.gender = signupInput.getGender();
         user.phone = signupInput.getPhone();
+        user.role = Role.USER;
+        return user;
+    }
+
+    public static User createGoogleUser(GoogleUserSignup googleUserSignup) {
+        User user = new User();
+        user.email = googleUserSignup.getEmailAddresses().get(0).get("value").toString();
+        user.name = googleUserSignup.getNames().get(0).get("displayName").toString();
+        user.birthday = googleUserSignup.getBirthdays().get(0).get("date").toString().replaceAll("[^0-9 ]", "").replace(' ', '.');
+        user.gender = Gender.from(googleUserSignup.getGenders().get(0).get("value").toString());
+        user.phone = googleUserSignup.getPhoneNumbers().get(0).get("value").toString().replace("-","");
         user.role = Role.USER;
         return user;
     }
