@@ -41,7 +41,7 @@ public class UserService {
         if (loginInput.getFcmToken() != null) {
             userDetails.getUser().setFcmToken(loginInput.getFcmToken());
         }
-        return new LoginOutput(userDetails.getUser(), jwtUtil.createAccessToken(userDetails));
+        return new LoginOutput(userDetails.getUser(), jwtUtil.createAccessToken(userDetails.getUser()));
     }
 
     public UserOutput findUser(User user) {
