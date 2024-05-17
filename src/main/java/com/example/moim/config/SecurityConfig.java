@@ -68,7 +68,7 @@ public class SecurityConfig {
         httpSecurity.httpBasic(AbstractHttpConfigurer::disable);
         //경로별 인가 작업
         httpSecurity.authorizeHttpRequests((auth) -> auth
-                .requestMatchers("/", "/user/login", "/user", "/user/google", "/error",
+                .requestMatchers("/", "/user/login", "/user", "/user/google", "/user/kakao", "/user/info", "/error",
                         "/swagger-ui.html", "/swagger-ui/**", "/v3/**").permitAll()
                 .requestMatchers("/admin").hasAuthority("ADMIN")
                 .anyRequest().authenticated());

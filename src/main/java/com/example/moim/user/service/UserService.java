@@ -52,4 +52,9 @@ public class UserService {
         return userClubRepository.findByUser(user).stream().map(MyClubOutput::new).toList();
     }
 
+    @Transactional
+    public void saveUserInfo(User loginUser, SocialSignupInput socialSignupInput) {
+        User user = userRepository.findById(loginUser.getId()).get();
+        user.fillUserInfo(socialSignupInput);
+    }
 }
