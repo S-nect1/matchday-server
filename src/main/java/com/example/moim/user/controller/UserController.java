@@ -48,4 +48,10 @@ public class UserController implements UserControllerDocs{
         return new UserOutput(loginOutput);
     }
 
+    @GetMapping("user/kakao")
+    public UserOutput kakaoLogin(@RequestParam String code, HttpServletResponse response) {
+        LoginOutput loginOutput = socialLoginService.kakoLogin(code);
+        response.addHeader("Authorization", "Bearer " + loginOutput.getAccessToken());
+        return new UserOutput(loginOutput);
+    }
 }
