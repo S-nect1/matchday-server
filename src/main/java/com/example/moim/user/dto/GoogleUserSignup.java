@@ -11,10 +11,7 @@ import java.util.Map;
 public class GoogleUserSignup {
     private String resourceName;
     private String etag;
-    private List<Map<String,Object>> names;
     private List<Map<String,Object>> genders;
-    private List<Map<String,Object>> birthdays;
     private List<Map<String,Object>> emailAddresses;
-    private List<Map<String,Object>> phoneNumbers;
 
 }
