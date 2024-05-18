@@ -28,6 +28,7 @@ public class UserController implements UserControllerDocs{
     public UserOutput login(@AuthenticationPrincipal UserDetailsImpl userDetailsImpl, @RequestBody @Valid LoginInput loginInput, HttpServletResponse response) {
         LoginOutput loginOutput = userService.login(loginInput);
         response.addHeader("Authorization", "Bearer " + loginOutput.getAccessToken());
+        response.addHeader("Authorization-refresh", "Bearer " + loginOutput.getRefreshToken());
         return new UserOutput(loginOutput);
     }
 
@@ -45,6 +46,7 @@ public class UserController implements UserControllerDocs{
     public UserOutput googleLogin(@RequestParam String code, HttpServletResponse response) {
         LoginOutput loginOutput = socialLoginService.googleLogin(code);
         response.addHeader("Authorization", "Bearer " + loginOutput.getAccessToken());
+        response.addHeader("Authorization-refresh", "Bearer " + loginOutput.getRefreshToken());
         return new UserOutput(loginOutput);
     }
 
@@ -52,11 +54,20 @@ public class UserController implements UserControllerDocs{
     public UserOutput kakaoLogin(@RequestParam String code, HttpServletResponse response) {
         LoginOutput loginOutput = socialLoginService.kakoLogin(code);
         response.addHeader("Authorization", "Bearer " + loginOutput.getAccessToken());
+        response.addHeader("Authorization-refresh", "Bearer " + loginOutput.getRefreshToken());
         return new UserOutput(loginOutput);
     }
 
     @PostMapping("/user/info")
     public void userInfoSave(@AuthenticationPrincipal UserDetailsImpl userDetailsImpl, @RequestBody @Valid SocialSignupInput socialSignupInput) {
         userService.saveUserInfo(userDetailsImpl.getUser(), socialSignupInput);
+    }
+
+    @GetMapping("user/refresh/{refreshToken}")
+    public UserOutput userRefresh(@PathVariable String refreshToken, HttpServletResponse response) {
+        LoginOutput loginOutput = userService.userRefresh(refreshToken);
+        response.addHeader("Authorization", "Bearer " + loginOutput.getAccessToken());
+        response.addHeader("Authorization-refresh", "Bearer " + loginOutput.getRefreshToken());
+        return new UserOutput(loginOutput);
     }
 }

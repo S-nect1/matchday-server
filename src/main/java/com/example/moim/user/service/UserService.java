@@ -41,6 +41,7 @@ public class UserService {
         if (loginInput.getFcmToken() != null) {
             userDetails.getUser().setFcmToken(loginInput.getFcmToken());
         }
+        userDetails.getUser().setRefreshToken(jwtUtil.createRefreshToken(userDetails.getUser()));
         return new LoginOutput(userDetails.getUser(), jwtUtil.createAccessToken(userDetails.getUser()));
     }
 
@@ -56,5 +57,12 @@ public class UserService {
     public void saveUserInfo(User loginUser, SocialSignupInput socialSignupInput) {
         User user = userRepository.findById(loginUser.getId()).get();
         user.fillUserInfo(socialSignupInput);
+    }
+
+    @Transactional
+    public LoginOutput userRefresh(String refreshToken) {
+        User user = userRepository.findByRefreshToken(refreshToken).get();
+        user.setRefreshToken(jwtUtil.createRefreshToken(user));
+        return new LoginOutput(user, jwtUtil.createAccessToken(user));
     }
 }

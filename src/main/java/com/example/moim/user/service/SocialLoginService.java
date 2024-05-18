@@ -59,14 +59,8 @@ public class SocialLoginService {
         GoogleUserSignup googleUserSignup = new RestTemplate()
                 .getForEntity("https://people.googleapis.com/v1/people/me?personFields=emailAddresses,genders&access_token="
                         + accessToken, GoogleUserSignup.class).getBody();
-        User googleUser = User.createGoogleUser(googleUserSignup);
-        Optional<User> findUser = userRepository.findByEmail(googleUser.getEmail());
-        if (findUser.isEmpty()) {
-            googleUser = userRepository.save(googleUser);
-            return new LoginOutput(googleUser, jwtUtil.createAccessToken(googleUser));
-        }
-        googleUser = findUser.get();
-        return new LoginOutput(googleUser, jwtUtil.createAccessToken(googleUser));
+
+        return getLoginOutput(User.createGoogleUser(googleUserSignup));
     }
 
     public LoginOutput kakoLogin(String code) {
@@ -90,13 +84,17 @@ public class SocialLoginService {
                 .exchange("https://kapi.kakao.com/v2/user/me?property_keys=[\"kakao_account.gender\",\"kakao_account.email\"]",
                         HttpMethod.GET, httpEntity, JsonNode.class).getBody().get("kakao_account");
 
-        User kakaoUser = User.createKakaoUser(new KakaoUserSignup(body.get("gender").asText(), body.get("email").asText()));
-        Optional<User> findUser = userRepository.findByEmail(kakaoUser.getEmail());
+        return getLoginOutput(User.createKakaoUser(new KakaoUserSignup(body.get("gender").asText(), body.get("email").asText())));
+    }
+
+    private LoginOutput getLoginOutput(User user) {
+        Optional<User> findUser = userRepository.findByEmail(user.getEmail());
         if (findUser.isEmpty()) {
-            kakaoUser = userRepository.save(kakaoUser);
-            return new LoginOutput(kakaoUser, jwtUtil.createAccessToken(kakaoUser));
+            user.setRefreshToken(jwtUtil.createRefreshToken(user));
+            user = userRepository.save(user);
+            return new LoginOutput(user, jwtUtil.createAccessToken(user));
         }
-        kakaoUser = findUser.get();
-        return new LoginOutput(kakaoUser, jwtUtil.createAccessToken(kakaoUser));
+        user = findUser.get();
+        return new LoginOutput(user, jwtUtil.createAccessToken(user));
     }
 }
