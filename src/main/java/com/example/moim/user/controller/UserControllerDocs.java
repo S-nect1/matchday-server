@@ -10,6 +10,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 
@@ -23,7 +24,7 @@ public interface UserControllerDocs {
     @ApiResponse(responseCode = "409", description = "중복회원가입시 409 에러코드와 메세지 응답", content = @Content(schema = @Schema(implementation = ErrorResult.class)))
     String signup(@RequestBody @Valid SignupInput signupInput);
 
-    @Operation(summary = "로그인", description = "로그인 성공시 응답 헤더 Authorization 에 jwt 발급, 로그인시 fcm 토큰 넣어서 요청")
+    @Operation(summary = "로그인", description = "로그인 성공시 응답 헤더 Authorization 에 accessToken, Authorization-refresh 에 refreshToken 발급, 로그인시 fcm 토큰 넣어서 요청")
     @ApiResponse(responseCode = "200", description = "OK", content = @Content(schema = @Schema(implementation = UserOutput.class)))
     @ApiResponse(responseCode = "400", description = "로그인 정보 틀리면 400 에러코드와 메세지 응답", content = @Content(schema = @Schema(implementation = ErrorResult.class)))
     UserOutput login(@AuthenticationPrincipal UserDetailsImpl userDetailsImpl, @RequestBody LoginInput loginInput, HttpServletResponse response);
@@ -34,12 +35,15 @@ public interface UserControllerDocs {
     @Operation(summary = "내가 속한 모임 조회")
     List<MyClubOutput> userClubFind(@AuthenticationPrincipal UserDetailsImpl userDetailsImpl);
 
-    @Operation(summary = "구글 계정으로 회원가입/로그인", description = "로그인 성공시 응답 헤더 Authorization 에 jwt 발급")
+    @Operation(summary = "구글 계정으로 회원가입/로그인", description = "Authorization 에 accessToken, Authorization-refresh 에 refreshToken 발급")
     UserOutput googleLogin(@RequestParam @Schema(description = "google oauth2.0 authorization code") String code, HttpServletResponse response);
 
-    @Operation(summary = "카카오 계정으로 회원가입/로그인", description = "로그인 성공시 응답 헤더 Authorization 에 jwt 발급")
+    @Operation(summary = "카카오 계정으로 회원가입/로그인", description = "Authorization 에 accessToken, Authorization-refresh 에 refreshToken 발급")
     UserOutput kakaoLogin(@RequestParam @Schema(description = "kakao oauth2.0 authorization code")String code, HttpServletResponse response);
 
-    @Operation(summary = "소셜로그인 후 유저 정보 입력", description = "")
+    @Operation(summary = "소셜로그인 후 유저 정보 입력")
     void userInfoSave(@AuthenticationPrincipal UserDetailsImpl userDetailsImpl, @RequestBody @Valid SocialSignupInput socialSignupInput);
+
+    @Operation(summary = "accessToken 이 만료되었을 때 refreshToken 으로 로그인", description = "Authorization 에 accessToken, Authorization-refresh 에 refreshToken 발급")
+    UserOutput userRefresh(@PathVariable String refreshToken, HttpServletResponse response);
 }
