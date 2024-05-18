@@ -44,6 +44,6 @@ public interface UserControllerDocs {
     @Operation(summary = "소셜로그인 후 유저 정보 입력")
     void userInfoSave(@AuthenticationPrincipal UserDetailsImpl userDetailsImpl, @RequestBody @Valid SocialSignupInput socialSignupInput);
 
-    @Operation(summary = "accessToken 이 만료되었을 때 refreshToken 으로 로그인")
+    @Operation(summary = "accessToken 이 만료되었을 때 refreshToken 으로 로그인", description = "Authorization 에 accessToken, Authorization-refresh 에 refreshToken 발급")
     UserOutput userRefresh(@PathVariable String refreshToken, HttpServletResponse response);
 }

@@ -42,7 +42,7 @@ public class UserController implements UserControllerDocs{
         return userService.findUserClub(userDetailsImpl.getUser());
     }
 
-    @GetMapping("user/google")
+    @GetMapping("/user/google")
     public UserOutput googleLogin(@RequestParam String code, HttpServletResponse response) {
         LoginOutput loginOutput = socialLoginService.googleLogin(code);
         response.addHeader("Authorization", "Bearer " + loginOutput.getAccessToken());
@@ -50,7 +50,7 @@ public class UserController implements UserControllerDocs{
         return new UserOutput(loginOutput);
     }
 
-    @GetMapping("user/kakao")
+    @GetMapping("/user/kakao")
     public UserOutput kakaoLogin(@RequestParam String code, HttpServletResponse response) {
         LoginOutput loginOutput = socialLoginService.kakoLogin(code);
         response.addHeader("Authorization", "Bearer " + loginOutput.getAccessToken());
@@ -63,7 +63,7 @@ public class UserController implements UserControllerDocs{
         userService.saveUserInfo(userDetailsImpl.getUser(), socialSignupInput);
     }
 
-    @GetMapping("user/refresh/{refreshToken}")
+    @GetMapping("/user/refresh/{refreshToken}")
     public UserOutput userRefresh(@PathVariable String refreshToken, HttpServletResponse response) {
         LoginOutput loginOutput = userService.userRefresh(refreshToken);
         response.addHeader("Authorization", "Bearer " + loginOutput.getAccessToken());

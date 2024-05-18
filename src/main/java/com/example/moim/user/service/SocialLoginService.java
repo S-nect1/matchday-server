@@ -90,7 +90,7 @@ public class SocialLoginService {
     private LoginOutput getLoginOutput(User user) {
         Optional<User> findUser = userRepository.findByEmail(user.getEmail());
         if (findUser.isEmpty()) {
-            user.setRefreshToken(jwtUtil.createRefreshToken(user));
+            user.setRefreshToken("Bearer " + jwtUtil.createRefreshToken(user));
             user = userRepository.save(user);
             return new LoginOutput(user, jwtUtil.createAccessToken(user));
         }
