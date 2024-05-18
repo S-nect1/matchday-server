@@ -32,6 +32,8 @@ public class User extends BaseEntity {
     private String imgPath;
     @Enumerated(EnumType.STRING)
     private Role role;
+    @Column(unique = true)
+    private String refreshToken;
     private String fcmToken;
     
     @OneToMany(mappedBy = "user", cascade = CascadeType.REMOVE)
@@ -83,6 +85,10 @@ public class User extends BaseEntity {
         this.id = id;
         this.password = "temppassword";
         this.role = Role.valueOf(role.toUpperCase());
+    }
+
+    public void setRefreshToken(String refreshToken) {
+        this.refreshToken = refreshToken;
     }
 
     public void setFcmToken(String fcmToken) {
