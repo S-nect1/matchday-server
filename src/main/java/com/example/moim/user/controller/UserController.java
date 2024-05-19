@@ -52,7 +52,15 @@ public class UserController implements UserControllerDocs{
 
     @GetMapping("/user/kakao")
     public UserOutput kakaoLogin(@RequestParam String code, HttpServletResponse response) {
-        LoginOutput loginOutput = socialLoginService.kakoLogin(code);
+        LoginOutput loginOutput = socialLoginService.kakaoLogin(code);
+        response.addHeader("Authorization", "Bearer " + loginOutput.getAccessToken());
+        response.addHeader("Authorization-refresh", "Bearer " + loginOutput.getRefreshToken());
+        return new UserOutput(loginOutput);
+    }
+
+    @GetMapping("/user/naver")
+    public UserOutput naverLogin(@RequestParam String code, HttpServletResponse response) {
+        LoginOutput loginOutput =  socialLoginService.naverLogin(code);
         response.addHeader("Authorization", "Bearer " + loginOutput.getAccessToken());
         response.addHeader("Authorization-refresh", "Bearer " + loginOutput.getRefreshToken());
         return new UserOutput(loginOutput);
