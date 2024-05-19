@@ -3,10 +3,7 @@ package com.example.moim.user.entity;
 import com.example.moim.club.entity.UserClub;
 import com.example.moim.global.entity.BaseEntity;
 import com.example.moim.notification.entity.Notifications;
-import com.example.moim.user.dto.GoogleUserSignup;
-import com.example.moim.user.dto.KakaoUserSignup;
-import com.example.moim.user.dto.SignupInput;
-import com.example.moim.user.dto.SocialSignupInput;
+import com.example.moim.user.dto.*;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -68,6 +65,14 @@ public class User extends BaseEntity {
         User user = new User();
         user.email = kakaoUserSignup.getEmail();
         user.gender = Gender.from(kakaoUserSignup.getGender());
+        user.role = Role.USER;
+        return user;
+    }
+
+    public static User createNaverUser(NaverUserSignup naverUserSignup) {
+        User user = new User();
+        user.email = naverUserSignup.getEmail();
+        user.gender = Gender.from(naverUserSignup.getGender());
         user.role = Role.USER;
         return user;
     }
