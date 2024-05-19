@@ -4,6 +4,7 @@ import com.example.moim.jwt.JWTUtil;
 import com.example.moim.user.dto.GoogleUserSignup;
 import com.example.moim.user.dto.KakaoUserSignup;
 import com.example.moim.user.dto.LoginOutput;
+import com.example.moim.user.dto.NaverUserSignup;
 import com.example.moim.user.entity.User;
 import com.example.moim.user.repository.UserRepository;
 import com.fasterxml.jackson.databind.JsonNode;
@@ -32,6 +33,7 @@ import static org.springframework.http.HttpHeaders.CONTENT_TYPE;
 public class SocialLoginService {
     private final UserRepository userRepository;
     private final JWTUtil jwtUtil;
+    private final RestTemplate restTemplate;
 
     @Value("${spring.security.oauth2.client.registration.google.client-id}")
     private String GOOGLE_CLIENT_ID;
@@ -43,6 +45,10 @@ public class SocialLoginService {
     private String KAKAO_CLIENT_ID;
     @Value("${spring.security.oauth2.client.registration.kakao.redirect-uri}")
     private String KAKAO_REDIRECT_URL;
+    @Value("${spring.security.oauth2.client.registration.naver.client-id}")
+    private String NAVER_CLIENT_ID;
+    @Value("${spring.security.oauth2.client.registration.naver.client-secret}")
+    private String NAVER_CLIENT_SECRET;
 
     public LoginOutput googleLogin(String code) {
         Map<String, String> params = new HashMap<>();
@@ -52,18 +58,18 @@ public class SocialLoginService {
         params.put("redirect_uri", GOOGLE_REDIRECT_URL);
         params.put("grant_type", "authorization_code");
 
-        ResponseEntity<JsonNode> tokenResponse = new RestTemplate().postForEntity("https://oauth2.googleapis.com/token", params, JsonNode.class);
+        ResponseEntity<JsonNode> tokenResponse = restTemplate.postForEntity("https://oauth2.googleapis.com/token", params, JsonNode.class);
         String accessToken = tokenResponse.getBody().get("access_token").asText();
 
         // "access_token" 필드의 값을 추출후 토큰으로 정보 얻어옴
-        GoogleUserSignup googleUserSignup = new RestTemplate()
+        GoogleUserSignup googleUserSignup = restTemplate
                 .getForEntity("https://people.googleapis.com/v1/people/me?personFields=emailAddresses,genders&access_token="
                         + accessToken, GoogleUserSignup.class).getBody();
 
         return getLoginOutput(User.createGoogleUser(googleUserSignup));
     }
 
-    public LoginOutput kakoLogin(String code) {
+    public LoginOutput kakaoLogin(String code) {
         MultiValueMap<String, String> params = new LinkedMultiValueMap<>();
         params.add("code", code);
         params.add("client_id", KAKAO_CLIENT_ID);
@@ -72,19 +78,31 @@ public class SocialLoginService {
         HttpHeaders httpHeaders = new HttpHeaders();
         httpHeaders.set(CONTENT_TYPE, "application/x-www-form-urlencoded");
 
-        ResponseEntity<JsonNode> tokenResponse = new RestTemplate().postForEntity("https://kauth.kakao.com/oauth/token", new HttpEntity<>(params, httpHeaders), JsonNode.class);
+        ResponseEntity<JsonNode> tokenResponse = restTemplate.postForEntity("https://kauth.kakao.com/oauth/token", new HttpEntity<>(params, httpHeaders), JsonNode.class);
         String accessToken = tokenResponse.getBody().get("access_token").asText();
 
 //        // "access_token" 필드의 값을 추출후 토큰으로 정보 얻어옴
-        httpHeaders = new HttpHeaders();
         httpHeaders.set(AUTHORIZATION, "Bearer " + accessToken);
-        httpHeaders.set(CONTENT_TYPE, "application/x-www-form-urlencoded");
         HttpEntity<MultiValueMap<String, String>> httpEntity = new HttpEntity<>(httpHeaders);
-        JsonNode body = new RestTemplate()
+        JsonNode body = restTemplate
                 .exchange("https://kapi.kakao.com/v2/user/me?property_keys=[\"kakao_account.gender\",\"kakao_account.email\"]",
                         HttpMethod.GET, httpEntity, JsonNode.class).getBody().get("kakao_account");
 
         return getLoginOutput(User.createKakaoUser(new KakaoUserSignup(body.get("gender").asText(), body.get("email").asText())));
+    }
+
+    public LoginOutput naverLogin(String code) {
+        String accessToken = restTemplate.exchange("https://nid.naver.com/oauth2.0/token?code=" + code + "&client_id=" + NAVER_CLIENT_ID +
+                        "&client_secret=" + NAVER_CLIENT_SECRET + "&grant_type=authorization_code&state=%2F%2A-%2B"
+                , HttpMethod.GET, null, JsonNode.class).getBody().get("access_token").asText();
+
+        HttpHeaders httpHeaders = new HttpHeaders();
+        httpHeaders.set(AUTHORIZATION, "Bearer " + accessToken);
+        JsonNode body = restTemplate.exchange("https://openapi.naver.com/v1/nid/me", HttpMethod.GET, new HttpEntity<>(httpHeaders), JsonNode.class)
+                .getBody().get("response");
+
+        return getLoginOutput(User.createNaverUser(new NaverUserSignup(body.get("gender").asText(), body.get("email").asText())));
+
     }
 
     private LoginOutput getLoginOutput(User user) {
