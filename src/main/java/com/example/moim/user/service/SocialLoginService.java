@@ -102,7 +102,6 @@ public class SocialLoginService {
                 .getBody().get("response");
 
         return getLoginOutput(User.createNaverUser(new NaverUserSignup(body.get("gender").asText(), body.get("email").asText())));
-
     }
 
     private LoginOutput getLoginOutput(User user) {
