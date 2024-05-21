@@ -62,6 +62,23 @@ public class Schedule extends BaseEntity {
         }
     }
 
+    public void reVote(String originalAttendance, String attendance) {
+        if (originalAttendance.equals("attend")) {
+            this.attend -= 1;
+        } else if (originalAttendance.equals("absent")) {
+            this.nonAttend -= 1;
+        } else {
+            this.undecided -= 1;
+        }
+        if (attendance.equals("attend")) {
+            this.attend += 1;
+        } else if (attendance.equals("absent")) {
+            this.nonAttend += 1;
+        } else {
+            this.undecided += 1;
+        }
+    }
+
     public void updateSchedule(ScheduleUpdateInput scheduleUpdateInput) {
         this.title = scheduleUpdateInput.getTitle();
         this.location = scheduleUpdateInput.getLocation();
