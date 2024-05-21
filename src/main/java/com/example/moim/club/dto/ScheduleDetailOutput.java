@@ -11,6 +11,8 @@ public class ScheduleDetailOutput {
     private String title;
     private String location;
     private String period;
+    private int personnel;//참여인원수
+    private String category;
     private int attend;
     private int nonAttend;
     private List<CommentOutput> commentOutputList;
@@ -21,6 +23,8 @@ public class ScheduleDetailOutput {
         this.location = schedule.getLocation();
         this.period = schedule.getStartTime().toLocalDate().toString() + " " +
                 schedule.getStartTime().toLocalTime().toString() + " ~ " + schedule.getEndTime().toLocalTime().toString();
+        this.personnel = schedule.getPersonnel();
+        this.category = schedule.getCategory();
         this.attend = schedule.getAttend();
         this.nonAttend = schedule.getNonAttend();
         this.commentOutputList = commentOutputList;
