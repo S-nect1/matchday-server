@@ -1,6 +1,7 @@
 package com.example.moim.club.dto;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
@@ -15,6 +16,7 @@ public class ScheduleInput {
     private String title;
     @NotBlank(message = "일정 장소를 입력해주세요.")
     private String location;
+    @Schema(pattern = "yyyy-MM-dd HH:mm", description = "yyyy-MM-dd HH:mm")
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm", timezone = "Asia/Seoul")
     @NotNull(message = "일정 시작 시간을 입력해주세요.")
     private LocalDateTime startTime;
