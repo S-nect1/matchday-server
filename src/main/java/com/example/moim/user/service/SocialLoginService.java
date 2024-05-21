@@ -102,13 +102,12 @@ public class SocialLoginService {
                 .getBody().get("response");
 
         return getLoginOutput(User.createNaverUser(new NaverUserSignup(body.get("gender").asText(), body.get("email").asText())));
-
     }
 
     private LoginOutput getLoginOutput(User user) {
         Optional<User> findUser = userRepository.findByEmail(user.getEmail());
         if (findUser.isEmpty()) {
-            user.setRefreshToken("Bearer " + jwtUtil.createRefreshToken(user));
+            user.setRefreshToken(jwtUtil.createRefreshToken(user));
             user = userRepository.save(user);
             return new LoginOutput(user, jwtUtil.createAccessToken(user));
         }
