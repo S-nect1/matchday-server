@@ -13,8 +13,10 @@ public class ScheduleDetailOutput {
     private String period;
     private int personnel;//참여인원수
     private String category;
+    private String note;
     private int attend;
     private int nonAttend;
+    private int undecided;
     private List<CommentOutput> commentOutputList;
 
     public ScheduleDetailOutput(Schedule schedule, List<CommentOutput> commentOutputList) {
@@ -25,8 +27,10 @@ public class ScheduleDetailOutput {
                 schedule.getStartTime().toLocalTime().toString() + " ~ " + schedule.getEndTime().toLocalTime().toString();
         this.personnel = schedule.getPersonnel();
         this.category = schedule.getCategory();
+        this.note = schedule.getNote();
         this.attend = schedule.getAttend();
         this.nonAttend = schedule.getNonAttend();
+        this.undecided = schedule.getUndecided();
         this.commentOutputList = commentOutputList;
     }
 }
