@@ -1,14 +1,8 @@
 package com.example.moim.club.service;
 
 import com.example.moim.club.dto.*;
-import com.example.moim.club.entity.Club;
-import com.example.moim.club.entity.Comment;
-import com.example.moim.club.entity.Schedule;
-import com.example.moim.club.entity.UserClub;
-import com.example.moim.club.repository.ClubRepository;
-import com.example.moim.club.repository.CommentRepository;
-import com.example.moim.club.repository.ScheduleRepository;
-import com.example.moim.club.repository.UserClubRepository;
+import com.example.moim.club.entity.*;
+import com.example.moim.club.repository.*;
 import com.example.moim.exception.club.ClubPermissionException;
 import com.example.moim.notification.dto.ScheduleSaveEvent;
 import com.example.moim.notification.dto.ScheduleVoteEvent;
@@ -22,6 +16,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.time.LocalDateTime;
 import java.time.Month;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Slf4j
@@ -33,6 +28,7 @@ public class ScheduleService {
     private final UserClubRepository userClubRepository;
     private final CommentRepository commentRepository;
     private final ApplicationEventPublisher eventPublisher;
+    private final ScheduleVoteRepository scheduleVoteRepository;
 
     public ScheduleOutput saveSchedule(ScheduleInput scheduleInput, User user) {
         UserClub userClub = userClubRepository.findByClubAndUser(clubRepository.findById(scheduleInput.getClubId()).get(), user).get();
@@ -73,7 +69,14 @@ public class ScheduleService {
     @Transactional
     public void voteSchedule(ScheduleVoteInput scheduleVoteInput, User user) {
         Schedule schedule = scheduleRepository.findScheduleById(scheduleVoteInput.getId());
-        schedule.vote(scheduleVoteInput.getAttendance());
+        Optional<ScheduleVote> originalScheduleVote = scheduleVoteRepository.findByScheduleAndUser(schedule, user);
+        if (originalScheduleVote.isEmpty()) {
+            scheduleVoteRepository.save(ScheduleVote.createScheduleVote(user, schedule, scheduleVoteInput.getAttendance()));
+            schedule.vote(scheduleVoteInput.getAttendance());
+        } else {
+            schedule.reVote(originalScheduleVote.get().getAttendance(), scheduleVoteInput.getAttendance());
+            originalScheduleVote.get().changeAttendance(scheduleVoteInput.getAttendance());
+        }
         if (scheduleVoteInput.getAttendance().equals("attend")) {
             eventPublisher.publishEvent(new ScheduleVoteEvent(schedule, user));
         }
