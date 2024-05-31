@@ -55,7 +55,9 @@ public class User extends BaseEntity {
         user.email = googleUserSignup.getEmailAddresses().get(0).get("value").toString();
 //        user.name = googleUserSignup.getNames().get(0).get("displayName").toString();
 //        user.birthday = googleUserSignup.getBirthdays().get(0).get("date").toString().replaceAll("[^0-9 ]", "").replace(' ', '.');
-        user.gender = Gender.from(googleUserSignup.getGenders().get(0).get("value").toString());
+        if (!googleUserSignup.getGenders().isEmpty()) {
+            user.gender = Gender.from(googleUserSignup.getGenders().get(0).get("value").toString());
+        }
 //        user.phone = googleUserSignup.getPhoneNumbers().get(0).get("value").toString().replace("-","");
         user.role = Role.USER;
         return user;

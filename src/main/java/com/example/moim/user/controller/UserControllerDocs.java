@@ -38,7 +38,11 @@ public interface UserControllerDocs {
     @Operation(summary = "구글 계정으로 회원가입/로그인", description = """
             Authorization 에 accessToken, Authorization-refresh 에 refreshToken 발급
 
-            https://accounts.google.com/o/oauth2/v2/auth/oauthchooseaccount?client_id=988293661923-5h2av5l3ilbqmu653l3i0m8kptap3l5k.apps.googleusercontent.com&redirect_uri=http%3A%2F%2Fec2-43-201-38-151.ap-northeast-2.compute.amazonaws.com%3A18008%2Fuser%2Fgoogle&response_type=code&scope=https%3A%2F%2Fwww.googleapis.com%2Fauth%2Fuser.gender.read%20https%3A%2F%2Fwww.googleapis.com%2Fauth%2Fuserinfo.email%20https%3A%2F%2Fwww.googleapis.com%2Fauth%2Fuserinfo.profile&service=lso&o2v=2&ddm=0&flowName=GeneralOAuthFlow""")
+            web: https://accounts.google.com/o/oauth2/v2/auth/oauthchooseaccount?client_id=988293661923-5h2av5l3ilbqmu653l3i0m8kptap3l5k.apps.googleusercontent.com&redirect_uri=http%3A%2F%2Fec2-43-201-38-151.ap-northeast-2.compute.amazonaws.com%3A18008%2Fuser%2Fgoogle&response_type=code&scope=https%3A%2F%2Fwww.googleapis.com%2Fauth%2Fuser.gender.read%20https%3A%2F%2Fwww.googleapis.com%2Fauth%2Fuserinfo.email%20https%3A%2F%2Fwww.googleapis.com%2Fauth%2Fuserinfo.profile&service=lso&o2v=2&ddm=0&flowName=GeneralOAuthFlow
+            
+            android: https://accounts.google.com/o/oauth2/v2/auth/oauthchooseaccount?client_id=988293661923-hirjupna1soehbqkncen0cfq3vgfmff7.apps.googleusercontent.com&redirect_uri=http%3A%2F%2Fec2-43-201-38-151.ap-northeast-2.compute.amazonaws.com%3A18008%2Fuser%2Fgoogle&response_type=code&scope=https%3A%2F%2Fwww.googleapis.com%2Fauth%2Fuser.gender.read%20https%3A%2F%2Fwww.googleapis.com%2Fauth%2Fuserinfo.email%20https%3A%2F%2Fwww.googleapis.com%2Fauth%2Fuserinfo.profile&service=lso&o2v=2&ddm=0&flowName=GeneralOAuthFlow
+            
+            IOS: https://accounts.google.com/o/oauth2/v2/auth/oauthchooseaccount?client_id=988293661923-mem51jsh0438ds4mv5693ka8iulbkkhp.apps.googleusercontent.com&redirect_uri=http%3A%2F%2Fec2-43-201-38-151.ap-northeast-2.compute.amazonaws.com%3A18008%2Fuser%2Fgoogle&response_type=code&scope=https%3A%2F%2Fwww.googleapis.com%2Fauth%2Fuser.gender.read%20https%3A%2F%2Fwww.googleapis.com%2Fauth%2Fuserinfo.email%20https%3A%2F%2Fwww.googleapis.com%2Fauth%2Fuserinfo.profile&service=lso&o2v=2&ddm=0&flowName=GeneralOAuthFlow""")
 
     UserOutput googleLogin(@RequestParam @Schema(description = "google oauth2.0 authorization code") String code, HttpServletResponse response);
 
