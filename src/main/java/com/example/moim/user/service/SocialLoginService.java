@@ -20,6 +20,8 @@ import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.RestTemplate;
 
+import java.net.URLDecoder;
+import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
@@ -52,6 +54,7 @@ public class SocialLoginService {
 
     public LoginOutput googleLogin(String code) {
         Map<String, String> params = new HashMap<>();
+        code = URLDecoder.decode(code, StandardCharsets.UTF_8);
         params.put("code", code);
         params.put("client_id", GOOGLE_CLIENT_ID);
         params.put("client_secret", GOOGLE_CLIENT_SECRET);
