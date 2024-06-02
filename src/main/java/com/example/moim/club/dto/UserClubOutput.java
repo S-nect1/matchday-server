@@ -2,8 +2,11 @@ package com.example.moim.club.dto;
 
 import com.example.moim.club.entity.UserClub;
 import lombok.Data;
+import org.springframework.core.io.FileUrlResource;
 
+import java.io.IOException;
 import java.time.LocalDate;
+import java.util.Base64;
 
 @Data
 public class UserClubOutput {
@@ -14,6 +17,7 @@ public class UserClubOutput {
     private LocalDate joinDate;
     private String birthday;
     private String phone;
+    private String img;
 
     public UserClubOutput(UserClub userClub) {
         this.userId = userClub.getId();
@@ -23,5 +27,12 @@ public class UserClubOutput {
         this.joinDate = userClub.getJoinDate();
         this.birthday = userClub.getUser().getBirthday();
         this.phone = userClub.getUser().getPhone();
+        if (userClub.getUser().getImgPath() != null) {
+            try {
+                this.img = Base64.getEncoder().encodeToString(new FileUrlResource(userClub.getUser().getImgPath()).getContentAsByteArray());
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+        }
     }
 }

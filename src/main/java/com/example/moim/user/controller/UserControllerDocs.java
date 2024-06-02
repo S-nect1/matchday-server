@@ -10,10 +10,12 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 
+import java.io.IOException;
 import java.util.List;
 
 @Tag(name = "회원 api")
@@ -59,7 +61,7 @@ public interface UserControllerDocs {
     UserOutput naverLogin(@RequestParam String code, HttpServletResponse response);
 
     @Operation(summary = "소셜로그인 후 유저 정보 입력")
-    void userInfoSave(@AuthenticationPrincipal UserDetailsImpl userDetailsImpl, @RequestBody @Valid SocialSignupInput socialSignupInput);
+    void userInfoSave(@AuthenticationPrincipal UserDetailsImpl userDetailsImpl, @ModelAttribute @Valid SocialSignupInput socialSignupInput) throws IOException;
 
     @Operation(summary = "accessToken 이 만료되었을 때 refreshToken 으로 로그인", description = "Authorization 에 accessToken, Authorization-refresh 에 refreshToken 발급")
     UserOutput userRefresh(@PathVariable String refreshToken, HttpServletResponse response);

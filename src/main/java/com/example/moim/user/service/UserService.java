@@ -1,6 +1,7 @@
 package com.example.moim.user.service;
 
 import com.example.moim.club.repository.UserClubRepository;
+import com.example.moim.global.util.FileStore;
 import com.example.moim.jwt.JWTUtil;
 import com.example.moim.user.dto.*;
 import com.example.moim.user.entity.User;
@@ -13,6 +14,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.io.IOException;
 import java.util.List;
 
 @Service
@@ -23,6 +25,7 @@ public class UserService {
     private final BCryptPasswordEncoder bCryptPasswordEncoder;
     private final AuthenticationManager authenticationManager;
     private final JWTUtil jwtUtil;
+    private final FileStore fileStore;
     
     public void signup(SignupInput signupInput) {
         signupInput.setPassword(bCryptPasswordEncoder.encode(signupInput.getPassword()));
@@ -54,9 +57,9 @@ public class UserService {
     }
 
     @Transactional
-    public void saveUserInfo(User loginUser, SocialSignupInput socialSignupInput) {
+    public void saveUserInfo(User loginUser, SocialSignupInput socialSignupInput) throws IOException {
         User user = userRepository.findById(loginUser.getId()).get();
-        user.fillUserInfo(socialSignupInput);
+        user.fillUserInfo(socialSignupInput, fileStore.storeFile(socialSignupInput.getImg()));
     }
 
     @Transactional

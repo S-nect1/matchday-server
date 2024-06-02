@@ -79,10 +79,11 @@ public class User extends BaseEntity {
         return user;
     }
 
-    public void fillUserInfo(SocialSignupInput socialSignupInput) {
+    public void fillUserInfo(SocialSignupInput socialSignupInput, String imgPath) {
         this.name = socialSignupInput.getName();
         this.birthday = socialSignupInput.getBirthday();
         this.phone = socialSignupInput.getPhone();
+        this.imgPath = imgPath;
         if (socialSignupInput.getFcmToken() != null) {
             this.fcmToken = socialSignupInput.getFcmToken();
         }
