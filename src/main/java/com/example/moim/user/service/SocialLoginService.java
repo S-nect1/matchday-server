@@ -1,5 +1,6 @@
 package com.example.moim.user.service;
 
+import com.example.moim.club.repository.UserClubRepository;
 import com.example.moim.jwt.JWTUtil;
 import com.example.moim.user.dto.GoogleUserSignup;
 import com.example.moim.user.dto.KakaoUserSignup;
@@ -34,6 +35,7 @@ import static org.springframework.http.HttpHeaders.CONTENT_TYPE;
 @RequiredArgsConstructor
 public class SocialLoginService {
     private final UserRepository userRepository;
+    private final UserClubRepository userClubRepository;
     private final JWTUtil jwtUtil;
     private final RestTemplate restTemplate;
 
@@ -112,9 +114,11 @@ public class SocialLoginService {
         if (findUser.isEmpty()) {
             user.setRefreshToken(jwtUtil.createRefreshToken(user));
             user = userRepository.save(user);
-            return new LoginOutput(user, jwtUtil.createAccessToken(user));
+            Boolean hasClub = userClubRepository.existsByUser(user);
+            return new LoginOutput(user, jwtUtil.createAccessToken(user), hasClub);
         }
         user = findUser.get();
-        return new LoginOutput(user, jwtUtil.createAccessToken(user));
+        Boolean hasClub = userClubRepository.existsByUser(user);
+        return new LoginOutput(user, jwtUtil.createAccessToken(user), hasClub);
     }
 }

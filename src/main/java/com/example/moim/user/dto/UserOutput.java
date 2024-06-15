@@ -15,6 +15,7 @@ public class UserOutput {
     private String gender;
     private String phone;
     private String img;
+    private Boolean hasClub;
 
     public UserOutput(User user) {
         this.email = user.getEmail();
@@ -37,6 +38,7 @@ public class UserOutput {
         this.birthday = loginOutput.getBirthday();
         this.gender = loginOutput.getGender();
         this.phone = loginOutput.getPhone();
+        this.hasClub = loginOutput.getHasClub();
         if (loginOutput.getImg() != null) {
             try {
                 this.img = Base64.getEncoder().encodeToString(new FileUrlResource(loginOutput.getImg()).getContentAsByteArray());
