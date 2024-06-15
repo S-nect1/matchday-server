@@ -22,6 +22,8 @@ public class Club extends BaseEntity {
     private String introduction;
     private String profileImgPath;
     private String backgroundImgPath;
+    private String activityArea;
+    private int memberCount;
     
     @OneToMany(mappedBy = "club", cascade = CascadeType.REMOVE)
     private List<UserClub> userClub = new ArrayList<>();
