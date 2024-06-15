@@ -29,6 +29,7 @@ public class User extends BaseEntity {
     private String imgPath;
     @Enumerated(EnumType.STRING)
     private Role role;
+    private String activityArea;
     @Column(unique = true)
     private String refreshToken;
     private String fcmToken;
@@ -84,6 +85,8 @@ public class User extends BaseEntity {
         this.birthday = socialSignupInput.getBirthday();
         this.phone = socialSignupInput.getPhone();
         this.imgPath = imgPath;
+        this.gender = Gender.from(socialSignupInput.getGender());
+        this.activityArea = socialSignupInput.getActivityArea();
         if (socialSignupInput.getFcmToken() != null) {
             this.fcmToken = socialSignupInput.getFcmToken();
         }
