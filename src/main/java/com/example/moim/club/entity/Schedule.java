@@ -29,7 +29,6 @@ public class Schedule extends BaseEntity {
     private String note;
     private int attend;
     private int nonAttend;
-    private int undecided;
 
     @OneToMany(mappedBy = "schedule", cascade = CascadeType.REMOVE)
     private List<Comment> comment = new ArrayList<>();
@@ -48,7 +47,6 @@ public class Schedule extends BaseEntity {
         }
         schedule.attend = 0;
         schedule.nonAttend = 0;
-        schedule.undecided = 0;
         return schedule;
     }
 
@@ -57,8 +55,6 @@ public class Schedule extends BaseEntity {
             this.attend += 1;
         } else if (attendance.equals("absent")) {
             this.nonAttend += 1;
-        } else {
-            this.undecided += 1;
         }
     }
 
@@ -67,15 +63,11 @@ public class Schedule extends BaseEntity {
             this.attend -= 1;
         } else if (originalAttendance.equals("absent")) {
             this.nonAttend -= 1;
-        } else {
-            this.undecided -= 1;
         }
         if (attendance.equals("attend")) {
             this.attend += 1;
         } else if (attendance.equals("absent")) {
             this.nonAttend += 1;
-        } else {
-            this.undecided += 1;
         }
     }
 

@@ -23,19 +23,11 @@ public class ScheduleVote extends BaseEntity {
         ScheduleVote scheduleVote = new ScheduleVote();
         scheduleVote.user = user;
         scheduleVote.schedule = schedule;
-        if (!(attendance.equals("attend") || attendance.equals("absent"))) {
-            scheduleVote.attendance = "undecided";
-        } else {
-            scheduleVote.attendance = attendance;
-        }
+        scheduleVote.attendance = attendance;
         return scheduleVote;
     }
 
     public void changeAttendance(String attendance) {
-        if (!(attendance.equals("attend") || attendance.equals("absent"))) {
-            this.attendance = "undecided";
-        } else {
-            this.attendance = attendance;
-        }
+        this.attendance = attendance;
     }
 }

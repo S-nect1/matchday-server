@@ -16,10 +16,9 @@ public class ScheduleDetailOutput {
     private String note;
     private int attend;
     private int nonAttend;
-    private int undecided;
-    private List<CommentOutput> commentOutputList;
+    List<ScheduleUserOutput> ScheduleUserList;
 
-    public ScheduleDetailOutput(Schedule schedule, List<CommentOutput> commentOutputList) {
+    public ScheduleDetailOutput(Schedule schedule, List<ScheduleUserOutput> ScheduleUserOutputList) {
         this.id = schedule.getId();
         this.title = schedule.getTitle();
         this.location = schedule.getLocation();
@@ -30,7 +29,6 @@ public class ScheduleDetailOutput {
         this.note = schedule.getNote();
         this.attend = schedule.getAttend();
         this.nonAttend = schedule.getNonAttend();
-        this.undecided = schedule.getUndecided();
-        this.commentOutputList = commentOutputList;
+        this.ScheduleUserList = ScheduleUserOutputList;
     }
 }
