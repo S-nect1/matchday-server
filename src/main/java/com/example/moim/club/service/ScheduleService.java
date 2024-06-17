@@ -77,9 +77,9 @@ public class ScheduleService {
             schedule.reVote(originalScheduleVote.get().getAttendance(), scheduleVoteInput.getAttendance());
             originalScheduleVote.get().changeAttendance(scheduleVoteInput.getAttendance());
         }
-        if (scheduleVoteInput.getAttendance().equals("attend")) {
-            eventPublisher.publishEvent(new ScheduleVoteEvent(schedule, user));
-        }
+//        if (scheduleVoteInput.getAttendance().equals("attend")) {
+//            eventPublisher.publishEvent(new ScheduleVoteEvent(schedule, user));
+//        }
     }
 
     public void saveComment(CommentInput commentInput, User user) {

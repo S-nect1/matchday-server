@@ -23,13 +23,13 @@ public class Notifications extends BaseEntity {
     private String contents;
     private Boolean isRead;
 
-    public static Notifications createScheduleSaveNotification(ScheduleSaveEvent scheduleSaveEvent) {
+    public static Notifications createScheduleSaveNotification(ScheduleSaveEvent scheduleSaveEvent, User targetUser) {
         Notifications notifications = new Notifications();
-        notifications.targetUser = scheduleSaveEvent.getUser();
+        notifications.targetUser = targetUser;
         Schedule schedule = scheduleSaveEvent.getSchedule();
         notifications.title = schedule.getClub().getTitle() + ": 새로운 일정 등록";
         notifications.category = "일정";
-        notifications.contents = schedule.getTitle() + " 일정이 등록되었습니다.";
+        notifications.contents = schedule.getTitle() + " 일정이 등록되었습니다.\n참가신청 바로가기!";
         notifications.isRead = false;
         return notifications;
     }
