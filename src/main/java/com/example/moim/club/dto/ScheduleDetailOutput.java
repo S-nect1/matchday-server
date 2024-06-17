@@ -30,7 +30,6 @@ public class ScheduleDetailOutput {
         this.note = schedule.getNote();
         this.attend = schedule.getAttend();
         this.nonAttend = schedule.getNonAttend();
-        this.undecided = schedule.getUndecided();
         this.commentOutputList = commentOutputList;
     }
 }
