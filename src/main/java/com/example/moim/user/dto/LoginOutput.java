@@ -13,6 +13,7 @@ public class LoginOutput {
     private String img;
     private String accessToken;
     private String refreshToken;
+    private Boolean hasClub;
 
     public LoginOutput(User user, String accessToken) {
         this.email = user.getEmail();
@@ -23,5 +24,17 @@ public class LoginOutput {
         this.img = user.getImgPath();//base64인코딩 해야함
         this.accessToken = accessToken;
         this.refreshToken = user.getRefreshToken();
+    }
+
+    public LoginOutput(User user, String accessToken, Boolean hasClub) {
+        this.email = user.getEmail();
+        this.name = user.getName();
+        this.birthday = user.getBirthday();
+        this.gender = user.getGender().toString();
+        this.phone = user.getPhone();
+        this.img = user.getImgPath();//base64인코딩 해야함
+        this.accessToken = accessToken;
+        this.refreshToken = user.getRefreshToken();
+        this.hasClub = hasClub;
     }
 }

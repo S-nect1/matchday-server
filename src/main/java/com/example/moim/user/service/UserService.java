@@ -45,7 +45,8 @@ public class UserService {
             userDetails.getUser().setFcmToken(loginInput.getFcmToken());
         }
         userDetails.getUser().setRefreshToken(jwtUtil.createRefreshToken(userDetails.getUser()));
-        return new LoginOutput(userDetails.getUser(), jwtUtil.createAccessToken(userDetails.getUser()));
+        Boolean hasClub = userClubRepository.existsByUser(userDetails.getUser());
+        return new LoginOutput(userDetails.getUser(), jwtUtil.createAccessToken(userDetails.getUser()), hasClub);
     }
 
     public UserOutput findUser(User user) {
@@ -65,7 +66,8 @@ public class UserService {
     @Transactional
     public LoginOutput userRefresh(String refreshToken) {
         User user = userRepository.findByRefreshToken(refreshToken).get();
+        Boolean hasClub = userClubRepository.existsByUser(user);
         user.setRefreshToken(jwtUtil.createRefreshToken(user));
-        return new LoginOutput(user, jwtUtil.createAccessToken(user));
+        return new LoginOutput(user, jwtUtil.createAccessToken(user), hasClub);
     }
 }

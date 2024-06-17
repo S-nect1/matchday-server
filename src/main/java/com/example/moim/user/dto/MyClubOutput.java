@@ -7,6 +7,7 @@ import lombok.Data;
 public class MyClubOutput {
     private Long clubId;
     private String clubName;
+    private String explanation;
 
     public MyClubOutput(UserClub userClub) {
         this.clubId = userClub.getClub().getId();

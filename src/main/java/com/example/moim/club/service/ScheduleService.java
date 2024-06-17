@@ -62,7 +62,8 @@ public class ScheduleService {
 
     public ScheduleDetailOutput findScheduleDetail(Long id) {
         Schedule schedule = scheduleRepository.findById(id).get();
-        return new ScheduleDetailOutput(schedule, commentRepository.findBySchedule(schedule).stream().map(CommentOutput::new).collect(Collectors.toList()));
+        return new ScheduleDetailOutput(schedule, scheduleVoteRepository.findBySchedule(schedule).stream()
+                .map(scheduleVote -> new ScheduleUserOutput(scheduleVote.getUser().getName(), scheduleVote.getUser().getImgPath())).toList());
 
     }
 
@@ -77,9 +78,9 @@ public class ScheduleService {
             schedule.reVote(originalScheduleVote.get().getAttendance(), scheduleVoteInput.getAttendance());
             originalScheduleVote.get().changeAttendance(scheduleVoteInput.getAttendance());
         }
-        if (scheduleVoteInput.getAttendance().equals("attend")) {
-            eventPublisher.publishEvent(new ScheduleVoteEvent(schedule, user));
-        }
+//        if (scheduleVoteInput.getAttendance().equals("attend")) {
+//            eventPublisher.publishEvent(new ScheduleVoteEvent(schedule, user));
+//        }
     }
 
     public void saveComment(CommentInput commentInput, User user) {
