@@ -62,7 +62,8 @@ public class ScheduleService {
 
     public ScheduleDetailOutput findScheduleDetail(Long id) {
         Schedule schedule = scheduleRepository.findById(id).get();
-        return new ScheduleDetailOutput(schedule, commentRepository.findBySchedule(schedule).stream().map(CommentOutput::new).collect(Collectors.toList()));
+        return new ScheduleDetailOutput(schedule, scheduleVoteRepository.findBySchedule(schedule).stream()
+                .map(scheduleVote -> new ScheduleUserOutput(scheduleVote.getUser().getName(), scheduleVote.getUser().getImgPath())).toList());
 
     }
 
