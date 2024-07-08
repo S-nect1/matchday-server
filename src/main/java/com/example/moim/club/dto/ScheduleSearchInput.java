@@ -6,4 +6,6 @@ import lombok.Data;
 public class ScheduleSearchInput {
     private Integer date;
     private Long clubId;
+    private String search;
+    private String category;
 }

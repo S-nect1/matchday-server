@@ -7,7 +7,7 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 public interface ScheduleRepositoryCustom {
-    List<Schedule> findByClubAndTime(Club club, LocalDateTime startTime, LocalDateTime endTime);
+    List<Schedule> findByClubAndTime(Club club, LocalDateTime startTime, LocalDateTime endTime, String search, String category);
 
     Schedule findScheduleById(Long id);
 }

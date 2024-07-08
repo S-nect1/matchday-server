@@ -24,5 +24,6 @@ public class SocialSignupInput {
     @NotBlank
     @Schema(description = "서울, 인천, 경기 북부, 경기 남부", example = "서울")
     private String activityArea;
+    private String introduction;
     private String fcmToken;
 }

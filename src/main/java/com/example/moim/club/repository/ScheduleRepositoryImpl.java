@@ -2,11 +2,13 @@ package com.example.moim.club.repository;
 
 import com.example.moim.club.entity.Club;
 import com.example.moim.club.entity.Schedule;
+import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import jakarta.persistence.EntityManager;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import static org.springframework.util.StringUtils.hasText;
 
 import static com.example.moim.club.entity.QClub.*;
 import static com.example.moim.club.entity.QSchedule.*;
@@ -20,12 +22,25 @@ public class ScheduleRepositoryImpl implements ScheduleRepositoryCustom {
     }
 
     @Override
-    public List<Schedule> findByClubAndTime(Club club, LocalDateTime startTime, LocalDateTime endTime) {
+    public List<Schedule> findByClubAndTime(Club club, LocalDateTime startTime, LocalDateTime endTime, String search, String category) {
         return queryFactory
                 .selectFrom(schedule)
                 .orderBy(schedule.startTime.asc())
                 .where(schedule.club.eq(club), schedule.startTime.goe(startTime), schedule.endTime.loe(endTime))
                 .fetch();
+    }
+    private BooleanExpression searchContains(String search) {
+        if (hasText(search)) {
+            return schedule.title.contains(search);
+        }
+        return null;
+    }
+
+    private BooleanExpression categoryContains(String category) {
+        if (hasText(category)) {
+            return schedule.category.contains(category);
+        }
+        return null;
     }
 
     @Override

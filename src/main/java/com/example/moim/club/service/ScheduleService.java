@@ -4,6 +4,7 @@ import com.example.moim.club.dto.*;
 import com.example.moim.club.entity.*;
 import com.example.moim.club.repository.*;
 import com.example.moim.exception.club.ClubPermissionException;
+import com.example.moim.notification.dto.ScheduleEncourageEvent;
 import com.example.moim.notification.dto.ScheduleSaveEvent;
 import com.example.moim.notification.dto.ScheduleVoteEvent;
 import com.example.moim.user.entity.User;
@@ -53,10 +54,12 @@ public class ScheduleService {
         return new ScheduleOutput(schedule);
     }
 
-    public List<ScheduleOutput> findSchedule(Integer date, Long clubId) {
-        return scheduleRepository.findByClubAndTime(clubRepository.findById(clubId).get(),
-                LocalDateTime.of(date / 100, date % 100, 1, 0, 0, 0).minusDays(6),
-                LocalDateTime.of(date / 100, date % 100, Month.of(date % 100).minLength(), 23, 59, 59).plusDays(6))
+    public List<ScheduleOutput> findSchedule(ScheduleSearchInput scheduleSearchInput) {
+        return scheduleRepository.findByClubAndTime(clubRepository.findById(scheduleSearchInput.getClubId()).get(),
+                LocalDateTime.of(scheduleSearchInput.getDate() / 100, scheduleSearchInput.getDate() % 100, 1, 0, 0, 0).minusDays(6),
+                LocalDateTime.of(scheduleSearchInput.getDate() / 100, scheduleSearchInput.getDate() % 100, Month.of(scheduleSearchInput.getDate() % 100).minLength(), 23, 59, 59).plusDays(6),
+                scheduleSearchInput.getSearch(),
+                scheduleSearchInput.getCategory())
                 .stream().map(ScheduleOutput::new).collect(Collectors.toList());
     }
 
@@ -81,6 +84,12 @@ public class ScheduleService {
 //        if (scheduleVoteInput.getAttendance().equals("attend")) {
 //            eventPublisher.publishEvent(new ScheduleVoteEvent(schedule, user));
 //        }
+    }
+
+    public void voteEncourage(Long id) {
+        Schedule schedule = scheduleRepository.findScheduleById(id);
+        List<User> userList = userClubRepository.findUserByClub(schedule.getClub());
+        eventPublisher.publishEvent(new ScheduleEncourageEvent(schedule, userList));
     }
 
     public void saveComment(CommentInput commentInput, User user) {
