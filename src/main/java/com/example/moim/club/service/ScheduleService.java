@@ -88,7 +88,7 @@ public class ScheduleService {
 
     public void voteEncourage(Long id) {
         Schedule schedule = scheduleRepository.findScheduleById(id);
-        List<User> userList = userClubRepository.findUserByClub(schedule.getClub());
+        List<User> userList = userClubRepository.findUserByClub(schedule.getClub()).stream().map(UserClub::getUser).toList();
         eventPublisher.publishEvent(new ScheduleEncourageEvent(schedule, userList));
     }
 
