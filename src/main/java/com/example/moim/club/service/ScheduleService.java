@@ -53,10 +53,12 @@ public class ScheduleService {
         return new ScheduleOutput(schedule);
     }
 
-    public List<ScheduleOutput> findSchedule(Integer date, Long clubId) {
-        return scheduleRepository.findByClubAndTime(clubRepository.findById(clubId).get(),
-                LocalDateTime.of(date / 100, date % 100, 1, 0, 0, 0).minusDays(6),
-                LocalDateTime.of(date / 100, date % 100, Month.of(date % 100).minLength(), 23, 59, 59).plusDays(6))
+    public List<ScheduleOutput> findSchedule(ScheduleSearchInput scheduleSearchInput) {
+        return scheduleRepository.findByClubAndTime(clubRepository.findById(scheduleSearchInput.getClubId()).get(),
+                LocalDateTime.of(scheduleSearchInput.getDate() / 100, scheduleSearchInput.getDate() % 100, 1, 0, 0, 0).minusDays(6),
+                LocalDateTime.of(scheduleSearchInput.getDate() / 100, scheduleSearchInput.getDate() % 100, Month.of(scheduleSearchInput.getDate() % 100).minLength(), 23, 59, 59).plusDays(6),
+                scheduleSearchInput.getSearch(),
+                scheduleSearchInput.getCategory())
                 .stream().map(ScheduleOutput::new).collect(Collectors.toList());
     }
 

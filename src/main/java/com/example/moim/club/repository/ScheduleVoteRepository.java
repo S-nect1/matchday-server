@@ -17,4 +17,7 @@ public interface ScheduleVoteRepository extends JpaRepository<ScheduleVote, Long
 
     @Query("select sv from ScheduleVote sv join fetch sv.user u where sv.schedule = :schedule")
     List<ScheduleVote> findBySchedule(@Param("schedule") Schedule schedule);
+
+    @Query("select sv from ScheduleVote sv join fetch sv.user u where sv.schedule.id = :id")
+    List<ScheduleVote> findByScheduleId(@Param("id") Long id);
 }
