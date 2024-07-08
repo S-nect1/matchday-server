@@ -1,6 +1,7 @@
 package com.example.moim.notification.service;
 
 import com.example.moim.club.repository.UserClubRepository;
+import com.example.moim.notification.dto.ScheduleEncourageEvent;
 import com.example.moim.notification.dto.ScheduleSaveEvent;
 import com.example.moim.notification.dto.ScheduleVoteEvent;
 import com.example.moim.notification.entity.Notifications;
@@ -36,6 +37,12 @@ public class NotificationEventHandler {
     public void handleScheduleVoteEvent(ScheduleVoteEvent scheduleVoteEvent) {
         log.info("이벤트 들어옴");
         sendNotification(Notifications.createScheduleVoteNotification(scheduleVoteEvent));
+    }
+
+    @EventListener
+    public void handleScheduleEncourageEvent(ScheduleEncourageEvent scheduleEncourageEvent) {
+        log.info("이벤트 들어옴");
+        sendEachNotification(scheduleEncourageEvent.getUserList().stream().map(user -> Notifications.ScheduleEncourageEvent(scheduleEncourageEvent.getSchedule(), user)).toList());
     }
 
     private void sendNotification(Notifications notification) {

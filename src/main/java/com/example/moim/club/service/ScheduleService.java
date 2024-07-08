@@ -4,6 +4,7 @@ import com.example.moim.club.dto.*;
 import com.example.moim.club.entity.*;
 import com.example.moim.club.repository.*;
 import com.example.moim.exception.club.ClubPermissionException;
+import com.example.moim.notification.dto.ScheduleEncourageEvent;
 import com.example.moim.notification.dto.ScheduleSaveEvent;
 import com.example.moim.notification.dto.ScheduleVoteEvent;
 import com.example.moim.user.entity.User;
@@ -83,6 +84,12 @@ public class ScheduleService {
 //        if (scheduleVoteInput.getAttendance().equals("attend")) {
 //            eventPublisher.publishEvent(new ScheduleVoteEvent(schedule, user));
 //        }
+    }
+
+    public void voteEncourage(Long id) {
+        Schedule schedule = scheduleRepository.findScheduleById(id);
+        List<User> userList = userClubRepository.findUserByClub(schedule.getClub());
+        eventPublisher.publishEvent(new ScheduleEncourageEvent(schedule, userList));
     }
 
     public void saveComment(CommentInput commentInput, User user) {
