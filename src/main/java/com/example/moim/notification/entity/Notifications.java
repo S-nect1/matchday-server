@@ -2,6 +2,7 @@ package com.example.moim.notification.entity;
 
 import com.example.moim.club.entity.Schedule;
 import com.example.moim.global.entity.BaseEntity;
+import com.example.moim.notification.dto.ScheduleEncourageEvent;
 import com.example.moim.notification.dto.ScheduleSaveEvent;
 import com.example.moim.notification.dto.ScheduleVoteEvent;
 import com.example.moim.user.entity.User;
@@ -41,6 +42,16 @@ public class Notifications extends BaseEntity {
         notifications.title = schedule.getClub().getTitle() + ": 일정 참여";
         notifications.category = "일정";
         notifications.contents = schedule.getTitle() + " 일정에 참여했습니다.";
+        notifications.isRead = false;
+        return notifications;
+    }
+
+    public static Notifications ScheduleEncourageEvent(Schedule schedule, User targetUser) {
+        Notifications notifications = new Notifications();
+        notifications.targetUser = targetUser;
+        notifications.title = schedule.getClub().getTitle() + ": 일정 참가 독려";
+        notifications.category = "일정";
+        notifications.contents = schedule.getTitle() + " 일정에 참가해보세요!";
         notifications.isRead = false;
         return notifications;
     }

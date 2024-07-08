@@ -28,7 +28,7 @@ public class ScheduleController implements ScheduleControllerDocs{
 
     @GetMapping(value = "/schedule", produces = MediaType.APPLICATION_JSON_VALUE)
     public List<ScheduleOutput> scheduleFind(@ModelAttribute ScheduleSearchInput scheduleSearchInput) {
-        return scheduleService.findSchedule(scheduleSearchInput.getDate(), scheduleSearchInput.getClubId());
+        return scheduleService.findSchedule(scheduleSearchInput);
     }
 
     @GetMapping("/schedule/{id}")
@@ -39,6 +39,11 @@ public class ScheduleController implements ScheduleControllerDocs{
     @PatchMapping("/schedule/vote")
     public void scheduleVote(@RequestBody ScheduleVoteInput scheduleVoteInput, @AuthenticationPrincipal UserDetailsImpl userDetailsImpl) {
         scheduleService.voteSchedule(scheduleVoteInput, userDetailsImpl.getUser());
+    }
+
+    @PostMapping("/schedule/encourage/{id}")
+    public void voteEncourage(@PathVariable Long id) {
+        scheduleService.voteEncourage(id);
     }
 
     @PostMapping("/schedule/comment")
