@@ -50,5 +50,7 @@ public class UserOutput {
                 throw new RuntimeException(e);
             }
         }
+        this.activityArea = loginOutput.getActivityArea();
+        this.introduction = loginOutput.getIntroduction();
     }
 }
