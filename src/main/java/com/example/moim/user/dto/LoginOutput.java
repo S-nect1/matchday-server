@@ -10,6 +10,8 @@ public class LoginOutput {
     private String birthday;
     private String gender;
     private String phone;
+    private String activityArea;
+    private String introduction;
     private String img;
     private String accessToken;
     private String refreshToken;
@@ -21,6 +23,8 @@ public class LoginOutput {
         this.birthday = user.getBirthday();
         this.gender = user.getGender().toString();
         this.phone = user.getPhone();
+        this.activityArea = user.getActivityArea();
+        this.introduction = user.getIntroduction();
         this.img = user.getImgPath();//base64인코딩 해야함
         this.accessToken = accessToken;
         this.refreshToken = user.getRefreshToken();
@@ -32,6 +36,8 @@ public class LoginOutput {
         this.birthday = user.getBirthday();
         this.gender = user.getGender().toString();
         this.phone = user.getPhone();
+        this.activityArea = user.getActivityArea();
+        this.introduction = user.getIntroduction();
         this.img = user.getImgPath();//base64인코딩 해야함
         this.accessToken = accessToken;
         this.refreshToken = user.getRefreshToken();
