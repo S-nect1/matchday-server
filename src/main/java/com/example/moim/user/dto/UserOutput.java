@@ -15,6 +15,8 @@ public class UserOutput {
     private String gender;
     private String phone;
     private String img;
+    private String activityArea;
+    private String introduction;
     private Boolean hasClub;
 
     public UserOutput(User user) {
@@ -30,6 +32,8 @@ public class UserOutput {
                 throw new RuntimeException(e);
             }
         }
+        this.activityArea = user.getActivityArea();
+        this.introduction = user.getIntroduction();
     }
 
     public UserOutput(LoginOutput loginOutput) {
