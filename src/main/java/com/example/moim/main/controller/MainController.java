@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequiredArgsConstructor
-public class MainController {
+public class MainController implements MainControllerDocs{
     private final MainService mainService;
 
     @GetMapping("/main")
