@@ -32,7 +32,7 @@ public interface ClubControllerDocs {
     @Operation(summary = "모임 회원 직책, 분류 수정")
     UserClubOutput clubUserUpdate(@AuthenticationPrincipal UserDetailsImpl userDetailsImpl, @RequestBody ClubUserUpdateInput clubInput);
 
-    @Operation(summary = "모임 정보 조회(모임 가입 후 메인페이지)", description = "응답으로 받는 profileImg, backgroundImg는 Base64 디코딩 필요")
+    @Operation(summary = "모임 정보 조회", description = "응답으로 받는 profileImg, backgroundImg는 Base64 디코딩 필요")
     ClubOutput clubFind(@AuthenticationPrincipal UserDetailsImpl userDetailsImpl, @PathVariable Long id);
 
     @Operation(summary = "모임 사진 변경")
