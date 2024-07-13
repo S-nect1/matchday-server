@@ -46,11 +46,16 @@ public class Club extends BaseEntity {
         club.ageRange = clubInput.getAgeRange();
         club.clubPassword = clubInput.getClubPassword();
         club.profileImgPath = profileImgPath;
+        club.memberCount = 1;
         return club;
     }
 
     public void changeProfileImg(String newImgPath) {
         this.profileImgPath = newImgPath;
+    }
+
+    public void plusMemberCount() {
+        memberCount++;
     }
 
 //    public void UpdateClub(ClubUpdateInput clubUpdateInput, String profileImgPath) {

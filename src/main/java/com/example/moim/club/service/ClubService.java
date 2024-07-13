@@ -54,9 +54,11 @@ public class ClubService {
         return clubRepository.findBySearchCond(clubSearchCond).stream().map(ClubSearchOutput::new).toList();
     }
 
+    @Transactional
     public UserClubOutput saveClubUser(User user, ClubUserSaveInput clubUserSaveInput) {
         Club club = clubRepository.findById(clubUserSaveInput.getClubId()).get();
         if (club.getClubPassword().equals(clubUserSaveInput.getClubPassword())) {
+            club.plusMemberCount();
             return new UserClubOutput(userClubRepository.save(UserClub.createUserClub(user, club)));
         }
         throw new ClubPasswordException("비밀번호를 다시 한번 확인해주세요.");
