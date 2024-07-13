@@ -14,10 +14,10 @@ import java.util.List;
 
 @Tag(name = "모임 api", description = "모임(club) 안에서 유저의 category에 따라 권한 부여. creator, admin / member, newmember")
 public interface ClubControllerDocs {
-    @Operation(summary = "모임 생성", description = "응답으로 받는 profileImg, backgroundImg는 Base64 디코딩 필요")
+    @Operation(summary = "모임 생성", description = "응답으로 받는 profileImg는 Base64 디코딩 필요")
     ClubOutput clubSave(@AuthenticationPrincipal UserDetailsImpl userDetailsImpl, @ModelAttribute ClubInput clubInput) throws IOException;
 
-//    @Operation(summary = "모임 수정", description = "응답으로 받는 profileImg, backgroundImg는 Base64 디코딩 필요")
+//    @Operation(summary = "모임 수정", description = "응답으로 받는 profileImg는 Base64 디코딩 필요")
 //    ClubOutput clubUpdate(@AuthenticationPrincipal UserDetailsImpl userDetailsImpl, @ModelAttribute ClubUpdateInput clubUpdateInput) throws IOException;
 
     @Operation(summary = "모임 검색")
@@ -32,7 +32,7 @@ public interface ClubControllerDocs {
     @Operation(summary = "모임 회원 직책, 분류 수정")
     UserClubOutput clubUserUpdate(@AuthenticationPrincipal UserDetailsImpl userDetailsImpl, @RequestBody ClubUserUpdateInput clubInput);
 
-    @Operation(summary = "모임 정보 조회", description = "응답으로 받는 profileImg, backgroundImg는 Base64 디코딩 필요")
+    @Operation(summary = "모임 정보 조회", description = "응답으로 받는 profileImg는 Base64 디코딩 필요")
     ClubOutput clubFind(@AuthenticationPrincipal UserDetailsImpl userDetailsImpl, @PathVariable Long id);
 
     @Operation(summary = "모임 사진 변경")

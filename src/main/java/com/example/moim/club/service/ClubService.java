@@ -19,6 +19,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.io.File;
 import java.io.IOException;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -83,11 +84,14 @@ public class ClubService {
 
     public ClubOutput findClub(Long id, User user) {
         Club club = clubRepository.findById(id).get();
-        List<UserClubOutput> userClubOutputs = userClubRepository.findAllByClub(club).stream().map(UserClubOutput::new).toList();
-        List<ScheduleOutput> scheduleOutputs = scheduleRepository.findTop5ByClubOrderByCreatedDateDesc(club).stream().map(ScheduleOutput::new).toList();
-        List<AwardOutput> awardOutputs = awardRepository.findByClub(club).stream().map(AwardOutput::new).toList();
-        UserClub userClub = userClubRepository.findByClubAndUser(club, user).get();
-        return new ClubOutput(club, userClubOutputs, scheduleOutputs, awardOutputs, userClub.getCategory());
+        Optional<UserClub> userClub = userClubRepository.findByClubAndUser(club, user);
+        if (userClub.isPresent()) {
+            List<UserClubOutput> userClubOutputs = userClubRepository.findAllByClub(club).stream().map(UserClubOutput::new).toList();
+//            List<ScheduleOutput> scheduleOutputs = scheduleRepository.findTop5ByClubOrderByCreatedDateDesc(club).stream().map(ScheduleOutput::new).toList();
+//            List<AwardOutput> awardOutputs = awardRepository.findByClub(club).stream().map(AwardOutput::new).toList();
+            return new ClubOutput(club, userClubOutputs, userClub.get().getCategory());
+        }
+        return new ClubOutput(club, null, null);
     }
 
     @Transactional
