@@ -16,6 +16,7 @@ public class ClubInput {
     private String university;
     private String gender;
     private String activityArea;
+    private String ageRange;
     private String mainEvent;
     private String clubPassword;
     private MultipartFile profileImg;

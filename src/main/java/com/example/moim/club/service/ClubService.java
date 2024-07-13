@@ -35,7 +35,7 @@ public class ClubService {
         return new ClubOutput(club, userClub.getCategory());
     }
 
-//    @Transactional
+    //    @Transactional
 //    public ClubOutput updateClub(User user, ClubUpdateInput clubUpdateInput) throws IOException {
 //        Club club = clubRepository.findById(clubUpdateInput.getId()).get();
 //        UserClub userClub = userClubRepository.findByClubAndUser(club, user).get();
@@ -49,6 +49,9 @@ public class ClubService {
 //        club.UpdateClub(clubUpdateInput, fileStore.storeFile(clubUpdateInput.getProfileImg()));
 //        return new ClubOutput(club);
 //    }
+    public List<ClubSearchOutput> searchClub(ClubSearchCond clubSearchCond) {
+        return clubRepository.findBySearchCond(clubSearchCond).stream().map(ClubSearchOutput::new).toList();
+    }
 
     public UserClubOutput saveClubUser(User user, ClubUserSaveInput clubUserSaveInput) {
         return new UserClubOutput(userClubRepository.save(UserClub.createUserClub(user, clubRepository.findById(clubUserSaveInput.getClubId()).get())));

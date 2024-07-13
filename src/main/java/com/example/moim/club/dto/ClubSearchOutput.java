@@ -1,4 +1,4 @@
-package com.example.moim.main.dto;
+package com.example.moim.club.dto;
 
 import com.example.moim.club.entity.Club;
 import lombok.Data;
@@ -8,14 +8,14 @@ import java.io.IOException;
 import java.util.Base64;
 
 @Data
-public class RecommendClubListOutput {
+public class ClubSearchOutput {
     private Long id;
     private String title;
     private String explanation;
     private int memberCount;
     private String profileImg;
 
-    public RecommendClubListOutput(Club club) {
+    public ClubSearchOutput(Club club) {
         this.id = club.getId();
         this.title = club.getTitle();
         this.explanation = club.getExplanation();

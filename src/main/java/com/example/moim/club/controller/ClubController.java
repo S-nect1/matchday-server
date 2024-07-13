@@ -10,6 +10,7 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 import java.io.IOException;
+import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
@@ -25,6 +26,11 @@ public class ClubController implements ClubControllerDocs{
 //    public ClubOutput clubUpdate(@AuthenticationPrincipal UserDetailsImpl userDetailsImpl, @ModelAttribute ClubUpdateInput clubUpdateInput) throws IOException {
 //        return clubService.updateClub(userDetailsImpl.getUser(), clubUpdateInput);
 //    }
+
+    @GetMapping("/clubs")
+    public List<ClubSearchOutput> findClubs(@AuthenticationPrincipal UserDetailsImpl userDetailsImpl, @ModelAttribute ClubSearchCond clubSearchCond) {
+        return clubService.searchClub(clubSearchCond);
+    }
 
     @PostMapping("/club/users")
     public UserClubOutput clubUserSave(@AuthenticationPrincipal UserDetailsImpl userDetailsImpl, @RequestBody ClubUserSaveInput clubUserSaveInput) {

@@ -25,6 +25,7 @@ public class Club extends BaseEntity {
     private String gender;
     private String activityArea;
     private String mainEvent;
+    private String ageRange;
     private String clubPassword;
     private String profileImgPath;
     private int memberCount;
@@ -42,6 +43,7 @@ public class Club extends BaseEntity {
         club.gender = clubInput.getGender();
         club.activityArea = clubInput.getActivityArea();
         club.mainEvent = clubInput.getMainEvent();
+        club.ageRange = clubInput.getAgeRange();
         club.clubPassword = clubInput.getClubPassword();
         club.profileImgPath = profileImgPath;
         return club;
