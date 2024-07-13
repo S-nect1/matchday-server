@@ -19,4 +19,9 @@ public class ClubControllerAdvice {
     public ResponseEntity<ErrorResult> ClubPermissionExHandle(ClubPermissionException e) {
         return new ResponseEntity<>(new ErrorResult(e.getMessage()), HttpStatus.UNAUTHORIZED);
     }
+
+    @ExceptionHandler
+    public ResponseEntity<ErrorResult> ClubPasswordExHandle(ClubPasswordException e) {
+        return new ResponseEntity<>(new ErrorResult(e.getMessage()), HttpStatus.BAD_REQUEST);
+    }
 }

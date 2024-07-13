@@ -16,7 +16,6 @@ public class ClubOutput {
     private String explanation;
     private String introduction;
     private String profileImg;
-    private String backgroundImg;
     private List<ScheduleOutput> scheduleList;
     private List<AwardOutput> awardList;
     private List<UserClubOutput> userList;
@@ -28,9 +27,6 @@ public class ClubOutput {
         try {
             if (club.getProfileImgPath() != null) {
                 this.profileImg = Base64.getEncoder().encodeToString(new FileUrlResource(club.getProfileImgPath()).getContentAsByteArray());
-            }
-            if (club.getBackgroundImgPath() != null) {
-                this.backgroundImg = Base64.getEncoder().encodeToString(new FileUrlResource(club.getBackgroundImgPath()).getContentAsByteArray());
             }
         } catch (IOException e) {
             throw new RuntimeException(e);
@@ -46,9 +42,6 @@ public class ClubOutput {
             if (club.getProfileImgPath() != null) {
                 this.profileImg = Base64.getEncoder().encodeToString(new FileUrlResource(club.getProfileImgPath()).getContentAsByteArray());
             }
-            if (club.getBackgroundImgPath() != null) {
-                this.backgroundImg = Base64.getEncoder().encodeToString(new FileUrlResource(club.getBackgroundImgPath()).getContentAsByteArray());
-            }
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
@@ -62,9 +55,6 @@ public class ClubOutput {
         try {
             if (club.getProfileImgPath() != null) {
                 this.profileImg = Base64.getEncoder().encodeToString(new FileUrlResource(club.getProfileImgPath()).getContentAsByteArray());
-            }
-            if (club.getBackgroundImgPath() != null) {
-                this.backgroundImg = Base64.getEncoder().encodeToString(new FileUrlResource(club.getBackgroundImgPath()).getContentAsByteArray());
             }
         } catch (IOException e) {
             throw new RuntimeException(e);

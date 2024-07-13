@@ -10,7 +10,14 @@ public class ClubInput {
     private String title;
     @NotBlank(message = "모임 설명을 적어야합니다!")
     private String explanation;
+    @NotBlank(message = "모임 소개를 적어야합니다!")
     private String introduction;
+    private String category;
+    private String university;
+    private String gender;
+    private String activityArea;
+    private String ageRange;
+    private String mainEvent;
+    private String clubPassword;
     private MultipartFile profileImg;
-    private MultipartFile backgroundImg;
 }
