@@ -22,7 +22,11 @@ public interface UserClubRepository extends JpaRepository<UserClub, Long> {
 
     Optional<UserClub> findByClubAndUser(Club club, User user);
 
-    List<UserClub> findByUser(User user);
+    @Transactional(readOnly = true)
+    @Query("select uc from UserClub uc" +
+            " join fetch uc.club" +
+            " where uc.user = :user")
+    List<UserClub> findByUser(@Param("user") User user);
 
     Boolean existsByUser(User user);
 

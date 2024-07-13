@@ -54,7 +54,7 @@ public class UserService {
     }
 
     public List<MyClubOutput> findUserClub(User user) {
-        return userClubRepository.findByUser(user).stream().map(MyClubOutput::new).toList();
+        return userClubRepository.findByUser(user).stream().map(userClub -> new MyClubOutput(userClub.getClub())).toList();
     }
 
     @Transactional
