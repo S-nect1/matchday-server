@@ -16,9 +16,16 @@ public class ClubOutput {
     private String explanation;
     private String introduction;
     private String profileImg;
-    private List<ScheduleOutput> scheduleList;
-    private List<AwardOutput> awardList;
+    private String category;
+    private String university;
+    private String gender;
+    private String activityArea;
+    private String mainEvent;
+    private String ageRange;
+//    private List<ScheduleOutput> scheduleList;
+//    private List<AwardOutput> awardList;
     private List<UserClubOutput> userList;
+    private int memberCount;
 
     public ClubOutput(Club club) {
         this.id = club.getId();
@@ -47,11 +54,17 @@ public class ClubOutput {
         }
     }
 
-    public ClubOutput(Club club, List<UserClubOutput> userList, List<ScheduleOutput> scheduleOutputs, List<AwardOutput> awardOutputs, String category) {
+    public ClubOutput(Club club, List<UserClubOutput> userList, String category) {
         this.userCategoryInClub = category;
         this.id = club.getId();
         this.title = club.getTitle();
         this.explanation = club.getExplanation();
+        this.category = club.getCategory();
+        this.university = club.getUniversity();
+        this.gender = club.getGender();
+        this.activityArea = club.getActivityArea();
+        this.mainEvent = club.getMainEvent();
+        this.ageRange = club.getAgeRange();
         try {
             if (club.getProfileImgPath() != null) {
                 this.profileImg = Base64.getEncoder().encodeToString(new FileUrlResource(club.getProfileImgPath()).getContentAsByteArray());
@@ -59,8 +72,9 @@ public class ClubOutput {
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
-        this.scheduleList = scheduleOutputs;
-        this.awardList = awardOutputs;
+//        this.scheduleList = scheduleOutputs;
+//        this.awardList = awardOutputs;
         this.userList = userList;
+        this.memberCount = club.getMemberCount();
     }
 }
