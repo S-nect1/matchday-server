@@ -7,6 +7,7 @@ import com.example.moim.club.repository.AwardRepository;
 import com.example.moim.club.repository.ClubRepository;
 import com.example.moim.club.repository.ScheduleRepository;
 import com.example.moim.club.repository.UserClubRepository;
+import com.example.moim.exception.club.ClubPasswordException;
 import com.example.moim.exception.club.ClubPermissionException;
 import com.example.moim.global.util.FileStore;
 import com.example.moim.user.entity.User;
@@ -54,7 +55,11 @@ public class ClubService {
     }
 
     public UserClubOutput saveClubUser(User user, ClubUserSaveInput clubUserSaveInput) {
-        return new UserClubOutput(userClubRepository.save(UserClub.createUserClub(user, clubRepository.findById(clubUserSaveInput.getClubId()).get())));
+        Club club = clubRepository.findById(clubUserSaveInput.getClubId()).get();
+        if (club.getClubPassword().equals(clubUserSaveInput.getClubPassword())) {
+            return new UserClubOutput(userClubRepository.save(UserClub.createUserClub(user, club)));
+        }
+        throw new ClubPasswordException("비밀번호를 다시 한번 확인해주세요.");
     }
 
 //    public UserClubOutput inviteClubUser(User user, ClubInviteInput clubInviteInput) {
