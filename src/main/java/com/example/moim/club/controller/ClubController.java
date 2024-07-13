@@ -10,6 +10,7 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 import java.io.IOException;
+import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
@@ -21,9 +22,14 @@ public class ClubController implements ClubControllerDocs{
         return clubService.saveClub(userDetailsImpl.getUser(), clubInput);
     }
 
-    @PatchMapping("/club")
-    public ClubOutput clubUpdate(@AuthenticationPrincipal UserDetailsImpl userDetailsImpl, @ModelAttribute ClubUpdateInput clubUpdateInput) throws IOException {
-        return clubService.updateClub(userDetailsImpl.getUser(), clubUpdateInput);
+//    @PatchMapping("/club")
+//    public ClubOutput clubUpdate(@AuthenticationPrincipal UserDetailsImpl userDetailsImpl, @ModelAttribute ClubUpdateInput clubUpdateInput) throws IOException {
+//        return clubService.updateClub(userDetailsImpl.getUser(), clubUpdateInput);
+//    }
+
+    @GetMapping("/clubs")
+    public List<ClubSearchOutput> findClubs(@AuthenticationPrincipal UserDetailsImpl userDetailsImpl, @ModelAttribute ClubSearchCond clubSearchCond) {
+        return clubService.searchClub(clubSearchCond);
     }
 
     @PostMapping("/club/users")
@@ -49,10 +55,5 @@ public class ClubController implements ClubControllerDocs{
     @PatchMapping(value = "/club/profile", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public void profileImgUpdate(@AuthenticationPrincipal UserDetailsImpl userDetailsImpl, @ModelAttribute @Valid ClubImgInput clubImgInput) throws IOException {
         clubService.updateProfileImg(clubImgInput);
-    }
-
-    @PatchMapping(value = "/club/background", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    public void backgroundImgUpdate(@AuthenticationPrincipal UserDetailsImpl userDetailsImpl, @ModelAttribute @Valid ClubImgInput clubImgInput) throws IOException {
-        clubService.updateBackgroundImg(clubImgInput);
     }
 }

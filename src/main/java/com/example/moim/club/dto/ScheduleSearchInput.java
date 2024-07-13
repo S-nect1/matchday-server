@@ -4,8 +4,8 @@ import lombok.Data;
 
 @Data
 public class ScheduleSearchInput {
-    private Integer date;
-    private Long clubId;
-    private String search;
-    private String category;
+    private final Integer date;
+    private final Long clubId;
+    private final String search;
+    private final String category;
 }
