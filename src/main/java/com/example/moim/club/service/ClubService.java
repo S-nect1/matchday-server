@@ -30,28 +30,25 @@ public class ClubService {
     private final FileStore fileStore;
 
     public ClubOutput saveClub(User user, ClubInput clubInput) throws IOException {
-        Club club = clubRepository.save(Club.createClub(clubInput, fileStore.storeFile(clubInput.getProfileImg()), fileStore.storeFile(clubInput.getBackgroundImg())));
+        Club club = clubRepository.save(Club.createClub(clubInput, fileStore.storeFile(clubInput.getProfileImg())));
         UserClub userClub = userClubRepository.save(UserClub.createLeaderUserClub(user, club));
         return new ClubOutput(club, userClub.getCategory());
     }
 
-    @Transactional
-    public ClubOutput updateClub(User user, ClubUpdateInput clubUpdateInput) throws IOException {
-        Club club = clubRepository.findById(clubUpdateInput.getId()).get();
-        UserClub userClub = userClubRepository.findByClubAndUser(club, user).get();
-        if (!(userClub.getCategory().equals("creator") || userClub.getCategory().equals("admin"))) {
-            throw new ClubPermissionException("모임 정보를 수정할 권한이 없습니다.");
-        }
-
-        if (club.getProfileImgPath() != null) {
-            new File(club.getProfileImgPath()).delete();
-        }
-        if (club.getBackgroundImgPath() != null) {
-            new File(club.getBackgroundImgPath()).delete();
-        }
-        club.UpdateClub(clubUpdateInput, fileStore.storeFile(clubUpdateInput.getProfileImg()), fileStore.storeFile(clubUpdateInput.getBackgroundImg()));
-        return new ClubOutput(club);
-    }
+//    @Transactional
+//    public ClubOutput updateClub(User user, ClubUpdateInput clubUpdateInput) throws IOException {
+//        Club club = clubRepository.findById(clubUpdateInput.getId()).get();
+//        UserClub userClub = userClubRepository.findByClubAndUser(club, user).get();
+//        if (!(userClub.getCategory().equals("creator") || userClub.getCategory().equals("admin"))) {
+//            throw new ClubPermissionException("모임 정보를 수정할 권한이 없습니다.");
+//        }
+//
+//        if (club.getProfileImgPath() != null) {
+//            new File(club.getProfileImgPath()).delete();
+//        }
+//        club.UpdateClub(clubUpdateInput, fileStore.storeFile(clubUpdateInput.getProfileImg()));
+//        return new ClubOutput(club);
+//    }
 
     public UserClubOutput saveClubUser(User user, ClubUserSaveInput clubUserSaveInput) {
         return new UserClubOutput(userClubRepository.save(UserClub.createUserClub(user, clubRepository.findById(clubUserSaveInput.getClubId()).get())));
@@ -90,14 +87,5 @@ public class ClubService {
             new File(club.getProfileImgPath()).delete();
         }
         club.changeProfileImg(fileStore.storeFile(clubImgInput.getImg()));
-    }
-
-    @Transactional
-    public void updateBackgroundImg(ClubImgInput clubImgInput) throws IOException {
-        Club club = clubRepository.findById(clubImgInput.getId()).get();
-        if (club.getBackgroundImgPath() != null) {
-            new File(club.getBackgroundImgPath()).delete();
-        }
-        club.changeBackgroundImg(fileStore.storeFile(clubImgInput.getImg()));
     }
 }

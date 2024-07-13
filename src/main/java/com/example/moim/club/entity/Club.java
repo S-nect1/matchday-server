@@ -20,21 +20,30 @@ public class Club extends BaseEntity {
     private String explanation;
     @Column(length = 500)
     private String introduction;
-    private String profileImgPath;
-    private String backgroundImgPath;
+    private String category;
+    private String university;
+    private String gender;
     private String activityArea;
+    private String mainEvent;
+    private String clubPassword;
+    private String profileImgPath;
     private int memberCount;
     
     @OneToMany(mappedBy = "club", cascade = CascadeType.REMOVE)
     private List<UserClub> userClub = new ArrayList<>();
 
-    public static Club createClub(ClubInput clubInput, String profileImgPath, String backImgPath) {
+    public static Club createClub(ClubInput clubInput, String profileImgPath) {
         Club club = new Club();
         club.title = clubInput.getTitle();
         club.explanation = clubInput.getExplanation();
         club.introduction = clubInput.getIntroduction();
+        club.category = clubInput.getCategory();
+        club.university = clubInput.getUniversity();
+        club.gender = clubInput.getGender();
+        club.activityArea = clubInput.getActivityArea();
+        club.mainEvent = clubInput.getMainEvent();
+        club.clubPassword = clubInput.getClubPassword();
         club.profileImgPath = profileImgPath;
-        club.backgroundImgPath = backImgPath;
         return club;
     }
 
@@ -42,15 +51,16 @@ public class Club extends BaseEntity {
         this.profileImgPath = newImgPath;
     }
 
-    public void changeBackgroundImg(String newImgPath) {
-        this.backgroundImgPath = newImgPath;
-    }
-
-    public void UpdateClub(ClubUpdateInput clubUpdateInput, String profileImgPath, String backImgPath) {
-        this.title = clubUpdateInput.getTitle();
-        this.explanation = clubUpdateInput.getExplanation();
-        this.introduction = clubUpdateInput.getIntroduction();
-        this.profileImgPath = profileImgPath;
-        this.backgroundImgPath = backImgPath;
-    }
+//    public void UpdateClub(ClubUpdateInput clubUpdateInput, String profileImgPath) {
+//        this.title = clubUpdateInput.getTitle();
+//        this.explanation = clubUpdateInput.getExplanation();
+//        this.introduction = clubUpdateInput.getIntroduction();
+//        this.category = clubInput.getCategory();
+//        this.university = clubInput.getUniversity();
+//        this.gender = clubInput.getGender();
+//        this.activityArea = clubInput.getActivityArea();
+//        this.mainEvent = clubInput.getMainEvent();
+//        this.clubPassword = clubInput.getClubPassword();
+//        this.profileImgPath = profileImgPath;
+//    }
 }

@@ -16,8 +16,8 @@ public interface ClubControllerDocs {
     @Operation(summary = "모임 생성", description = "응답으로 받는 profileImg, backgroundImg는 Base64 디코딩 필요")
     ClubOutput clubSave(@AuthenticationPrincipal UserDetailsImpl userDetailsImpl, @ModelAttribute ClubInput clubInput) throws IOException;
 
-    @Operation(summary = "모임 수정", description = "응답으로 받는 profileImg, backgroundImg는 Base64 디코딩 필요")
-    ClubOutput clubUpdate(@AuthenticationPrincipal UserDetailsImpl userDetailsImpl, @ModelAttribute ClubUpdateInput clubUpdateInput) throws IOException;
+//    @Operation(summary = "모임 수정", description = "응답으로 받는 profileImg, backgroundImg는 Base64 디코딩 필요")
+//    ClubOutput clubUpdate(@AuthenticationPrincipal UserDetailsImpl userDetailsImpl, @ModelAttribute ClubUpdateInput clubUpdateInput) throws IOException;
 
     @Operation(summary = "모임 가입")
     UserClubOutput clubUserSave(@AuthenticationPrincipal UserDetailsImpl userDetailsImpl, @RequestBody ClubUserSaveInput clubInput);
@@ -31,9 +31,7 @@ public interface ClubControllerDocs {
     @Operation(summary = "모임 정보 조회(모임 가입 후 메인페이지)", description = "응답으로 받는 profileImg, backgroundImg는 Base64 디코딩 필요")
     ClubOutput clubFind(@AuthenticationPrincipal UserDetailsImpl userDetailsImpl, @PathVariable Long id);
 
-    @Operation(summary = "모임 프사 변경")
+    @Operation(summary = "모임 사진 변경")
     void profileImgUpdate(@AuthenticationPrincipal UserDetailsImpl userDetailsImpl, @ModelAttribute ClubImgInput clubImgInput) throws IOException;
 
-    @Operation(summary = "모임 배경사진 변경")
-    void backgroundImgUpdate(@AuthenticationPrincipal UserDetailsImpl userDetailsImpl, @ModelAttribute ClubImgInput clubImgInput) throws IOException;
 }

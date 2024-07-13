@@ -21,10 +21,10 @@ public class ClubController implements ClubControllerDocs{
         return clubService.saveClub(userDetailsImpl.getUser(), clubInput);
     }
 
-    @PatchMapping("/club")
-    public ClubOutput clubUpdate(@AuthenticationPrincipal UserDetailsImpl userDetailsImpl, @ModelAttribute ClubUpdateInput clubUpdateInput) throws IOException {
-        return clubService.updateClub(userDetailsImpl.getUser(), clubUpdateInput);
-    }
+//    @PatchMapping("/club")
+//    public ClubOutput clubUpdate(@AuthenticationPrincipal UserDetailsImpl userDetailsImpl, @ModelAttribute ClubUpdateInput clubUpdateInput) throws IOException {
+//        return clubService.updateClub(userDetailsImpl.getUser(), clubUpdateInput);
+//    }
 
     @PostMapping("/club/users")
     public UserClubOutput clubUserSave(@AuthenticationPrincipal UserDetailsImpl userDetailsImpl, @RequestBody ClubUserSaveInput clubUserSaveInput) {
@@ -49,10 +49,5 @@ public class ClubController implements ClubControllerDocs{
     @PatchMapping(value = "/club/profile", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public void profileImgUpdate(@AuthenticationPrincipal UserDetailsImpl userDetailsImpl, @ModelAttribute @Valid ClubImgInput clubImgInput) throws IOException {
         clubService.updateProfileImg(clubImgInput);
-    }
-
-    @PatchMapping(value = "/club/background", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    public void backgroundImgUpdate(@AuthenticationPrincipal UserDetailsImpl userDetailsImpl, @ModelAttribute @Valid ClubImgInput clubImgInput) throws IOException {
-        clubService.updateBackgroundImg(clubImgInput);
     }
 }
