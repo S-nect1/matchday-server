@@ -52,7 +52,7 @@ public interface UserControllerDocs {
             Authorization 에 accessToken, Authorization-refresh 에 refreshToken 발급
             
             https://kauth.kakao.com/oauth/authorize?client_id=9d0793ca3b227d6322833657b4678e07&redirect_uri=http://43.201.38.151:18008/user/kakao&response_type=code""")
-    UserOutput kakaoLogin(@RequestParam @Schema(description = "kakao oauth2.0 authorization code")String code, HttpServletResponse response);
+    UserOutput kakaoLogin(@RequestParam @Schema(description = "kakao oauth2.0 accessToken")String accessToken, HttpServletResponse response);
 
     @Operation(summary = "네이버 계정으로 회원가입/로그인", description = """
             Authorization 에 accessToken, Authorization-refresh 에 refreshToken 발급

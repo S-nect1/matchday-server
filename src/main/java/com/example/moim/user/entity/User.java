@@ -68,7 +68,6 @@ public class User extends BaseEntity {
     public static User createKakaoUser(KakaoUserSignup kakaoUserSignup) {
         User user = new User();
         user.email = kakaoUserSignup.getEmail();
-        user.gender = Gender.from(kakaoUserSignup.getGender());
         user.role = Role.USER;
         return user;
     }

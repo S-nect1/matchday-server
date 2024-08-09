@@ -74,26 +74,26 @@ public class SocialLoginService {
         return getLoginOutput(User.createGoogleUser(googleUserSignup));
     }
 
-    public LoginOutput kakaoLogin(String code) {
-        MultiValueMap<String, String> params = new LinkedMultiValueMap<>();
-        params.add("code", code);
-        params.add("client_id", KAKAO_CLIENT_ID);
-        params.add("redirect_uri", KAKAO_REDIRECT_URL);
-        params.add("grant_type", "authorization_code");
+    public LoginOutput kakaoLogin(String accessToken) {
+//        MultiValueMap<String, String> params = new LinkedMultiValueMap<>();
+//        params.add("code", code);
+//        params.add("client_id", KAKAO_CLIENT_ID);
+//        params.add("redirect_uri", KAKAO_REDIRECT_URL);
+//        params.add("grant_type", "authorization_code");
         HttpHeaders httpHeaders = new HttpHeaders();
         httpHeaders.set(CONTENT_TYPE, "application/x-www-form-urlencoded");
-
-        ResponseEntity<JsonNode> tokenResponse = restTemplate.postForEntity("https://kauth.kakao.com/oauth/token", new HttpEntity<>(params, httpHeaders), JsonNode.class);
-        String accessToken = tokenResponse.getBody().get("access_token").asText();
+//
+//        ResponseEntity<JsonNode> tokenResponse = restTemplate.postForEntity("https://kauth.kakao.com/oauth/token", new HttpEntity<>(params, httpHeaders), JsonNode.class);
+//        String accessToken = tokenResponse.getBody().get("access_token").asText();
 
 //        // "access_token" 필드의 값을 추출후 토큰으로 정보 얻어옴
         httpHeaders.set(AUTHORIZATION, "Bearer " + accessToken);
         HttpEntity<MultiValueMap<String, String>> httpEntity = new HttpEntity<>(httpHeaders);
         JsonNode body = restTemplate
-                .exchange("https://kapi.kakao.com/v2/user/me?property_keys=[\"kakao_account.gender\",\"kakao_account.email\"]",
+                .exchange("https://kapi.kakao.com/v2/user/me?property_keys=[\"kakao_account.email\"]",
                         HttpMethod.GET, httpEntity, JsonNode.class).getBody().get("kakao_account");
 
-        return getLoginOutput(User.createKakaoUser(new KakaoUserSignup(body.get("gender").asText(), body.get("email").asText())));
+        return getLoginOutput(User.createKakaoUser(new KakaoUserSignup(body.get("email").asText())));
     }
 
     public LoginOutput naverLogin(String code) {
