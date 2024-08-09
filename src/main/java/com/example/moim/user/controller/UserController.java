@@ -52,8 +52,8 @@ public class UserController implements UserControllerDocs{
     }
 
     @GetMapping("/user/kakao")
-    public UserOutput kakaoLogin(@RequestParam String code, HttpServletResponse response) {
-        LoginOutput loginOutput = socialLoginService.kakaoLogin(code);
+    public UserOutput kakaoLogin(@RequestParam String accessToken, HttpServletResponse response) {
+        LoginOutput loginOutput = socialLoginService.kakaoLogin(accessToken);
         response.addHeader("Authorization", "Bearer " + loginOutput.getAccessToken());
         response.addHeader("Authorization-refresh", loginOutput.getRefreshToken());
         return new UserOutput(loginOutput);

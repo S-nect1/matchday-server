@@ -6,11 +6,9 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 public class KakaoUserSignup {
-    private String gender;
     private String email;
 
-    public KakaoUserSignup(String gender, String email) {
-        this.gender = gender;
+    public KakaoUserSignup(String email) {
         this.email = email;
     }
 }
