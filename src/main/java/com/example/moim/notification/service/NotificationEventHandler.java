@@ -3,7 +3,7 @@ package com.example.moim.notification.service;
 import com.example.moim.club.repository.UserClubRepository;
 import com.example.moim.notification.dto.ScheduleEncourageEvent;
 import com.example.moim.notification.dto.ScheduleSaveEvent;
-import com.example.moim.notification.dto.ScheduleVoteEvent;
+import com.example.moim.notification.dto.ClubJoinEvent;
 import com.example.moim.notification.entity.Notifications;
 import com.example.moim.notification.repository.NotificationRepository;
 import lombok.RequiredArgsConstructor;
@@ -11,9 +11,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.event.EventListener;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Component;
-import org.springframework.transaction.annotation.Propagation;
-import org.springframework.transaction.annotation.Transactional;
-import org.springframework.transaction.event.TransactionalEventListener;
 
 import java.util.List;
 
@@ -23,6 +20,15 @@ import java.util.List;
 public class NotificationEventHandler {
     private final NotificationRepository notificationRepository;
     private final UserClubRepository userClubRepository;
+
+    @Async
+    @EventListener
+    public void handleClubJoinEvent(ClubJoinEvent clubJoinEvent) {
+        log.info("이벤트 들어옴");
+        sendEachNotification(userClubRepository.findAllByClub(clubJoinEvent.getClub()).stream()
+                .map(userClub -> Notifications.createClubJoinNotification(clubJoinEvent, userClub.getUser())).toList());
+    }
+
     @Async
     @EventListener
     public void handleScheduleSaveEvent(ScheduleSaveEvent scheduleSaveEvent) {
@@ -31,18 +37,18 @@ public class NotificationEventHandler {
                 .map(userClub -> Notifications.createScheduleSaveNotification(scheduleSaveEvent, userClub.getUser())).toList());
     }
 
-    @Async
-    @Transactional(propagation = Propagation.REQUIRES_NEW)
-    @TransactionalEventListener
-    public void handleScheduleVoteEvent(ScheduleVoteEvent scheduleVoteEvent) {
-        log.info("이벤트 들어옴");
-        sendNotification(Notifications.createScheduleVoteNotification(scheduleVoteEvent));
-    }
+//    @Async
+//    @Transactional(propagation = Propagation.REQUIRES_NEW)
+//    @TransactionalEventListener
+//    public void handleScheduleVoteEvent(ScheduleVoteEvent scheduleVoteEvent) {
+//        log.info("이벤트 들어옴");
+//        sendNotification(Notifications.createScheduleVoteNotification(scheduleVoteEvent));
+//    }
 
     @EventListener
     public void handleScheduleEncourageEvent(ScheduleEncourageEvent scheduleEncourageEvent) {
         log.info("이벤트 들어옴");
-        sendEachNotification(scheduleEncourageEvent.getUserList().stream().map(user -> Notifications.ScheduleEncourageEvent(scheduleEncourageEvent.getSchedule(), user)).toList());
+        sendEachNotification(scheduleEncourageEvent.getUserList().stream().map(user -> Notifications.createScheduleEncourageEvent(scheduleEncourageEvent.getSchedule(), user)).toList());
     }
 
     private void sendNotification(Notifications notification) {
