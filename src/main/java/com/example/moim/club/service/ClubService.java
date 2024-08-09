@@ -3,16 +3,17 @@ package com.example.moim.club.service;
 import com.example.moim.club.dto.*;
 import com.example.moim.club.entity.Club;
 import com.example.moim.club.entity.UserClub;
-import com.example.moim.club.repository.AwardRepository;
 import com.example.moim.club.repository.ClubRepository;
 import com.example.moim.club.repository.ScheduleRepository;
 import com.example.moim.club.repository.UserClubRepository;
 import com.example.moim.exception.club.ClubPasswordException;
 import com.example.moim.exception.club.ClubPermissionException;
 import com.example.moim.global.util.FileStore;
+import com.example.moim.notification.dto.ClubJoinEvent;
 import com.example.moim.user.entity.User;
 import com.example.moim.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -27,9 +28,9 @@ public class ClubService {
     private final ClubRepository clubRepository;
     private final UserClubRepository userClubRepository;
     private final ScheduleRepository scheduleRepository;
-    private final AwardRepository awardRepository;
     private final UserRepository userRepository;
     private final FileStore fileStore;
+    private final ApplicationEventPublisher eventPublisher;
 
     public ClubOutput saveClub(User user, ClubInput clubInput) throws IOException {
         Club club = clubRepository.save(Club.createClub(clubInput, fileStore.storeFile(clubInput.getProfileImg())));
@@ -60,7 +61,9 @@ public class ClubService {
         Club club = clubRepository.findById(clubUserSaveInput.getClubId()).get();
         if (club.getClubPassword().equals(clubUserSaveInput.getClubPassword())) {
             club.plusMemberCount();
-            return new UserClubOutput(userClubRepository.save(UserClub.createUserClub(user, club)));
+            UserClub userClub = userClubRepository.save(UserClub.createUserClub(user, club));
+            eventPublisher.publishEvent(new ClubJoinEvent(user, club));
+            return new UserClubOutput(userClub);
         }
         throw new ClubPasswordException("비밀번호를 다시 한번 확인해주세요.");
     }
