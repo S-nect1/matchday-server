@@ -34,7 +34,9 @@ public class LoginOutput {
         this.email = user.getEmail();
         this.name = user.getName();
         this.birthday = user.getBirthday();
-        this.gender = user.getGender().toString();
+        if (user.getGender() != null) {
+            this.gender = user.getGender().toString();
+        }
         this.phone = user.getPhone();
         this.activityArea = user.getActivityArea();
         this.introduction = user.getIntroduction();
