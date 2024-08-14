@@ -59,6 +59,7 @@ public class ClubOutput {
         this.id = club.getId();
         this.title = club.getTitle();
         this.explanation = club.getExplanation();
+        this.introduction = club.getIntroduction();
         this.category = club.getCategory();
         this.university = club.getUniversity();
         this.gender = club.getGender();
