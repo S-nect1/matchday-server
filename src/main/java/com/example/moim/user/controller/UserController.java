@@ -73,7 +73,7 @@ public class UserController implements UserControllerDocs{
     }
 
     @PatchMapping(value = "/user/info", consumes = MediaType.MULTIPART_FORM_DATA_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-    public void userInfoUpdate(@AuthenticationPrincipal UserDetailsImpl userDetailsImpl, @ModelAttribute @Valid UserUpdateInput userUpdateInput) throws IOException {
+    public void userInfoUpdate(@AuthenticationPrincipal UserDetailsImpl userDetailsImpl, @ModelAttribute UserUpdateInput userUpdateInput) throws IOException {
         userService.updateUserInfo(userDetailsImpl.getUser(), userUpdateInput);
     }
 
