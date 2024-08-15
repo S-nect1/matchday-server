@@ -64,6 +64,12 @@ public class UserService {
     }
 
     @Transactional
+    public void updateUserInfo(User loginUser, UserUpdateInput userUpdateInput) throws IOException {
+        User user = userRepository.findById(loginUser.getId()).get();
+        user.updateUserInfo(userUpdateInput, fileStore.storeFile(userUpdateInput.getImg()));
+    }
+
+    @Transactional
     public LoginOutput userRefresh(String refreshToken) {
         User user = userRepository.findByRefreshToken(refreshToken).get();
         Boolean hasClub = userClubRepository.existsByUser(user);
