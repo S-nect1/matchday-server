@@ -54,14 +54,17 @@ public interface UserControllerDocs {
             https://kauth.kakao.com/oauth/authorize?client_id=9d0793ca3b227d6322833657b4678e07&redirect_uri=http://43.201.38.151:18008/user/kakao&response_type=code""")
     UserOutput kakaoLogin(@RequestParam @Schema(description = "kakao oauth2.0 accessToken")String accessToken, HttpServletResponse response);
 
-    @Operation(summary = "네이버 계정으로 회원가입/로그인", description = """
-            Authorization 에 accessToken, Authorization-refresh 에 refreshToken 발급
-            
-            https://nid.naver.com/oauth2.0/authorize?response_type=code&client_id=SuAxjstrc2Dn0XMPprY0&redirect_uri=http://43.201.38.151:18008/user/naver&state=%2F%2A-%2B""")
-    UserOutput naverLogin(@RequestParam String code, HttpServletResponse response);
+//    @Operation(summary = "네이버 계정으로 회원가입/로그인", description = """
+//            Authorization 에 accessToken, Authorization-refresh 에 refreshToken 발급
+//
+//            https://nid.naver.com/oauth2.0/authorize?response_type=code&client_id=SuAxjstrc2Dn0XMPprY0&redirect_uri=http://43.201.38.151:18008/user/naver&state=%2F%2A-%2B""")
+//    UserOutput naverLogin(@RequestParam String code, HttpServletResponse response);
 
     @Operation(summary = "소셜로그인 후 유저 정보 입력")
     void userInfoSave(@AuthenticationPrincipal UserDetailsImpl userDetailsImpl, @ModelAttribute @Valid SocialSignupInput socialSignupInput) throws IOException;
+
+    @Operation(summary = "유저 정보 수정")
+    void userInfoUpdate(@AuthenticationPrincipal UserDetailsImpl userDetailsImpl, @ModelAttribute @Valid UserUpdateInput userUpdateInput) throws IOException;
 
     @Operation(summary = "accessToken 이 만료되었을 때 refreshToken 으로 로그인", description = "Authorization 에 accessToken, Authorization-refresh 에 refreshToken 발급")
     UserOutput userRefresh(@PathVariable String refreshToken, HttpServletResponse response);

@@ -34,12 +34,12 @@ public class User extends BaseEntity {
     @Column(unique = true)
     private String refreshToken;
     private String fcmToken;
-    
+
     @OneToMany(mappedBy = "user", cascade = CascadeType.REMOVE)
     private List<UserClub> userClub = new ArrayList<>();
     @OneToMany(mappedBy = "targetUser", cascade = CascadeType.REMOVE)
     private List<Notifications> notifications = new ArrayList<>();
-    
+
     public static User createUser(SignupInput signupInput) {
         User user = new User();
         user.email = signupInput.getEmail();
@@ -90,6 +90,33 @@ public class User extends BaseEntity {
         this.introduction = socialSignupInput.getIntroduction();
         if (socialSignupInput.getFcmToken() != null) {
             this.fcmToken = socialSignupInput.getFcmToken();
+        }
+    }
+
+    public void updateUserInfo(UserUpdateInput userUpdateInput, String imgPath) {
+        if (userUpdateInput.getName() != null && !userUpdateInput.getName().isBlank()) {
+            this.name = userUpdateInput.getName();
+        }
+        if (userUpdateInput.getBirthday() != null && !userUpdateInput.getBirthday().isBlank()) {
+            this.birthday = userUpdateInput.getBirthday();
+        }
+        if (userUpdateInput.getPhone() != null && !userUpdateInput.getPhone().isBlank()) {
+            this.phone = userUpdateInput.getPhone();
+        }
+        if (imgPath != null) {
+            this.imgPath = imgPath;
+        }
+        if (userUpdateInput.getGender() != null && !userUpdateInput.getGender().isBlank()) {
+            this.gender = Gender.from(userUpdateInput.getGender());
+        }
+        if (userUpdateInput.getActivityArea() != null && !userUpdateInput.getActivityArea().isBlank()) {
+            this.activityArea = userUpdateInput.getActivityArea();
+        }
+        if (userUpdateInput.getIntroduction() != null && !userUpdateInput.getIntroduction().isBlank()) {
+            this.introduction = userUpdateInput.getIntroduction();
+        }
+        if (userUpdateInput.getFcmToken() != null) {
+            this.fcmToken = userUpdateInput.getFcmToken();
         }
     }
 

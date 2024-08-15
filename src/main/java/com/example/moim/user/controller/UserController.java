@@ -59,17 +59,22 @@ public class UserController implements UserControllerDocs{
         return new UserOutput(loginOutput);
     }
 
-    @GetMapping("/user/naver")
-    public UserOutput naverLogin(@RequestParam String code, HttpServletResponse response) {
-        LoginOutput loginOutput =  socialLoginService.naverLogin(code);
-        response.addHeader("Authorization", "Bearer " + loginOutput.getAccessToken());
-        response.addHeader("Authorization-refresh", loginOutput.getRefreshToken());
-        return new UserOutput(loginOutput);
-    }
+//    @GetMapping("/user/naver")
+//    public UserOutput naverLogin(@RequestParam String code, HttpServletResponse response) {
+//        LoginOutput loginOutput =  socialLoginService.naverLogin(code);
+//        response.addHeader("Authorization", "Bearer " + loginOutput.getAccessToken());
+//        response.addHeader("Authorization-refresh", loginOutput.getRefreshToken());
+//        return new UserOutput(loginOutput);
+//    }
 
     @PostMapping(value = "/user/info", consumes = MediaType.MULTIPART_FORM_DATA_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     public void userInfoSave(@AuthenticationPrincipal UserDetailsImpl userDetailsImpl, @ModelAttribute @Valid SocialSignupInput socialSignupInput) throws IOException {
         userService.saveUserInfo(userDetailsImpl.getUser(), socialSignupInput);
+    }
+
+    @PatchMapping(value = "/user/info", consumes = MediaType.MULTIPART_FORM_DATA_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    public void userInfoUpdate(@AuthenticationPrincipal UserDetailsImpl userDetailsImpl, @ModelAttribute @Valid UserUpdateInput userUpdateInput) throws IOException {
+        userService.updateUserInfo(userDetailsImpl.getUser(), userUpdateInput);
     }
 
     @GetMapping("/user/refresh/{refreshToken}")
