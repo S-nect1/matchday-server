@@ -4,7 +4,6 @@ import com.example.moim.club.dto.*;
 import com.example.moim.club.entity.Club;
 import com.example.moim.club.entity.UserClub;
 import com.example.moim.club.repository.ClubRepository;
-import com.example.moim.club.repository.ScheduleRepository;
 import com.example.moim.club.repository.UserClubRepository;
 import com.example.moim.exception.club.ClubPasswordException;
 import com.example.moim.exception.club.ClubPermissionException;
@@ -27,7 +26,6 @@ import java.util.Optional;
 public class ClubService {
     private final ClubRepository clubRepository;
     private final UserClubRepository userClubRepository;
-    private final ScheduleRepository scheduleRepository;
     private final UserRepository userRepository;
     private final FileStore fileStore;
     private final ApplicationEventPublisher eventPublisher;
@@ -38,20 +36,25 @@ public class ClubService {
         return new ClubOutput(club, userClub.getCategory());
     }
 
-    //    @Transactional
-//    public ClubOutput updateClub(User user, ClubUpdateInput clubUpdateInput) throws IOException {
-//        Club club = clubRepository.findById(clubUpdateInput.getId()).get();
-//        UserClub userClub = userClubRepository.findByClubAndUser(club, user).get();
-//        if (!(userClub.getCategory().equals("creator") || userClub.getCategory().equals("admin"))) {
-//            throw new ClubPermissionException("모임 정보를 수정할 권한이 없습니다.");
-//        }
-//
-//        if (club.getProfileImgPath() != null) {
-//            new File(club.getProfileImgPath()).delete();
-//        }
-//        club.UpdateClub(clubUpdateInput, fileStore.storeFile(clubUpdateInput.getProfileImg()));
-//        return new ClubOutput(club);
-//    }
+    @Transactional
+    public ClubOutput updateClub(User user, ClubUpdateInput clubUpdateInput) throws IOException {
+        Club club = clubRepository.findById(clubUpdateInput.getId()).get();
+        UserClub userClub = userClubRepository.findByClubAndUser(club, user).get();
+        if (!(userClub.getCategory().equals("creator") || userClub.getCategory().equals("admin"))) {
+            throw new ClubPermissionException("모임 정보를 수정할 권한이 없습니다.");
+        }
+
+        if (!clubUpdateInput.getClubPassword().equals(club.getClubPassword())) {
+            throw new ClubPermissionException("모임 비밀번호가 틀렸습니다.");
+        }
+
+        if (club.getProfileImgPath() != null) {
+            new File(club.getProfileImgPath()).delete();
+        }
+        club.updateClub(clubUpdateInput, fileStore.storeFile(clubUpdateInput.getProfileImg()));
+        return new ClubOutput(club);
+    }
+
     public List<ClubSearchOutput> searchClub(ClubSearchCond clubSearchCond) {
         return clubRepository.findBySearchCond(clubSearchCond).stream().map(ClubSearchOutput::new).toList();
     }
@@ -98,11 +101,29 @@ public class ClubService {
     }
 
     @Transactional
-    public void updateProfileImg(ClubImgInput clubImgInput) throws IOException {
-        Club club = clubRepository.findById(clubImgInput.getId()).get();
-        if (club.getProfileImgPath() != null) {
-            new File(club.getProfileImgPath()).delete();
+    public void clubPasswordUpdate(User user, ClubPswdUpdateInput clubPswdUpdateInput) {
+        Club club = clubRepository.findById(clubPswdUpdateInput.getId()).get();
+        UserClub userClub = userClubRepository.findByClubAndUser(club, user).get();
+        if (!(userClub.getCategory().equals("creator") || userClub.getCategory().equals("admin"))) {
+            throw new ClubPermissionException("모임 정보를 수정할 권한이 없습니다.");
         }
-        club.changeProfileImg(fileStore.storeFile(clubImgInput.getImg()));
+
+        if (!clubPswdUpdateInput.getOldPassword().equals(club.getClubPassword())) {
+            throw new ClubPermissionException("모임 비밀번호가 틀렸습니다.");
+        }
+
+        if (!clubPswdUpdateInput.getNewPassword().equals(clubPswdUpdateInput.getRePassword())) {
+            throw new ClubPermissionException("비밀번호 확인이 틀렸습니다.");
+        }
+        club.updateClubPassword(clubPswdUpdateInput.getNewPassword());
     }
+
+//    @Transactional
+//    public void updateProfileImg(ClubImgInput clubImgInput) throws IOException {
+//        Club club = clubRepository.findById(clubImgInput.getId()).get();
+//        if (club.getProfileImgPath() != null) {
+//            new File(club.getProfileImgPath()).delete();
+//        }
+//        club.changeProfileImg(fileStore.storeFile(clubImgInput.getImg()));
+//    }
 }
