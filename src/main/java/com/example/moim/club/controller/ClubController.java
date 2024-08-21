@@ -22,10 +22,10 @@ public class ClubController implements ClubControllerDocs{
         return clubService.saveClub(userDetailsImpl.getUser(), clubInput);
     }
 
-//    @PatchMapping("/club")
-//    public ClubOutput clubUpdate(@AuthenticationPrincipal UserDetailsImpl userDetailsImpl, @ModelAttribute ClubUpdateInput clubUpdateInput) throws IOException {
-//        return clubService.updateClub(userDetailsImpl.getUser(), clubUpdateInput);
-//    }
+    @PatchMapping(value = "/club", consumes = MediaType.MULTIPART_FORM_DATA_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    public ClubOutput clubUpdate(@AuthenticationPrincipal UserDetailsImpl userDetailsImpl, @ModelAttribute ClubUpdateInput clubUpdateInput) throws IOException {
+        return clubService.updateClub(userDetailsImpl.getUser(), clubUpdateInput);
+    }
 
     @GetMapping("/clubs")
     public List<ClubSearchOutput> findClubs(@AuthenticationPrincipal UserDetailsImpl userDetailsImpl, @ModelAttribute ClubSearchCond clubSearchCond) {
@@ -52,8 +52,13 @@ public class ClubController implements ClubControllerDocs{
         return clubService.findClub(id, userDetailsImpl.getUser());
     }
 
-    @PatchMapping(value = "/club/profile", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    public void profileImgUpdate(@AuthenticationPrincipal UserDetailsImpl userDetailsImpl, @ModelAttribute @Valid ClubImgInput clubImgInput) throws IOException {
-        clubService.updateProfileImg(clubImgInput);
+    @PatchMapping(value = "/club/password", consumes = MediaType.APPLICATION_JSON_VALUE)
+    public void clubPasswordUpdate(@AuthenticationPrincipal UserDetailsImpl userDetailsImpl, @RequestBody @Valid ClubPswdUpdateInput clubPswdUpdateInput) {
+        clubService.clubPasswordUpdate(userDetailsImpl.getUser(), clubPswdUpdateInput);
     }
+
+//    @PatchMapping(value = "/club/profile", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+//    public void profileImgUpdate(@AuthenticationPrincipal UserDetailsImpl userDetailsImpl, @ModelAttribute @Valid ClubImgInput clubImgInput) throws IOException {
+//        clubService.updateProfileImg(clubImgInput);
+//    }
 }

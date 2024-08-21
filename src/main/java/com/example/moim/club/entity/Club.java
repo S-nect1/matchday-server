@@ -58,16 +58,40 @@ public class Club extends BaseEntity {
         memberCount++;
     }
 
-//    public void UpdateClub(ClubUpdateInput clubUpdateInput, String profileImgPath) {
-//        this.title = clubUpdateInput.getTitle();
-//        this.explanation = clubUpdateInput.getExplanation();
-//        this.introduction = clubUpdateInput.getIntroduction();
-//        this.category = clubInput.getCategory();
-//        this.university = clubInput.getUniversity();
-//        this.gender = clubInput.getGender();
-//        this.activityArea = clubInput.getActivityArea();
-//        this.mainEvent = clubInput.getMainEvent();
-//        this.clubPassword = clubInput.getClubPassword();
-//        this.profileImgPath = profileImgPath;
-//    }
+    public void updateClub(ClubUpdateInput clubUpdateInput, String profileImgPath) {
+        if (clubUpdateInput.getTitle() != null) {
+            this.title = clubUpdateInput.getTitle();
+        }
+        if (clubUpdateInput.getExplanation() != null) {
+            this.explanation = clubUpdateInput.getExplanation();
+        }
+        if (clubUpdateInput.getIntroduction() != null) {
+            this.introduction = clubUpdateInput.getIntroduction();
+        }
+        if (clubUpdateInput.getCategory() != null) {
+            this.category = clubUpdateInput.getCategory();
+        }
+        if (clubUpdateInput.getUniversity() != null) {
+            this.university = clubUpdateInput.getUniversity();
+        }
+        if (clubUpdateInput.getGender() != null) {
+            this.gender = clubUpdateInput.getGender();
+        }
+        if (clubUpdateInput.getActivityArea() != null) {
+            this.activityArea = clubUpdateInput.getActivityArea();
+        }
+        if (clubUpdateInput.getAgeRange() != null) {
+            this.ageRange = clubUpdateInput.getAgeRange();
+        }
+        if (clubUpdateInput.getMainEvent() != null) {
+            this.mainEvent = clubUpdateInput.getMainEvent();
+        }
+        if (profileImgPath != null) {
+            this.profileImgPath = profileImgPath;
+        }
+    }
+
+    public void updateClubPassword(String newPassword) {
+        this.clubPassword = newPassword;
+    }
 }
