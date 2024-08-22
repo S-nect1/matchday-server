@@ -45,7 +45,7 @@ public class ClubService {
         }
 
         if (!clubUpdateInput.getClubPassword().equals(club.getClubPassword())) {
-            throw new ClubPermissionException("모임 비밀번호가 틀렸습니다.");
+            throw new ClubPasswordException("모임 비밀번호가 틀렸습니다.");
         }
 
         if (club.getProfileImgPath() != null) {
@@ -109,11 +109,11 @@ public class ClubService {
         }
 
         if (!clubPswdUpdateInput.getOldPassword().equals(club.getClubPassword())) {
-            throw new ClubPermissionException("모임 비밀번호가 틀렸습니다.");
+            throw new ClubPasswordException("모임 비밀번호가 틀렸습니다.");
         }
 
         if (!clubPswdUpdateInput.getNewPassword().equals(clubPswdUpdateInput.getRePassword())) {
-            throw new ClubPermissionException("비밀번호 확인이 틀렸습니다.");
+            throw new ClubPasswordException("비밀번호 확인이 틀렸습니다.");
         }
         club.updateClubPassword(clubPswdUpdateInput.getNewPassword());
     }
