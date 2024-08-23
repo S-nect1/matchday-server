@@ -15,29 +15,30 @@ public class MatchInput {
 
     private Long clubId;
 
-    @NotNull(message = "매치 이름을 입력해주세요")
-    private String name;
     @NotNull(message = "매치 종목을 선택해주세요.")
     private String event;
-    @NotNull(message = "인원 수를 입력해주세요.")
-    private int count;
-    @Schema(pattern = "yyyy-MM-dd HH:mm", description = "yyyy-MM-dd HH:mm")
-    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm", timezone = "Asia/Seoul")
+
+    @NotNull(message = "인원 수를 선택해주세요.")
+    private String matchSize;
+
+    @Schema(pattern = "yyyy/MM/dd HH:mm", description = "yyyy/MM/dd HH:mm")
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy/MM/dd HH:mm", timezone = "Asia/Seoul")
     @NotNull(message = "매치 시작 시간을 입력해주세요.")
     private LocalDateTime startTime;
-    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm", timezone = "Asia/Seoul")
+
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy/MM/dd HH:mm", timezone = "Asia/Seoul")
     @NotNull(message = "매치 종료 시간을 입력해주세요.")
     private LocalDateTime endTime;
+
     @NotBlank(message = "매치 장소를 입력해주세요.")
     private String location;
+
     @NotNull(message = "참가 비용을 입력해주세요.")
     private int fee;
+
+    @NotBlank(message = "계좌를 입력해주세요.")
     private String account;
-    private Gender gender;
-//    @NotBlank(message = "유니폼 색상을 입력해주세요.")
-//    private String color;
-//    private boolean hasBall;
-    private String note;
-//    private String photo;
-//    private Match relateMatch;
+
+    @NotNull(message = "최소 인원수를 설정해주세요.")
+    private int minParticipants;
 }

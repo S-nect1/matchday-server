@@ -1,7 +1,5 @@
 package com.example.moim.match.controller;
 
-import com.example.moim.club.dto.ClubSearchOutput;
-import com.example.moim.club.entity.Club;
 import com.example.moim.club.repository.ClubRepository;
 import com.example.moim.match.dto.MatchInput;
 import com.example.moim.match.dto.MatchOutput;
@@ -15,7 +13,6 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import java.util.Optional;
 
 @RestController
 @RequiredArgsConstructor
@@ -25,7 +22,7 @@ public class MatchController {
 
     @PostMapping("/match")
     public MatchOutput matchSave(@RequestBody @Valid MatchInput matchInput, @AuthenticationPrincipal UserDetailsImpl userDetailsImpl) {
-        return matchService.saveMatch(userDetailsImpl.getUser(), matchInput);
+        return matchService.createMatch(userDetailsImpl.getUser(), matchInput);
     }
 
     @GetMapping("/matches")
