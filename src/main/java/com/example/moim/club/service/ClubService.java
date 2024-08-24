@@ -48,9 +48,6 @@ public class ClubService {
             throw new ClubPasswordException("모임 비밀번호가 틀렸습니다.");
         }
 
-        if (club.getProfileImgPath() != null) {
-            new File(club.getProfileImgPath()).delete();
-        }
         club.updateClub(clubUpdateInput, fileStore.storeFile(clubUpdateInput.getProfileImg()));
         return new ClubOutput(club);
     }

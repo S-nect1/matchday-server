@@ -8,6 +8,7 @@ import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -104,6 +105,7 @@ public class User extends BaseEntity {
             this.phone = userUpdateInput.getPhone();
         }
         if (imgPath != null) {
+            new File(this.imgPath).delete();
             this.imgPath = imgPath;
         }
         if (userUpdateInput.getGender() != null && !userUpdateInput.getGender().isBlank()) {

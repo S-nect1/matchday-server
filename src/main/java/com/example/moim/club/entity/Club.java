@@ -7,6 +7,7 @@ import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -87,6 +88,7 @@ public class Club extends BaseEntity {
             this.mainEvent = clubUpdateInput.getMainEvent();
         }
         if (profileImgPath != null) {
+            new File(this.profileImgPath).delete();
             this.profileImgPath = profileImgPath;
         }
     }
