@@ -2,7 +2,6 @@ package com.example.moim.match.entity;
 
 import com.example.moim.club.entity.Club;
 import com.example.moim.club.entity.Schedule;
-import com.example.moim.club.repository.ClubRepository;
 import com.example.moim.global.entity.BaseEntity;
 import com.example.moim.match.dto.MatchInput;
 import com.example.moim.match.dto.MatchRegInput;
@@ -81,6 +80,11 @@ public class Match extends BaseEntity {
 //        }
 
         return match;
+    }
+
+    public void applyMatch(Club club) {
+        this.awayClub = club;
+        this.status = PENDING_APP;
     }
 
     public void setSchedule(Schedule schedule) {

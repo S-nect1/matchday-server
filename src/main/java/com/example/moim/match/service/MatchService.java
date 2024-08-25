@@ -8,9 +8,10 @@ import com.example.moim.club.repository.ClubRepository;
 import com.example.moim.club.repository.ScheduleRepository;
 import com.example.moim.club.repository.UserClubRepository;
 import com.example.moim.club.service.ScheduleService;
-import com.example.moim.exception.match.MatchSaveException;
+import com.example.moim.exception.match.MatchPermissionException;
 import com.example.moim.match.dto.*;
 import com.example.moim.match.entity.Match;
+import com.example.moim.match.entity.Status;
 import com.example.moim.match.repository.MatchRepository;
 import com.example.moim.user.entity.User;
 import lombok.RequiredArgsConstructor;
@@ -34,7 +35,7 @@ public class MatchService {
     public MatchOutput saveMatch(User user, MatchInput matchInput) {
         UserClub userClub = userClubRepository.findByClubAndUser(clubRepository.findById(matchInput.getClubId()).get(), user).get();
         if (!(userClub.getCategory().equals("creator") || userClub.getCategory().equals("admin"))) {
-            throw new MatchSaveException("매치 생성 권한이 없습니다.");
+            throw new MatchPermissionException("매치 생성 권한이 없습니다.");
         }
 
         if (matchInput.getFee() == 0) {
@@ -42,7 +43,7 @@ public class MatchService {
             if (fee.isPresent()) {
                 matchInput.setFee(fee.get());
             } else {
-                throw new MatchSaveException("대관비를 입력해주세요.");
+                throw new MatchPermissionException("대관비를 입력해주세요.");
             }
         }
 
@@ -51,7 +52,7 @@ public class MatchService {
             if (clubAccount.isPresent()) {
                 matchInput.setAccount(clubAccount.get());
             } else {
-                throw new MatchSaveException("계좌번호를 입력해주세요.");
+                throw new MatchPermissionException("계좌번호를 입력해주세요.");
             }
         }
 
@@ -70,7 +71,7 @@ public class MatchService {
     public MatchRegOutput registerMatch(User user, MatchRegInput matchRegInput) {
         UserClub userClub = userClubRepository.findByClubAndUser(clubRepository.findById(matchRegInput.getClubId()).get(), user).get();
         if (!(userClub.getCategory().equals("creator") || userClub.getCategory().equals("admin"))) {
-            throw new MatchSaveException("매치 생성 권한이 없습니다.");
+            throw new MatchPermissionException("매치 생성 권한이 없습니다.");
         }
 
         Match match = matchRepository.findById(matchRegInput.getId()).get();
@@ -84,6 +85,27 @@ public class MatchService {
         matchRepository.save(match);
 
         return new MatchRegOutput(match.getId());
+    }
+
+    public MatchApplyOutput applyMatch(User user, Long matchId, Long awayClubId) {
+        UserClub userClub = userClubRepository.findByClubAndUser(clubRepository.findById(awayClubId).get(), user).get();
+        if (!(userClub.getCategory().equals("creator") || userClub.getCategory().equals("admin"))) {
+            throw new MatchPermissionException("매치 신청 권한이 없습니다.");
+        }
+
+        Match findMatch = matchRepository.findById(matchId).get();
+        if (findMatch.getStatus() != Status.REGISTERED) {
+            throw new MatchPermissionException("아직 등록되지 않은 매치입니다.");
+        }
+        findMatch.applyMatch(clubRepository.findById(awayClubId).get());
+        matchRepository.save(findMatch);
+
+        Schedule schedule = scheduleRepository.save(Schedule.createSchedule(clubRepository.findById(awayClubId).get(), createScheduleFromMatch(findMatch)));
+        findMatch.setSchedule(schedule);
+        matchRepository.save(findMatch);
+
+
+        return new MatchApplyOutput(findMatch.getId());
     }
 
 //    public List<RegMatchOutput> findRegMatch(Club club) {

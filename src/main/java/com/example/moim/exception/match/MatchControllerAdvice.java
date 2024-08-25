@@ -17,7 +17,7 @@ public class MatchControllerAdvice {
     }
 
     @ExceptionHandler
-    public ResponseEntity<ErrorResult> MatchSaveExHandle(MatchSaveException e) {
+    public ResponseEntity<ErrorResult> MatchSaveExHandle(MatchPermissionException e) {
         return new ResponseEntity<>(new ErrorResult(e.getMessage()), HttpStatus.UNAUTHORIZED);
     }
 }

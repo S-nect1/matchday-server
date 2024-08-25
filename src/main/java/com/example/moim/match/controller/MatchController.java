@@ -28,6 +28,13 @@ public class MatchController {
         return matchService.registerMatch(userDetailsImpl.getUser(), matchRegInput);
     }
 
+    @PatchMapping("/{matchId}/apply")
+    public MatchApplyOutput matchApply(@PathVariable Long matchId,
+                                       @RequestParam Long clubId,
+                                       @AuthenticationPrincipal UserDetailsImpl userDetailsImpl) {
+        return matchService.applyMatch(userDetailsImpl.getUser(), matchId, clubId);
+    }
+
     @GetMapping("/match")
     public List<MatchSearchOutput> findMatches(@AuthenticationPrincipal UserDetailsImpl userDetailsImpl,
                                                @ModelAttribute MatchSearchCond matchSearchCond) {
