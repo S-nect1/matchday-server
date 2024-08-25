@@ -1,6 +1,7 @@
 package com.example.moim.match.entity;
 
 import com.example.moim.club.entity.Club;
+import com.example.moim.club.entity.Schedule;
 import com.example.moim.global.entity.BaseEntity;
 import com.example.moim.match.dto.MatchInput;
 import com.example.moim.match.dto.MatchRegInput;
@@ -28,6 +29,10 @@ public class Match extends BaseEntity {
 //    @ManyToOne(fetch = FetchType.LAZY)
 //    @JoinColumn(name = "away_club_id")
 //    private Club awayClub;
+
+    @OneToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "match_schedule")
+    private Schedule schedule;
 
     private String name;
     private String event;
@@ -73,6 +78,10 @@ public class Match extends BaseEntity {
 //        }
 
         return match;
+    }
+
+    public void setSchedule(Schedule schedule) {
+        this.schedule = schedule;
     }
 
     //매치 등록

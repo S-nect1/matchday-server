@@ -1,14 +1,12 @@
 package com.example.moim.match.controller;
 
 import com.example.moim.club.repository.ClubRepository;
-import com.example.moim.match.dto.MatchInput;
-import com.example.moim.match.dto.MatchOutput;
-import com.example.moim.match.dto.MatchSearchCond;
-import com.example.moim.match.dto.MatchSearchOutput;
+import com.example.moim.match.dto.*;
 import com.example.moim.match.service.MatchService;
 import com.example.moim.user.dto.UserDetailsImpl;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.MediaType;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
@@ -22,12 +20,18 @@ public class MatchController {
 
     @PostMapping("/match")
     public MatchOutput matchSave(@RequestBody @Valid MatchInput matchInput, @AuthenticationPrincipal UserDetailsImpl userDetailsImpl) {
-        return matchService.createMatch(userDetailsImpl.getUser(), matchInput);
+        return matchService.saveMatch(userDetailsImpl.getUser(), matchInput);
     }
 
-    @GetMapping("/matches")
+    @PatchMapping(value = "/match", produces = MediaType.APPLICATION_JSON_VALUE)
+    public MatchRegOutput matchReg(@RequestBody @Valid MatchRegInput matchRegInput, @AuthenticationPrincipal UserDetailsImpl userDetailsImpl) {
+        return matchService.registerMatch(userDetailsImpl.getUser(), matchRegInput);
+    }
+
+    @GetMapping("/match")
     public List<MatchSearchOutput> findMatches(@AuthenticationPrincipal UserDetailsImpl userDetailsImpl,
-                                              @ModelAttribute MatchSearchCond matchSearchCond) {
+                                               @ModelAttribute MatchSearchCond matchSearchCond) {
         return matchService.searchMatch(matchSearchCond);
     }
+
 }
