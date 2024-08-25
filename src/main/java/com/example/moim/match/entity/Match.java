@@ -26,9 +26,9 @@ public class Match extends BaseEntity {
     @JoinColumn(name = "home_club_id")
     private Club homeClub;
 
-//    @ManyToOne(fetch = FetchType.LAZY)
-//    @JoinColumn(name = "away_club_id")
-//    private Club awayClub;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "away_club_id")
+    private Club awayClub;
 
     @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "match_schedule")

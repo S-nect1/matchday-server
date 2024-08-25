@@ -24,7 +24,7 @@ public class MatchController {
     }
 
     @PatchMapping(value = "/match", produces = MediaType.APPLICATION_JSON_VALUE)
-    public MatchRegOutput matchReg(@RequestBody @Valid MatchRegInput matchRegInput, @AuthenticationPrincipal UserDetailsImpl userDetailsImpl) {
+    public MatchRegOutput matchRegister(@RequestBody @Valid MatchRegInput matchRegInput, @AuthenticationPrincipal UserDetailsImpl userDetailsImpl) {
         return matchService.registerMatch(userDetailsImpl.getUser(), matchRegInput);
     }
 
@@ -34,4 +34,8 @@ public class MatchController {
         return matchService.searchMatch(matchSearchCond);
     }
 
+    @GetMapping("/match-status/{clubId}")
+    public List<MatchStatusOutput> getMatchStatus(@PathVariable Long clubId) {
+        return matchService.findMatchStatus(clubRepository.findById(clubId).get());
+    }
 }

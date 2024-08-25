@@ -2,6 +2,8 @@ package com.example.moim.match.service;
 
 import com.example.moim.club.dto.ScheduleInput;
 import com.example.moim.club.dto.ScheduleOutput;
+import com.example.moim.club.entity.Club;
+import com.example.moim.club.entity.Schedule;
 import com.example.moim.club.entity.UserClub;
 import com.example.moim.club.repository.ClubRepository;
 import com.example.moim.club.repository.ScheduleRepository;
@@ -14,7 +16,9 @@ import com.example.moim.match.repository.MatchRepository;
 import com.example.moim.user.entity.User;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Collections;
 import java.util.List;
 
 @Service
@@ -36,13 +40,15 @@ public class MatchService {
         Match match = matchRepository.save(Match.createMatch(clubRepository.findById(matchInput.getClubId()).get(), matchInput));
 
         //일정에 매치 등록
-        ScheduleOutput scheduleOutput = scheduleService.saveSchedule(createScheduleFromMatch(match), user);
-        match.setSchedule(scheduleRepository.findScheduleById(scheduleOutput.getId()));
+        Schedule schedule = scheduleRepository.save(Schedule.createSchedule(clubRepository.findById(matchInput.getClubId()).get(), createScheduleFromMatch(match)));
+        match.setSchedule(schedule);
         matchRepository.save(match);
+
 
         return new MatchOutput(match.getId());
     }
 
+    @Transactional
     public MatchRegOutput registerMatch(User user, MatchRegInput matchRegInput) {
         UserClub userClub = userClubRepository.findByClubAndUser(clubRepository.findById(matchRegInput.getClubId()).get(), user).get();
         if (!(userClub.getCategory().equals("creator") || userClub.getCategory().equals("admin"))) {
@@ -62,9 +68,19 @@ public class MatchService {
         return new MatchRegOutput(match.getId());
     }
 
+//    public List<RegMatchOutput> findRegMatch(Club club) {
+//        return matchRepository.findMatchByClub(club).stream().map(m -> new RegMatchOutput()).toList();
+//    }
+
     public List<MatchSearchOutput> searchMatch(MatchSearchCond matchSearchCond) {
         return matchRepository.findBySearchCond(matchSearchCond).stream()
                 .map(MatchSearchOutput::new).toList();
+    }
+
+    public List<MatchStatusOutput> findMatchStatus(Club club) {
+
+        List<Match> matches = matchRepository.findMatchByClub(club);
+        return (matches != null) ? matches.stream().map(m -> new MatchStatusOutput(m)).toList() : Collections.emptyList();
     }
 
     private ScheduleInput createScheduleFromMatch(Match match) {
