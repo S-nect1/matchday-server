@@ -1,6 +1,6 @@
 package com.example.moim.exception.match;
 
-public class MatchSaveException extends RuntimeException{
+public class MatchSaveException extends RuntimeException {
     public MatchSaveException(String message) {
         super(message);
     }

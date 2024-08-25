@@ -15,10 +15,10 @@ public class MatchInput {
 
     private Long clubId;
 
-    @NotNull(message = "매치 종목을 선택해주세요.")
+    @NotBlank(message = "매치 종목을 선택해주세요.")
     private String event;
 
-    @NotNull(message = "인원 수를 선택해주세요.")
+    @NotBlank(message = "인원 수를 선택해주세요.")
     private String matchSize;
 
     @Schema(pattern = "yyyy/MM/dd HH:mm", description = "yyyy/MM/dd HH:mm")
@@ -33,10 +33,10 @@ public class MatchInput {
     @NotBlank(message = "매치 장소를 입력해주세요.")
     private String location;
 
-    @NotNull(message = "참가 비용을 입력해주세요.")
-    private int fee;
+//    @NotNull(message = "참가 비용을 입력해주세요.")
+    private int fee = 0;
 
-    @NotBlank(message = "계좌를 입력해주세요.")
+//    @NotBlank(message = "계좌를 입력해주세요.")
     private String account;
 
     @NotNull(message = "최소 인원수를 설정해주세요.")

@@ -1,7 +1,6 @@
 package com.example.moim.match.service;
 
 import com.example.moim.club.dto.ScheduleInput;
-import com.example.moim.club.dto.ScheduleOutput;
 import com.example.moim.club.entity.Club;
 import com.example.moim.club.entity.Schedule;
 import com.example.moim.club.entity.UserClub;
@@ -20,6 +19,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -35,6 +35,24 @@ public class MatchService {
         UserClub userClub = userClubRepository.findByClubAndUser(clubRepository.findById(matchInput.getClubId()).get(), user).get();
         if (!(userClub.getCategory().equals("creator") || userClub.getCategory().equals("admin"))) {
             throw new MatchSaveException("매치 생성 권한이 없습니다.");
+        }
+
+        if (matchInput.getFee() == 0) {
+            Optional<Integer> fee = matchRepository.findFeeByClubIdAndLocation(matchInput.getClubId(), matchInput.getLocation()).stream().findFirst();
+            if (fee.isPresent()) {
+                matchInput.setFee(fee.get());
+            } else {
+                throw new MatchSaveException("대관비를 입력해주세요.");
+            }
+        }
+
+        if (matchInput.getAccount() == null || matchInput.getAccount().isEmpty()) {
+            Optional<String> clubAccount = matchRepository.findAccountByClubId(matchInput.getClubId()).stream().findFirst();
+            if (clubAccount.isPresent()) {
+                matchInput.setAccount(clubAccount.get());
+            } else {
+                throw new MatchSaveException("계좌번호를 입력해주세요.");
+            }
         }
 
         Match match = matchRepository.save(Match.createMatch(clubRepository.findById(matchInput.getClubId()).get(), matchInput));
