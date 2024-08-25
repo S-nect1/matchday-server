@@ -64,6 +64,8 @@ public class Match extends BaseEntity {
 
         match.homeClub = club;
         match.name = createMatchName(club, matchInput);
+        match.event = matchInput.getEvent();
+        match.matchSize = matchInput.getMatchSize();
         match.startTime = matchInput.getStartTime();
         match.endTime = matchInput.getEndTime();
         match.location = matchInput.getLocation();

@@ -24,12 +24,12 @@ public interface MatchRepository extends JpaRepository<Match, Long>, MatchReposi
     @Query("select m.account from Match m" +
             " where m.homeClub.id = :clubId" +
             " ORDER BY m.id DESC")
-    Optional<String> findAccountByClubId(@Param("clubId") Long clubId);
+    List<String> findAccountByClubId(@Param("clubId") Long clubId);
 
     @Transactional(readOnly = true)
     @Query("select m.fee from Match m" +
             " where m.homeClub.id = :clubId" +
             " and m.location = :location" +
             " order by m.id desc")
-    Optional<Integer> findFeeByClubIdAndLocation(@Param("clubId") Long clubId, @Param("location") String location);
+    List<Integer> findFeeByClubIdAndLocation(@Param("clubId") Long clubId, @Param("location") String location);
 }
