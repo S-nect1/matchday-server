@@ -44,13 +44,10 @@ public class ClubService {
             throw new ClubPermissionException("모임 정보를 수정할 권한이 없습니다.");
         }
 
-        if (!clubUpdateInput.getClubPassword().equals(club.getClubPassword())) {
+        if (clubUpdateInput.getClubPassword() == null || !clubUpdateInput.getClubPassword().equals(club.getClubPassword())) {
             throw new ClubPasswordException("모임 비밀번호가 틀렸습니다.");
         }
 
-        if (club.getProfileImgPath() != null) {
-            new File(club.getProfileImgPath()).delete();
-        }
         club.updateClub(clubUpdateInput, fileStore.storeFile(clubUpdateInput.getProfileImg()));
         return new ClubOutput(club);
     }
