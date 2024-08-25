@@ -88,7 +88,9 @@ public class Club extends BaseEntity {
             this.mainEvent = clubUpdateInput.getMainEvent();
         }
         if (profileImgPath != null) {
-            new File(this.profileImgPath).delete();
+            if (this.profileImgPath != null) {
+                new File(this.profileImgPath).delete();
+            }
             this.profileImgPath = profileImgPath;
         }
     }
