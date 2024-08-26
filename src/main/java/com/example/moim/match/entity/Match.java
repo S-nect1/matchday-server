@@ -10,7 +10,7 @@ import lombok.Getter;
 
 import java.time.LocalDateTime;
 
-import static com.example.moim.match.entity.Status.*;
+import static com.example.moim.match.entity.MatchStatus.*;
 
 @Entity
 @Getter
@@ -46,7 +46,7 @@ public class Match extends BaseEntity {
 
     // 자동 등록
     @Enumerated(EnumType.STRING)
-    private Status status;
+    private MatchStatus matchStatus;
     @Enumerated(EnumType.STRING)
     private Gender gender;
     private String ageRange;
@@ -74,17 +74,12 @@ public class Match extends BaseEntity {
 
         match.gender = Gender.valueOf(match.getHomeClub().getGender());
         match.ageRange = match.getHomeClub().getAgeRange();
-        match.status = PENDING;// 초기 상태는 매치 대기
+        match.matchStatus = PENDING;// 초기 상태는 매치 대기
 //        if (matchInput.getRelateMatch() != null) {
 //            match.relateMatch = matchInput.getRelateMatch();
 //        }
 
         return match;
-    }
-
-    public void applyMatch(Club club) {
-        this.awayClub = club;
-        this.status = PENDING_APP;
     }
 
     public void setSchedule(Schedule schedule) {
@@ -95,12 +90,12 @@ public class Match extends BaseEntity {
     public void completeMatch(MatchRegInput matchRegInput) {
         this.isBall = matchRegInput.isBall();
         this.note = matchRegInput.getNote();
-        this.status = REGISTERED;
+        this.matchStatus = REGISTERED;
     }
 
     //매치 실패
     public void failMatch() {
-        this.status = FAILED;
+        this.matchStatus = FAILED;
     }
 
     private static String createMatchName(Club club, MatchInput matchInput) {

@@ -11,13 +11,14 @@ import com.example.moim.club.service.ScheduleService;
 import com.example.moim.exception.match.MatchPermissionException;
 import com.example.moim.match.dto.*;
 import com.example.moim.match.entity.Match;
-import com.example.moim.match.entity.Status;
+import com.example.moim.match.entity.MatchApplication;
+import com.example.moim.match.entity.MatchStatus;
+import com.example.moim.match.repository.MatchApplicationRepository;
 import com.example.moim.match.repository.MatchRepository;
 import com.example.moim.notification.dto.MatchRequestEvent;
 import com.example.moim.user.entity.User;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.ApplicationEventPublisher;
-import org.springframework.security.authentication.DefaultAuthenticationEventPublisher;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -34,6 +35,7 @@ public class MatchService {
     private final ClubRepository clubRepository;
     private final ScheduleService scheduleService;
     private final ScheduleRepository scheduleRepository;
+    private final MatchApplicationRepository matchApplicationRepository;
     private final ApplicationEventPublisher eventPublisher;
 
     public MatchOutput saveMatch(User user, MatchInput matchInput) {
@@ -91,26 +93,30 @@ public class MatchService {
         return new MatchRegOutput(match.getId());
     }
 
-    public MatchApplyOutput applyMatch(User user, Long matchId, Long awayClubId) {
-        UserClub userClub = userClubRepository.findByClubAndUser(clubRepository.findById(awayClubId).get(), user).get();
+    public MatchApplyOutput applyMatch(User user, Match match, Club awayClub) {
+        UserClub userClub = userClubRepository.findByClubAndUser(awayClub, user).get();
         if (!(userClub.getCategory().equals("creator") || userClub.getCategory().equals("admin"))) {
-            eventPublisher.publishEvent(new MatchRequestEvent(matchRepository.findById(matchId).get(), user));
+            eventPublisher.publishEvent(new MatchRequestEvent(match, user));
+            return null;
         }
 
-        Match findMatch = matchRepository.findById(matchId).get();
-        if (findMatch.getStatus() != Status.REGISTERED) {
+        if (match.getMatchStatus() != MatchStatus.REGISTERED) {
             throw new MatchPermissionException("아직 등록되지 않은 매치입니다.");
         }
-        // 수정해야함
-        findMatch.applyMatch(clubRepository.findById(awayClubId).get());
-        matchRepository.save(findMatch);
 
-        Schedule schedule = scheduleRepository.save(Schedule.createSchedule(clubRepository.findById(awayClubId).get(), createScheduleFromMatch(findMatch)));
-        findMatch.setSchedule(schedule);
-        matchRepository.save(findMatch);
+        MatchApplication existingApplication = matchApplicationRepository.findByMatchAndClub(match, awayClub);
+        if (existingApplication != null) {
+            throw new MatchPermissionException("이미 신청한 매치입니다.");
+        }
 
 
-        return new MatchApplyOutput(findMatch.getId());
+        MatchApplication matchApplication = matchApplicationRepository.save(MatchApplication.applyMatch(match, awayClub));
+
+        Schedule schedule = scheduleRepository.save(Schedule.createSchedule(matchApplication.getClub(), createScheduleFromMatch(matchApplication.getMatch())));
+        matchApplication.setSchedule(schedule);
+        matchApplicationRepository.save(matchApplication);
+
+        return new MatchApplyOutput(matchApplication.getId());
     }
 
 //    public List<RegMatchOutput> findRegMatch(Club club) {
