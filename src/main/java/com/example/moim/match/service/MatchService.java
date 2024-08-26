@@ -13,8 +13,11 @@ import com.example.moim.match.dto.*;
 import com.example.moim.match.entity.Match;
 import com.example.moim.match.entity.Status;
 import com.example.moim.match.repository.MatchRepository;
+import com.example.moim.notification.dto.MatchRequestEvent;
 import com.example.moim.user.entity.User;
 import lombok.RequiredArgsConstructor;
+import org.springframework.context.ApplicationEventPublisher;
+import org.springframework.security.authentication.DefaultAuthenticationEventPublisher;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -31,6 +34,7 @@ public class MatchService {
     private final ClubRepository clubRepository;
     private final ScheduleService scheduleService;
     private final ScheduleRepository scheduleRepository;
+    private final ApplicationEventPublisher eventPublisher;
 
     public MatchOutput saveMatch(User user, MatchInput matchInput) {
         UserClub userClub = userClubRepository.findByClubAndUser(clubRepository.findById(matchInput.getClubId()).get(), user).get();
@@ -90,13 +94,14 @@ public class MatchService {
     public MatchApplyOutput applyMatch(User user, Long matchId, Long awayClubId) {
         UserClub userClub = userClubRepository.findByClubAndUser(clubRepository.findById(awayClubId).get(), user).get();
         if (!(userClub.getCategory().equals("creator") || userClub.getCategory().equals("admin"))) {
-            throw new MatchPermissionException("매치 신청 권한이 없습니다.");
+            eventPublisher.publishEvent(new MatchRequestEvent(matchRepository.findById(matchId).get(), user));
         }
 
         Match findMatch = matchRepository.findById(matchId).get();
         if (findMatch.getStatus() != Status.REGISTERED) {
             throw new MatchPermissionException("아직 등록되지 않은 매치입니다.");
         }
+        // 수정해야함
         findMatch.applyMatch(clubRepository.findById(awayClubId).get());
         matchRepository.save(findMatch);
 

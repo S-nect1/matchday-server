@@ -35,4 +35,10 @@ public interface UserClubRepository extends JpaRepository<UserClub, Long> {
             " join fetch uc.user u" +
             " where uc.club = :club")
     List<UserClub> findUserByClub(@Param("club") Club club);
+
+    @Transactional(readOnly = true)
+    @Query("select uc from UserClub uc" +
+            " where uc.user.id = :userId" +
+            " and uc.category = 'creator'")
+    UserClub findByUserIdAndCategory(@Param("userId") Long userId);
 }
