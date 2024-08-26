@@ -134,7 +134,7 @@ public class MatchService {
         }
 
         if (matchApplication.getSchedule().getAttend() >= matchApplication.getMatch().getMinParticipants()) {
-            eventPublisher.publishEvent(new MatchAppVoteEvent);
+            eventPublisher.publishEvent(new MatchAppVoteEvent(matchApplication, user));
         }
 
         matchApplication.completeApplication(matchRegInput);
