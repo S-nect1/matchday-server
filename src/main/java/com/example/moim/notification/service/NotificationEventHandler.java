@@ -2,10 +2,7 @@ package com.example.moim.notification.service;
 
 import com.example.moim.club.entity.UserClub;
 import com.example.moim.club.repository.UserClubRepository;
-import com.example.moim.notification.dto.MatchRequestEvent;
-import com.example.moim.notification.dto.ScheduleEncourageEvent;
-import com.example.moim.notification.dto.ScheduleSaveEvent;
-import com.example.moim.notification.dto.ClubJoinEvent;
+import com.example.moim.notification.dto.*;
 import com.example.moim.notification.entity.Notifications;
 import com.example.moim.notification.repository.NotificationRepository;
 import com.example.moim.user.entity.User;
@@ -61,6 +58,13 @@ public class NotificationEventHandler {
         log.info("이벤트 들어옴");
         User targetUser = userClubRepository.findByUserIdAndCategory(matchRequestEvent.getUser().getId()).getUser();
         sendNotification(Notifications.createMatchRequestEvent(matchRequestEvent, targetUser));
+    }
+
+    @EventListener
+    public void handleMatchAppVoteEvent(MatchAppVoteEvent matchAppVoteEvent) {
+        log.info("이벤트 들어옴");
+        User targetUser = userClubRepository.findByUserIdAndCategory(matchAppVoteEvent.getUser().getId()).getUser();
+        sendNotification(Notifications.createMatchAppVoteEvent(matchAppVoteEvent, targetUser));
     }
 
     private void sendNotification(Notifications notification) {

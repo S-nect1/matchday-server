@@ -15,6 +15,7 @@ import com.example.moim.match.entity.MatchApplication;
 import com.example.moim.match.entity.MatchStatus;
 import com.example.moim.match.repository.MatchApplicationRepository;
 import com.example.moim.match.repository.MatchRepository;
+import com.example.moim.notification.dto.MatchAppVoteEvent;
 import com.example.moim.notification.dto.MatchRequestEvent;
 import com.example.moim.user.entity.User;
 import lombok.RequiredArgsConstructor;
@@ -109,7 +110,6 @@ public class MatchService {
             throw new MatchPermissionException("이미 신청한 매치입니다.");
         }
 
-
         MatchApplication matchApplication = matchApplicationRepository.save(MatchApplication.applyMatch(match, awayClub));
 
         Schedule schedule = scheduleRepository.save(Schedule.createSchedule(matchApplication.getClub(), createScheduleFromMatch(matchApplication.getMatch())));
@@ -117,6 +117,30 @@ public class MatchService {
         matchApplicationRepository.save(matchApplication);
 
         return new MatchApplyOutput(matchApplication.getId());
+    }
+
+    public MatchRegOutput completeApp(User user, MatchRegInput matchRegInput) {
+        UserClub userClub = userClubRepository.findByClubAndUser(clubRepository.findById(matchRegInput.getClubId()).get(), user).get();
+        if (!(userClub.getCategory().equals("creator") || userClub.getCategory().equals("admin"))) {
+            throw new MatchPermissionException("매치 신청 등록 권한이 없습니다.");
+        }
+
+        MatchApplication matchApplication = matchApplicationRepository.findById(matchRegInput.getId()).get();
+
+        if (matchApplication.getMatch().getMatchStatus() == MatchStatus.REGISTERED) {
+            matchApplication.failApply();
+            matchApplicationRepository.save(matchApplication);
+            return null;
+        }
+
+        if (matchApplication.getSchedule().getAttend() >= matchApplication.getMatch().getMinParticipants()) {
+            eventPublisher.publishEvent(new MatchAppVoteEvent);
+        }
+
+        matchApplication.completeApplication(matchRegInput);
+        matchApplicationRepository.save(matchApplication);
+
+        return new MatchRegOutput(matchApplication.getId());
     }
 
 //    public List<RegMatchOutput> findRegMatch(Club club) {

@@ -4,6 +4,7 @@ import com.example.moim.club.entity.Schedule;
 import com.example.moim.global.entity.BaseEntity;
 import com.example.moim.match.entity.Match;
 import com.example.moim.notification.dto.ClubJoinEvent;
+import com.example.moim.notification.dto.MatchAppVoteEvent;
 import com.example.moim.notification.dto.MatchRequestEvent;
 import com.example.moim.notification.dto.ScheduleSaveEvent;
 import com.example.moim.user.entity.User;
@@ -75,6 +76,16 @@ public class Notifications extends BaseEntity {
         notifications.contents = matchRequestEvent.getUser().getName() + "님이 "
                 + matchRequestEvent.getMatch().getStartTime().toLocalDate()
                 + matchRequestEvent.getMatch().getEvent() + "매치를 원합니다. \nt승인하시겠습니까?";
+        notifications.isRead = false;
+        return notifications;
+    }
+
+    public static Notifications createMatchAppVoteEvent(MatchAppVoteEvent matchAppVoteEvent, User targetUser) {
+        Notifications notifications = new Notifications();
+        notifications.targetUser = targetUser;
+        notifications.title = "매치 신청 최소인원 충족 알림";
+        notifications.category = "친선 매치";
+        notifications.contents = matchAppVoteEvent.getMatchApplication().getMatch().getName() + "의 참가인원이 최소인원을 달성했습니다. \n매치 신청을 완료해주세요.";
         notifications.isRead = false;
         return notifications;
     }

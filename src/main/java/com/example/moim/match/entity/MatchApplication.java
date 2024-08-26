@@ -2,6 +2,7 @@ package com.example.moim.match.entity;
 
 import com.example.moim.club.entity.Club;
 import com.example.moim.club.entity.Schedule;
+import com.example.moim.match.dto.MatchRegInput;
 import jakarta.persistence.*;
 import lombok.Getter;
 
@@ -11,6 +12,9 @@ public class MatchApplication {
 
     @Id @GeneratedValue
     private Long id;
+
+    private boolean isBall;
+    private String note;
 
     @ManyToOne
     @JoinColumn(name = "match_id")
@@ -37,8 +41,17 @@ public class MatchApplication {
         return matchApplication;
     }
 
+    public void completeApplication(MatchRegInput matchRegInput) {
+        this.isBall = matchRegInput.isBall();
+        this.note = matchRegInput.getNote();
+        this.status = MatchAppStatus.APP_COMPLETED;
+    }
+
     public void setSchedule(Schedule schedule) {
         this.schedule = schedule;
     }
 
+    public void failApply() {
+        this.status = MatchAppStatus.REJECTED;
+    }
 }
