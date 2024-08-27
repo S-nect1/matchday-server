@@ -1,11 +1,12 @@
 package com.example.moim.notification.service;
 
+import com.example.moim.club.entity.UserClub;
 import com.example.moim.club.repository.UserClubRepository;
-import com.example.moim.notification.dto.ScheduleEncourageEvent;
-import com.example.moim.notification.dto.ScheduleSaveEvent;
-import com.example.moim.notification.dto.ClubJoinEvent;
+import com.example.moim.notification.dto.*;
 import com.example.moim.notification.entity.Notifications;
 import com.example.moim.notification.repository.NotificationRepository;
+import com.example.moim.user.entity.User;
+import com.example.moim.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.event.EventListener;
@@ -20,6 +21,7 @@ import java.util.List;
 public class NotificationEventHandler {
     private final NotificationRepository notificationRepository;
     private final UserClubRepository userClubRepository;
+    private final UserRepository userRepository;
 
     @Async
     @EventListener
@@ -49,6 +51,20 @@ public class NotificationEventHandler {
     public void handleScheduleEncourageEvent(ScheduleEncourageEvent scheduleEncourageEvent) {
         log.info("이벤트 들어옴");
         sendEachNotification(scheduleEncourageEvent.getUserList().stream().map(user -> Notifications.createScheduleEncourageEvent(scheduleEncourageEvent.getSchedule(), user)).toList());
+    }
+
+    @EventListener
+    public void handleMatchRequestEvent(MatchRequestEvent matchRequestEvent) {
+        log.info("이벤트 들어옴");
+        User targetUser = userClubRepository.findByUserIdAndCategory(matchRequestEvent.getUser().getId()).getUser();
+        sendNotification(Notifications.createMatchRequestEvent(matchRequestEvent, targetUser));
+    }
+
+    @EventListener
+    public void handleMatchAppVoteEvent(MatchAppVoteEvent matchAppVoteEvent) {
+        log.info("이벤트 들어옴");
+        User targetUser = userClubRepository.findByUserIdAndCategory(matchAppVoteEvent.getUser().getId()).getUser();
+        sendNotification(Notifications.createMatchAppVoteEvent(matchAppVoteEvent, targetUser));
     }
 
     private void sendNotification(Notifications notification) {

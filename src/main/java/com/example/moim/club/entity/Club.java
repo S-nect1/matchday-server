@@ -3,6 +3,7 @@ package com.example.moim.club.entity;
 import com.example.moim.club.dto.ClubInput;
 import com.example.moim.club.dto.ClubUpdateInput;
 import com.example.moim.global.entity.BaseEntity;
+import com.example.moim.match.entity.Match;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -33,6 +34,12 @@ public class Club extends BaseEntity {
     
     @OneToMany(mappedBy = "club", cascade = CascadeType.REMOVE)
     private List<UserClub> userClub = new ArrayList<>();
+
+    @OneToMany(mappedBy = "homeClub", cascade = CascadeType.REMOVE)
+    private List<Match> homeMatches = new ArrayList<>();
+
+    @OneToMany(mappedBy = "awayClub", cascade = CascadeType.REMOVE)
+    private List<Match> awayMatches = new ArrayList<>();
 
     public static Club createClub(ClubInput clubInput, String profileImgPath) {
         Club club = new Club();
