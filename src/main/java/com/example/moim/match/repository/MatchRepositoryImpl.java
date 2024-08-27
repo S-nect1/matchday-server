@@ -11,6 +11,7 @@ import java.util.List;
 
 import static com.example.moim.club.entity.QClub.club;
 import static com.example.moim.match.entity.QMatch.match;
+import static org.springframework.util.StringUtils.hasText;
 
 public class MatchRepositoryImpl implements MatchRepositoryCustom {
 
@@ -26,29 +27,27 @@ public class MatchRepositoryImpl implements MatchRepositoryCustom {
                 .selectFrom(match)
                 .leftJoin(match.homeClub, club).fetchJoin()
                 .where(
-                        searchLike(matchSearchCond.getSearch()),
+                        searchContains(matchSearchCond.getSearch()),
 //                        teamAbilityEq(matchSearchCond.getTeamAbility()), // 팀능력 어디서 입력?
                         ageRangeEq(matchSearchCond.getAgeRange()),
                         areaEq(matchSearchCond.getArea()),
                         genderEq(matchSearchCond.getGender()),
                         matchTypeEq(matchSearchCond.getMatchType())
                 )
+                .orderBy(match.startTime.asc())
                 .fetch();
     }
 
-    private BooleanExpression searchLike(String search) {
-        if (search == null || search.isEmpty()) {
-            return null;
+    private BooleanExpression searchContains(String search) {
+        if (hasText(search)) {
+            return match.event.contains(search)
+                    .or(match.name.contains(search))
+                    .or(match.location.contains(search))
+                    .or(match.fee.stringValue().contains(search))
+                    .or(match.note.contains(search));
         }
 
-        String formattedSearch = "%" + search.toLowerCase() + "%";
-
-        return match.event.likeIgnoreCase(formattedSearch)
-                .or(match.matchSize.likeIgnoreCase(formattedSearch))
-                .or(match.location.likeIgnoreCase(formattedSearch))
-                .or(match.fee.stringValue().likeIgnoreCase(formattedSearch))
-                .or(match.account.likeIgnoreCase(formattedSearch))
-                .or(match.minParticipants.stringValue().likeIgnoreCase(formattedSearch));
+        return null;
     }
 
     private BooleanExpression matchTypeEq(String matchType) {
