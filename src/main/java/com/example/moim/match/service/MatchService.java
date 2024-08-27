@@ -94,7 +94,9 @@ public class MatchService {
         return new MatchRegOutput(match.getId());
     }
 
-    public MatchApplyOutput applyMatch(User user, Match match, Club awayClub) {
+    public MatchApplyOutput applyMatch(User user, Long matchId, Long clubId) {
+        Club awayClub = clubRepository.findById(clubId).get();
+        Match match = matchRepository.findById(matchId).get();
         UserClub userClub = userClubRepository.findByClubAndUser(awayClub, user).get();
         if (!(userClub.getCategory().equals("creator") || userClub.getCategory().equals("admin"))) {
             eventPublisher.publishEvent(new MatchRequestEvent(match, user));
