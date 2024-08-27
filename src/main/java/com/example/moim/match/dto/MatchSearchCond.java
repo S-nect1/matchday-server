@@ -4,7 +4,8 @@ import lombok.Data;
 
 @Data
 public class MatchSearchCond {
-    private String teamAbility;
+    private String search;
+//    private String teamAbility;
     private String ageRange;
     private String area;
     private String gender;

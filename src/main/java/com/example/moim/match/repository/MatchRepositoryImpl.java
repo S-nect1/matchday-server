@@ -3,7 +3,6 @@ package com.example.moim.match.repository;
 import com.example.moim.match.dto.MatchSearchCond;
 import com.example.moim.match.entity.Gender;
 import com.example.moim.match.entity.Match;
-import com.querydsl.core.types.Predicate;
 import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import jakarta.persistence.EntityManager;
@@ -27,6 +26,7 @@ public class MatchRepositoryImpl implements MatchRepositoryCustom {
                 .selectFrom(match)
                 .leftJoin(match.homeClub, club).fetchJoin()
                 .where(
+                        searchLike(matchSearchCond.getSearch()),
 //                        teamAbilityEq(matchSearchCond.getTeamAbility()), // 팀능력 어디서 입력?
                         ageRangeEq(matchSearchCond.getAgeRange()),
                         areaEq(matchSearchCond.getArea()),
@@ -34,6 +34,21 @@ public class MatchRepositoryImpl implements MatchRepositoryCustom {
                         matchTypeEq(matchSearchCond.getMatchType())
                 )
                 .fetch();
+    }
+
+    private BooleanExpression searchLike(String search) {
+        if (search == null || search.isEmpty()) {
+            return null;
+        }
+
+        String formattedSearch = "%" + search.toLowerCase() + "%";
+
+        return match.event.likeIgnoreCase(formattedSearch)
+                .or(match.matchSize.likeIgnoreCase(formattedSearch))
+                .or(match.location.likeIgnoreCase(formattedSearch))
+                .or(match.fee.stringValue().likeIgnoreCase(formattedSearch))
+                .or(match.account.likeIgnoreCase(formattedSearch))
+                .or(match.minParticipants.stringValue().likeIgnoreCase(formattedSearch));
     }
 
     private BooleanExpression matchTypeEq(String matchType) {

@@ -2,6 +2,7 @@ package com.example.moim.match.controller;
 
 import com.example.moim.club.repository.ClubRepository;
 import com.example.moim.match.dto.*;
+import com.example.moim.match.repository.MatchRepository;
 import com.example.moim.match.service.MatchService;
 import com.example.moim.user.dto.UserDetailsImpl;
 import jakarta.validation.Valid;
@@ -17,6 +18,7 @@ import java.util.List;
 public class MatchController {
     private final MatchService matchService;
     private final ClubRepository clubRepository;
+    private final MatchRepository matchRepository;
 
     @PostMapping("/match")
     public MatchOutput matchSave(@RequestBody @Valid MatchInput matchInput, @AuthenticationPrincipal UserDetailsImpl userDetailsImpl) {
@@ -35,7 +37,7 @@ public class MatchController {
         return matchService.applyMatch(userDetailsImpl.getUser(), matchId, clubId);
     }
 
-    @GetMapping("/match")
+    @GetMapping("/matches")
     public List<MatchSearchOutput> findMatches(@AuthenticationPrincipal UserDetailsImpl userDetailsImpl,
                                                @ModelAttribute MatchSearchCond matchSearchCond) {
         return matchService.searchMatch(matchSearchCond);
