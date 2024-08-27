@@ -10,6 +10,7 @@ import jakarta.persistence.EntityManager;
 import java.util.List;
 
 import static com.example.moim.club.entity.QClub.club;
+import static com.example.moim.match.entity.MatchStatus.REGISTERED;
 import static com.example.moim.match.entity.QMatch.match;
 import static org.springframework.util.StringUtils.hasText;
 
@@ -27,6 +28,7 @@ public class MatchRepositoryImpl implements MatchRepositoryCustom {
                 .selectFrom(match)
                 .leftJoin(match.homeClub, club).fetchJoin()
                 .where(
+                        match.matchStatus.eq(REGISTERED),
                         searchContains(matchSearchCond.getSearch()),
 //                        teamAbilityEq(matchSearchCond.getTeamAbility()), // 팀능력 어디서 입력?
                         ageRangeEq(matchSearchCond.getAgeRange()),
