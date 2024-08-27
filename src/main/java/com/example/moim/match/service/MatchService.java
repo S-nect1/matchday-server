@@ -1,6 +1,5 @@
 package com.example.moim.match.service;
 
-import com.example.moim.club.dto.ScheduleInput;
 import com.example.moim.club.entity.Club;
 import com.example.moim.club.entity.Schedule;
 import com.example.moim.club.entity.UserClub;
@@ -66,7 +65,7 @@ public class MatchService {
         Match match = matchRepository.save(Match.createMatch(clubRepository.findById(matchInput.getClubId()).get(), matchInput));
 
         //일정에 매치 등록
-        Schedule schedule = scheduleRepository.save(Schedule.createSchedule(clubRepository.findById(matchInput.getClubId()).get(), createScheduleFromMatch(match)));
+        Schedule schedule = scheduleRepository.save(Schedule.createSchedule(clubRepository.findById(matchInput.getClubId()).get(), match.createScheduleFromMatch()));
         match.setSchedule(schedule);
         matchRepository.save(match);
 
@@ -114,7 +113,7 @@ public class MatchService {
 
         MatchApplication matchApplication = matchApplicationRepository.save(MatchApplication.applyMatch(match, awayClub));
 
-        Schedule schedule = scheduleRepository.save(Schedule.createSchedule(matchApplication.getClub(), createScheduleFromMatch(matchApplication.getMatch())));
+        Schedule schedule = scheduleRepository.save(Schedule.createSchedule(matchApplication.getClub(), matchApplication.getMatch().createScheduleFromMatch()));
         matchApplication.setSchedule(schedule);
         matchApplicationRepository.save(matchApplication);
 
@@ -145,6 +144,10 @@ public class MatchService {
         return new MatchRegOutput(matchApplication.getId());
     }
 
+    public List<ConfirmedMatchOutput> findConfirmedMatch(Club club) {
+        return matchRepository.findConfirmedMatchByClub(club).stream().map(ConfirmedMatchOutput::new).toList();
+    }
+
 //    public List<RegMatchOutput> findRegMatch(Club club) {
 //        return matchRepository.findMatchByClub(club).stream().map(m -> new RegMatchOutput()).toList();
 //    }
@@ -156,19 +159,7 @@ public class MatchService {
 
     public List<MatchStatusOutput> findMatchStatus(Club club) {
 
-        List<Match> matches = matchRepository.findMatchByClub(club);
-        return (matches != null) ? matches.stream().map(m -> new MatchStatusOutput(m)).toList() : Collections.emptyList();
+        return (matchRepository.findMatchByClub(club) != null) ? matchRepository.findMatchByClub(club).stream().map(m -> new MatchStatusOutput(m)).toList() : Collections.emptyList();
     }
 
-    private ScheduleInput createScheduleFromMatch(Match match) {
-        return new ScheduleInput(
-                match.getId(),
-                match.getName(),
-                match.getLocation(),
-                match.getStartTime(),
-                match.getEndTime(),
-                match.getMinParticipants(),
-                "친선 매치",
-                match.getNote());
-    }
 }

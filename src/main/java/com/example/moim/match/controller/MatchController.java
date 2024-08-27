@@ -43,7 +43,13 @@ public class MatchController {
         return matchService.searchMatch(matchSearchCond);
     }
 
-    @GetMapping("/match-status/{clubId}")
+    @GetMapping("/{clubId}/matches")
+    public List<ConfirmedMatchOutput> findConfirmedMatches(@AuthenticationPrincipal UserDetailsImpl userDetailsImpl,
+                                                           @PathVariable Long clubId) {
+        return matchService.findConfirmedMatch(clubRepository.findById(clubId).get());
+    }
+
+    @GetMapping("/{clubId}/match-status")
     public List<MatchStatusOutput> getMatchStatus(@PathVariable Long clubId) {
         return matchService.findMatchStatus(clubRepository.findById(clubId).get());
     }
