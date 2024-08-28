@@ -9,5 +9,5 @@ import java.util.List;
 
 public interface MatchRepositoryCustom {
     List<Match> findBySearchCond(MatchSearchCond matchSearchCond);
-    List<Club> findClubsBySearchCond(MatchClubSearchCond matchClubSearchCond, Club club);
+    List<Club> findClubsBySearchCond(MatchClubSearchCond matchClubSearchCond);
 }

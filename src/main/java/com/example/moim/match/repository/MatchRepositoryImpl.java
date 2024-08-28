@@ -46,11 +46,10 @@ public class MatchRepositoryImpl implements MatchRepositoryCustom {
     }
 
     @Override
-    public List<Club> findClubsBySearchCond(MatchClubSearchCond matchClubSearchCond, Club matchClub) {
+    public List<Club> findClubsBySearchCond(MatchClubSearchCond matchClubSearchCond) {
         return queryFactory
                 .selectFrom(club)
                 .where(
-                        club.activityArea.eq(matchClub.getActivityArea()),
                         searchContains(matchClubSearchCond.getSearch()),
                         ageRangeEq(matchClubSearchCond.getAgeRange()),
                         genderEq(matchClubSearchCond.getGender()),

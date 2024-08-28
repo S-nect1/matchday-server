@@ -72,10 +72,10 @@ public class MatchController {
     }
 
     //활동 지역 소재 모임 리스트
-    @GetMapping("/match/clubs")
+    @GetMapping("/{clubId}/match-clubs")
     public List<MatchClubOutput> findMatchClubs(@AuthenticationPrincipal UserDetailsImpl userDetailsImpl,
                                                 @ModelAttribute MatchClubSearchCond matchClubSearchCond,
-                                                @RequestParam Long clubId) {
+                                                @PathVariable Long clubId) {
         return matchService.searchMatchClubs(matchClubSearchCond, clubRepository.findById(clubId).get());
     }
 

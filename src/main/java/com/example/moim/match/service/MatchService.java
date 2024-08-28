@@ -174,8 +174,10 @@ public class MatchService {
     }
 
     public List<MatchClubOutput> searchMatchClubs(MatchClubSearchCond matchClubSearchCond, Club club) {
+        List<Club> matchClubs = matchRepository.findClubsBySearchCond(matchClubSearchCond);
 
-        return matchRepository.findClubsBySearchCond(matchClubSearchCond, club).stream()
+        return matchClubs.stream()
+                .filter(c -> c.getActivityArea().equals(club.getActivityArea()))
                 .filter(c -> !c.getId().equals(club.getId()))
                 .map(MatchClubOutput::new).toList();
     }
