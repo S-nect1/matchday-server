@@ -71,6 +71,14 @@ public class MatchController {
         return matchService.findConfirmedMatch(clubRepository.findById(clubId).get());
     }
 
+    //활동 지역 소재 모임 리스트
+    @GetMapping("/match/clubs")
+    public List<MatchClubOutput> findMatchClubs(@AuthenticationPrincipal UserDetailsImpl userDetailsImpl,
+                                                @ModelAttribute MatchClubSearchCond matchClubSearchCond,
+                                                @RequestParam Long clubId) {
+        return matchService.searchMatchClubs(matchClubSearchCond, clubRepository.findById(clubId).get());
+    }
+
     //매치 등록/신청 현황, 신청 추가해야 함
     @GetMapping("/{clubId}/match-status")
     public List<MatchStatusOutput> getMatchStatus(@PathVariable Long clubId) {

@@ -135,10 +135,6 @@ public class MatchService {
         return new MatchApplyOutput(matchApplication.getId());
     }
 
-    public List<ConfirmedMatchOutput> findConfirmedMatch(Club club) {
-        return matchRepository.findConfirmedMatchByClub(club).stream().map(ConfirmedMatchOutput::new).toList();
-    }
-
     public MatchConfirmOutput confirmMatch(Long id, Long awayClubId, User user) {
         Match match = matchRepository.findById(id).get();
         Club awayClub = clubRepository.findById(awayClubId).get();
@@ -166,13 +162,28 @@ public class MatchService {
     }
 
     public List<MatchSearchOutput> searchMatch(MatchSearchCond matchSearchCond) {
+
         return matchRepository.findBySearchCond(matchSearchCond).stream()
                 .map(MatchSearchOutput::new).toList();
     }
 
+    public List<ConfirmedMatchOutput> findConfirmedMatch(Club club) {
+
+        return matchRepository.findConfirmedMatchByClub(club).stream()
+                .map(ConfirmedMatchOutput::new).toList();
+    }
+
+    public List<MatchClubOutput> searchMatchClubs(MatchClubSearchCond matchClubSearchCond, Club club) {
+
+        return matchRepository.findClubsBySearchCond(matchClubSearchCond, club).stream()
+                .filter(c -> !c.getId().equals(club.getId()))
+                .map(MatchClubOutput::new).toList();
+    }
+
     public List<MatchStatusOutput> findMatchStatus(Club club) {
 
-        return (matchRepository.findMatchByClub(club) != null) ? matchRepository.findMatchByClub(club).stream().map(m -> new MatchStatusOutput(m)).toList() : Collections.emptyList();
+        return (matchRepository.findMatchByClub(club) != null) ? matchRepository.findMatchByClub(club).stream()
+                .map(m -> new MatchStatusOutput(m)).toList() : Collections.emptyList();
     }
 
 }

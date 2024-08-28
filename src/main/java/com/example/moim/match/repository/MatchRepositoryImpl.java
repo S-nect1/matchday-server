@@ -1,5 +1,7 @@
 package com.example.moim.match.repository;
 
+import com.example.moim.club.entity.Club;
+import com.example.moim.match.dto.MatchClubSearchCond;
 import com.example.moim.match.dto.MatchSearchCond;
 import com.example.moim.match.entity.Gender;
 import com.example.moim.match.entity.Match;
@@ -40,6 +42,20 @@ public class MatchRepositoryImpl implements MatchRepositoryCustom {
                         matchTypeEq(matchSearchCond.getMatchType())
                 )
                 .orderBy(match.startTime.asc())
+                .fetch();
+    }
+
+    @Override
+    public List<Club> findClubsBySearchCond(MatchClubSearchCond matchClubSearchCond, Club matchClub) {
+        return queryFactory
+                .selectFrom(club)
+                .where(
+                        club.activityArea.eq(matchClub.getActivityArea()),
+                        searchContains(matchClubSearchCond.getSearch()),
+                        ageRangeEq(matchClubSearchCond.getAgeRange()),
+                        genderEq(matchClubSearchCond.getGender()),
+                        matchTypeEq(matchClubSearchCond.getMatchType())
+                )
                 .fetch();
     }
 
