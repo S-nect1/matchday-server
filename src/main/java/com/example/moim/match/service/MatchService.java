@@ -13,6 +13,7 @@ import com.example.moim.match.entity.Match;
 import com.example.moim.match.entity.MatchApplication;
 import com.example.moim.match.repository.MatchApplicationRepository;
 import com.example.moim.match.repository.MatchRepository;
+import com.example.moim.notification.dto.MatchInviteEvent;
 import com.example.moim.notification.dto.MatchRequestEvent;
 import com.example.moim.user.entity.User;
 import lombok.RequiredArgsConstructor;
@@ -92,21 +93,21 @@ public class MatchService {
     }
 
     public MatchApplyOutput saveMatchApp(User user, Long matchId, Long clubId) {
-        Club awayClub = clubRepository.findById(clubId).get();
+        Club club = clubRepository.findById(clubId).get();
         Match match = matchRepository.findById(matchId).get();
 
-        UserClub userClub = userClubRepository.findByClubAndUser(awayClub, user).get();
+        UserClub userClub = userClubRepository.findByClubAndUser(club, user).get();
         if (!(userClub.getCategory().equals("creator") || userClub.getCategory().equals("admin"))) {
-            eventPublisher.publishEvent(new MatchRequestEvent(match, user));
+            eventPublisher.publishEvent(new MatchRequestEvent(match, user, club));
             return null;
         }
 
-        MatchApplication existingApplication = matchApplicationRepository.findByMatchAndClub(match, awayClub);
+        MatchApplication existingApplication = matchApplicationRepository.findByMatchAndClub(match, club);
         if (existingApplication != null) {
             throw new MatchPermissionException("이미 신청한 매치입니다.");
         }
 
-        MatchApplication matchApplication = matchApplicationRepository.save(MatchApplication.applyMatch(match, awayClub));
+        MatchApplication matchApplication = matchApplicationRepository.save(MatchApplication.applyMatch(match, club));
         Schedule schedule = scheduleRepository.save(Schedule.createSchedule(matchApplication.getClub(), matchApplication.getMatch().createScheduleFromMatch()));
 
         matchApplication.setSchedule(schedule);
@@ -133,6 +134,16 @@ public class MatchService {
         matchApplicationRepository.save(matchApplication);
 
         return new MatchApplyOutput(matchApplication.getId());
+    }
+
+    public void inviteMatch(User user, Long matchId, Long clubId) {
+        Match match = matchRepository.findById(matchId).get();
+        UserClub userClub = userClubRepository.findByClubAndUser(clubRepository.findById(match.getHomeClub().getId()).get(), user).get();
+        if (!(userClub.getCategory().equals("creator") || userClub.getCategory().equals("admin"))) {
+            throw new MatchPermissionException("매치 초청 권한이 없습니다.");
+        }
+
+        eventPublisher.publishEvent(new MatchInviteEvent(match, clubRepository.findById(clubId).get(), user));
     }
 
     public MatchConfirmOutput confirmMatch(Long id, Long awayClubId, User user) {

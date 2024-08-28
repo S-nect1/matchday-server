@@ -56,16 +56,17 @@ public class NotificationEventHandler {
     @EventListener
     public void handleMatchRequestEvent(MatchRequestEvent matchRequestEvent) {
         log.info("이벤트 들어옴");
-        User targetUser = userClubRepository.findByUserIdAndCategory(matchRequestEvent.getUser().getId()).getUser();
-        sendNotification(Notifications.createMatchRequestEvent(matchRequestEvent, targetUser));
+        sendEachNotification(userClubRepository.findAllByClub(matchRequestEvent.getClub()).stream()
+                .map(userClub -> Notifications.createMatchRequestEvent(matchRequestEvent, userClub.getUser())).toList());
     }
 
     @EventListener
-    public void handleMatchAppVoteEvent(MatchAppVoteEvent matchAppVoteEvent) {
+    public void handMatchInviteEvent(MatchInviteEvent matchInviteEvent) {
         log.info("이벤트 들어옴");
-        User targetUser = userClubRepository.findByUserIdAndCategory(matchAppVoteEvent.getUser().getId()).getUser();
-        sendNotification(Notifications.createMatchAppVoteEvent(matchAppVoteEvent, targetUser));
+        sendEachNotification(userClubRepository.findAdminByClub(matchInviteEvent.getClub()).stream()
+                .map(userClub -> Notifications.createMatchInviteEvent(matchInviteEvent, userClub.getUser())).toList());
     }
+
 
     private void sendNotification(Notifications notification) {
 //        Message message = Message.builder()

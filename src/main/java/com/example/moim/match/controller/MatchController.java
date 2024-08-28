@@ -8,6 +8,7 @@ import com.example.moim.user.dto.UserDetailsImpl;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
@@ -47,6 +48,15 @@ public class MatchController {
                                        @RequestBody @Valid MatchApplyInput matchApplyInput,
                                        @AuthenticationPrincipal UserDetailsImpl userDetailsImpl) {
         return matchService.applyMatch(userDetailsImpl.getUser(), matchApplyInput);
+    }
+
+    //매치 초청
+    @PostMapping("/match/invite")
+    public ResponseEntity<String> matchInvite(@RequestParam Long matchId,
+                                              @RequestParam Long clubId,
+                                              @AuthenticationPrincipal UserDetailsImpl userDetailsImpl) {
+        matchService.inviteMatch(userDetailsImpl.getUser(), matchId, clubId);
+        return ResponseEntity.ok("매치 초청 알림이 전송되었습니다.");
     }
 
     //매치 확정

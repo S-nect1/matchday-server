@@ -6,15 +6,15 @@ import com.example.moim.user.entity.User;
 import lombok.Data;
 
 @Data
-public class MatchRequestEvent {
+public class MatchInviteEvent {
 
     private Match match;
-    private User user;
     private Club club;
+    private User user;
 
-    public MatchRequestEvent(Match match, User user, Club club) {
+    public MatchInviteEvent(Match match, Club club, User user) {
         this.match = match;
-        this.user = user;
         this.club = club;
+        this.user = user;
     }
 }

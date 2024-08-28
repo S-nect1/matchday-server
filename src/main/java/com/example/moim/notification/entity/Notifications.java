@@ -3,10 +3,7 @@ package com.example.moim.notification.entity;
 import com.example.moim.club.entity.Schedule;
 import com.example.moim.global.entity.BaseEntity;
 import com.example.moim.match.entity.Match;
-import com.example.moim.notification.dto.ClubJoinEvent;
-import com.example.moim.notification.dto.MatchAppVoteEvent;
-import com.example.moim.notification.dto.MatchRequestEvent;
-import com.example.moim.notification.dto.ScheduleSaveEvent;
+import com.example.moim.notification.dto.*;
 import com.example.moim.user.entity.User;
 import jakarta.persistence.*;
 import lombok.Getter;
@@ -63,7 +60,7 @@ public class Notifications extends BaseEntity {
         notifications.targetUser = targetUser;
         notifications.title = " 일정 참가 투표 알림";
         notifications.category = "일정";
-        notifications.contents = schedule.getTitle() + " 일정 참가 투표가 곧 마가됩니다.\n참가 투표를 해주세요.";
+        notifications.contents = schedule.getTitle() + " 일정 참가 투표가 곧 마감됩니다.\n참가 투표를 해주세요.";
         notifications.isRead = false;
         return notifications;
     }
@@ -80,12 +77,14 @@ public class Notifications extends BaseEntity {
         return notifications;
     }
 
-    public static Notifications createMatchAppVoteEvent(MatchAppVoteEvent matchAppVoteEvent, User targetUser) {
+    public static Notifications createMatchInviteEvent(MatchInviteEvent matchInviteEvent, User targetUser) {
         Notifications notifications = new Notifications();
         notifications.targetUser = targetUser;
-        notifications.title = "매치 신청 최소인원 충족 알림";
+        notifications.title = "매치 초청 알림";
         notifications.category = "친선 매치";
-        notifications.contents = matchAppVoteEvent.getMatchApplication().getMatch().getName() + "의 참가인원이 최소인원을 달성했습니다. \n매치 신청을 완료해주세요.";
+        notifications.contents = "<" + matchInviteEvent.getMatch().getEvent() + " 한판 해요~> - " +
+                matchInviteEvent.getMatch().getHomeClub().getTitle() + "\n" +
+                matchInviteEvent.getMatch().getHomeClub().getTitle() + "가 친선 매치를 제안했습니다!";
         notifications.isRead = false;
         return notifications;
     }
