@@ -11,10 +11,8 @@ import com.example.moim.exception.match.MatchPermissionException;
 import com.example.moim.match.dto.*;
 import com.example.moim.match.entity.Match;
 import com.example.moim.match.entity.MatchApplication;
-import com.example.moim.match.entity.MatchStatus;
 import com.example.moim.match.repository.MatchApplicationRepository;
 import com.example.moim.match.repository.MatchRepository;
-import com.example.moim.notification.dto.MatchAppVoteEvent;
 import com.example.moim.notification.dto.MatchRequestEvent;
 import com.example.moim.user.entity.User;
 import lombok.RequiredArgsConstructor;
@@ -166,10 +164,6 @@ public class MatchService {
 
         return new MatchConfirmOutput(awayClub);
     }
-
-//    public List<RegMatchOutput> findRegMatch(Club club) {
-//        return matchRepository.findMatchByClub(club).stream().map(m -> new RegMatchOutput()).toList();
-//    }
 
     public List<MatchSearchOutput> searchMatch(MatchSearchCond matchSearchCond) {
         return matchRepository.findBySearchCond(matchSearchCond).stream()

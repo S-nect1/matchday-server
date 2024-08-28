@@ -4,9 +4,11 @@ import com.example.moim.match.dto.MatchSearchCond;
 import com.example.moim.match.entity.Gender;
 import com.example.moim.match.entity.Match;
 import com.querydsl.core.types.dsl.BooleanExpression;
+import com.querydsl.core.types.dsl.Expressions;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import jakarta.persistence.EntityManager;
 
+import java.time.LocalDate;
 import java.util.List;
 
 import static com.example.moim.club.entity.QClub.club;
@@ -30,6 +32,7 @@ public class MatchRepositoryImpl implements MatchRepositoryCustom {
                 .where(
                         match.matchStatus.eq(REGISTERED),
                         searchContains(matchSearchCond.getSearch()),
+                        matchDateEq(matchSearchCond.getMatchDate()),
 //                        teamAbilityEq(matchSearchCond.getTeamAbility()), // 팀능력 어디서 입력?
                         ageRangeEq(matchSearchCond.getAgeRange()),
                         areaEq(matchSearchCond.getArea()),
@@ -50,6 +53,10 @@ public class MatchRepositoryImpl implements MatchRepositoryCustom {
         }
 
         return null;
+    }
+
+    private BooleanExpression matchDateEq(LocalDate matchDate) {
+        return matchDate != null ? Expressions.dateTemplate(LocalDate.class,"DATE({0})", match.startTime).eq(matchDate) : null;
     }
 
     private BooleanExpression matchTypeEq(String matchType) {
