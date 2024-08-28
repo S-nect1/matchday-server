@@ -32,7 +32,7 @@ public class Match extends BaseEntity {
     private Club awayClub;
 
     @OneToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "match_schedule")
+    @JoinColumn(name = "schedule_id")
     private Schedule schedule;
 
     private String name;
@@ -92,6 +92,11 @@ public class Match extends BaseEntity {
         this.isBall = matchRegInput.isBall();
         this.note = matchRegInput.getNote();
         this.matchStatus = REGISTERED;
+    }
+
+    public void confirmMatch(Club awayClub) {
+        this.awayClub = awayClub;
+        this.matchStatus = CONFIRMED;
     }
 
     //매치 실패
