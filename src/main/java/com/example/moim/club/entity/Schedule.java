@@ -25,7 +25,7 @@ public class Schedule extends BaseEntity {
     private String location;
     private LocalDateTime startTime;
     private LocalDateTime endTime;
-    private int personnel;//참여인원수
+    private int minPeople;
     private String category;
     private String note;
     private int attend;
@@ -44,7 +44,7 @@ public class Schedule extends BaseEntity {
         schedule.location = scheduleInput.getLocation();
         schedule.startTime = scheduleInput.getStartTime();
         schedule.endTime = scheduleInput.getEndTime();
-        schedule.personnel = scheduleInput.getPersonnel();
+        schedule.minPeople = scheduleInput.getMinPeople();
         schedule.category = scheduleInput.getCategory();
         if (scheduleInput.getNote() != null) {
             schedule.note = scheduleInput.getNote();
@@ -80,7 +80,7 @@ public class Schedule extends BaseEntity {
         this.location = scheduleUpdateInput.getLocation();
         this.startTime = scheduleUpdateInput.getStartTime();
         this.endTime = scheduleUpdateInput.getEndTime();
-        this.personnel = scheduleUpdateInput.getPersonnel();
+        this.minPeople = scheduleUpdateInput.getMinPeople();
         this.category = scheduleUpdateInput.getCategory();
         if (scheduleUpdateInput.getNote() != null) {
             this.note = scheduleUpdateInput.getNote();

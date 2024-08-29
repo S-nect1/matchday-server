@@ -53,7 +53,7 @@ public class UserService {
     }
 
     public UserOutput findUser(User user) {
-        return new UserOutput(userRepository.findById(user.getId()).get());
+        return new UserOutput(userRepository.findById(user.getId()).get(), userClubRepository.existsByUser(user));
     }
 
     public List<MyClubOutput> findUserClub(User user) {

@@ -26,8 +26,8 @@ public class ScheduleInput {
     @NotNull(message = "일정 종료 시간을 입력해주세요.")
     private LocalDateTime endTime;
     @Min(value = 1, message = "참여 인원은 1명 이상이어야 합니다")
-    @NotNull(message = "참여 인원을 입력해주세요.")
-    private int personnel;//참여인원수
+    @NotNull(message = "최소 참여 인원을 입력해주세요.")
+    private int minPeople;//참여인원수
     @NotBlank(message = "일정 카테고리를 입력해 주세요.")
     private String category;
     private String note;
