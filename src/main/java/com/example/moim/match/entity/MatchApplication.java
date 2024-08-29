@@ -2,6 +2,7 @@ package com.example.moim.match.entity;
 
 import com.example.moim.club.entity.Club;
 import com.example.moim.club.entity.Schedule;
+import com.example.moim.match.dto.MatchApplyInput;
 import com.example.moim.match.dto.MatchRegInput;
 import jakarta.persistence.*;
 import lombok.Getter;
@@ -41,14 +42,22 @@ public class MatchApplication {
         return matchApplication;
     }
 
-    public void completeApplication(MatchRegInput matchRegInput) {
-        this.isBall = matchRegInput.isBall();
-        this.note = matchRegInput.getNote();
+    public void completeApplication(MatchApplyInput matchApplyInput) {
+        this.isBall = matchApplyInput.isBall();
+        this.note = matchApplyInput.getNote();
         this.status = MatchAppStatus.APP_COMPLETED;
     }
 
     public void setSchedule(Schedule schedule) {
         this.schedule = schedule;
+    }
+
+    public void confirmMatch() {
+        this.status = MatchAppStatus.CONFIRMED;
+    }
+
+    public void rejectMatch() {
+        this.status = MatchAppStatus.REJECTED;
     }
 
     public void failApply() {

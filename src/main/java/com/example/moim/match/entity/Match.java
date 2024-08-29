@@ -1,5 +1,6 @@
 package com.example.moim.match.entity;
 
+import com.example.moim.club.dto.ScheduleInput;
 import com.example.moim.club.entity.Club;
 import com.example.moim.club.entity.Schedule;
 import com.example.moim.global.entity.BaseEntity;
@@ -31,7 +32,7 @@ public class Match extends BaseEntity {
     private Club awayClub;
 
     @OneToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "match_schedule")
+    @JoinColumn(name = "schedule_id")
     private Schedule schedule;
 
     private String name;
@@ -93,6 +94,11 @@ public class Match extends BaseEntity {
         this.matchStatus = REGISTERED;
     }
 
+    public void confirmMatch(Club awayClub) {
+        this.awayClub = awayClub;
+        this.matchStatus = CONFIRMED;
+    }
+
     //매치 실패
     public void failMatch() {
         this.matchStatus = FAILED;
@@ -103,5 +109,17 @@ public class Match extends BaseEntity {
         String matchType = matchInput.getEvent(); // 종목 (축구, 풋살 등)
         String participants = matchInput.getMatchSize(); // 인원수
         return String.format("%s팀의 %s %s 매치", clubName, participants, matchType);
+    }
+
+    public ScheduleInput createScheduleFromMatch() {
+        return new ScheduleInput(
+                getId(),
+                getName(),
+                getLocation(),
+                getStartTime(),
+                getEndTime(),
+                getMinParticipants(),
+                "친선 매치",
+                getNote());
     }
 }

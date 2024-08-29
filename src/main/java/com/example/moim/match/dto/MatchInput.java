@@ -33,10 +33,8 @@ public class MatchInput {
     @NotBlank(message = "매치 장소를 입력해주세요.")
     private String location;
 
-//    @NotNull(message = "참가 비용을 입력해주세요.")
     private int fee = 0;
 
-//    @NotBlank(message = "계좌를 입력해주세요.")
     private String account;
 
     @NotNull(message = "최소 인원수를 설정해주세요.")

@@ -4,6 +4,9 @@ import com.example.moim.club.dto.*;
 import com.example.moim.club.entity.*;
 import com.example.moim.club.repository.*;
 import com.example.moim.exception.club.ClubPermissionException;
+import com.example.moim.match.dto.MatchApplyClubOutput;
+import com.example.moim.match.entity.MatchApplication;
+import com.example.moim.match.repository.MatchApplicationRepository;
 import com.example.moim.notification.dto.ScheduleEncourageEvent;
 import com.example.moim.notification.dto.ScheduleSaveEvent;
 import com.example.moim.notification.dto.ScheduleVoteEvent;
@@ -30,6 +33,7 @@ public class ScheduleService {
     private final CommentRepository commentRepository;
     private final ApplicationEventPublisher eventPublisher;
     private final ScheduleVoteRepository scheduleVoteRepository;
+    private final MatchApplicationRepository matchApplicationRepository;
 
     public ScheduleOutput saveSchedule(ScheduleInput scheduleInput, User user) {
         UserClub userClub = userClubRepository.findByClubAndUser(clubRepository.findById(scheduleInput.getClubId()).get(), user).get();
@@ -65,8 +69,9 @@ public class ScheduleService {
 
     public ScheduleDetailOutput findScheduleDetail(Long id) {
         Schedule schedule = scheduleRepository.findById(id).get();
-        return new ScheduleDetailOutput(schedule, scheduleVoteRepository.findBySchedule(schedule).stream()
-                .map(ScheduleUserOutput::new).toList());
+        return new ScheduleDetailOutput(schedule,
+                scheduleVoteRepository.findBySchedule(schedule).stream().map(ScheduleUserOutput::new).toList(),
+                matchApplicationRepository.findBySchedule(schedule).stream().map(MatchApplyClubOutput::new).toList());
 
     }
 

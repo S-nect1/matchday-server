@@ -1,6 +1,7 @@
 package com.example.moim.club.dto;
 
 import com.example.moim.club.entity.Schedule;
+import com.example.moim.match.dto.MatchApplyClubOutput;
 import lombok.Data;
 
 import java.util.List;
@@ -17,8 +18,9 @@ public class ScheduleDetailOutput {
     private int attend;
     private int nonAttend;
     List<ScheduleUserOutput> ScheduleUserList;
+    List<MatchApplyClubOutput> MatchApplyClubList;
 
-    public ScheduleDetailOutput(Schedule schedule, List<ScheduleUserOutput> ScheduleUserOutputList) {
+    public ScheduleDetailOutput(Schedule schedule, List<ScheduleUserOutput> ScheduleUserOutputList, List<MatchApplyClubOutput> MatchApplyClubOutputList) {
         this.id = schedule.getId();
         this.title = schedule.getTitle();
         this.location = schedule.getLocation();
@@ -30,5 +32,6 @@ public class ScheduleDetailOutput {
         this.attend = schedule.getAttend();
         this.nonAttend = schedule.getNonAttend();
         this.ScheduleUserList = ScheduleUserOutputList;
+        this.MatchApplyClubList = MatchApplyClubOutputList;
     }
 }

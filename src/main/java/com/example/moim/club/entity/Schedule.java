@@ -3,6 +3,7 @@ package com.example.moim.club.entity;
 import com.example.moim.club.dto.ScheduleInput;
 import com.example.moim.club.dto.ScheduleUpdateInput;
 import com.example.moim.global.entity.BaseEntity;
+import com.example.moim.match.entity.Match;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -32,6 +33,9 @@ public class Schedule extends BaseEntity {
 
     @OneToMany(mappedBy = "schedule", cascade = CascadeType.REMOVE)
     private List<Comment> comment = new ArrayList<>();
+
+    @OneToOne(mappedBy = "schedule", cascade =  CascadeType.REMOVE)
+    private Match match;
 
     public static Schedule createSchedule(Club club, ScheduleInput scheduleInput) {
         Schedule schedule = new Schedule();

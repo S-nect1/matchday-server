@@ -21,6 +21,13 @@ public interface MatchRepository extends JpaRepository<Match, Long>, MatchReposi
     List<Match> findMatchByClub(@Param("club") Club club);
 
     @Transactional(readOnly = true)
+    @Query("select m from Match m" +
+            " where m.homeClub = :club" +
+            " and m.matchStatus = 'CONFIRMED'" +
+            " order by m.startTime asc")
+    List<Match> findConfirmedMatchByClub(@Param("club") Club club);
+
+    @Transactional(readOnly = true)
     @Query("select m.account from Match m" +
             " where m.homeClub.id = :clubId" +
             " ORDER BY m.id DESC")
@@ -32,4 +39,6 @@ public interface MatchRepository extends JpaRepository<Match, Long>, MatchReposi
             " and m.location = :location" +
             " order by m.id desc")
     List<Integer> findFeeByClubIdAndLocation(@Param("clubId") Long clubId, @Param("location") String location);
+
+
 }
