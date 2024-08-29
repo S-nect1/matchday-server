@@ -17,12 +17,14 @@ public interface MatchRepository extends JpaRepository<Match, Long>, MatchReposi
 
     @Transactional(readOnly = true)
     @Query("select m from Match m" +
-            " where m.homeClub = :club")
+            " where (m.homeClub = :club" +
+            " or m.awayClub = :club)")
     List<Match> findMatchByClub(@Param("club") Club club);
 
     @Transactional(readOnly = true)
     @Query("select m from Match m" +
-            " where m.homeClub = :club" +
+            " where (m.homeClub = :club" +
+            " or m.awayClub = :club)" +
             " and m.matchStatus = 'CONFIRMED'" +
             " order by m.startTime asc")
     List<Match> findConfirmedMatchByClub(@Param("club") Club club);
