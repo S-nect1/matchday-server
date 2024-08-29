@@ -42,6 +42,7 @@ public class Match extends BaseEntity {
     private LocalDateTime endTime;
     private String location;
     private int fee;
+    private String bank;
     private String account;
     private int minParticipants; //최소 참가자 수
 
@@ -70,6 +71,7 @@ public class Match extends BaseEntity {
         match.endTime = matchInput.getEndTime();
         match.location = matchInput.getLocation();
         match.fee = matchInput.getFee();
+        match.bank = matchInput.getBank();
         match.account = matchInput.getAccount();
         match.minParticipants = matchInput.getMinParticipants();
 
@@ -121,5 +123,14 @@ public class Match extends BaseEntity {
                 getMinParticipants(),
                 "친선 매치",
                 getNote());
+    }
+
+
+    public Club findOpponentClub(Club club) {
+        if (club.getId() == this.getAwayClub().getId()) {
+            return this.getHomeClub();
+        }
+
+        return this.getAwayClub();
     }
 }
