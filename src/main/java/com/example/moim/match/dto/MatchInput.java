@@ -6,6 +6,7 @@ import com.fasterxml.jackson.annotation.JsonFormat;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Null;
 import lombok.Data;
 
 import java.time.LocalDateTime;
@@ -33,8 +34,13 @@ public class MatchInput {
     @NotBlank(message = "매치 장소를 입력해주세요.")
     private String location;
 
+    @NotNull(message = "대관비를 입력해주세요.")
     private int fee = 0;
 
+    @NotBlank(message = "은행을 입력해주세요.")
+    private String bank;
+
+    @NotBlank(message = "계좌를 입력해주세요")
     private String account;
 
     @NotNull(message = "최소 인원수를 설정해주세요.")

@@ -174,14 +174,13 @@ public class MatchService {
 
     public List<MatchSearchOutput> searchMatch(MatchSearchCond matchSearchCond) {
 
-        return matchRepository.findBySearchCond(matchSearchCond).stream()
-                .map(MatchSearchOutput::new).toList();
+        return matchRepository.findBySearchCond(matchSearchCond).stream().map(MatchSearchOutput::new).toList();
     }
 
     public List<ConfirmedMatchOutput> findConfirmedMatch(Club club) {
 
         return matchRepository.findConfirmedMatchByClub(club).stream()
-                .map(ConfirmedMatchOutput::new).toList();
+                .map(match -> new ConfirmedMatchOutput(match, club)).toList();
     }
 
     public List<MatchClubOutput> searchMatchClubs(MatchClubSearchCond matchClubSearchCond, Club club) {
