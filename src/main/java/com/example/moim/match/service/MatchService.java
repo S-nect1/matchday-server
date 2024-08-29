@@ -87,6 +87,7 @@ public class MatchService {
             return null;
         }
         match.completeMatch(matchRegInput);
+        matchRepository.save(match);
 
         return new MatchRegOutput(match.getId());
     }
@@ -115,7 +116,6 @@ public class MatchService {
         return new MatchApplyOutput(matchApplication.getId());
     }
 
-    @Transactional
     public MatchApplyOutput applyMatch(User user, MatchApplyInput matchApplyInput) {
         UserClub userClub = userClubRepository.findByClubAndUser(clubRepository.findById(matchApplyInput.getClubId()).get(), user).get();
         if (!(userClub.getCategory().equals("creator") || userClub.getCategory().equals("admin"))) {
@@ -126,10 +126,12 @@ public class MatchService {
 
         if (matchApplication.getSchedule().getAttend() < matchApplication.getMatch().getMinParticipants()) {
             matchApplication.failApply();
+            matchApplicationRepository.save(matchApplication);
             return null;
         }
 
         matchApplication.completeApplication(matchApplyInput);
+        matchApplicationRepository.save(matchApplication);
 
         return new MatchApplyOutput(matchApplication.getId());
     }
@@ -144,7 +146,6 @@ public class MatchService {
         eventPublisher.publishEvent(new MatchInviteEvent(match, clubRepository.findById(clubId).get(), user));
     }
 
-    @Transactional
     public MatchConfirmOutput confirmMatch(Long id, Long awayClubId, User user) {
         Match match = matchRepository.findById(id).get();
         Club awayClub = clubRepository.findById(awayClubId).get();
@@ -159,9 +160,13 @@ public class MatchService {
         match.confirmMatch(awayClub);
         matchApplication.confirmMatch();
 
+        matchRepository.save(match);
+        matchApplicationRepository.save(matchApplication);
+
         List<MatchApplication> rejectedApply = matchApplicationRepository.findRejectedByMatch(match);
         for (MatchApplication application : rejectedApply) {
             application.rejectMatch();
+            matchApplicationRepository.save(application);
         }
 
         return new MatchConfirmOutput(awayClub);
