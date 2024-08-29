@@ -11,8 +11,12 @@ public class LoginOutput {
     private String gender;
     private String phone;
     private String activityArea;
-    private String introduction;
     private String img;
+    private int height;
+    private int weight;
+    private String mainFoot;
+    private String mainPosition;
+    private String subPosition;
     private String accessToken;
     private String refreshToken;
     private Boolean hasClub;
@@ -24,7 +28,6 @@ public class LoginOutput {
         this.gender = user.getGender().toString();
         this.phone = user.getPhone();
         this.activityArea = user.getActivityArea();
-        this.introduction = user.getIntroduction();
         this.img = user.getImgPath();//base64인코딩 해야함
         this.accessToken = accessToken;
         this.refreshToken = user.getRefreshToken();
@@ -39,8 +42,12 @@ public class LoginOutput {
         }
         this.phone = user.getPhone();
         this.activityArea = user.getActivityArea();
-        this.introduction = user.getIntroduction();
         this.img = user.getImgPath();//base64인코딩 해야함
+        this.height = user.getHeight();
+        this.weight = user.getWeight();
+        this.mainFoot = user.getMainFoot();
+        this.mainPosition = user.getMainPosition();
+        this.subPosition = user.getSubPosition();
         this.accessToken = accessToken;
         this.refreshToken = user.getRefreshToken();
         this.hasClub = hasClub;
