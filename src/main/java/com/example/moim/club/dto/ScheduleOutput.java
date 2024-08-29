@@ -12,7 +12,7 @@ public class ScheduleOutput {
     private String location;
     private LocalDate date;
     private String period;
-    private int personnel;
+    private int minPeople;
     private String category;
     private String note;
 
@@ -22,7 +22,7 @@ public class ScheduleOutput {
         this.location = schedule.getLocation();
         this.date = schedule.getStartTime().toLocalDate();
         this.period = schedule.getStartTime().toLocalTime().toString() + " ~ " + schedule.getEndTime().toLocalTime().toString();
-        this.personnel = schedule.getPersonnel();
+        this.minPeople = schedule.getMinPeople();
         this.category = schedule.getCategory();
         if (schedule.getNote() != null) {
             this.note = schedule.getNote();

@@ -16,15 +16,20 @@ public class UserOutput {
     private String phone;
     private String img;
     private String activityArea;
-    private String introduction;
+    private int height;
+    private int weight;
+    private String mainFoot;
+    private String mainPosition;
+    private String subPosition;
     private Boolean hasClub;
 
-    public UserOutput(User user) {
+    public UserOutput(User user, Boolean hasClub) {
         this.email = user.getEmail();
         this.name = user.getName();
         this.birthday = user.getBirthday();
         this.gender = user.getGender().toString();
         this.phone = user.getPhone();
+        this.hasClub = hasClub;
         if (user.getImgPath() != null) {
             try {
                 this.img = Base64.getEncoder().encodeToString(new FileUrlResource(user.getImgPath()).getContentAsByteArray());
@@ -33,7 +38,11 @@ public class UserOutput {
             }
         }
         this.activityArea = user.getActivityArea();
-        this.introduction = user.getIntroduction();
+        this.height = user.getHeight();
+        this.weight = user.getWeight();
+        this.mainFoot = user.getMainFoot();
+        this.mainPosition = user.getMainPosition();
+        this.subPosition = user.getSubPosition();
     }
 
     public UserOutput(LoginOutput loginOutput) {
@@ -51,6 +60,10 @@ public class UserOutput {
             }
         }
         this.activityArea = loginOutput.getActivityArea();
-        this.introduction = loginOutput.getIntroduction();
+        this.height = loginOutput.getHeight();
+        this.weight = loginOutput.getWeight();
+        this.mainFoot = loginOutput.getMainFoot();
+        this.mainPosition = loginOutput.getMainPosition();
+        this.subPosition = loginOutput.getSubPosition();
     }
 }

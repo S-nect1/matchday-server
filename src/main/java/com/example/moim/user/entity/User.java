@@ -31,7 +31,11 @@ public class User extends BaseEntity {
     @Enumerated(EnumType.STRING)
     private Role role;
     private String activityArea;
-    private String introduction;
+    private int height;
+    private int weight;
+    private String mainFoot;
+    private String mainPosition;
+    private String subPosition;
     @Column(unique = true)
     private String refreshToken;
     private String fcmToken;
@@ -88,7 +92,11 @@ public class User extends BaseEntity {
         this.imgPath = imgPath;
         this.gender = Gender.from(socialSignupInput.getGender());
         this.activityArea = socialSignupInput.getActivityArea();
-        this.introduction = socialSignupInput.getIntroduction();
+        this.height = socialSignupInput.getHeight();
+        this.weight = socialSignupInput.getWeight();
+        this.mainFoot = socialSignupInput.getMainFoot();
+        this.mainPosition = socialSignupInput.getMainPosition();
+        this.subPosition = socialSignupInput.getSubPosition();
         if (socialSignupInput.getFcmToken() != null) {
             this.fcmToken = socialSignupInput.getFcmToken();
         }
@@ -116,8 +124,20 @@ public class User extends BaseEntity {
         if (userUpdateInput.getActivityArea() != null && !userUpdateInput.getActivityArea().isBlank()) {
             this.activityArea = userUpdateInput.getActivityArea();
         }
-        if (userUpdateInput.getIntroduction() != null && !userUpdateInput.getIntroduction().isBlank()) {
-            this.introduction = userUpdateInput.getIntroduction();
+        if (userUpdateInput.getHeight() != null) {
+            this.height = userUpdateInput.getHeight();
+        }
+        if (userUpdateInput.getWeight() != null) {
+            this.weight = userUpdateInput.getWeight();
+        }
+        if (userUpdateInput.getMainFoot() != null) {
+            this.mainFoot = userUpdateInput.getMainFoot();
+        }
+        if (userUpdateInput.getMainPosition() != null) {
+            this.mainPosition = userUpdateInput.getMainPosition();
+        }
+        if (userUpdateInput.getSubPosition() != null) {
+            this.subPosition = userUpdateInput.getSubPosition();
         }
         if (userUpdateInput.getFcmToken() != null) {
             this.fcmToken = userUpdateInput.getFcmToken();
