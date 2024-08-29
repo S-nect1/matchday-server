@@ -89,7 +89,7 @@ public class MatchController {
         return matchService.searchMatchClubs(matchClubSearchCond, clubRepository.findById(clubId).get());
     }
 
-    //매치 등록/신청 현황, 신청 추가해야 함
+    //매치 등록/신청 현황
     @GetMapping("/{clubId}/match-status")
     public List<MatchStatusOutput> getMatchStatus(@PathVariable Long clubId) {
         return matchService.findMatchStatus(clubRepository.findById(clubId).get());
