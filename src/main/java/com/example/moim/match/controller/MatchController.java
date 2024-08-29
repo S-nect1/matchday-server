@@ -35,23 +35,22 @@ public class MatchController {
     }
 
     //매치 신청 생성
-    @PostMapping("/matches/{matchId}")
-    public MatchApplyOutput matchApplySave(@PathVariable Long matchId,
+    @PostMapping("/match-apply")
+    public MatchApplyOutput matchApplySave(@RequestParam Long matchId,
                                            @RequestParam Long clubId,
                                            @AuthenticationPrincipal UserDetailsImpl userDetailsImpl) {
         return matchService.saveMatchApp(userDetailsImpl.getUser(), matchId, clubId);
     }
 
     //매치 신청 완료
-    @PatchMapping("/matches/{matchId}")
-    public MatchApplyOutput matchApply(@PathVariable Long matchId,
-                                       @RequestBody @Valid MatchApplyInput matchApplyInput,
+    @PatchMapping("/match-apply")
+    public MatchApplyOutput matchApply(@RequestBody @Valid MatchApplyInput matchApplyInput,
                                        @AuthenticationPrincipal UserDetailsImpl userDetailsImpl) {
         return matchService.applyMatch(userDetailsImpl.getUser(), matchApplyInput);
     }
 
     //매치 초청
-    @PostMapping("/match/invite")
+    @PostMapping("/match-invite")
     public ResponseEntity<String> matchInvite(@RequestParam Long matchId,
                                               @RequestParam Long clubId,
                                               @AuthenticationPrincipal UserDetailsImpl userDetailsImpl) {
@@ -60,8 +59,8 @@ public class MatchController {
     }
 
     //매치 확정
-    @PatchMapping("/{matchId}/confirm")
-    public MatchConfirmOutput matchConfirm(@PathVariable Long matchId,
+    @PostMapping("/match-confirm")
+    public MatchConfirmOutput matchConfirm(@RequestParam Long matchId,
                                            @RequestParam Long clubId,
                                            @AuthenticationPrincipal UserDetailsImpl userDetailsImpl) {
         return matchService.confirmMatch(matchId, clubId, userDetailsImpl.getUser());
