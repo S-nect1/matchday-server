@@ -18,6 +18,11 @@ public class UserUpdateInput {
     private MultipartFile img;
     @Schema(description = "서울, 인천, 경기 북부, 경기 남부", example = "서울")
     private String activityArea;
-    private String introduction;
+    private Integer height;
+    private Integer weight;
+    @Schema(description = "주로 쓰는 발. 왼발, 오른발", example = "왼발")
+    private String mainFoot;
+    private String mainPosition;
+    private String subPosition;
     private String fcmToken;
 }
