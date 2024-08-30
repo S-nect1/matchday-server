@@ -11,6 +11,7 @@ import lombok.Getter;
 
 import java.time.LocalDateTime;
 
+import static com.example.moim.match.entity.MatchHalf.*;
 import static com.example.moim.match.entity.MatchStatus.*;
 
 @Entity
@@ -56,8 +57,7 @@ public class Match extends BaseEntity {
     private boolean isBall;
     private String note;
 
-//    @JoinColumn(name = "prev_match_id")
-//    private Match relateMatch; //기존 경기 정보 저장
+    private MatchHalf matchHalf;
 
     //매치 생성
     public static Match createMatch(Club club, MatchInput matchInput) {
@@ -75,12 +75,10 @@ public class Match extends BaseEntity {
         match.account = matchInput.getAccount();
         match.minParticipants = matchInput.getMinParticipants();
 
-        match.gender = Gender.valueOf(match.getHomeClub().getGender());
-        match.ageRange = match.getHomeClub().getAgeRange();
+        match.gender = Gender.valueOf(club.getGender());
+        match.ageRange = club.getAgeRange();
         match.matchStatus = PENDING;// 초기 상태는 매치 대기
-//        if (matchInput.getRelateMatch() != null) {
-//            match.relateMatch = matchInput.getRelateMatch();
-//        }
+        match.matchHalf = (matchInput.getStartTime().getMonth().getValue() <= 6) ? FIRST_HALF : SECOND_HALF;
 
         return match;
     }
