@@ -93,4 +93,12 @@ public class MatchController {
     public List<MatchStatusOutput> getMatchStatus(@PathVariable Long clubId) {
         return matchService.findMatchStatus(clubRepository.findById(clubId).get());
     }
+
+    //매치 결과 기록
+    @PatchMapping(value = "/match/{matchId}", produces = MediaType.APPLICATION_JSON_VALUE)
+    public MatchRecordOutput matchRecordSave(@PathVariable Long matchId,
+                                             @RequestBody @Valid MatchRecordInput matchRecordInput,
+                                             @AuthenticationPrincipal UserDetailsImpl userDetailsImpl) {
+        return matchService.saveMatchRecord(matchRepository.findById(matchId).get(), userDetailsImpl.getUser(), matchRecordInput);
+    }
 }
