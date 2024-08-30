@@ -6,10 +6,12 @@ import com.example.moim.club.entity.Schedule;
 import com.example.moim.global.entity.BaseEntity;
 import com.example.moim.match.dto.MatchInput;
 import com.example.moim.match.dto.MatchRegInput;
+import com.example.moim.user.entity.User;
 import jakarta.persistence.*;
 import lombok.Getter;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 import static com.example.moim.match.entity.MatchHalf.*;
 import static com.example.moim.match.entity.MatchStatus.*;
@@ -57,6 +59,7 @@ public class Match extends BaseEntity {
     private boolean isBall;
     private String note;
 
+    @Enumerated(EnumType.STRING)
     private MatchHalf matchHalf;
 
     //매치 생성

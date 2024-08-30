@@ -34,9 +34,6 @@ public class Schedule extends BaseEntity {
     @OneToMany(mappedBy = "schedule", cascade = CascadeType.REMOVE)
     private List<Comment> comment = new ArrayList<>();
 
-    @OneToOne(mappedBy = "schedule", cascade =  CascadeType.REMOVE)
-    private Match match;
-
     public static Schedule createSchedule(Club club, ScheduleInput scheduleInput) {
         Schedule schedule = new Schedule();
         schedule.club = club;

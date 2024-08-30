@@ -11,7 +11,7 @@ import lombok.Getter;
 @Getter
 public class MatchApplication {
 
-    @Id @GeneratedValue
+    @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     private boolean isBall;

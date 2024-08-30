@@ -2,21 +2,26 @@ package com.example.moim.match.service;
 
 import com.example.moim.club.entity.Club;
 import com.example.moim.club.entity.Schedule;
+import com.example.moim.club.entity.ScheduleVote;
 import com.example.moim.club.entity.UserClub;
 import com.example.moim.club.repository.ClubRepository;
 import com.example.moim.club.repository.ScheduleRepository;
+import com.example.moim.club.repository.ScheduleVoteRepository;
 import com.example.moim.club.repository.UserClubRepository;
 import com.example.moim.club.service.ScheduleService;
 import com.example.moim.exception.match.MatchPermissionException;
 import com.example.moim.match.dto.*;
 import com.example.moim.match.entity.Match;
 import com.example.moim.match.entity.MatchApplication;
+import com.example.moim.match.entity.MatchUser;
 import com.example.moim.match.repository.MatchApplicationRepository;
 import com.example.moim.match.repository.MatchRepository;
+import com.example.moim.match.repository.MatchUserRepository;
 import com.example.moim.notification.dto.MatchInviteEvent;
 import com.example.moim.notification.dto.MatchRequestEvent;
 import com.example.moim.user.entity.User;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -27,6 +32,7 @@ import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
+@Slf4j
 public class MatchService {
 
     private final MatchRepository matchRepository;
@@ -36,6 +42,8 @@ public class MatchService {
     private final ScheduleRepository scheduleRepository;
     private final MatchApplicationRepository matchApplicationRepository;
     private final ApplicationEventPublisher eventPublisher;
+    private final MatchUserRepository matchUserRepository;
+    private final ScheduleVoteRepository scheduleVoteRepository;
 
     public MatchOutput saveMatch(User user, MatchInput matchInput) {
         UserClub userClub = userClubRepository.findByClubAndUser(clubRepository.findById(matchInput.getClubId()).get(), user).get();
@@ -154,10 +162,12 @@ public class MatchService {
             throw new MatchPermissionException("매치 확정 권한이 없습니다.");
         }
 
-        MatchApplication matchApplication = matchApplicationRepository
-                .findByMatchAndClub(match, awayClub);
         match.confirmMatch(awayClub);
+        saveMatchUserByAttendance(match, match.getSchedule());
+
+        MatchApplication matchApplication = matchApplicationRepository.findByMatchAndClub(match, awayClub);
         matchApplication.confirmMatch();
+        saveMatchUserByAttendance(matchApplication.getMatch(), matchApplication.getSchedule());
 
         List<MatchApplication> rejectedApply = matchApplicationRepository.findRejectedByMatch(match);
         for (MatchApplication application : rejectedApply) {
@@ -165,6 +175,17 @@ public class MatchService {
         }
 
         return new MatchConfirmOutput(awayClub);
+    }
+
+    //유저가 친선 매치 일정에 참여 투표 시 매치 유저 저장, 수정 필요
+    private void saveMatchUserByAttendance(Match match, Schedule schedule) {
+        for (ScheduleVote scheduleVote : scheduleVoteRepository.findBySchedule(schedule)) {
+            if (scheduleVote.getAttendance().equals("attend")) {
+                log.info("userid:{}", scheduleVote.getUser().getId());
+                MatchUser matchUser = MatchUser.createMatchUser(match, scheduleVote);
+                matchUserRepository.save(matchUser);
+            }
+        }
     }
 
     public List<MatchSearchOutput> searchMatch(MatchSearchCond matchSearchCond) {
@@ -190,7 +211,13 @@ public class MatchService {
     public List<MatchStatusOutput> findMatchStatus(Club club) {
 
         return (matchRepository.findMatchByClub(club) != null) ? matchRepository.findMatchByClub(club).stream()
-                .map(m -> new MatchStatusOutput(m)).toList() : Collections.emptyList();
+                .map(MatchStatusOutput::new).toList() : Collections.emptyList();
     }
 
+    @Transactional
+    public MatchRecordOutput saveMatchRecord(Match match, User user, MatchRecordInput matchRecordInput) {
+        MatchUser matchUser = matchUserRepository.findByMatchAndUser(match, user);
+        matchUser.recordScore(matchRecordInput);
+        return new MatchRecordOutput(matchUser);
+    }
 }
