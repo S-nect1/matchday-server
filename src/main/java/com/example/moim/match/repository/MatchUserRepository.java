@@ -8,6 +8,8 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
+
 @Repository
 public interface MatchUserRepository extends JpaRepository<MatchUser, Long> {
 
@@ -16,4 +18,7 @@ public interface MatchUserRepository extends JpaRepository<MatchUser, Long> {
             " where mu.match = :match" +
             " and mu.user = :user")
     MatchUser findByMatchAndUser(Match match, User user);
+
+    @Transactional(readOnly = true)
+    List<MatchUser> findByMatch(Match match);
 }

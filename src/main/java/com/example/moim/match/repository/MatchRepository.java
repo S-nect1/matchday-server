@@ -9,6 +9,7 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
@@ -42,5 +43,5 @@ public interface MatchRepository extends JpaRepository<Match, Long>, MatchReposi
             " order by m.id desc")
     List<Integer> findFeeByClubIdAndLocation(@Param("clubId") Long clubId, @Param("location") String location);
 
-
+    List<Match> findByEndTimeBetween (LocalDateTime startTime, LocalDateTime endTime);
 }

@@ -10,6 +10,7 @@ import com.example.moim.club.repository.ScheduleVoteRepository;
 import com.example.moim.club.repository.UserClubRepository;
 import com.example.moim.club.service.ScheduleService;
 import com.example.moim.exception.match.MatchPermissionException;
+import com.example.moim.exception.match.MatchRecordExpireException;
 import com.example.moim.match.dto.*;
 import com.example.moim.match.entity.Match;
 import com.example.moim.match.entity.MatchApplication;
@@ -26,6 +27,7 @@ import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDateTime;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
@@ -221,6 +223,10 @@ public class MatchService {
 
     @Transactional
     public MatchRecordOutput saveMatchRecord(Match match, User user, MatchRecordInput matchRecordInput) {
+        //매치 종료 48시간 이후면 점수 기록 못하게
+        if (LocalDateTime.now().isAfter(match.getEndTime().plusHours(48))) {
+            throw new MatchRecordExpireException();
+        }
         MatchUser matchUser = matchUserRepository.findByMatchAndUser(match, user);
         matchUser.recordScore(matchRecordInput);
         return new MatchRecordOutput(matchUser);

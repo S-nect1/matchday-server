@@ -33,6 +33,8 @@ public class Match extends BaseEntity {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "away_club_id")
     private Club awayClub;
+    private Integer homeScore;
+    private Integer awayScore;
 
     @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "schedule_id")
@@ -82,6 +84,8 @@ public class Match extends BaseEntity {
         match.ageRange = club.getAgeRange();
         match.matchStatus = PENDING;// 초기 상태는 매치 대기
         match.matchHalf = (matchInput.getStartTime().getMonth().getValue() <= 6) ? FIRST_HALF : SECOND_HALF;
+        match.homeScore = 0;
+        match.awayScore = 0;
 
         return match;
     }
@@ -133,5 +137,10 @@ public class Match extends BaseEntity {
         }
 
         return this.getAwayClub();
+    }
+
+    public void setMatchScore(int homeScore, int awayScore) {
+        this.homeScore = homeScore;
+        this.awayScore = awayScore;
     }
 }
