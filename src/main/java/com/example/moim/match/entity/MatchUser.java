@@ -25,7 +25,7 @@ public class MatchUser {
     @ManyToOne(fetch = FetchType.LAZY)
     private Club club;
 
-    private int score;
+    private Integer score;
 
     public static MatchUser createMatchUser(Match match, ScheduleVote scheduleVote) {
         MatchUser matchUser = new MatchUser();

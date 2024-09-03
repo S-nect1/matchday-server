@@ -31,6 +31,10 @@ public class MatchAggregateService {
             int homeScore = 0;
             int awayScore = 0;
             for (MatchUser matchUser : matchUserRepository.findByMatch(match)) {
+                if (matchUser.getScore() == null) {
+                    continue;
+                }
+
                 if (matchUser.getClub().getId().equals(match.getHomeClub().getId())) {
                     homeScore += matchUser.getScore();
                 } else {
@@ -41,4 +45,5 @@ public class MatchAggregateService {
             match.setMatchScore(homeScore, awayScore);
         }
     }
+
 }
