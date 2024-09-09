@@ -22,7 +22,7 @@ public interface ScheduleControllerDocs {
     @Operation(summary = "한달 일정 조회", description = "쿼리파라미터 예시: /schedule?date=202404&clubId=6&search=친선 경기&category=친선 경기")
     List<ScheduleOutput> scheduleFind(@ModelAttribute ScheduleSearchInput scheduleSearchInput);
 
-    @Operation(summary = "하루 일정 조회", description = "쿼리파라미터 예시: /schedule?date=20240910&clubId=6&search=친선 경기&category=친선 경기")
+    @Operation(summary = "하루 일정 조회", description = "쿼리파라미터 예시: /schedule/day?date=20240910&clubId=6&search=친선 경기&category=친선 경기")
     List<ScheduleOutput> dayScheduleFind(@ModelAttribute ScheduleSearchInput scheduleSearchInput);
 
     @Operation(summary = "일정 세부 조회", description = "참가면 attendance = attend, 참가 취소는 absent, 투표 안하면 notVote")
