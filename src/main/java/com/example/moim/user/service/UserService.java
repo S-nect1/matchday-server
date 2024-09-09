@@ -8,8 +8,6 @@ import com.example.moim.user.entity.User;
 import com.example.moim.user.repository.UserRepository;
 import jakarta.persistence.EntityExistsException;
 import lombok.RequiredArgsConstructor;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -22,14 +20,13 @@ import java.util.List;
 @Service
 @RequiredArgsConstructor
 public class UserService {
-    private static final Logger log = LoggerFactory.getLogger(UserService.class);
     private final UserRepository userRepository;
     private final UserClubRepository userClubRepository;
     private final BCryptPasswordEncoder bCryptPasswordEncoder;
     private final AuthenticationManager authenticationManager;
     private final JWTUtil jwtUtil;
     private final FileStore fileStore;
-    
+
     public void signup(SignupInput signupInput) {
         signupInput.setPassword(bCryptPasswordEncoder.encode(signupInput.getPassword()));
         if (userRepository.existsByEmail(signupInput.getEmail())) {
@@ -78,5 +75,16 @@ public class UserService {
         Boolean hasClub = userClubRepository.existsByUser(user);
         user.setRefreshToken(jwtUtil.createRefreshToken(user));
         return new LoginOutput(user, jwtUtil.createAccessToken(user), hasClub);
+    }
+
+    public void deleteUserClub(Long userClubId) {
+        userClubRepository.deleteById(userClubId);
+    }
+
+    public List<MypageClubOutput> findMypageClub(User user) {
+        return userClubRepository.findByUser(user).stream().map(userClub -> new MypageClubOutput(userClub,
+                userClub.getScheduleCount() + "/" + userClub.getClub().getScheduleCount(),
+                userClub.getMatchCount() + "/" + userClub.getClub().getMatchCount()
+                )).toList();
     }
 }

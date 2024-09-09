@@ -30,7 +30,9 @@ public class Club extends BaseEntity {
     private String ageRange;
     private String clubPassword;
     private String profileImgPath;
-    private int memberCount;
+    private Integer memberCount;
+    private Integer scheduleCount;
+    private Integer matchCount;
     
     @OneToMany(mappedBy = "club", cascade = CascadeType.REMOVE)
     private List<UserClub> userClub = new ArrayList<>();

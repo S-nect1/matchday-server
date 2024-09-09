@@ -22,6 +22,8 @@ public class UserClub extends BaseEntity {
     private String position;
     private LocalDate joinDate;
     private String category;
+    private Integer scheduleCount;
+    private Integer matchCount;
 
     public static UserClub createLeaderUserClub(User user, Club club) {
         UserClub userClub = new UserClub();

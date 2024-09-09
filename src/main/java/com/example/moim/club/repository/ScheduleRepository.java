@@ -10,4 +10,5 @@ import java.util.List;
 @Repository
 public interface ScheduleRepository extends JpaRepository<Schedule, Long>, ScheduleRepositoryCustom {
     List<Schedule> findTop5ByClubOrderByCreatedDateDesc(Club club);
+
 }

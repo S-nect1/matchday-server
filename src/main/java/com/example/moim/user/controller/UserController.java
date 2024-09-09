@@ -15,7 +15,7 @@ import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
-public class UserController implements UserControllerDocs{
+public class UserController implements UserControllerDocs {
     private final UserService userService;
     private final SocialLoginService socialLoginService;
 
@@ -43,13 +43,13 @@ public class UserController implements UserControllerDocs{
         return userService.findUserClub(userDetailsImpl.getUser());
     }
 
-    @GetMapping("/user/google")
-    public UserOutput googleLogin(@RequestParam String code, HttpServletResponse response) {
-        LoginOutput loginOutput = socialLoginService.googleLogin(code);
-        response.addHeader("Authorization", "Bearer " + loginOutput.getAccessToken());
-        response.addHeader("Authorization-refresh", loginOutput.getRefreshToken());
-        return new UserOutput(loginOutput);
-    }
+//    @GetMapping("/user/google")
+//    public UserOutput googleLogin(@RequestParam String code, HttpServletResponse response) {
+//        LoginOutput loginOutput = socialLoginService.googleLogin(code);
+//        response.addHeader("Authorization", "Bearer " + loginOutput.getAccessToken());
+//        response.addHeader("Authorization-refresh", loginOutput.getRefreshToken());
+//        return new UserOutput(loginOutput);
+//    }
 
     @GetMapping("/user/kakao")
     public UserOutput kakaoLogin(@RequestParam String accessToken, HttpServletResponse response) {
@@ -70,11 +70,6 @@ public class UserController implements UserControllerDocs{
     @PostMapping(value = "/user/info", consumes = MediaType.MULTIPART_FORM_DATA_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     public void userInfoSave(@AuthenticationPrincipal UserDetailsImpl userDetailsImpl, @ModelAttribute @Valid SocialSignupInput socialSignupInput) throws IOException {
         userService.saveUserInfo(userDetailsImpl.getUser(), socialSignupInput);
-    }
-
-    @PatchMapping(value = "/user/info", consumes = MediaType.MULTIPART_FORM_DATA_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-    public void userInfoUpdate(@AuthenticationPrincipal UserDetailsImpl userDetailsImpl, @ModelAttribute UserUpdateInput userUpdateInput) throws IOException {
-        userService.updateUserInfo(userDetailsImpl.getUser(), userUpdateInput);
     }
 
     @GetMapping("/user/refresh/{refreshToken}")
