@@ -29,6 +29,7 @@ public class ScheduleRepositoryImpl implements ScheduleRepositoryCustom {
                 .where(schedule.club.eq(club), schedule.startTime.goe(startTime), schedule.endTime.loe(endTime))
                 .fetch();
     }
+
     private BooleanExpression searchContains(String search) {
         if (hasText(search)) {
             return schedule.title.contains(search);

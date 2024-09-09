@@ -31,6 +31,12 @@ public class ScheduleController implements ScheduleControllerDocs{
         return scheduleService.findSchedule(scheduleSearchInput);
     }
 
+    @GetMapping(value = "/schedule/day", produces = MediaType.APPLICATION_JSON_VALUE)
+    public List<ScheduleOutput> dayScheduleFind(@ModelAttribute ScheduleSearchInput scheduleSearchInput) {
+        return scheduleService.findDaySchedule(scheduleSearchInput);
+    }
+
+
     @GetMapping("/schedule/{id}")
     public ScheduleDetailOutput scheduleDetailFind(@PathVariable Long id) {
         return scheduleService.findScheduleDetail(id);

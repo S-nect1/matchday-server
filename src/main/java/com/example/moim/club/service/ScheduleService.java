@@ -42,6 +42,7 @@ public class ScheduleService {
         }
 
         Schedule schedule = scheduleRepository.save(Schedule.createSchedule(clubRepository.findById(scheduleInput.getClubId()).get(), scheduleInput));
+
         eventPublisher.publishEvent(new ScheduleSaveEvent(schedule, user));
         return new ScheduleOutput(schedule);
     }
@@ -60,10 +61,18 @@ public class ScheduleService {
 
     public List<ScheduleOutput> findSchedule(ScheduleSearchInput scheduleSearchInput) {
         return scheduleRepository.findByClubAndTime(clubRepository.findById(scheduleSearchInput.getClubId()).get(),
-                LocalDateTime.of(scheduleSearchInput.getDate() / 100, scheduleSearchInput.getDate() % 100, 1, 0, 0, 0).minusDays(6),
-                LocalDateTime.of(scheduleSearchInput.getDate() / 100, scheduleSearchInput.getDate() % 100, Month.of(scheduleSearchInput.getDate() % 100).minLength(), 23, 59, 59).plusDays(6),
-                scheduleSearchInput.getSearch(),
-                scheduleSearchInput.getCategory())
+                        LocalDateTime.of(scheduleSearchInput.getDate() / 100, scheduleSearchInput.getDate() % 100, 1, 0, 0, 0).minusDays(6),
+                        LocalDateTime.of(scheduleSearchInput.getDate() / 100, scheduleSearchInput.getDate() % 100, Month.of(scheduleSearchInput.getDate() % 100).minLength(), 23, 59, 59).plusDays(6),
+                        scheduleSearchInput.getSearch(),
+                        scheduleSearchInput.getCategory())
+                .stream().map(ScheduleOutput::new).collect(Collectors.toList());
+    }
+
+    public List<ScheduleOutput> findDaySchedule(ScheduleSearchInput scheduleSearchInput) {
+        LocalDateTime searchDate = LocalDateTime.of(scheduleSearchInput.getDate() / 10000, (scheduleSearchInput.getDate() / 100) % 100, scheduleSearchInput.getDate() % 100,
+                0, 0, 0);
+        return scheduleRepository.findByClubAndTime(clubRepository.findById(scheduleSearchInput.getClubId()).get(),
+                        searchDate, searchDate.plusDays(1), scheduleSearchInput.getSearch(), scheduleSearchInput.getCategory())
                 .stream().map(ScheduleOutput::new).collect(Collectors.toList());
     }
 
@@ -72,7 +81,6 @@ public class ScheduleService {
         return new ScheduleDetailOutput(schedule,
                 scheduleVoteRepository.findBySchedule(schedule).stream().map(ScheduleUserOutput::new).toList(),
                 matchApplicationRepository.findBySchedule(schedule).stream().map(MatchApplyClubOutput::new).toList());
-
     }
 
     @Transactional
