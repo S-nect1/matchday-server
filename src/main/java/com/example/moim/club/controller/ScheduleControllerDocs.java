@@ -28,6 +28,9 @@ public interface ScheduleControllerDocs {
     @Operation(summary = "일정 세부 조회", description = "참가면 attendance = attend, 참가 취소는 absent, 투표 안하면 notVote")
     ScheduleDetailOutput scheduleDetailFind(@PathVariable Long id);
 
+    @Operation(summary = "일정 삭제")
+    void scheduleDelete(@PathVariable Long id);
+
     @Operation(summary = "일정 참가 투표", description = "참가면 attendance = attend, 참가 취소는 absent")
     void scheduleVote(@RequestBody ScheduleVoteInput scheduleVoteInput, @AuthenticationPrincipal UserDetailsImpl userDetailsImpl);
 

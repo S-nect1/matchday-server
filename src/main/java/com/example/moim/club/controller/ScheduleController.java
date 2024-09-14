@@ -36,10 +36,14 @@ public class ScheduleController implements ScheduleControllerDocs{
         return scheduleService.findDaySchedule(scheduleSearchInput);
     }
 
-
     @GetMapping("/schedule/{id}")
     public ScheduleDetailOutput scheduleDetailFind(@PathVariable Long id) {
         return scheduleService.findScheduleDetail(id);
+    }
+
+    @DeleteMapping("/schedule/{id}")
+    public void scheduleDelete(@PathVariable Long id) {
+        scheduleService.deleteSchedule(id);
     }
 
     @PatchMapping("/schedule/vote")
