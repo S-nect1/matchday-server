@@ -101,4 +101,12 @@ public class MatchController {
                                              @AuthenticationPrincipal UserDetailsImpl userDetailsImpl) {
         return matchService.saveMatchRecord(matchRepository.findById(matchId).get(), userDetailsImpl.getUser(), matchRecordInput);
     }
+
+    //매치 메인 페이지(대시보드)
+    @GetMapping("match/main/{clubId}")
+    public MatchMainOutput findMatchMain(@PathVariable Long clubId, @AuthenticationPrincipal UserDetailsImpl userDetailsImpl) {
+        return matchService.matchMainFind(clubId, userDetailsImpl.getUser());
+
+    }
+
 }

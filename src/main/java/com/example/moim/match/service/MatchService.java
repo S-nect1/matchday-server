@@ -28,9 +28,11 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
+
 
 @Service
 @RequiredArgsConstructor
@@ -230,5 +232,37 @@ public class MatchService {
         MatchUser matchUser = matchUserRepository.findByMatchAndUser(match, user);
         matchUser.recordScore(matchRecordInput);
         return new MatchRecordOutput(matchUser);
+    }
+
+    public MatchMainOutput matchMainFind(Long clubId, User user) {
+        Club myClub = clubRepository.findById(clubId).get();
+
+        List<Match> matches = matchRepository.findRegisteredMatch(myClub);
+        String[] myClubCoordinate = myClub.getUniversity().replace("@", ",").split(",");
+        List<RegisteredMatchDto> registeredMatchDtos = new ArrayList<>(matches.size());
+        for (Match match : matches) {
+            String[] matchCoordinate = match.getLocation().replace("@", ",").split(",");
+            registeredMatchDtos.add(new RegisteredMatchDto(match, distance(Double.parseDouble(myClubCoordinate[2]), Double.parseDouble(myClubCoordinate[1]),
+                            Double.parseDouble(matchCoordinate[2]), Double.parseDouble(matchCoordinate[1]))));
+        }
+        Collections.sort(registeredMatchDtos);
+        return new MatchMainOutput(myClub.getTitle(), clubRepository.findByActivityArea(myClub.getActivityArea()).stream().map(NearClubsOutput::new).toList(), registeredMatchDtos);
+    }
+
+    private double distance(double lat1, double lon1, double lat2, double lon2) {
+        final int R = 6371; // Radius of the earth
+
+        Double latDistance = toRad(lat2 - lat1);
+        Double lonDistance = toRad(lon2 - lon1);
+        Double a = Math.sin(latDistance / 2) * Math.sin(latDistance / 2) +
+                Math.cos(toRad(lat1)) * Math.cos(toRad(lat2)) *
+                        Math.sin(lonDistance / 2) * Math.sin(lonDistance / 2);
+        Double c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
+
+        return R * c;
+    }
+
+    private static Double toRad(Double value) {
+        return value * Math.PI / 180;
     }
 }

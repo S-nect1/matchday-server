@@ -7,6 +7,8 @@ import org.springframework.stereotype.Repository;
 import java.util.List;
 
 @Repository
-public interface ClubRepository extends JpaRepository<Club, Long>, ClubRepositoryCustom{
+public interface ClubRepository extends JpaRepository<Club, Long>, ClubRepositoryCustom {
     List<Club> findTop5ByActivityAreaOrderByMemberCount(String activityArea);
+
+    List<Club> findByActivityArea(String activityArea);
 }
