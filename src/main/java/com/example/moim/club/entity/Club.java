@@ -43,6 +43,9 @@ public class Club extends BaseEntity {
     @OneToMany(mappedBy = "awayClub", cascade = CascadeType.REMOVE)
     private List<Match> awayMatches = new ArrayList<>();
 
+    @OneToMany(mappedBy = "club", cascade = CascadeType.REMOVE)
+    private List<Notice> notices = new ArrayList<>();
+
     public static Club createClub(ClubInput clubInput, String profileImgPath) {
         Club club = new Club();
         club.title = clubInput.getTitle();
