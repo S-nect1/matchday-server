@@ -22,15 +22,20 @@ public class ClubOutput {
     private String activityArea;
     private String mainEvent;
     private String ageRange;
+    private int memberCount;
+    private String mainUniformColor;
+    private String subUniformColor;
+
+    private List<UserClubOutput> userList;
 //    private List<ScheduleOutput> scheduleList;
 //    private List<AwardOutput> awardList;
-    private List<UserClubOutput> userList;
-    private int memberCount;
 
     public ClubOutput(Club club) {
         this.id = club.getId();
         this.title = club.getTitle();
         this.explanation = club.getExplanation();
+        this.mainUniformColor = club.getMainUniformColor();
+        this.subUniformColor = club.getSubUniformColor();
         try {
             if (club.getProfileImgPath() != null) {
                 this.profileImg = Base64.getEncoder().encodeToString(new FileUrlResource(club.getProfileImgPath()).getContentAsByteArray());
@@ -45,6 +50,8 @@ public class ClubOutput {
         this.id = club.getId();
         this.title = club.getTitle();
         this.explanation = club.getExplanation();
+        this.mainUniformColor = club.getMainUniformColor();
+        this.subUniformColor = club.getSubUniformColor();
         try {
             if (club.getProfileImgPath() != null) {
                 this.profileImg = Base64.getEncoder().encodeToString(new FileUrlResource(club.getProfileImgPath()).getContentAsByteArray());
@@ -66,6 +73,8 @@ public class ClubOutput {
         this.activityArea = club.getActivityArea();
         this.mainEvent = club.getMainEvent();
         this.ageRange = club.getAgeRange();
+        this.mainUniformColor = club.getMainUniformColor();
+        this.subUniformColor = club.getSubUniformColor();
         try {
             if (club.getProfileImgPath() != null) {
                 this.profileImg = Base64.getEncoder().encodeToString(new FileUrlResource(club.getProfileImgPath()).getContentAsByteArray());

@@ -20,4 +20,6 @@ public class ClubInput {
     private String mainEvent;
     private String clubPassword;
     private MultipartFile profileImg;
+    private String mainUniformColor;
+    private String subUniformColor;
 }

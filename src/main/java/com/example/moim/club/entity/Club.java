@@ -30,6 +30,9 @@ public class Club extends BaseEntity {
     private String ageRange;
     private String clubPassword;
     private String profileImgPath;
+    private String mainUniformColor;
+    private String subUniformColor;
+
     private Integer memberCount;
     private Integer scheduleCount;
     private Integer matchCount;
@@ -59,6 +62,8 @@ public class Club extends BaseEntity {
         club.ageRange = clubInput.getAgeRange();
         club.clubPassword = clubInput.getClubPassword();
         club.profileImgPath = profileImgPath;
+        club.mainUniformColor = clubInput.getMainUniformColor();
+        club.subUniformColor = clubInput.getSubUniformColor();
         club.memberCount = 1;
         return club;
     }
