@@ -56,8 +56,13 @@ public class ScheduleController implements ScheduleControllerDocs{
         scheduleService.voteEncourage(id);
     }
 
-    @PostMapping("/schedule/comment")
-    public void scheduleComment(@RequestBody @Valid CommentInput commentInput, @AuthenticationPrincipal UserDetailsImpl userDetailsImpl) {
-        scheduleService.saveComment(commentInput, userDetailsImpl.getUser());
+    @PatchMapping("/schedule/close/{id}")
+    public void scheduleClose(@PathVariable Long id, @AuthenticationPrincipal UserDetailsImpl userDetailsImpl) {
+        scheduleService.closeSchedule(id, userDetailsImpl.getUser());
     }
+
+//    @PostMapping("/schedule/comment")
+//    public void scheduleComment(@RequestBody @Valid CommentInput commentInput, @AuthenticationPrincipal UserDetailsImpl userDetailsImpl) {
+//        scheduleService.saveComment(commentInput, userDetailsImpl.getUser());
+//    }
 }

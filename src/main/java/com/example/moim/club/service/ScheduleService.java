@@ -78,7 +78,7 @@ public class ScheduleService {
     public ScheduleDetailOutput findScheduleDetail(Long id) {
         Schedule schedule = scheduleRepository.findById(id).get();
         return new ScheduleDetailOutput(schedule,
-                scheduleVoteRepository.findBySchedule(schedule).stream().map(ScheduleUserOutput::new).toList(),
+//                scheduleVoteRepository.findBySchedule(schedule).stream().map(ScheduleUserOutput::new).toList(),
                 matchApplicationRepository.findBySchedule(schedule).stream().map(MatchApplyClubOutput::new).toList());
     }
 
@@ -86,10 +86,11 @@ public class ScheduleService {
     public void voteSchedule(ScheduleVoteInput scheduleVoteInput, User user) {
         Schedule schedule = scheduleRepository.findScheduleById(scheduleVoteInput.getId());
         Optional<ScheduleVote> originalScheduleVote = scheduleVoteRepository.findByScheduleAndUser(schedule, user);
+        //투표 처음이면
         if (originalScheduleVote.isEmpty()) {
             scheduleVoteRepository.save(ScheduleVote.createScheduleVote(user, schedule, scheduleVoteInput.getAttendance()));
             schedule.vote(scheduleVoteInput.getAttendance());
-        } else {
+        } else {// 재투표인 경우
             schedule.reVote(originalScheduleVote.get().getAttendance(), scheduleVoteInput.getAttendance());
             originalScheduleVote.get().changeAttendance(scheduleVoteInput.getAttendance());
         }
@@ -108,7 +109,18 @@ public class ScheduleService {
         eventPublisher.publishEvent(new ScheduleEncourageEvent(schedule, userList));
     }
 
-    public void saveComment(CommentInput commentInput, User user) {
-        commentRepository.save(Comment.createComment(user, scheduleRepository.findById(commentInput.getId()).get(), commentInput.getContents()));
+    @Transactional
+    public void closeSchedule(Long id, User user) {
+        Schedule schedule = scheduleRepository.findById(id).get();
+        UserClub userClub = userClubRepository.findByClubAndUser(schedule.getClub(), user).get();
+        if (!(userClub.getCategory().equals("creator") || userClub.getCategory().equals("admin"))) {
+            throw new ClubPermissionException("일정 투표를 마감할 권한이 없습니다.");
+        }
+
+        schedule.closeSchedule();
     }
+
+//    public void saveComment(CommentInput commentInput, User user) {
+//        commentRepository.save(Comment.createComment(user, scheduleRepository.findById(commentInput.getId()).get(), commentInput.getContents()));
+//    }
 }

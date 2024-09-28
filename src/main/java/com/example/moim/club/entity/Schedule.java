@@ -3,7 +3,6 @@ package com.example.moim.club.entity;
 import com.example.moim.club.dto.ScheduleInput;
 import com.example.moim.club.dto.ScheduleUpdateInput;
 import com.example.moim.global.entity.BaseEntity;
-import com.example.moim.match.entity.Match;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -30,6 +29,7 @@ public class Schedule extends BaseEntity {
     private String note;
     private int attend;
     private int nonAttend;
+    private Boolean isClose;
 
     @OneToMany(mappedBy = "schedule", cascade = CascadeType.REMOVE)
     private List<Comment> comment = new ArrayList<>();
@@ -48,6 +48,7 @@ public class Schedule extends BaseEntity {
         }
         schedule.attend = 0;
         schedule.nonAttend = 0;
+        schedule.isClose = false;
         return schedule;
     }
 
@@ -83,4 +84,9 @@ public class Schedule extends BaseEntity {
             this.note = scheduleUpdateInput.getNote();
         }
     }
+
+    public void closeSchedule() {
+        this.isClose = true;
+    }
+
 }
