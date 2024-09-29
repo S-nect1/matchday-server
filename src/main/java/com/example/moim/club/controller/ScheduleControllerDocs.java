@@ -34,6 +34,9 @@ public interface ScheduleControllerDocs {
     @Operation(summary = "일정 참가 투표", description = "참가면 attendance = attend, 참가 취소는 absent")
     void scheduleVote(@RequestBody ScheduleVoteInput scheduleVoteInput, @AuthenticationPrincipal UserDetailsImpl userDetailsImpl);
 
+    @Operation(summary = "일정 참가 투표 마감")
+    void scheduleClose(@PathVariable Long id, @AuthenticationPrincipal UserDetailsImpl userDetailsImpl);
+
 //    @Operation(summary = "일정 댓글", description = "id는 일정 id")
 //    void scheduleComment(@RequestBody CommentInput commentInput, @AuthenticationPrincipal UserDetailsImpl userDetailsImpl);
 }
