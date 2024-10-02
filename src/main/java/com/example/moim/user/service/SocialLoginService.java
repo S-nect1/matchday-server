@@ -39,20 +39,20 @@ public class SocialLoginService {
     private final JWTUtil jwtUtil;
     private final RestTemplate restTemplate;
 
-    @Value("${spring.security.oauth2.client.registration.google.client-id}")
-    private String GOOGLE_CLIENT_ID;
-    @Value("${spring.security.oauth2.client.registration.google.client-secret}")
-    private String GOOGLE_CLIENT_SECRET;
-    @Value("${spring.security.oauth2.client.registration.google.redirect-uri}")
-    private String GOOGLE_REDIRECT_URL;
+//    @Value("${spring.security.oauth2.client.registration.google.client-id}")
+//    private String GOOGLE_CLIENT_ID;
+//    @Value("${spring.security.oauth2.client.registration.google.client-secret}")
+//    private String GOOGLE_CLIENT_SECRET;
+//    @Value("${spring.security.oauth2.client.registration.google.redirect-uri}")
+//    private String GOOGLE_REDIRECT_URL;
     @Value("${spring.security.oauth2.client.registration.kakao.client-id}")
     private String KAKAO_CLIENT_ID;
     @Value("${spring.security.oauth2.client.registration.kakao.redirect-uri}")
     private String KAKAO_REDIRECT_URL;
-    @Value("${spring.security.oauth2.client.registration.naver.client-id}")
-    private String NAVER_CLIENT_ID;
-    @Value("${spring.security.oauth2.client.registration.naver.client-secret}")
-    private String NAVER_CLIENT_SECRET;
+//    @Value("${spring.security.oauth2.client.registration.naver.client-id}")
+//    private String NAVER_CLIENT_ID;
+//    @Value("${spring.security.oauth2.client.registration.naver.client-secret}")
+//    private String NAVER_CLIENT_SECRET;
 
 //    public LoginOutput googleLogin(String code) {
 //        Map<String, String> params = new HashMap<>();
