@@ -3,16 +3,14 @@ package com.example.moim.match.entity;
 import com.example.moim.club.dto.ScheduleInput;
 import com.example.moim.club.entity.Club;
 import com.example.moim.club.entity.Schedule;
+import com.example.moim.exception.match.MatchRecordExpireException;
 import com.example.moim.global.entity.BaseEntity;
 import com.example.moim.match.dto.MatchInput;
 import com.example.moim.match.dto.MatchRegInput;
-import com.example.moim.user.entity.User;
 import jakarta.persistence.*;
 import lombok.Getter;
 
 import java.time.LocalDateTime;
-import java.util.List;
-
 import static com.example.moim.match.entity.MatchHalf.*;
 import static com.example.moim.match.entity.MatchStatus.*;
 
@@ -142,5 +140,12 @@ public class Match extends BaseEntity {
     public void setMatchScore(int homeScore, int awayScore) {
         this.homeScore = homeScore;
         this.awayScore = awayScore;
+    }
+
+    public void timeDuplicationCheck(LocalDateTime startTime, LocalDateTime endTime) {
+        if ((startTime.isBefore(this.startTime) && endTime.isBefore(this.startTime)) ||
+        (startTime.isAfter(this.endTime) && endTime.isAfter(this.endTime))) {
+            throw new MatchRecordExpireException("해당 시간대에 다른 매치 일정이 있습니다");
+        }
     }
 }

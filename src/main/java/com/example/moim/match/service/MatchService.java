@@ -50,10 +50,12 @@ public class MatchService {
     private final ScheduleVoteRepository scheduleVoteRepository;
 
     public MatchOutput saveMatch(User user, MatchInput matchInput) {
-        UserClub userClub = userClubRepository.findByClubAndUser(clubRepository.findById(matchInput.getClubId()).get(), user).get();
+        Club club = clubRepository.findById(matchInput.getClubId()).get();
+        UserClub userClub = userClubRepository.findByClubAndUser(club, user).get();
         if (!(userClub.getCategory().equals("creator") || userClub.getCategory().equals("admin"))) {
             throw new MatchPermissionException("매치 생성 권한이 없습니다.");
         }
+        matchRepository.findMatchByClub(club).forEach(m -> m.timeDuplicationCheck(matchInput.getStartTime(), matchInput.getEndTime()));
 
         if (matchInput.getFee() == 0) {
             Optional<Integer> fee = matchRepository.findFeeByClubIdAndLocation(matchInput.getClubId(), matchInput.getLocation()).stream().findFirst();
@@ -118,6 +120,7 @@ public class MatchService {
         if (existingApplication != null) {
             throw new MatchPermissionException("이미 신청한 매치입니다.");
         }
+        matchRepository.findMatchByClub(club).forEach(m -> m.timeDuplicationCheck(match.getStartTime(), match.getEndTime()));
 
         MatchApplication matchApplication = matchApplicationRepository.save(MatchApplication.applyMatch(match, club));
         Schedule schedule = scheduleRepository.save(Schedule.createSchedule(matchApplication.getClub(), matchApplication.getMatch().createScheduleFromMatch()));

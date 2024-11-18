@@ -20,7 +20,7 @@ public class MatchController {
     private final MatchService matchService;
     private final ClubRepository clubRepository;
     private final MatchRepository matchRepository;
-
+    //매치 등록(생성) 신청(참가)
     //매치 생성
     @PostMapping("/match")
     public MatchOutput matchSave(@RequestBody @Valid MatchInput matchInput, @AuthenticationPrincipal UserDetailsImpl userDetailsImpl) {

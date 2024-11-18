@@ -22,7 +22,7 @@ public class MatchAggregateService {
 
     //한시간마다 지금시간-48< 매치 끝나는시간 <지금시간이면 집계
     @Scheduled(fixedRate = 1, timeUnit = TimeUnit.HOURS)
-//    @Scheduled(fixedRate = 10000)//테스트 10초마다
+//    @Scheduled(fixedRate = 10000)//테스트용. 10초마다
     @Transactional
     public void aggregateMatchScore() {
         log.info("집계 시작");
