@@ -1,7 +1,9 @@
-package com.example.moim.match.exception;
+package com.example.moim.match.exception.advice;
 
-import com.example.moim.config.security.ErrorResult;
+import com.example.moim.global.exception.ErrorResult;
 import com.example.moim.match.controller.MatchController;
+import com.example.moim.match.exception.MatchPermissionException;
+import com.example.moim.match.exception.MatchRecordExpireException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.MethodArgumentNotValidException;

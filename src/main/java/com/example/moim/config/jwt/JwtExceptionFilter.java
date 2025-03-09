@@ -1,5 +1,6 @@
-package com.example.moim.config.security;
+package com.example.moim.config.jwt;
 
+import com.example.moim.global.exception.ErrorResult;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.MalformedJwtException;

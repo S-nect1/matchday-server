@@ -1,4 +1,4 @@
-package com.example.moim.config.security;
+package com.example.moim.config.jwt;
 
 public class InvalidTokenException extends RuntimeException {
     

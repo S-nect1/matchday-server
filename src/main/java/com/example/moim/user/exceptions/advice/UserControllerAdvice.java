@@ -1,6 +1,6 @@
-package com.example.moim.user.exceptions;
+package com.example.moim.user.exceptions.advice;
 
-import com.example.moim.config.security.ErrorResult;
+import com.example.moim.global.exception.ErrorResult;
 import com.example.moim.user.controller.UserController;
 import jakarta.persistence.EntityExistsException;
 import org.springframework.http.HttpStatus;

@@ -1,4 +1,4 @@
-package com.example.moim.config.security;
+package com.example.moim.config.jwt;
 
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 

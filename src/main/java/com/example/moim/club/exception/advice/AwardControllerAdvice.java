@@ -1,7 +1,7 @@
-package com.example.moim.club.exception;
+package com.example.moim.club.exception.advice;
 
 import com.example.moim.club.controller.AwardController;
-import com.example.moim.config.security.ErrorResult;
+import com.example.moim.global.exception.ErrorResult;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.MethodArgumentNotValidException;
