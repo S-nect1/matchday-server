@@ -5,8 +5,8 @@ import com.example.moim.club.entity.Club;
 import com.example.moim.club.entity.UserClub;
 import com.example.moim.club.repository.ClubRepository;
 import com.example.moim.club.repository.UserClubRepository;
-import com.example.moim.exception.club.ClubPasswordException;
-import com.example.moim.exception.club.ClubPermissionException;
+import com.example.moim.club.exception.ClubPasswordException;
+import com.example.moim.club.exception.ClubPermissionException;
 import com.example.moim.global.util.FileStore;
 import com.example.moim.notification.dto.ClubJoinEvent;
 import com.example.moim.user.entity.User;
@@ -16,7 +16,6 @@ import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.io.File;
 import java.io.IOException;
 import java.util.List;
 import java.util.Optional;

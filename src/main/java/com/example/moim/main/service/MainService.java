@@ -1,8 +1,8 @@
 package com.example.moim.main.service;
 
-import com.example.moim.club.dto.ScheduleSearchInput;
+import com.example.moim.schedule.dto.ScheduleSearchInput;
 import com.example.moim.club.repository.ClubRepository;
-import com.example.moim.club.service.ScheduleService;
+import com.example.moim.schedule.service.ScheduleService;
 import com.example.moim.main.dto.MainOutput;
 import com.example.moim.main.dto.NoClubMainOutput;
 import com.example.moim.main.dto.RecommendClubListOutput;

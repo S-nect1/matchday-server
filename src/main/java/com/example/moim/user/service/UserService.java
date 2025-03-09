@@ -2,7 +2,7 @@ package com.example.moim.user.service;
 
 import com.example.moim.club.repository.UserClubRepository;
 import com.example.moim.global.util.FileStore;
-import com.example.moim.jwt.JWTUtil;
+import com.example.moim.config.security.JWTUtil;
 import com.example.moim.user.dto.*;
 import com.example.moim.user.entity.User;
 import com.example.moim.user.repository.UserRepository;

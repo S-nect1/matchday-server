@@ -1,9 +1,9 @@
 package com.example.moim.match.entity;
 
-import com.example.moim.club.dto.ScheduleInput;
+import com.example.moim.schedule.dto.ScheduleInput;
 import com.example.moim.club.entity.Club;
-import com.example.moim.club.entity.Schedule;
-import com.example.moim.exception.match.MatchRecordExpireException;
+import com.example.moim.schedule.entity.Schedule;
+import com.example.moim.match.exception.MatchRecordExpireException;
 import com.example.moim.global.entity.BaseEntity;
 import com.example.moim.match.dto.MatchInput;
 import com.example.moim.match.dto.MatchRegInput;
