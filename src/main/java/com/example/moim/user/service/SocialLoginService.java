@@ -1,7 +1,7 @@
 package com.example.moim.user.service;
 
 import com.example.moim.club.repository.UserClubRepository;
-import com.example.moim.config.security.JWTUtil;
+import com.example.moim.config.jwt.JWTUtil;
 import com.example.moim.user.dto.KakaoUserSignup;
 import com.example.moim.user.dto.LoginOutput;
 import com.example.moim.user.entity.User;

@@ -1,4 +1,4 @@
-package com.example.moim.config.security;
+package com.example.moim.global.exception;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;

@@ -1,6 +1,6 @@
 package com.example.moim.user.controller;
 
-import com.example.moim.config.security.ErrorResult;
+import com.example.moim.global.exception.ErrorResult;
 import com.example.moim.user.dto.*;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;

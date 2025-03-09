@@ -1,4 +1,4 @@
-package com.example.moim.config.security;
+package com.example.moim.config.jwt;
 
 import com.example.moim.user.entity.User;
 import com.example.moim.user.dto.UserDetailsImpl;
