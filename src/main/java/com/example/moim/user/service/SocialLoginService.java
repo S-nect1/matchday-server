@@ -1,11 +1,9 @@
 package com.example.moim.user.service;
 
 import com.example.moim.club.repository.UserClubRepository;
-import com.example.moim.jwt.JWTUtil;
-import com.example.moim.user.dto.GoogleUserSignup;
+import com.example.moim.config.security.JWTUtil;
 import com.example.moim.user.dto.KakaoUserSignup;
 import com.example.moim.user.dto.LoginOutput;
-import com.example.moim.user.dto.NaverUserSignup;
 import com.example.moim.user.entity.User;
 import com.example.moim.user.repository.UserRepository;
 import com.fasterxml.jackson.databind.JsonNode;
@@ -15,16 +13,10 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
-import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.RestTemplate;
 
-import java.net.URLDecoder;
-import java.nio.charset.StandardCharsets;
-import java.util.HashMap;
-import java.util.Map;
 import java.util.Optional;
 
 import static org.springframework.http.HttpHeaders.AUTHORIZATION;

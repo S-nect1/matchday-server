@@ -1,6 +1,6 @@
 package com.example.moim.main.dto;
 
-import com.example.moim.club.dto.ScheduleOutput;
+import com.example.moim.schedule.dto.ScheduleOutput;
 import lombok.Data;
 
 import java.util.List;

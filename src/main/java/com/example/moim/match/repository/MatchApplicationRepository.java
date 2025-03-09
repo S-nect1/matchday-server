@@ -1,7 +1,7 @@
 package com.example.moim.match.repository;
 
 import com.example.moim.club.entity.Club;
-import com.example.moim.club.entity.Schedule;
+import com.example.moim.schedule.entity.Schedule;
 import com.example.moim.match.entity.Match;
 import com.example.moim.match.entity.MatchApplication;
 import org.springframework.data.jpa.repository.JpaRepository;

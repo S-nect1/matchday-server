@@ -1,16 +1,16 @@
 package com.example.moim.match.service;
 
 import com.example.moim.club.entity.Club;
-import com.example.moim.club.entity.Schedule;
-import com.example.moim.club.entity.ScheduleVote;
+import com.example.moim.schedule.entity.Schedule;
+import com.example.moim.schedule.entity.ScheduleVote;
 import com.example.moim.club.entity.UserClub;
 import com.example.moim.club.repository.ClubRepository;
-import com.example.moim.club.repository.ScheduleRepository;
-import com.example.moim.club.repository.ScheduleVoteRepository;
+import com.example.moim.schedule.repository.ScheduleRepository;
+import com.example.moim.schedule.repository.ScheduleVoteRepository;
 import com.example.moim.club.repository.UserClubRepository;
-import com.example.moim.club.service.ScheduleService;
-import com.example.moim.exception.match.MatchPermissionException;
-import com.example.moim.exception.match.MatchRecordExpireException;
+import com.example.moim.schedule.service.ScheduleService;
+import com.example.moim.match.exception.MatchPermissionException;
+import com.example.moim.match.exception.MatchRecordExpireException;
 import com.example.moim.match.dto.*;
 import com.example.moim.match.entity.Match;
 import com.example.moim.match.entity.MatchApplication;

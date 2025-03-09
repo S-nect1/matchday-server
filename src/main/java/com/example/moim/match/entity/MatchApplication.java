@@ -1,9 +1,8 @@
 package com.example.moim.match.entity;
 
 import com.example.moim.club.entity.Club;
-import com.example.moim.club.entity.Schedule;
+import com.example.moim.schedule.entity.Schedule;
 import com.example.moim.match.dto.MatchApplyInput;
-import com.example.moim.match.dto.MatchRegInput;
 import jakarta.persistence.*;
 import lombok.Getter;
 

@@ -1,8 +1,7 @@
 package com.example.moim.notification.entity;
 
-import com.example.moim.club.entity.Schedule;
+import com.example.moim.schedule.entity.Schedule;
 import com.example.moim.global.entity.BaseEntity;
-import com.example.moim.match.entity.Match;
 import com.example.moim.notification.dto.*;
 import com.example.moim.user.entity.User;
 import jakarta.persistence.*;
