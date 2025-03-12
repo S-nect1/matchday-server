@@ -2,7 +2,7 @@ package com.example.moim.user.entity;
 
 import com.example.moim.club.entity.UserClub;
 import com.example.moim.global.entity.BaseEntity;
-import com.example.moim.notification.entity.Notifications;
+import com.example.moim.notification.entity.Notification;
 import com.example.moim.user.dto.*;
 import jakarta.persistence.*;
 import lombok.Getter;
@@ -15,6 +15,7 @@ import java.util.List;
 @Entity
 @Getter
 @NoArgsConstructor
+@Table(name = "users")
 public class User extends BaseEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -43,7 +44,7 @@ public class User extends BaseEntity {
     @OneToMany(mappedBy = "user", cascade = CascadeType.REMOVE)
     private List<UserClub> userClub = new ArrayList<>();
     @OneToMany(mappedBy = "targetUser", cascade = CascadeType.REMOVE)
-    private List<Notifications> notifications = new ArrayList<>();
+    private List<Notification> notifications = new ArrayList<>();
 
     public static User createUser(SignupInput signupInput) {
         User user = new User();

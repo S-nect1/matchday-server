@@ -11,16 +11,16 @@ import com.querydsl.core.types.dsl.PathInits;
 
 
 /**
- * QNotifications is a Querydsl query type for Notifications
+ * QNotification is a Querydsl query type for Notification
  */
 @Generated("com.querydsl.codegen.DefaultEntitySerializer")
-public class QNotifications extends EntityPathBase<Notifications> {
+public class QNotification extends EntityPathBase<Notification> {
 
-    private static final long serialVersionUID = -1320817015L;
+    private static final long serialVersionUID = -1982269654L;
 
     private static final PathInits INITS = PathInits.DIRECT2;
 
-    public static final QNotifications notifications = new QNotifications("notifications");
+    public static final QNotification notification = new QNotification("notification");
 
     public final com.example.moim.global.entity.QBaseEntity _super = new com.example.moim.global.entity.QBaseEntity(this);
 
@@ -42,23 +42,23 @@ public class QNotifications extends EntityPathBase<Notifications> {
     //inherited
     public final DateTimePath<java.time.LocalDateTime> updatedDate = _super.updatedDate;
 
-    public QNotifications(String variable) {
-        this(Notifications.class, forVariable(variable), INITS);
+    public QNotification(String variable) {
+        this(Notification.class, forVariable(variable), INITS);
     }
 
-    public QNotifications(Path<? extends Notifications> path) {
+    public QNotification(Path<? extends Notification> path) {
         this(path.getType(), path.getMetadata(), PathInits.getFor(path.getMetadata(), INITS));
     }
 
-    public QNotifications(PathMetadata metadata) {
+    public QNotification(PathMetadata metadata) {
         this(metadata, PathInits.getFor(metadata, INITS));
     }
 
-    public QNotifications(PathMetadata metadata, PathInits inits) {
-        this(Notifications.class, metadata, inits);
+    public QNotification(PathMetadata metadata, PathInits inits) {
+        this(Notification.class, metadata, inits);
     }
 
-    public QNotifications(Class<? extends Notifications> type, PathMetadata metadata, PathInits inits) {
+    public QNotification(Class<? extends Notification> type, PathMetadata metadata, PathInits inits) {
         super(type, metadata, inits);
         this.targetUser = inits.isInitialized("targetUser") ? new com.example.moim.user.entity.QUser(forProperty("targetUser")) : null;
     }

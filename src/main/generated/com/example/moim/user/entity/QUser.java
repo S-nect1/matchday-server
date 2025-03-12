@@ -47,7 +47,7 @@ public class QUser extends EntityPathBase<User> {
 
     public final StringPath name = createString("name");
 
-    public final ListPath<com.example.moim.notification.entity.Notifications, com.example.moim.notification.entity.QNotifications> notifications = this.<com.example.moim.notification.entity.Notifications, com.example.moim.notification.entity.QNotifications>createList("notifications", com.example.moim.notification.entity.Notifications.class, com.example.moim.notification.entity.QNotifications.class, PathInits.DIRECT2);
+    public final ListPath<com.example.moim.notification.entity.Notification, com.example.moim.notification.entity.QNotification> notifications = this.<com.example.moim.notification.entity.Notification, com.example.moim.notification.entity.QNotification>createList("notifications", com.example.moim.notification.entity.Notification.class, com.example.moim.notification.entity.QNotification.class, PathInits.DIRECT2);
 
     public final StringPath password = createString("password");
 
