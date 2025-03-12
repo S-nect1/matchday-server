@@ -1,6 +1,6 @@
 package com.example.moim.notification.dto;
 
-import com.example.moim.notification.entity.Notifications;
+import com.example.moim.notification.entity.Notification;
 import lombok.Data;
 
 import java.time.format.DateTimeFormatter;
@@ -14,13 +14,13 @@ public class NotificationOutput {
     private String time;
     private Boolean isRead;
 
-    public NotificationOutput(Notifications notifications) {
-        this.id = notifications.getId();
-        this.title = notifications.getTitle();
-        this.category = notifications.getCategory();
-        this.content = notifications.getContents();
-        this.time = notifications.getCreatedDate().format(DateTimeFormatter.ofPattern("MM/dd HH:mm"));
-        notifications.setRead(true);
-        this.isRead = notifications.getIsRead();
+    public NotificationOutput(Notification notification) {
+        this.id = notification.getId();
+        this.title = notification.getTitle();
+        this.category = notification.getCategory();
+        this.content = notification.getContents();
+        this.time = notification.getCreatedDate().format(DateTimeFormatter.ofPattern("MM/dd HH:mm"));
+        notification.setRead(true);
+        this.isRead = notification.getIsRead();
     }
 }

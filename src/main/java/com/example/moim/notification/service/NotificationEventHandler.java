@@ -1,11 +1,9 @@
 package com.example.moim.notification.service;
 
-import com.example.moim.club.entity.UserClub;
 import com.example.moim.club.repository.UserClubRepository;
 import com.example.moim.notification.dto.*;
-import com.example.moim.notification.entity.Notifications;
+import com.example.moim.notification.entity.Notification;
 import com.example.moim.notification.repository.NotificationRepository;
-import com.example.moim.user.entity.User;
 import com.example.moim.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -28,7 +26,7 @@ public class NotificationEventHandler {
     public void handleClubJoinEvent(ClubJoinEvent clubJoinEvent) {
         log.info("이벤트 들어옴");
         sendEachNotification(userClubRepository.findAllByClub(clubJoinEvent.getClub()).stream()
-                .map(userClub -> Notifications.createClubJoinNotification(clubJoinEvent, userClub.getUser())).toList());
+                .map(userClub -> Notification.createClubJoinNotification(clubJoinEvent, userClub.getUser())).toList());
     }
 
     @Async
@@ -36,7 +34,7 @@ public class NotificationEventHandler {
     public void handleScheduleSaveEvent(ScheduleSaveEvent scheduleSaveEvent) {
         log.info("이벤트 들어옴");
         sendEachNotification(userClubRepository.findAllByClub(scheduleSaveEvent.getSchedule().getClub()).stream()
-                .map(userClub -> Notifications.createScheduleSaveNotification(scheduleSaveEvent, userClub.getUser())).toList());
+                .map(userClub -> Notification.createScheduleSaveNotification(scheduleSaveEvent, userClub.getUser())).toList());
     }
 
     @Async
@@ -64,31 +62,34 @@ public class NotificationEventHandler {
 //    @TransactionalEventListener
 //    public void handleScheduleVoteEvent(ScheduleVoteEvent scheduleVoteEvent) {
 //        log.info("이벤트 들어옴");
-//        sendNotification(Notifications.createScheduleVoteNotification(scheduleVoteEvent));
+//        sendNotification(Notification.createScheduleVoteNotification(scheduleVoteEvent));
 //    }
 
     @EventListener
     public void handleScheduleEncourageEvent(ScheduleEncourageEvent scheduleEncourageEvent) {
         log.info("이벤트 들어옴");
-        sendEachNotification(scheduleEncourageEvent.getUserList().stream().map(user -> Notifications.createScheduleEncourageEvent(scheduleEncourageEvent.getSchedule(), user)).toList());
+        sendEachNotification(scheduleEncourageEvent.getUserList().stream().map(user -> Notification.createScheduleEncourageEvent(scheduleEncourageEvent.getSchedule(), user)).toList());
     }
 
     @EventListener
     public void handleMatchRequestEvent(MatchRequestEvent matchRequestEvent) {
         log.info("이벤트 들어옴");
         sendEachNotification(userClubRepository.findAllByClub(matchRequestEvent.getClub()).stream()
-                .map(userClub -> Notifications.createMatchRequestEvent(matchRequestEvent, userClub.getUser())).toList());
+                .map(userClub -> Notification.createMatchRequestEvent(matchRequestEvent, userClub.getUser())).toList());
     }
 
     @EventListener
     public void handMatchInviteEvent(MatchInviteEvent matchInviteEvent) {
         log.info("이벤트 들어옴");
         sendEachNotification(userClubRepository.findAdminByClub(matchInviteEvent.getClub()).stream()
-                .map(userClub -> Notifications.createMatchInviteEvent(matchInviteEvent, userClub.getUser())).toList());
+                .map(userClub -> Notification.createMatchInviteEvent(matchInviteEvent, userClub.getUser())).toList());
     }
 
-
-    private void sendNotification(Notifications notification) {
+    /**
+     * FIXME: 사용자에게 알림을 보내는 메서드. sendEachNotification을 쓴다면 필요 없는거 아닌가?
+     * @param notification
+     */
+    private void sendNotification(Notification notification) {
 //        Message message = Message.builder()
 //                .setToken(notification.getTargetUser().getFcmToken())
 //                .setNotification(Notification.builder()
@@ -113,7 +114,11 @@ public class NotificationEventHandler {
 //        }
     }
 
-    private void sendEachNotification(List<Notifications> notification) {
+    /**
+     * FIXME: 여러 사용자에게 알림을 보내는 메서드. 현재는 Notification 객체 저장 기능만 구현되어 있음. 추후 FCM 메시지 전송 기능 추가 필요.
+     * @param notification
+     */
+    private void sendEachNotification(List<Notification> notification) {
 //        Message message = Message.builder()
 //                .setToken(notification.getTargetUser().getFcmToken())
 //                .setNotification(Notification.builder()
