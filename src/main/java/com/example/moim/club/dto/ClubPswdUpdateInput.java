@@ -1,6 +1,7 @@
 package com.example.moim.club.dto;
 
 import jakarta.validation.constraints.NotBlank;
+import lombok.Builder;
 import lombok.Data;
 
 @Data
@@ -12,4 +13,12 @@ public class ClubPswdUpdateInput {
     private String newPassword;
     @NotBlank(message = "비밀번호 확인을 입력해주세요.")
     private String rePassword;
+
+    @Builder
+    public ClubPswdUpdateInput(Long id, String oldPassword, String newPassword, String rePassword) {
+        this.id = id;
+        this.oldPassword = oldPassword;
+        this.newPassword = newPassword;
+        this.rePassword = rePassword;
+    }
 }

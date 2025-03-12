@@ -12,6 +12,7 @@ import org.springframework.security.config.annotation.authentication.configurati
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
+import org.springframework.security.config.annotation.web.configurers.HeadersConfigurer;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
@@ -62,6 +63,8 @@ public class SecurityConfig {
         
         //csrf disable
         httpSecurity.csrf(AbstractHttpConfigurer::disable);
+        httpSecurity.csrf(httpSecurityCsrfConfigurer -> httpSecurityCsrfConfigurer.ignoringRequestMatchers("/h2-console/**"))
+                .headers(headers -> headers.frameOptions(HeadersConfigurer.FrameOptionsConfig::disable));
         //From 로그인 방식 disable
         httpSecurity.formLogin(AbstractHttpConfigurer::disable);
         //http basic 인증 방식 disable
@@ -69,7 +72,7 @@ public class SecurityConfig {
         //경로별 인가 작업
         httpSecurity.authorizeHttpRequests((auth) -> auth
                 .requestMatchers("/", "/user/login", "/user", "/user/google", "/user/kakao", "/user/naver", "/user/info", "/user/refresh/",
-                        "/error", "/swagger-ui.html", "/swagger-ui/**", "/v3/**").permitAll()
+                        "/error", "/swagger-ui.html", "/swagger-ui/**", "/v3/**", "/h2-console/**").permitAll()
                 .requestMatchers("/admin").hasAuthority("ADMIN")
                 .anyRequest().authenticated());
 
