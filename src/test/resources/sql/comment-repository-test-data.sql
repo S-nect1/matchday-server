@@ -1,5 +1,5 @@
-ALTER TABLE USERS DROP CONSTRAINT CONSTRAINT_4;
-ALTER TABLE USERS DROP CONSTRAINT CONSTRAINT_4D4;
+--ALTER TABLE USERS DROP CONSTRAINT CONSTRAINT_4;
+--ALTER TABLE USERS DROP CONSTRAINT CONSTRAINT_4D4;
 
 -- 동아리 생성
 insert into `club` (`id`, `title`, `explanation`, `introduction`, `category`, `university`, `gender`, `activity_area`, `main_event`, `age_range`, `club_password`, `profile_img_path`, `main_uniform_color`, `sub_uniform_color`, `member_count`, `schedule_count`, `match_count`)
@@ -27,9 +27,9 @@ insert into `user_club` (`id`, `user_id`, `club_id`, `position`, `join_date`, `c
 values (3, 4, 3, 'position', '2024-12-11', 'creator', 2, 2);
 -- 스케줄 생성
 insert into `schedule` (id, club_id, title, location, start_time, end_time, min_people, category, note, attend, non_attend, is_close)
-values (1, 3, '운동 매치 스케줄', '서울시 마포구', '2024-12-11', '2024-12-11', 10, 'soccor', 'note', 10, 12, 0);
+values (1, 3, '운동 매치 스케줄', '서울시 마포구', '2024-03-11 14:30:00', '2024-03-11 17:30:00', 10, 'soccor', 'note', 10, 12, 0);
 insert into `schedule` (id, club_id, title, location, start_time, end_time, min_people, category, note, attend, non_attend, is_close)
-values (2, 3, '운동 매치 스케줄', '서울시 마포구', '2024-12-11', '2024-12-11', 10, 'soccor', 'note', 10, 12, 0);
+values (2, 3, '운동 매치 스케줄2', '서울시 마포구', '2024-03-12 14:30:00', '2024-03-12 17:30:00', 10, 'soccor', 'note', 10, 12, 0);
 -- 댓글 생성
 insert into `comment` (id, user_id, schedule_id, contents)
 values (1, 3, 1, '회사 면접이 잡혀있어서 못 갑니다');

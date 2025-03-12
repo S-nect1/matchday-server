@@ -12,11 +12,11 @@ import org.springframework.test.context.jdbc.SqlGroup;
 import java.util.List;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
-import static org.junit.jupiter.api.Assertions.*;
 
 @DataJpaTest
 @SqlGroup({
-        @Sql(value = "/sql/comment-repository-test-data.sql", executionPhase = Sql.ExecutionPhase.BEFORE_TEST_CLASS )
+        @Sql(value = "/sql/comment-repository-test-data.sql", executionPhase = Sql.ExecutionPhase.BEFORE_TEST_CLASS ),
+        @Sql(value = "/sql/comment-repository-test-data-delete.sql", executionPhase = Sql.ExecutionPhase.AFTER_TEST_CLASS)
 })
 class CommentRepositoryTest {
 
