@@ -17,7 +17,7 @@ public class MatchStatusOutput {
     private String location;
 
     public MatchStatusOutput(Match match) {
-        this.id = getId();
+        this.id = match.getId();
         this.matchStatus = match.getMatchStatus();
         this.matchDate = match.getStartTime().toLocalDate();
         this.period = match.getStartTime().toLocalTime().toString() + " ~ " + match.getEndTime().toLocalTime().toString();
