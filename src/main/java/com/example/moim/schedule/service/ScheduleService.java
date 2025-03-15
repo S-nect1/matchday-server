@@ -68,6 +68,11 @@ public class ScheduleService {
         return new ScheduleOutput(schedule);
     }
 
+    /**
+     * TODO: 이름 명확하게 변경하기. findMontSchedule 등으로
+     * @param scheduleSearchInput
+     * @return
+     */
     public List<ScheduleOutput> findSchedule(ScheduleSearchInput scheduleSearchInput) {
         return scheduleRepository.findByClubAndTime(clubRepository.findById(scheduleSearchInput.getClubId()).get(),
                         LocalDateTime.of(scheduleSearchInput.getDate() / 100, scheduleSearchInput.getDate() % 100, 1, 0, 0, 0).minusDays(6),
@@ -92,6 +97,11 @@ public class ScheduleService {
                 matchApplicationRepository.findBySchedule(schedule).stream().map(MatchApplyClubOutput::new).toList());
     }
 
+    /**
+     * TODO: void -> 기본 응답
+     * @param scheduleVoteInput
+     * @param user
+     */
     @Transactional
     public void voteSchedule(ScheduleVoteInput scheduleVoteInput, User user) {
         Schedule schedule = scheduleRepository.findScheduleById(scheduleVoteInput.getId());
@@ -109,16 +119,30 @@ public class ScheduleService {
 //        }
     }
 
+    /**
+     * TODO: void -> 기본 응답
+     * FIXME: 운영진인지 아닌지 체크하는 로직 필요함(필터에서 걸러주면 필요 X)
+     * @param id
+     */
     public void deleteSchedule(Long id) {
         scheduleRepository.deleteById(id);
     }
 
+    /**
+     * TODO: void -> 기본 응답
+     * FIXME: 운영진인지 아닌지 체크하는 로직 필요함(필터에서 걸러주면 필요 X)
+     * @param id
+     */
     public void voteEncourage(Long id) {
         Schedule schedule = scheduleRepository.findScheduleById(id);
         List<User> userList = userClubRepository.findUserByClub(schedule.getClub()).stream().map(UserClub::getUser).toList();
         eventPublisher.publishEvent(new ScheduleEncourageEvent(schedule, userList));
     }
 
+    /**
+     * TODO: void -> 기본 응답, 이름 명확하게 바꾸기 closeScheduleVote 등
+     * @param id
+     */
     @Transactional
     public void closeSchedule(Long id, User user) {
         Schedule schedule = scheduleRepository.findById(id).get();
