@@ -39,7 +39,7 @@ class NotificationServiceTest {
 
     @Test
     @DisplayName("사용자에게 읽지 않은 알림이 없으면 false 반환한다")
-    void unreadNotificationsNonExist() {
+    void shouldReturnFalseWhenNoUnreadNotifications() {
         // given
         User user = new User();
         when(notificationRepository.existsByTargetUserAndIsRead(user, false)).thenReturn(false);
@@ -53,7 +53,7 @@ class NotificationServiceTest {
 
     @Test
     @DisplayName("사용자에게 읽지 않은 알림이 있으면 true 반환한다")
-    void unreadNotificationsExist() {
+    void shouldReturnTrueWhenUnreadNotificationsExist() {
         // given
         User user = new User();
         when(notificationRepository.existsByTargetUserAndIsRead(user, false)).thenReturn(true);
@@ -67,7 +67,7 @@ class NotificationServiceTest {
 
     @Test
     @DisplayName("사용자에게 온 알림이 없으면 빈 목록을 반환한다")
-    void findNoticeFail() {
+    void shouldReturnEmptyListWhenNoNotificationsReceived() {
         // given
         User user = new User();
         when(notificationRepository.findByTargetUser(user)).thenReturn(Collections.emptyList());
@@ -81,7 +81,7 @@ class NotificationServiceTest {
 
     @Test
     @DisplayName("사용자에게 온 알림이 있으면 사용자의 알림 목록을 반환한다")
-    void findNoticeSuccess() {
+    void shouldReturnNotificationListWhenNotificationsExist() {
         // given
         User user = new User();
         Club club = new Club();
@@ -100,7 +100,7 @@ class NotificationServiceTest {
 
     @Test
     @DisplayName("존재하지 않는 ID를 삭제하려고 할 때 예외가 발생하지 않아도 된다")
-    void removeNoticeFail() {
+    void shouldNotThrowExceptionWhenRemovingNonExistentNotification() {
         // given
         Long nonExistentId = 999L;
         doNothing().when(notificationRepository).deleteById(nonExistentId);
@@ -114,7 +114,7 @@ class NotificationServiceTest {
 
     @Test
     @DisplayName("알림 ID로 알림을 삭제할 수 있다")
-    void removeNoticeSuccess() {
+    void shouldDeleteNotificationById() {
         // given
         Long notificationId = 1L;
         doNothing().when(notificationRepository).deleteById(notificationId);
