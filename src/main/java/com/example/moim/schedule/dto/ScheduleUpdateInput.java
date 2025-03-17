@@ -5,6 +5,7 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
+import lombok.Builder;
 import lombok.Data;
 
 import java.time.LocalDateTime;
@@ -30,4 +31,17 @@ public class ScheduleUpdateInput {
     @NotBlank(message = "일정 카테고리를 입력해 주세요.")
     private String category;
     private String note;
+
+    @Builder
+    public ScheduleUpdateInput(Long clubId, Long id, String title, String location, @NotNull(message = "일정 시작 시간을 입력해주세요.") LocalDateTime startTime, @NotNull(message = "일정 종료 시간을 입력해주세요.") LocalDateTime endTime, @NotNull(message = "참여 인원을 입력해주세요.") int minPeople, String category, String note) {
+        this.clubId = clubId;
+        this.id = id;
+        this.title = title;
+        this.location = location;
+        this.startTime = startTime;
+        this.endTime = endTime;
+        this.minPeople = minPeople;
+        this.category = category;
+        this.note = note;
+    }
 }
