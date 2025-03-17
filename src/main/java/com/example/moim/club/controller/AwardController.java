@@ -3,6 +3,8 @@ package com.example.moim.club.controller;
 import com.example.moim.club.dto.AwardInput;
 import com.example.moim.club.dto.AwardOutput;
 import com.example.moim.club.service.AwardService;
+import com.example.moim.global.exception.BaseResponse;
+import com.example.moim.global.exception.ResponseCode;
 import com.example.moim.user.dto.UserDetailsImpl;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -17,8 +19,8 @@ public class AwardController implements AwardControllerDocs{
     private final AwardService awardService;
 
     @PostMapping("/award")
-    public AwardOutput awardAdd(@AuthenticationPrincipal UserDetailsImpl userDetailsImpl, @RequestBody @Valid AwardInput awardInput) {
-        return awardService.addAward(awardInput);
+    public BaseResponse<AwardOutput> awardAdd(@AuthenticationPrincipal UserDetailsImpl userDetailsImpl, @RequestBody @Valid AwardInput awardInput) {
+        return BaseResponse.onSuccess(awardService.addAward(awardInput), ResponseCode.OK);
     }
 
     @PatchMapping("/award")

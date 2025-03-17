@@ -37,6 +37,5 @@ out/
 ### VS Code ###
 .vscode/
 
-application-h2.properties
-application-jwt.properties
-application-oauth.properties
+build/generated/
+application-local.properties
