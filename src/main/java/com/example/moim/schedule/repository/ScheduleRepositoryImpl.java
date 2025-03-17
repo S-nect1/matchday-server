@@ -8,6 +8,8 @@ import jakarta.persistence.EntityManager;
 
 import java.time.LocalDateTime;
 import java.util.List;
+
+import static com.example.moim.schedule.entity.QSchedule.schedule;
 import static org.springframework.util.StringUtils.hasText;
 
 import static com.example.moim.club.entity.QClub.*;
