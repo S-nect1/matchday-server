@@ -44,8 +44,7 @@ dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-actuator'
 
     compileOnly 'org.projectlombok:lombok'
-//    runtimeOnly 'com.mysql:mysql-connector-j'
-    runtimeOnly 'com.h2database:h2'
+    runtimeOnly 'com.mysql:mysql-connector-j'
     annotationProcessor 'org.projectlombok:lombok'
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
     testCompileOnly 'org.projectlombok:lombok'
@@ -56,21 +55,3 @@ dependencies {
 tasks.named('test') {
     useJUnitPlatform()
 }
-
-// QueryDSL Plugin Configuration Start
-// querydsl QClass 파일 생성 위치를 지정
-def generated = 'src/main/generated'
-tasks.withType(JavaCompile) {
-    options.getGeneratedSourceOutputDirectory().set(file(generated))
-}
-
-// java source set 에 querydsl QClass 위치 추가
-sourceSets {
-    main.java.srcDirs += [generated]
-}
-
-// gradle clean 시에 QClass 디렉토리 삭제
-clean {
-    delete file(generated)
-}
-// QueryDSL Plugin Configuration End

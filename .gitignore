@@ -39,3 +39,4 @@ out/
 
 build/generated/
 application-local.properties
+application-test.properties
