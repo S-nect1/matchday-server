@@ -13,7 +13,6 @@ import static com.example.moim.schedule.entity.QSchedule.schedule;
 import static org.springframework.util.StringUtils.hasText;
 
 import static com.example.moim.club.entity.QClub.*;
-import static com.example.moim.schedule.entity.QSchedule.*;
 
 public class ScheduleRepositoryImpl implements ScheduleRepositoryCustom {
 
@@ -23,6 +22,15 @@ public class ScheduleRepositoryImpl implements ScheduleRepositoryCustom {
         this.queryFactory = new JPAQueryFactory(em);
     }
 
+    /**
+     * TODO: 매개변수 중에 search, category 는 사용을 안함. 추후에 지울 것
+     * @param club
+     * @param startTime
+     * @param endTime
+     * @param search
+     * @param category
+     * @return
+     */
     @Override
     public List<Schedule> findByClubAndTime(Club club, LocalDateTime startTime, LocalDateTime endTime, String search, String category) {
         return queryFactory

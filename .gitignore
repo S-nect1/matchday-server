@@ -18,7 +18,7 @@ bin/
 !**/src/test/**/bin/
 
 ### IntelliJ IDEA ###
-application.properties
+#application.properties
 .idea
 *.iws
 *.iml
@@ -38,3 +38,5 @@ out/
 .vscode/
 
 build/generated/
+application-local.properties
+application-test.properties
