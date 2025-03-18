@@ -18,6 +18,11 @@ public class ClubRepositoryImpl implements ClubRepositoryCustom{
         this.queryFactory = new JPAQueryFactory(em);
     }
 
+    /**
+     * FIXME : 지금은 조건을 and 로 해서 조회하는데, or 로 바꾸는게 적합해보임
+     * @param clubSearchCond
+     * @return
+     */
     @Override
     public List<Club> findBySearchCond(ClubSearchCond clubSearchCond) {
         return queryFactory
@@ -35,6 +40,11 @@ public class ClubRepositoryImpl implements ClubRepositoryCustom{
         return null;
     }
 
+    /**
+     * FIXME : search 로 내용도 같이 확인해주는게 좋을듯. 그리고 contains 는 띄어쓰기 하면 완전 다른 결과가 나오므로 그것에 대한 해결책도 생각하기
+     * @param search
+     * @return
+     */
     private BooleanExpression searchContains(String search) {
         if (hasText(search)) {
             return club.title.contains(search);

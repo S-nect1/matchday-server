@@ -1,0 +1,56 @@
+services:
+  api:
+    container_name: matchday-api
+    image: matchday/be:0.0.1
+    ports:
+      - "8080:8080"
+    depends_on:
+      rdb:
+        condition: service_healthy
+      inmemory:
+        condition: service_started
+    networks:
+      - app-network
+
+  rdb:
+    container_name: matchday-rdb
+    image: mysql:8.0
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: password
+      MYSQL_DATABASE: matchday
+    ports:
+      - "3306:3306"
+    volumes:
+      - mysql_data:/var/lib/mysql
+      - ./local.init.sql:/docker-entrypoint-initdb.d/init.sql
+    networks:
+      - app-network
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
+      interval: 10s
+      timeout: 5s
+      retries: 3
+
+  inmemory:
+    container_name: matchday-inmemory
+    image: redis:7.2-alpine
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_data:/data
+    networks:
+      - app-network
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 3
+
+volumes:
+  mysql_data:
+  redis_data:
+
+networks:
+  app-network:
+    driver: bridge
