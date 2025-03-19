@@ -47,6 +47,13 @@ public enum ResponseCode {
     NOT_HEART_EXCEPTION(HttpStatus.BAD_REQUEST, "STORE4005", "해당 상점은 관심 상점으로 등록되지 않았으므로 삭제할 수 없습니다."),
     PAGE_AND_SIZE_NOT_CORRECT(HttpStatus.BAD_REQUEST, "STORE4006", "page 와 size 는 0 과 양수만 입력 가능합니다."),
 
+    // Club Error
+    CLUB_NOT_FOUND(HttpStatus.BAD_REQUEST, "CLUB4001", "존재하지 않는 모임입니다."),
+    CLUB_USER_NOT_FOUND(HttpStatus.BAD_REQUEST, "CLUB4002", "가입되지 않은 회원입니다."),
+    CLUB_PERMISSION_DENIED(HttpStatus.FORBIDDEN, "CLUB4003", "모임 정보를 수정할 권한이 없습니다."),
+    CLUB_PASSWORD_INCORRECT(HttpStatus.UNAUTHORIZED, "CLUB4004", "모임 비밀번호가 틀렸습니다."),
+    CLUB_CHECK_PASSWORD_INCORRECT(HttpStatus.UNAUTHORIZED, "CLUB4005", "모임 확인 비밀번호가 틀렸습니다."),
+
     // File Error
     FILE_MAX_SIZE_OVER(HttpStatus.PAYLOAD_TOO_LARGE, "FILE4001", "100MB 이하 파일만 업로드 할 수 있습니다."),
     FILE_CONTENT_TYPE_NOT_IMAGE(HttpStatus.UNSUPPORTED_MEDIA_TYPE, "FILE4002", "이미지 파일만 업로드할 수 있습니다."),
