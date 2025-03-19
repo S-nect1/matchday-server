@@ -25,14 +25,14 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
-class NoticeServiceTest {
+class NoticeCommandServiceImplTest {
 
     @Mock
     private NoticeRepository noticeRepository;
     @Mock
     private ClubRepository clubRepository;
     @InjectMocks
-    private NoticeService noticeService;
+    private NoticeCommandServiceImpl noticeCommandServiceImpl;
 
     private ClubInput clubInput;
     private NoticeInput noticeInput;
@@ -69,45 +69,10 @@ class NoticeServiceTest {
         //when
         when(noticeRepository.save(any(Notice.class))).thenReturn(notice);
         when(clubRepository.findById(any(Long.class))).thenReturn(Optional.of(club));
-        noticeService.saveNotice(noticeInput);
+        noticeCommandServiceImpl.saveNotice(noticeInput);
         //then
         verify(noticeRepository, times(1)).save(any(Notice.class));
         verify(clubRepository, times(1)).findById(any(Long.class));
     }
 
-    @Test
-    @DisplayName("동아리 별 공지들을 조회할 수 있다")
-    void findNotice() {
-        //given
-        Club club = Club.createClub(clubInput, null);
-        Notice notice = Notice.createNotice(club, noticeInput.getTitle(), noticeInput.getContent());
-        notice.setCreatedDate();
-        notice.setUpdatedDate();
-        //when
-        when(clubRepository.findById(any(Long.class))).thenReturn(Optional.of(club));
-        when(noticeRepository.findByClub(any(Club.class))).thenReturn(List.of(notice));
-        List<NoticeOutput> result = noticeService.findNotice(1L);
-        //then
-        assertThat(result.size()).isEqualTo(1);
-        assertThat(result.get(0).getTitle()).isEqualTo(noticeInput.getTitle());
-        assertThat(result.get(0).getContent()).isEqualTo(noticeInput.getContent());
-        verify(clubRepository, times(1)).findById(any(Long.class));
-        verify(noticeRepository, times(1)).findByClub(any(Club.class));
-    }
-
-    @Test
-    @DisplayName("동아리에 등록된 공지가 없을 경우 빈 리스트를 반환한다")
-    void findNotice_zero_notice() {
-        //given
-        Club club = Club.createClub(clubInput, null);
-
-        //when
-        when(clubRepository.findById(any(Long.class))).thenReturn(Optional.of(club));
-        when(noticeRepository.findByClub(any(Club.class))).thenReturn(List.of());
-        List<NoticeOutput> result = noticeService.findNotice(1L);
-        //then
-        assertThat(result.size()).isEqualTo(0);
-        verify(clubRepository, times(1)).findById(any(Long.class));
-        verify(noticeRepository, times(1)).findByClub(any(Club.class));
-    }
 }
