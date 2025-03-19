@@ -2,7 +2,7 @@ package com.example.moim.schedule.service;
 
 import com.example.moim.club.entity.*;
 import com.example.moim.club.repository.*;
-import com.example.moim.club.exception.ClubPermissionException;
+import com.example.moim.global.exception.ResponseCode;
 import com.example.moim.match.dto.MatchApplyClubOutput;
 import com.example.moim.match.repository.MatchApplicationRepository;
 import com.example.moim.notification.dto.ScheduleEncourageEvent;
@@ -15,6 +15,7 @@ import com.example.moim.schedule.dto.ScheduleUpdateInput;
 import com.example.moim.schedule.dto.ScheduleVoteInput;
 import com.example.moim.schedule.entity.Schedule;
 import com.example.moim.schedule.entity.ScheduleVote;
+import com.example.moim.schedule.exception.advice.ScheduleControllerAdvice;
 import com.example.moim.schedule.repository.CommentRepository;
 import com.example.moim.schedule.repository.ScheduleRepository;
 import com.example.moim.schedule.repository.ScheduleVoteRepository;
@@ -46,7 +47,7 @@ public class ScheduleService {
     public ScheduleOutput saveSchedule(ScheduleInput scheduleInput, User user) {
         UserClub userClub = userClubRepository.findByClubAndUser(clubRepository.findById(scheduleInput.getClubId()).get(), user).get();
         if (!(userClub.getCategory().equals("creator") || userClub.getCategory().equals("admin"))) {
-            throw new ClubPermissionException("모임 일정을 만들 권한이 없습니다.");
+            throw new ScheduleControllerAdvice(ResponseCode.CLUB_PERMISSION_DENIED);
         }
 
         Schedule schedule = scheduleRepository.save(
@@ -60,7 +61,7 @@ public class ScheduleService {
     public ScheduleOutput updateSchedule(ScheduleUpdateInput scheduleUpdateInput, User user) {
         UserClub userClub = userClubRepository.findByClubAndUser(clubRepository.findById(scheduleUpdateInput.getClubId()).get(), user).get();
         if (!(userClub.getCategory().equals("creator") || userClub.getCategory().equals("admin"))) {
-            throw new ClubPermissionException("모임 일정을 수정할 권한이 없습니다.");
+            throw new ScheduleControllerAdvice(ResponseCode.CLUB_PERMISSION_DENIED);
         }
 
         Schedule schedule = scheduleRepository.findById(scheduleUpdateInput.getId()).get();
@@ -148,7 +149,7 @@ public class ScheduleService {
         Schedule schedule = scheduleRepository.findById(id).get();
         UserClub userClub = userClubRepository.findByClubAndUser(schedule.getClub(), user).get();
         if (!(userClub.getCategory().equals("creator") || userClub.getCategory().equals("admin"))) {
-            throw new ClubPermissionException("일정 투표를 마감할 권한이 없습니다.");
+            throw new ScheduleControllerAdvice(ResponseCode.CLUB_PERMISSION_DENIED);
         }
 
         schedule.closeSchedule();
