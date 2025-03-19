@@ -6,10 +6,10 @@ import com.example.moim.club.dto.response.ClubSearchOutput;
 import com.example.moim.club.dto.response.UserClubOutput;
 import com.example.moim.club.entity.Club;
 import com.example.moim.club.entity.UserClub;
-import com.example.moim.club.exception.ClubPasswordException;
-import com.example.moim.club.exception.ClubPermissionException;
+import com.example.moim.club.exception.advice.ClubControllerAdvice;
 import com.example.moim.club.repository.ClubRepository;
 import com.example.moim.club.repository.UserClubRepository;
+import com.example.moim.global.exception.ResponseCode;
 import com.example.moim.global.util.FileStore;
 import com.example.moim.notification.dto.ClubJoinEvent;
 import com.example.moim.user.entity.User;
@@ -131,9 +131,10 @@ class ClubServiceTest {
         //then
         when(clubRepository.findById(any(Long.class))).thenReturn(Optional.of(club));
         when(userClubRepository.findByClubAndUser(any(Club.class), any(User.class))).thenReturn(Optional.of(userClub));
-        assertThrows(ClubPasswordException.class, () -> {
+        Exception exception = assertThrows(ClubControllerAdvice.class, () -> {
             clubService.updateClub(new User(), ClubUpdateInput.builder().id(1L).clubPassword("wrong!").build());
         });
+        assertThat(exception.getMessage()).isEqualTo(ResponseCode.CLUB_PASSWORD_INCORRECT.getMessage());
         verify(clubRepository, times(1)).findById(any(Long.class));
         verify(userClubRepository, times(1)).findByClubAndUser(any(Club.class), any(User.class));
     }
@@ -148,9 +149,10 @@ class ClubServiceTest {
         when(clubRepository.findById(any(Long.class))).thenReturn(Optional.of(club));
         when(userClubRepository.findByClubAndUser(any(Club.class), any(User.class))).thenReturn(Optional.of(userClub));
         //then
-        assertThrows(ClubPermissionException.class, () -> {
+        Exception exception = assertThrows(ClubControllerAdvice.class, () -> {
             clubService.updateClub(new User(), clubUpdateInput);
         });
+        assertThat(exception.getMessage()).isEqualTo(ResponseCode.CLUB_PERMISSION_DENIED.getMessage());
         verify(clubRepository, times(1)).findById(any(Long.class));
         verify(userClubRepository, times(1)).findByClubAndUser(any(Club.class), any(User.class));
     }
@@ -203,9 +205,10 @@ class ClubServiceTest {
         //when
         //then
         when(clubRepository.findById(any(Long.class))).thenReturn(Optional.of(club));
-        assertThrows(ClubPasswordException.class, () -> {
+        Exception exception = assertThrows(ClubControllerAdvice.class, () -> {
             clubService.saveClubUser(new User(), clubUserSaveInput);
         });
+        assertThat(exception.getMessage()).isEqualTo(ResponseCode.CLUB_PASSWORD_INCORRECT.getMessage());
         verify(clubRepository, times(1)).findById(any(Long.class));
         verify(userClubRepository, times(0)).save(any(UserClub.class));
         verify(eventPublisher, times(0)).publishEvent(any(ClubJoinEvent.class));
@@ -248,9 +251,10 @@ class ClubServiceTest {
         when(userClubRepository.findByClubAndUser(any(Club.class), any(User.class)))
                 .thenReturn(Optional.of(UserClub.createUserClub(new User(), club)));
 
-        assertThrows(ClubPermissionException.class, () -> {
+        Exception exception = assertThrows(ClubControllerAdvice.class, () -> {
             clubService.updateClubUser(new User(), clubUserUpdateInput);
         });
+        assertThat(exception.getMessage()).isEqualTo(ResponseCode.CLUB_PERMISSION_DENIED.getMessage());
         verify(clubRepository, times(1)).findById(any(Long.class));
         verify(userClubRepository, times(1)).findByClubAndUser(any(Club.class), any(User.class));
     }
@@ -324,9 +328,10 @@ class ClubServiceTest {
         when(userClubRepository.findByClubAndUser(any(Club.class), any(User.class))).thenReturn(Optional.of(UserClub.createUserClub(user, club)));
 
         //then
-        assertThrows(ClubPermissionException.class, () -> {
+        Exception exception = assertThrows(ClubControllerAdvice.class, () -> {
             clubService.clubPasswordUpdate(user, clubPswdUpdateInput);
         });
+        assertThat(exception.getMessage()).isEqualTo(ResponseCode.CLUB_PERMISSION_DENIED.getMessage());
         verify(clubRepository, times(1)).findById(any(Long.class));
         verify(userClubRepository, times(1)).findByClubAndUser(any(Club.class), any(User.class));
     }
@@ -343,12 +348,12 @@ class ClubServiceTest {
         when(userClubRepository.findByClubAndUser(any(Club.class), any(User.class))).thenReturn(Optional.of(UserClub.createLeaderUserClub(user, club)));
 
         //then
-        ClubPasswordException clubPasswordException = assertThrows(ClubPasswordException.class, () -> {
+        Exception exception = assertThrows(ClubControllerAdvice.class, () -> {
             clubService.clubPasswordUpdate(user, clubPswdUpdateInput);
         });
+        assertThat(exception.getMessage()).isEqualTo(ResponseCode.CLUB_PASSWORD_INCORRECT.getMessage());
         verify(clubRepository, times(1)).findById(any(Long.class));
         verify(userClubRepository, times(1)).findByClubAndUser(any(Club.class), any(User.class));
-        assertThat(clubPasswordException.getMessage()).contains("모임 비밀번호가 틀렸습니다.");
     }
 
     @Test
@@ -363,11 +368,11 @@ class ClubServiceTest {
         when(userClubRepository.findByClubAndUser(any(Club.class), any(User.class))).thenReturn(Optional.of(UserClub.createLeaderUserClub(user, club)));
 
         //then
-        ClubPasswordException clubPasswordException = assertThrows(ClubPasswordException.class, () -> {
+        Exception exception = assertThrows(ClubControllerAdvice.class, () -> {
             clubService.clubPasswordUpdate(user, clubPswdUpdateInput);
         });
+        assertThat(exception.getMessage()).isEqualTo(ResponseCode.CLUB_CHECK_PASSWORD_INCORRECT.getMessage());
         verify(clubRepository, times(1)).findById(any(Long.class));
         verify(userClubRepository, times(1)).findByClubAndUser(any(Club.class), any(User.class));
-        assertThat(clubPasswordException.getMessage()).contains("비밀번호 확인이 틀렸습니다.");
     }
 }

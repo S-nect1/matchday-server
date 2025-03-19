@@ -1,6 +1,6 @@
 package com.example.moim.match;
 
-import com.example.moim.club.dto.ClubInput;
+import com.example.moim.club.dto.request.ClubInput;
 import com.example.moim.club.entity.Club;
 import com.example.moim.club.entity.UserClub;
 import com.example.moim.club.repository.ClubRepository;
