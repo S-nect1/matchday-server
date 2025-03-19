@@ -1,4 +1,4 @@
-package com.example.moim.club.dto;
+package com.example.moim.club.dto.request;
 
 import com.example.moim.global.util.ValidFile;
 import lombok.Data;

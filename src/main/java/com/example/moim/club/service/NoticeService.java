@@ -1,7 +1,7 @@
 package com.example.moim.club.service;
 
-import com.example.moim.club.dto.NoticeInput;
-import com.example.moim.club.dto.NoticeOutput;
+import com.example.moim.club.dto.request.NoticeInput;
+import com.example.moim.club.dto.request.NoticeOutput;
 import com.example.moim.club.entity.Notice;
 import com.example.moim.club.repository.ClubRepository;
 import com.example.moim.club.repository.NoticeRepository;

@@ -1,12 +1,11 @@
 package com.example.moim.schedule.service;
 
-import com.example.moim.club.dto.ClubInput;
+import com.example.moim.club.dto.request.ClubInput;
 import com.example.moim.club.entity.Club;
 import com.example.moim.club.entity.UserClub;
 import com.example.moim.club.exception.ClubPermissionException;
 import com.example.moim.club.repository.ClubRepository;
 import com.example.moim.club.repository.UserClubRepository;
-import com.example.moim.match.dto.MatchInput;
 import com.example.moim.match.entity.Match;
 import com.example.moim.match.entity.MatchApplication;
 import com.example.moim.match.repository.MatchApplicationRepository;

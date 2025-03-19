@@ -1,6 +1,6 @@
 package com.example.moim.club.repository;
 
-import com.example.moim.club.dto.ClubSearchCond;
+import com.example.moim.club.dto.request.ClubSearchCond;
 import com.example.moim.club.entity.Club;
 import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.jpa.impl.JPAQueryFactory;

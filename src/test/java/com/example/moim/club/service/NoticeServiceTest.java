@@ -1,8 +1,8 @@
 package com.example.moim.club.service;
 
-import com.example.moim.club.dto.ClubInput;
-import com.example.moim.club.dto.NoticeInput;
-import com.example.moim.club.dto.NoticeOutput;
+import com.example.moim.club.dto.request.ClubInput;
+import com.example.moim.club.dto.request.NoticeInput;
+import com.example.moim.club.dto.request.NoticeOutput;
 import com.example.moim.club.entity.Club;
 import com.example.moim.club.entity.Notice;
 import com.example.moim.club.repository.ClubRepository;
@@ -17,12 +17,10 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
-import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 

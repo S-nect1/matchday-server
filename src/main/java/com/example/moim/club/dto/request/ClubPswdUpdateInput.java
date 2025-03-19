@@ -1,4 +1,4 @@
-package com.example.moim.club.dto;
+package com.example.moim.club.dto.request;
 
 import jakarta.validation.constraints.NotBlank;
 import lombok.Builder;

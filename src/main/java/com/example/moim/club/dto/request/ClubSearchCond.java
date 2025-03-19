@@ -1,4 +1,4 @@
-package com.example.moim.club.dto;
+package com.example.moim.club.dto.request;
 
 import lombok.Builder;
 import lombok.Data;

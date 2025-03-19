@@ -1,8 +1,10 @@
 package com.example.moim.club.controller;
 
-import com.example.moim.club.dto.NoticeInput;
-import com.example.moim.club.dto.NoticeOutput;
+import com.example.moim.club.dto.request.NoticeInput;
+import com.example.moim.club.dto.request.NoticeOutput;
 import com.example.moim.club.service.NoticeService;
+import com.example.moim.global.exception.BaseResponse;
+import com.example.moim.global.exception.ResponseCode;
 import com.example.moim.user.dto.UserDetailsImpl;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -24,8 +26,9 @@ public class NoticeController implements NoticeControllerDocs {
      * @param userDetailsImpl
      */
     @PostMapping("/notice")
-    public void noticeSave(NoticeInput noticeInput, @AuthenticationPrincipal UserDetailsImpl userDetailsImpl) {
+    public BaseResponse noticeSave(NoticeInput noticeInput, @AuthenticationPrincipal UserDetailsImpl userDetailsImpl) {
         noticeService.saveNotice(noticeInput);
+        return BaseResponse.onSuccess(null, ResponseCode.OK);
     }
 
     /**
@@ -35,7 +38,7 @@ public class NoticeController implements NoticeControllerDocs {
      * @return
      */
     @GetMapping("/notice/{clubId}")
-    public List<NoticeOutput> noticeSave(@PathVariable Long clubId, @AuthenticationPrincipal UserDetailsImpl userDetailsImpl) {
-        return noticeService.findNotice(clubId);
+    public BaseResponse<List<NoticeOutput>> noticeSave(@PathVariable Long clubId, @AuthenticationPrincipal UserDetailsImpl userDetailsImpl) {
+        return BaseResponse.onSuccess(noticeService.findNotice(clubId), ResponseCode.OK);
     }
 }

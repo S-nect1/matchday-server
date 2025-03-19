@@ -1,7 +1,7 @@
 package com.example.moim.club.entity;
 
-import com.example.moim.club.dto.ClubInput;
-import com.example.moim.club.dto.ClubUpdateInput;
+import com.example.moim.club.dto.request.ClubInput;
+import com.example.moim.club.dto.request.ClubUpdateInput;
 import com.example.moim.global.entity.BaseEntity;
 import com.example.moim.match.entity.Match;
 import jakarta.persistence.*;

@@ -1,6 +1,9 @@
 package com.example.moim.club.service;
 
-import com.example.moim.club.dto.*;
+import com.example.moim.club.dto.request.*;
+import com.example.moim.club.dto.response.ClubOutput;
+import com.example.moim.club.dto.response.ClubSearchOutput;
+import com.example.moim.club.dto.response.UserClubOutput;
 import com.example.moim.club.entity.Club;
 import com.example.moim.club.entity.UserClub;
 import com.example.moim.club.exception.ClubPasswordException;
@@ -18,7 +21,6 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.web.multipart.MultipartFile;
