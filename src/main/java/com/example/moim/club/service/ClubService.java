@@ -9,8 +9,6 @@ import com.example.moim.club.entity.UserClub;
 import com.example.moim.club.exception.advice.ClubControllerAdvice;
 import com.example.moim.club.repository.ClubRepository;
 import com.example.moim.club.repository.UserClubRepository;
-import com.example.moim.club.exception.ClubPasswordException;
-import com.example.moim.club.exception.ClubPermissionException;
 import com.example.moim.global.exception.ResponseCode;
 import com.example.moim.global.util.FileStore;
 import com.example.moim.notification.dto.ClubJoinEvent;
