@@ -2,7 +2,6 @@ package com.example.moim.club.service;
 
 import com.example.moim.club.dto.request.*;
 import com.example.moim.club.dto.response.ClubOutput;
-import com.example.moim.club.dto.response.ClubSearchOutput;
 import com.example.moim.club.dto.response.UserClubOutput;
 import com.example.moim.club.entity.Club;
 import com.example.moim.club.entity.UserClub;
@@ -20,12 +19,10 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.io.IOException;
-import java.util.List;
-import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
-public class ClubService {
+public class ClubCommandServiceImpl implements ClubCommandService {
     private final ClubRepository clubRepository;
     private final UserClubRepository userClubRepository;
     private final UserRepository userRepository;
@@ -55,10 +52,6 @@ public class ClubService {
         return new ClubOutput(club);
     }
 
-    public List<ClubSearchOutput> searchClub(ClubSearchCond clubSearchCond) {
-        return clubRepository.findBySearchCond(clubSearchCond).stream().map(ClubSearchOutput::new).toList();
-    }
-
     @Transactional
     public UserClubOutput saveClubUser(User user, ClubUserSaveInput clubUserSaveInput) {
         Club club = clubRepository.findById(clubUserSaveInput.getClubId()).orElseThrow(() -> new ClubControllerAdvice(ResponseCode.CLUB_NOT_FOUND));
@@ -86,20 +79,6 @@ public class ClubService {
         UserClub changeUserClub = userClubRepository.findByClubAndUser(club, userRepository.findById(clubInput.getUserId()).get()).get();
         changeUserClub.changeUserClub(clubInput.getPosition(), clubInput.getCategory());
         return new UserClubOutput(changeUserClub);
-    }
-
-    public ClubOutput findClub(Long id, User user) {
-        Club club = clubRepository.findById(id).orElseThrow(() -> new ClubControllerAdvice(ResponseCode.CLUB_NOT_FOUND));
-        // 비회원과 회원일 경우를 나눠서 데이터를 주려고 한듯!
-        Optional<UserClub> userClub = userClubRepository.findByClubAndUser(club, user);
-        if (userClub.isPresent()) {
-            List<UserClubOutput> userClubOutputs = userClubRepository.findAllByClub(club).stream().map(UserClubOutput::new).toList();
-//            List<ScheduleOutput> scheduleOutputs = scheduleRepository.findTop5ByClubOrderByCreatedDateDesc(club).stream().map(ScheduleOutput::new).toList();
-//            List<AwardOutput> awardOutputs = awardRepository.findByClub(club).stream().map(AwardOutput::new).toList();
-            return new ClubOutput(club, userClubOutputs, userClub.get().getCategory());
-        }
-
-        return new ClubOutput(club, null, null);
     }
 
     @Transactional
