@@ -17,13 +17,14 @@ import com.example.moim.notification.repository.NotificationRepository;
 import com.example.moim.user.entity.User;
 import java.util.Collections;
 import java.util.List;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
+import org.mockito.junit.jupiter.MockitoExtension;
 
+@ExtendWith(MockitoExtension.class)
 class NotificationServiceTest {
 
     @Mock
@@ -31,11 +32,6 @@ class NotificationServiceTest {
 
     @InjectMocks
     private NotificationService notificationService;
-
-    @BeforeEach
-    void setUp() {
-        MockitoAnnotations.openMocks(this);
-    }
 
     @Test
     @DisplayName("사용자에게 읽지 않은 알림이 없으면 false 반환한다")
