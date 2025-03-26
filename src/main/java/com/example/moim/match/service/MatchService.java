@@ -243,6 +243,7 @@ public class MatchService {
         List<Match> matches = matchRepository.findRegisteredMatch(myClub);
         String[] myClubCoordinate = myClub.getUniversity().replace("@", ",").split(",");
         List<RegisteredMatchDto> registeredMatchDtos = new ArrayList<>(matches.size());
+
         for (Match match : matches) {
             String[] matchCoordinate = match.getLocation().replace("@", ",").split(",");
             registeredMatchDtos.add(new RegisteredMatchDto(match, distance(Double.parseDouble(myClubCoordinate[2]), Double.parseDouble(myClubCoordinate[1]),

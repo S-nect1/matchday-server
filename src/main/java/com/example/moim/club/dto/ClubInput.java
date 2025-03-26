@@ -7,6 +7,7 @@ import lombok.NoArgsConstructor;
 import org.springframework.web.multipart.MultipartFile;
 
 @Data
+@NoArgsConstructor
 public class ClubInput {
 
     @NotBlank(message = "모임 이름을 적어야합니다!")

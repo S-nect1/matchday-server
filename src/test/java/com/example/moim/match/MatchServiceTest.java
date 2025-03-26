@@ -5,6 +5,7 @@ import com.example.moim.club.entity.Club;
 import com.example.moim.club.entity.UserClub;
 import com.example.moim.club.repository.ClubRepository;
 import com.example.moim.club.repository.UserClubRepository;
+import com.example.moim.global.entity.EventType;
 import com.example.moim.match.dto.*;
 import com.example.moim.match.entity.Match;
 import com.example.moim.match.entity.MatchApplication;
@@ -78,9 +79,9 @@ class MatchServiceTest {
         clubInput.setIntroduction("introduction");
         clubInput.setCategory("동아리");
         clubInput.setUniversity("TestUniv@37.5665@126.9780");
-        clubInput.setGender("MAN");
+        clubInput.setGender("남성");
         clubInput.setActivityArea("서울");
-        clubInput.setAgeRange("20-30");
+        clubInput.setAgeRange("20대");
         clubInput.setMainEvent("축구");
         clubInput.setClubPassword("password");
         clubInput.setMainUniformColor("흰색");
@@ -108,7 +109,7 @@ class MatchServiceTest {
         input.setLocation("test");
         input.setAccount("");
         input.setEvent("축구");
-        input.setMatchSize("11");
+        input.setMatchSize("11명");
         input.setMinParticipants(10);
         input.setBank("신한");
 
@@ -415,7 +416,7 @@ class MatchServiceTest {
         ReflectionTestUtils.setField(match, "endTime", LocalDateTime.now().minusHours(24)); // 48시간 이내
         MatchUser matchUser = new MatchUser();
         ReflectionTestUtils.setField(matchUser, "id", 950L);
-        ReflectionTestUtils.setField(matchUser, "score", null);
+        ReflectionTestUtils.setField(matchUser, "score", 0);
         ReflectionTestUtils.setField(matchUser, "user", user);
 
         when(matchUserRepository.findByMatchAndUser(match, user)).thenReturn(matchUser);
@@ -469,7 +470,7 @@ class MatchServiceTest {
         ReflectionTestUtils.setField(opponentClub, "title", "Opponent Club");
 
         ReflectionTestUtils.setField(match, "awayClub", opponentClub);
-        ReflectionTestUtils.setField(match, "event", "축구");
+        ReflectionTestUtils.setField(match, "event", EventType.SOCCER);
         LocalDateTime startTime = LocalDateTime.of(2025, 5, 10, 15, 0);
         LocalDateTime endTime = LocalDateTime.of(2025, 5, 10, 17, 0);
         ReflectionTestUtils.setField(match, "startTime", startTime);
@@ -488,7 +489,7 @@ class MatchServiceTest {
         // OpponentClubName은 match.findOpponentClub(club).getTitle()로 결정됨.
         // homeClub은 club, awayClub은 opponentClub이므로, opponentClub의 title이 반환되어야 함.
         assertEquals("Opponent Club", output.getOpponentClubName());
-        assertEquals("축구", output.getEvent());
+        assertEquals(EventType.SOCCER, output.getEvent());
         assertEquals(LocalDate.of(2025, 5, 10), output.getMatchDate());
         assertEquals("test location", output.getLocation());
 
