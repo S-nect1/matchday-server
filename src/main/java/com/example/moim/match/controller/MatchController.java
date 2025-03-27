@@ -1,7 +1,9 @@
 package com.example.moim.match.controller;
 
 import com.example.moim.club.repository.ClubRepository;
+import com.example.moim.global.exception.ResponseCode;
 import com.example.moim.match.dto.*;
+import com.example.moim.match.exception.advice.MatchControllerAdvice;
 import com.example.moim.match.repository.MatchRepository;
 import com.example.moim.match.service.MatchService;
 import com.example.moim.user.dto.UserDetailsImpl;
@@ -77,7 +79,7 @@ public class MatchController {
     @GetMapping("/{clubId}/matches")
     public List<ConfirmedMatchOutput> findConfirmedMatches(@AuthenticationPrincipal UserDetailsImpl userDetailsImpl,
                                                            @PathVariable Long clubId) {
-        return matchService.findConfirmedMatch(clubRepository.findById(clubId).get());
+        return matchService.findConfirmedMatch(clubRepository.findById(clubId).orElseThrow(() -> new MatchControllerAdvice(ResponseCode.CLUB_NOT_FOUND)));
     }
 
     //활동 지역 소재 모임 리스트
@@ -85,13 +87,14 @@ public class MatchController {
     public List<MatchClubOutput> findMatchClubs(@AuthenticationPrincipal UserDetailsImpl userDetailsImpl,
                                                 @ModelAttribute MatchClubSearchCond matchClubSearchCond,
                                                 @PathVariable Long clubId) {
-        return matchService.searchMatchClubs(matchClubSearchCond, clubRepository.findById(clubId).get());
+        return matchService.searchMatchClubs(matchClubSearchCond, clubRepository.findById(clubId).orElseThrow(() -> new MatchControllerAdvice(ResponseCode.CLUB_NOT_FOUND)));
     }
 
     //매치 등록/신청 현황
     @GetMapping("/{clubId}/match-status")
     public List<MatchStatusOutput> getMatchStatus(@PathVariable Long clubId) {
-        return matchService.findMatchStatus(clubRepository.findById(clubId).get());
+        return matchService.findMatchStatus(clubRepository.findById(clubId)
+                .orElseThrow(() -> new MatchControllerAdvice(ResponseCode.CLUB_NOT_FOUND)));
     }
 
     //매치 결과 기록
@@ -99,14 +102,16 @@ public class MatchController {
     public MatchRecordOutput matchRecordSave(@PathVariable Long matchId,
                                              @RequestBody @Valid MatchRecordInput matchRecordInput,
                                              @AuthenticationPrincipal UserDetailsImpl userDetailsImpl) {
-        return matchService.saveMatchRecord(matchRepository.findById(matchId).get(), userDetailsImpl.getUser(), matchRecordInput);
+        return matchService.saveMatchRecord(matchRepository.findById(matchId)
+                        .orElseThrow(() -> new MatchControllerAdvice(ResponseCode.MATCH_NOT_FOUND)),
+                userDetailsImpl.getUser(),
+                matchRecordInput);
     }
 
     //매치 메인 페이지(대시보드)
     @GetMapping("match/main/{clubId}")
     public MatchMainOutput findMatchMain(@PathVariable Long clubId, @AuthenticationPrincipal UserDetailsImpl userDetailsImpl) {
         return matchService.matchMainFind(clubId, userDetailsImpl.getUser());
-
     }
 
 }
