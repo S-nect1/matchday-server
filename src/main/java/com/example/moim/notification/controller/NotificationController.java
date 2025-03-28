@@ -18,18 +18,18 @@ import java.util.List;
 public class NotificationController implements NotificationControllerDocs{
     private final NotificationService notificationService;
 
-    @GetMapping(value = "/notice")
-    public NotificationExistOutput noticeCheck(@AuthenticationPrincipal UserDetailsImpl userDetailsImpl) {
-        return notificationService.checkNotice(userDetailsImpl.getUser());
+    @GetMapping(value = "/notifications/unread-count")
+    public NotificationExistOutput notificationUnreadCount(@AuthenticationPrincipal UserDetailsImpl userDetailsImpl) {
+        return notificationService.checkNotificationUnread(userDetailsImpl.getUser());
     }
 
-    @GetMapping("/notices")
-    public List<NotificationOutput> noticeFind(@AuthenticationPrincipal UserDetailsImpl userDetailsImpl) {
-        return notificationService.findNotice(userDetailsImpl.getUser());
+    @GetMapping("/notifications")
+    public List<NotificationOutput> notificationFind(@AuthenticationPrincipal UserDetailsImpl userDetailsImpl) {
+        return notificationService.findNotifications(userDetailsImpl.getUser());
     }
 
-    @DeleteMapping("/notices/{id}")
-    public void noticeRemove(@AuthenticationPrincipal UserDetailsImpl userDetailsImpl, @PathVariable Long id) {
-        notificationService.removeNotice(id);
+    @DeleteMapping("/notifications/{id}")
+    public void notificationRemove(@AuthenticationPrincipal UserDetailsImpl userDetailsImpl, @PathVariable Long id) {
+        notificationService.removeNotification(id);
     }
 }
