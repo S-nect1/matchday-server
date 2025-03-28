@@ -3,7 +3,7 @@ package com.example.moim.match.repository;
 import com.example.moim.club.entity.Club;
 import com.example.moim.match.dto.MatchClubSearchCond;
 import com.example.moim.match.dto.MatchSearchCond;
-import com.example.moim.match.entity.Gender;
+import com.example.moim.global.entity.Gender;
 import com.example.moim.match.entity.Match;
 import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.core.types.dsl.Expressions;
@@ -60,7 +60,7 @@ public class MatchRepositoryImpl implements MatchRepositoryCustom {
 
     private BooleanExpression searchContains(String search) {
         if (hasText(search)) {
-            return match.event.contains(search)
+            return match.event.stringValue().contains(search)
                     .or(match.name.contains(search))
                     .or(match.location.contains(search))
                     .or(match.fee.stringValue().contains(search))
@@ -75,7 +75,7 @@ public class MatchRepositoryImpl implements MatchRepositoryCustom {
     }
 
     private BooleanExpression matchTypeEq(String matchType) {
-        return matchType != null ? match.event.eq(matchType) : null;
+        return matchType != null ? match.event.stringValue().eq(matchType) : null;
     }
 
     private BooleanExpression genderEq(String gender) {

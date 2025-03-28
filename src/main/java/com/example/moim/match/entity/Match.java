@@ -1,5 +1,8 @@
 package com.example.moim.match.entity;
 
+import com.example.moim.global.entity.AgeRange;
+import com.example.moim.global.entity.EventType;
+import com.example.moim.global.entity.Gender;
 import com.example.moim.schedule.dto.ScheduleInput;
 import com.example.moim.club.entity.Club;
 import com.example.moim.schedule.entity.Schedule;
@@ -11,6 +14,8 @@ import jakarta.persistence.*;
 import lombok.Getter;
 
 import java.time.LocalDateTime;
+import java.util.Objects;
+
 import static com.example.moim.match.entity.MatchHalf.*;
 import static com.example.moim.match.entity.MatchStatus.*;
 
@@ -31,30 +36,35 @@ public class Match extends BaseEntity {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "away_club_id")
     private Club awayClub;
-    private Integer homeScore;
-    private Integer awayScore;
+    private int homeScore;
+    private int awayScore;
 
     @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "schedule_id")
     private Schedule schedule;
-
     private String name;
-    private String event;
-    private String matchSize; //종목 인원수
+
+    @Enumerated(EnumType.STRING)
+    private EventType event;
+    @Enumerated(EnumType.STRING)
+    private MatchSize matchSize;
+
     private LocalDateTime startTime;
     private LocalDateTime endTime;
     private String location;
+
     private int fee;
     private String bank;
     private String account;
-    private int minParticipants; //최소 참가자 수
+    private int minParticipants; //최소 참가자 수 (필요한가?)
 
     // 자동 등록
     @Enumerated(EnumType.STRING)
     private MatchStatus matchStatus;
     @Enumerated(EnumType.STRING)
     private Gender gender;
-    private String ageRange;
+    @Enumerated(EnumType.STRING)
+    private AgeRange ageRange;    // Enum 으로 변경
 
     private boolean isBall;
     private String note;
@@ -68,8 +78,8 @@ public class Match extends BaseEntity {
 
         match.homeClub = club;
         match.name = createMatchName(club, matchInput);
-        match.event = matchInput.getEvent();
-        match.matchSize = matchInput.getMatchSize();
+        match.event = EventType.fromKoreanName(matchInput.getEvent());
+        match.matchSize = MatchSize.fromKoreanName(matchInput.getMatchSize());
         match.startTime = matchInput.getStartTime();
         match.endTime = matchInput.getEndTime();
         match.location = matchInput.getLocation();
@@ -78,9 +88,9 @@ public class Match extends BaseEntity {
         match.account = matchInput.getAccount();
         match.minParticipants = matchInput.getMinParticipants();
 
-        match.gender = Gender.valueOf(club.getGender());
-        match.ageRange = club.getAgeRange();
-        match.matchStatus = PENDING;// 초기 상태는 매치 대기
+        match.gender = Gender.fromKoreanName(club.getGender());
+        match.ageRange = AgeRange.fromKoreanName(club.getAgeRange());
+        match.matchStatus = PENDING;    // 초기 상태는 매치 대기
         match.matchHalf = (matchInput.getStartTime().getMonth().getValue() <= 6) ? FIRST_HALF : SECOND_HALF;
         match.homeScore = 0;
         match.awayScore = 0;
@@ -113,6 +123,7 @@ public class Match extends BaseEntity {
         String clubName = club.getTitle();
         String matchType = matchInput.getEvent(); // 종목 (축구, 풋살 등)
         String participants = matchInput.getMatchSize(); // 인원수
+
         return String.format("%s팀의 %s %s 매치", clubName, participants, matchType);
     }
 
@@ -130,7 +141,7 @@ public class Match extends BaseEntity {
 
 
     public Club findOpponentClub(Club club) {
-        if (club.getId() == this.getAwayClub().getId()) {
+        if (Objects.equals(club.getId(), this.getAwayClub().getId())) {
             return this.getHomeClub();
         }
 

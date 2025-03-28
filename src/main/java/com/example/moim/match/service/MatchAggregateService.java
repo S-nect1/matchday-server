@@ -31,7 +31,7 @@ public class MatchAggregateService {
             int homeScore = 0;
             int awayScore = 0;
             for (MatchUser matchUser : matchUserRepository.findByMatch(match)) {
-                if (matchUser.getScore() == null) {
+                if (matchUser.getScore() == 0) {
                     continue;
                 }
 

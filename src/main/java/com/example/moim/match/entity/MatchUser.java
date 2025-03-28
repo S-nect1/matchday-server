@@ -24,13 +24,14 @@ public class MatchUser {
     @ManyToOne(fetch = FetchType.LAZY)
     private Club club;
 
-    private Integer score;
+    private int score;
 
     public static MatchUser createMatchUser(Match match, ScheduleVote scheduleVote) {
         MatchUser matchUser = new MatchUser();
         matchUser.match = match;
         matchUser.user = scheduleVote.getUser();
         matchUser.club = findUserClubInMatch(match, scheduleVote.getUser());
+        matchUser.score = 0;
 
         return matchUser;
     }
