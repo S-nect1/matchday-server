@@ -39,6 +39,7 @@ import java.util.Optional;
 @Service
 @RequiredArgsConstructor
 @Slf4j
+@Transactional(readOnly = true)
 public class MatchService {
 
     private final MatchRepository matchRepository;
@@ -51,6 +52,8 @@ public class MatchService {
     private final MatchUserRepository matchUserRepository;
     private final ScheduleVoteRepository scheduleVoteRepository;
 
+    // PENDING
+    @Transactional
     public MatchOutput saveMatch(User user, MatchInput matchInput) {
         Club club = clubRepository.findById(matchInput.getClubId())
                 .orElseThrow(() -> new MatchControllerAdvice(ResponseCode.CLUB_NOT_FOUND));
@@ -91,10 +94,10 @@ public class MatchService {
         match.setSchedule(schedule);
         matchRepository.save(match);
 
-
         return new MatchOutput(match.getId());
     }
 
+    // FAILED or REGISTERED
     @Transactional
     public MatchRegOutput registerMatch(User user, MatchRegInput matchRegInput) {
         UserClub userClub = userClubRepository.findByClubAndUser(clubRepository.findById(matchRegInput.getClubId())
@@ -118,6 +121,8 @@ public class MatchService {
         return new MatchRegOutput(match.getId());
     }
 
+    // PENDING_APP
+    @Transactional
     public MatchApplyOutput saveMatchApp(User user, Long matchId, Long clubId) {
         Club club = clubRepository.findById(clubId)
                 .orElseThrow(() -> new MatchControllerAdvice(ResponseCode.CLUB_NOT_FOUND));
@@ -147,6 +152,8 @@ public class MatchService {
         return new MatchApplyOutput(matchApplication.getId());
     }
 
+    // REJECTED or APP_COMPLETED
+    @Transactional
     public MatchApplyOutput applyMatch(User user, MatchApplyInput matchApplyInput) {
         UserClub userClub = userClubRepository.findByClubAndUser(clubRepository.findById(matchApplyInput.getClubId())
                         .orElseThrow(() -> new MatchControllerAdvice(ResponseCode.CLUB_NOT_FOUND)), user)
@@ -156,7 +163,6 @@ public class MatchService {
             throw new MatchControllerAdvice(ResponseCode._UNAUTHORIZED);
         }
 
-        // 이거 뭐지
         MatchApplication matchApplication = matchApplicationRepository.findById(matchApplyInput.getId())
                 .orElseThrow(() -> new MatchControllerAdvice(ResponseCode.APPLICATION_NOT_FOUND));
 
@@ -172,6 +178,7 @@ public class MatchService {
         return new MatchApplyOutput(matchApplication.getId());
     }
 
+    // 매치 초대
     public void inviteMatch(User user, Long matchId, Long clubId) {
         Match match = matchRepository.findById(matchId)
                 .orElseThrow(() -> new MatchControllerAdvice(ResponseCode.MATCH_NOT_FOUND));
@@ -188,6 +195,7 @@ public class MatchService {
                 .orElseThrow(() -> new MatchControllerAdvice(ResponseCode.CLUB_NOT_FOUND)), user));
     }
 
+    // 매치 확정 -> CONFIRMED
     public MatchConfirmOutput confirmMatch(Long id, Long awayClubId, User user) {
         Match match = matchRepository.findById(id)
                 .orElseThrow(() -> new MatchControllerAdvice(ResponseCode.MATCH_NOT_FOUND));
@@ -220,7 +228,7 @@ public class MatchService {
         return new MatchConfirmOutput(awayClub);
     }
 
-    //유저가 친선 매치 일정에 참여 투표 시 매치 유저 저장, 수정 필요
+    //유저가 친선 매치 일정에 참여 투표 시 매치 유저 저장, 수정 필요 -> 문제 있나?
     private void saveMatchUserByAttendance(Match match, Schedule schedule) {
         for (ScheduleVote scheduleVote : scheduleVoteRepository.findBySchedule(schedule)) {
             if (scheduleVote.getAttendance().equals("attend")) {
@@ -272,8 +280,7 @@ public class MatchService {
         return new MatchRecordOutput(matchUser);
     }
 
-    // 유저가 필요 없나?
-    public MatchMainOutput matchMainFind(Long clubId, User user) {
+    public MatchMainOutput matchMainFind(Long clubId) {
         Club myClub = clubRepository.findById(clubId).orElseThrow(() -> new MatchControllerAdvice(ResponseCode.CLUB_NOT_FOUND));
 
         List<Match> matches = matchRepository.findRegisteredMatch(myClub);

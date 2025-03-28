@@ -545,7 +545,7 @@ class MatchServiceTest {
         when(matchRepository.findRegisteredMatch(club)).thenReturn(Arrays.asList(match));
         when(clubRepository.findByActivityArea(club.getActivityArea())).thenReturn(Arrays.asList(club));
 
-        MatchMainOutput output = matchService.matchMainFind(1L, user);
+        MatchMainOutput output = matchService.matchMainFind(1L);
         assertNotNull(output);
         assertEquals("Test Club", output.getClubTitle());
     }
