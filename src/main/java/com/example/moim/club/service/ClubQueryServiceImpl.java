@@ -25,7 +25,8 @@ public class ClubQueryServiceImpl implements ClubQueryService {
     private final UserClubRepository userClubRepository;
 
     public List<ClubSearchOutput> searchClub(ClubSearchCond clubSearchCond) {
-        return clubRepository.findBySearchCond(clubSearchCond).stream().map(ClubSearchOutput::new).toList();
+        List<ClubSearchOutput> clubList = clubRepository.findBySearchCond(clubSearchCond).stream().map(ClubSearchOutput::new).toList();
+        return clubList;
     }
 
     public ClubOutput findClub(Long id, User user) {

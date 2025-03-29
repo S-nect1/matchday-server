@@ -1,5 +1,8 @@
 package com.example.moim.global.enums;
 
+import com.example.moim.global.enums.exception.EnumControllerAdvice;
+import com.example.moim.global.exception.ResponseCode;
+
 public enum Gender {
     MAN("남성"), WOMAN("여성"), UNISEX("혼성");
 
@@ -19,6 +22,7 @@ public enum Gender {
                 return area;
             }
         }
-        throw new IllegalArgumentException("해당 한글 이름에 대응하는 Gender가 없습니다: " + koreanName);
+//        throw new IllegalArgumentException("해당 한글 이름에 대응하는 Gender가 없습니다: " + koreanName);
+        throw new EnumControllerAdvice(ResponseCode.INVALID_GENDER);
     }
 }

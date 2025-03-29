@@ -1,5 +1,8 @@
 package com.example.moim.global.enums;
 
+import com.example.moim.global.enums.exception.EnumControllerAdvice;
+import com.example.moim.global.exception.ResponseCode;
+
 public enum AgeRange {
     TWENTIES("20대"),
     THIRTIES("30대"),
@@ -22,6 +25,7 @@ public enum AgeRange {
                 return area;
             }
         }
-        throw new IllegalArgumentException("해당 한글 이름에 대응하는 AgeRange가 없습니다: " + koreanName);
+//        throw new IllegalArgumentException("해당 한글 이름에 대응하는 AgeRange가 없습니다: " + koreanName);
+        throw new EnumControllerAdvice(ResponseCode.INVALID_AGE_RANGE);
     }
 }

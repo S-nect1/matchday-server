@@ -57,7 +57,16 @@ public enum ResponseCode {
     // File Error
     FILE_MAX_SIZE_OVER(HttpStatus.PAYLOAD_TOO_LARGE, "FILE4001", "100MB 이하 파일만 업로드 할 수 있습니다."),
     FILE_CONTENT_TYPE_NOT_IMAGE(HttpStatus.UNSUPPORTED_MEDIA_TYPE, "FILE4002", "이미지 파일만 업로드할 수 있습니다."),
-    FILE_SAVE_FAIL(HttpStatus.INTERNAL_SERVER_ERROR, "FILE4003", "파일 저장에 실패했습니다. 서버에 문의하세요.");
+    FILE_SAVE_FAIL(HttpStatus.INTERNAL_SERVER_ERROR, "FILE4003", "파일 저장에 실패했습니다. 서버에 문의하세요."),
+
+    // Enum Error
+    INVALID_ENUM_VALUE(HttpStatus.BAD_REQUEST, "ENUM4001", "지원하지 않는 카테고리입니다."),
+    INVALID_GENDER(HttpStatus.BAD_REQUEST, "ENUM4002", "유효하지 않은 성별입니다."),
+    INVALID_CLUB_CATEGORY(HttpStatus.BAD_REQUEST, "ENUM4003", "유효하지 않은 클럽 종류입니다."),
+    INVALID_AGE_RANGE(HttpStatus.BAD_REQUEST, "ENUM4004", "유효하지 않은 연령대입니다."),
+    INVALID_ACTIVITY_AREA(HttpStatus.BAD_REQUEST, "ENUM4005", "유효하지 않은 지역입니다."),
+    INVALID_MAIN_FOOT(HttpStatus.BAD_REQUEST, "ENUM4006", "유효하지 않은 주발입니다."),
+    INVALID_SPORTS_TYPE(HttpStatus.BAD_REQUEST, "ENUM4007", "유효하지 않은 종목입니다.");
 
     private final HttpStatus httpStatus;
     private final String code;

@@ -1,5 +1,8 @@
 package com.example.moim.global.enums;
 
+import com.example.moim.global.enums.exception.EnumControllerAdvice;
+import com.example.moim.global.exception.ResponseCode;
+
 public enum SportsType {
     SOCCER("축구"), FUTSAL("풋살");
     private final String koreanName;
@@ -18,6 +21,7 @@ public enum SportsType {
                 return area;
             }
         }
-        throw new IllegalArgumentException("해당 한글 이름에 대응하는 SportsType가 없습니다: " + koreanName);
+//        throw new IllegalArgumentException("해당 한글 이름에 대응하는 SportsType가 없습니다: " + koreanName);
+        throw new EnumControllerAdvice(ResponseCode.INVALID_SPORTS_TYPE);
     }
 }

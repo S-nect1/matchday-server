@@ -1,5 +1,8 @@
 package com.example.moim.global.enums;
 
+import com.example.moim.global.enums.exception.EnumControllerAdvice;
+import com.example.moim.global.exception.ResponseCode;
+
 public enum ClubCategory {
     SMALL_GROUP("소모임"),
     SCHOOL_GROUP("동아리"),
@@ -21,6 +24,7 @@ public enum ClubCategory {
                 return area;
             }
         }
-        throw new IllegalArgumentException("해당 한글 이름에 대응하는 ClubCategory가 없습니다: " + koreanName);
+//        throw new IllegalArgumentException("해당 한글 이름에 대응하는 ClubCategory가 없습니다: " + koreanName);
+        throw new EnumControllerAdvice(ResponseCode.INVALID_CLUB_CATEGORY);
     }
 }
