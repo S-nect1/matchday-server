@@ -1,6 +1,7 @@
 package com.example.moim.match.service;
 
 import com.example.moim.club.entity.Club;
+import com.example.moim.global.enums.ClubRole;
 import com.example.moim.schedule.entity.Schedule;
 import com.example.moim.schedule.entity.ScheduleVote;
 import com.example.moim.club.entity.UserClub;
@@ -52,7 +53,7 @@ public class MatchService {
     public MatchOutput saveMatch(User user, MatchInput matchInput) {
         Club club = clubRepository.findById(matchInput.getClubId()).get();
         UserClub userClub = userClubRepository.findByClubAndUser(club, user).get();
-        if (!(userClub.getCategory().equals("creator") || userClub.getCategory().equals("admin"))) {
+        if (!(userClub.getClubRole().equals(ClubRole.CREATOR) || userClub.getClubRole().equals(ClubRole.ADMIN))) {
             throw new MatchPermissionException("매치 생성 권한이 없습니다.");
         }
         matchRepository.findMatchByClub(club).forEach(m -> m.timeDuplicationCheck(matchInput.getStartTime(), matchInput.getEndTime()));
@@ -89,7 +90,7 @@ public class MatchService {
     @Transactional
     public MatchRegOutput registerMatch(User user, MatchRegInput matchRegInput) {
         UserClub userClub = userClubRepository.findByClubAndUser(clubRepository.findById(matchRegInput.getClubId()).get(), user).get();
-        if (!(userClub.getCategory().equals("creator") || userClub.getCategory().equals("admin"))) {
+        if (!(userClub.getClubRole().equals(ClubRole.CREATOR) || userClub.getClubRole().equals(ClubRole.ADMIN))) {
             throw new MatchPermissionException("매치 생성 권한이 없습니다.");
         }
 
@@ -111,7 +112,7 @@ public class MatchService {
         Match match = matchRepository.findById(matchId).get();
 
         UserClub userClub = userClubRepository.findByClubAndUser(club, user).get();
-        if (!(userClub.getCategory().equals("creator") || userClub.getCategory().equals("admin"))) {
+        if (!(userClub.getClubRole().equals(ClubRole.CREATOR) || userClub.getClubRole().equals(ClubRole.ADMIN))) {
             eventPublisher.publishEvent(new MatchRequestEvent(match, user, club));
             return null;
         }
@@ -133,7 +134,7 @@ public class MatchService {
 
     public MatchApplyOutput applyMatch(User user, MatchApplyInput matchApplyInput) {
         UserClub userClub = userClubRepository.findByClubAndUser(clubRepository.findById(matchApplyInput.getClubId()).get(), user).get();
-        if (!(userClub.getCategory().equals("creator") || userClub.getCategory().equals("admin"))) {
+        if (!(userClub.getClubRole().equals(ClubRole.CREATOR) || userClub.getClubRole().equals(ClubRole.ADMIN))) {
             throw new MatchPermissionException("매치 신청 등록 권한이 없습니다.");
         }
 
@@ -154,7 +155,7 @@ public class MatchService {
     public void inviteMatch(User user, Long matchId, Long clubId) {
         Match match = matchRepository.findById(matchId).get();
         UserClub userClub = userClubRepository.findByClubAndUser(clubRepository.findById(match.getHomeClub().getId()).get(), user).get();
-        if (!(userClub.getCategory().equals("creator") || userClub.getCategory().equals("admin"))) {
+        if (!(userClub.getClubRole().equals(ClubRole.CREATOR) || userClub.getClubRole().equals(ClubRole.ADMIN))) {
             throw new MatchPermissionException("매치 초청 권한이 없습니다.");
         }
 
@@ -166,7 +167,7 @@ public class MatchService {
         Club awayClub = clubRepository.findById(awayClubId).get();
 
         UserClub userClub = userClubRepository.findByClubAndUser(match.getHomeClub(), user).get();
-        if (!(userClub.getCategory().equals("creator") || userClub.getCategory().equals("admin"))) {
+        if (!(userClub.getClubRole().equals(ClubRole.CREATOR) || userClub.getClubRole().equals(ClubRole.ADMIN))) {
             throw new MatchPermissionException("매치 확정 권한이 없습니다.");
         }
 

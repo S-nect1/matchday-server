@@ -1,5 +1,7 @@
 package com.example.moim.user.dto;
 
+import com.example.moim.global.enums.ActivityArea;
+import com.example.moim.global.enums.Position;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
@@ -24,14 +26,14 @@ public class SocialSignupInput {
     private MultipartFile img;
     @NotBlank(message = "활동 지역을 입력해주세요.")
     @Schema(description = "서울, 인천, 경기 북부, 경기 남부", example = "서울")
-    private String activityArea;
+    private ActivityArea activityArea;
     @NotNull(message = "신장을 입력해주세요.")
     private Integer height;
     @NotNull(message = "몸무게를 입력해주세요.")
     private Integer weight;
     @Schema(description = "주로 쓰는 발. 왼발, 오른발", example = "왼발")
     private String mainFoot;
-    private String mainPosition;
-    private String subPosition;
+    private Position mainPosition;
+    private Position subPosition;
     private String fcmToken;
 }

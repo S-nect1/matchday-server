@@ -2,10 +2,12 @@ package com.example.moim.club.dto.request;
 
 import com.example.moim.club.entity.Notice;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import java.time.LocalDate;
 
 @Data
+@NoArgsConstructor
 public class NoticeOutput {
     private Long id;
     private String title;

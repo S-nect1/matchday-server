@@ -2,6 +2,7 @@ package com.example.moim.schedule.service;
 
 import com.example.moim.club.entity.*;
 import com.example.moim.club.repository.*;
+import com.example.moim.global.enums.ClubRole;
 import com.example.moim.global.exception.ResponseCode;
 import com.example.moim.match.dto.MatchApplyClubOutput;
 import com.example.moim.match.repository.MatchApplicationRepository;
@@ -46,7 +47,7 @@ public class ScheduleService {
 
     public ScheduleOutput saveSchedule(ScheduleInput scheduleInput, User user) {
         UserClub userClub = userClubRepository.findByClubAndUser(clubRepository.findById(scheduleInput.getClubId()).get(), user).get();
-        if (!(userClub.getCategory().equals("creator") || userClub.getCategory().equals("admin"))) {
+        if (!(userClub.getClubRole().equals(ClubRole.CREATOR) || userClub.getClubRole().equals(ClubRole.ADMIN))) {
             throw new ScheduleControllerAdvice(ResponseCode.CLUB_PERMISSION_DENIED);
         }
 
@@ -60,7 +61,7 @@ public class ScheduleService {
     @Transactional
     public ScheduleOutput updateSchedule(ScheduleUpdateInput scheduleUpdateInput, User user) {
         UserClub userClub = userClubRepository.findByClubAndUser(clubRepository.findById(scheduleUpdateInput.getClubId()).get(), user).get();
-        if (!(userClub.getCategory().equals("creator") || userClub.getCategory().equals("admin"))) {
+        if (!(userClub.getClubRole().equals(ClubRole.CREATOR) || userClub.getClubRole().equals(ClubRole.ADMIN))) {
             throw new ScheduleControllerAdvice(ResponseCode.CLUB_PERMISSION_DENIED);
         }
 
@@ -148,7 +149,7 @@ public class ScheduleService {
     public void closeSchedule(Long id, User user) {
         Schedule schedule = scheduleRepository.findById(id).get();
         UserClub userClub = userClubRepository.findByClubAndUser(schedule.getClub(), user).get();
-        if (!(userClub.getCategory().equals("creator") || userClub.getCategory().equals("admin"))) {
+        if (!(userClub.getClubRole().equals(ClubRole.CREATOR) || userClub.getClubRole().equals(ClubRole.ADMIN))) {
             throw new ScheduleControllerAdvice(ResponseCode.CLUB_PERMISSION_DENIED);
         }
 

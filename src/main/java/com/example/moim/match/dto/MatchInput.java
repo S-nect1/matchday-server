@@ -1,6 +1,5 @@
 package com.example.moim.match.dto;
 
-import com.example.moim.match.entity.Gender;
 import com.example.moim.match.entity.Match;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import io.swagger.v3.oas.annotations.media.Schema;

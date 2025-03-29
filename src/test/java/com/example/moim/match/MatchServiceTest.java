@@ -1,15 +1,12 @@
 package com.example.moim.match;
 
 import com.example.moim.club.dto.request.ClubInput;
-import com.example.moim.club.entity.Club;
-import com.example.moim.club.entity.UserClub;
+import com.example.moim.club.entity.*;
 import com.example.moim.club.repository.ClubRepository;
 import com.example.moim.club.repository.UserClubRepository;
+import com.example.moim.global.enums.*;
 import com.example.moim.match.dto.*;
-import com.example.moim.match.entity.Match;
-import com.example.moim.match.entity.MatchApplication;
-import com.example.moim.match.entity.MatchStatus;
-import com.example.moim.match.entity.MatchUser;
+import com.example.moim.match.entity.*;
 import com.example.moim.match.exception.MatchPermissionException;
 import com.example.moim.match.exception.MatchRecordExpireException;
 import com.example.moim.match.repository.MatchApplicationRepository;
@@ -76,12 +73,12 @@ class MatchServiceTest {
         clubInput.setTitle("Test Club");
         clubInput.setExplanation("explanation");
         clubInput.setIntroduction("introduction");
-        clubInput.setCategory("동아리");
-        clubInput.setUniversity("TestUniv@37.5665@126.9780");
-        clubInput.setGender("MAN");
-        clubInput.setActivityArea("서울");
-        clubInput.setAgeRange("20-30");
-        clubInput.setMainEvent("축구");
+        clubInput.setClubCategory(ClubCategory.SCHOOL_GROUP.getKoreanName());
+        clubInput.setOrganization("TestUniv@37.5665@126.9780");
+        clubInput.setGender(Gender.MAN.getKoreanName());
+        clubInput.setActivityArea(ActivityArea.SEOUL.getKoreanName());
+        clubInput.setAgeRange(AgeRange.TWENTIES.getKoreanName());
+        clubInput.setSportsType(SportsType.SOCCER.getKoreanName());
         clubInput.setClubPassword("password");
         clubInput.setMainUniformColor("흰색");
         clubInput.setSubUniformColor("검은색");
@@ -503,7 +500,9 @@ class MatchServiceTest {
         MatchClubSearchCond cond = new MatchClubSearchCond();
         Club otherClub = new Club();
         ReflectionTestUtils.setField(otherClub, "id", 2L);
-        ReflectionTestUtils.setField(otherClub, "activityArea", "서울");
+        ReflectionTestUtils.setField(otherClub, "activityArea", ActivityArea.fromKoreanName("서울"));
+        ReflectionTestUtils.setField(otherClub, "ageRange", AgeRange.fromKoreanName("20대"));
+        ReflectionTestUtils.setField(otherClub, "gender", Gender.fromKoreanName("혼성"));
 
         when(matchRepository.findClubsBySearchCond(cond)).thenReturn(Arrays.asList(otherClub));
         List<MatchClubOutput> list = matchService.searchMatchClubs(cond, club);

@@ -36,7 +36,7 @@ public class ClubQueryServiceImpl implements ClubQueryService {
             List<UserClubOutput> userClubOutputs = userClubRepository.findAllByClub(club).stream().map(UserClubOutput::new).toList();
 //            List<ScheduleOutput> scheduleOutputs = scheduleRepository.findTop5ByClubOrderByCreatedDateDesc(club).stream().map(ScheduleOutput::new).toList();
 //            List<AwardOutput> awardOutputs = awardRepository.findByClub(club).stream().map(AwardOutput::new).toList();
-            return new ClubOutput(club, userClubOutputs, userClub.get().getCategory());
+            return new ClubOutput(club, userClubOutputs, userClub.get().getClubRole());
         }
 
         return new ClubOutput(club, null, null);

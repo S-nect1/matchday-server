@@ -3,8 +3,10 @@ package com.example.moim.club.dto.request;
 import jakarta.validation.constraints.NotBlank;
 import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 @Data
+@NoArgsConstructor
 public class ClubPswdUpdateInput {
     private Long id;
     @NotBlank(message = "기존 비밀번호를 입력해주세요.")

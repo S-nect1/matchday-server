@@ -3,10 +3,10 @@ package com.example.moim.club.service;
 import com.example.moim.club.dto.request.ClubInput;
 import com.example.moim.club.dto.request.NoticeInput;
 import com.example.moim.club.dto.request.NoticeOutput;
-import com.example.moim.club.entity.Club;
-import com.example.moim.club.entity.Notice;
+import com.example.moim.club.entity.*;
 import com.example.moim.club.repository.ClubRepository;
 import com.example.moim.club.repository.NoticeRepository;
+import com.example.moim.global.enums.*;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -43,19 +43,19 @@ public class NoticeQueryServiceImplTest {
         String title = "amazing title";
         String explanation = "explanation";
         String introduction = "introduction";
-        String category = "category";
-        String university = "university";
-        String gender = "gender";
-        String activityArea = "activityArea";
-        String ageRange = "ageRange";
-        String mainEvent = "mainEvent";
+        ClubCategory clubCategory = ClubCategory.SMALL_GROUP;
+        String organization = "organization";
+        Gender gender = Gender.UNISEX;
+        ActivityArea activityArea = ActivityArea.SEOUL;
+        AgeRange ageRange = AgeRange.TWENTIES;
+        SportsType sportsType = SportsType.SOCCER;
         String clubPassword = "clubPassword";
         MultipartFile profileImg = new MockMultipartFile("profileImg", "profileImg".getBytes());
         String mainUniformColor = "mainUniformColor";
         String subUniformColor = "subUniformColor";
 
-        this.clubInput = ClubInput.builder().title(title).explanation(explanation).introduction(introduction).category(category)
-                .university(university).gender(gender).activityArea(activityArea).ageRange(ageRange).mainEvent(mainEvent)
+        this.clubInput = ClubInput.builder().title(title).explanation(explanation).introduction(introduction).clubCategory(clubCategory.getKoreanName())
+                .organization(organization).gender(gender.getKoreanName()).activityArea(activityArea.getKoreanName()).ageRange(ageRange.getKoreanName()).sportsType(sportsType.getKoreanName())
                 .clubPassword(clubPassword).profileImg(profileImg).mainUniformColor(mainUniformColor).subUniformColor(subUniformColor).build();
 
         // Notice

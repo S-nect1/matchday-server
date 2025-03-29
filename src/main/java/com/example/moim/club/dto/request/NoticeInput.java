@@ -2,8 +2,10 @@ package com.example.moim.club.dto.request;
 
 import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 @Data
+@NoArgsConstructor
 public class NoticeInput {
     private Long clubId;
     private String title;

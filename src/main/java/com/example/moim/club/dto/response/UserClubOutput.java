@@ -1,7 +1,9 @@
 package com.example.moim.club.dto.response;
 
 import com.example.moim.club.entity.UserClub;
+import com.example.moim.global.enums.ClubRole;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 import org.springframework.core.io.FileUrlResource;
 
 import java.io.IOException;
@@ -9,11 +11,11 @@ import java.time.LocalDate;
 import java.util.Base64;
 
 @Data
+@NoArgsConstructor
 public class UserClubOutput {
     private Long userId;
     private String name;
-    private String category;
-    private String position;
+    private String clubRole;
     private LocalDate joinDate;
     private String birthday;
     private String phone;
@@ -22,8 +24,7 @@ public class UserClubOutput {
     public UserClubOutput(UserClub userClub) {
         this.userId = userClub.getId();
         this.name = userClub.getUser().getName();
-        this.category = userClub.getCategory();
-        this.position = userClub.getPosition();
+        this.clubRole = userClub.getClubRole().name();
         this.joinDate = userClub.getJoinDate();
         this.birthday = userClub.getUser().getBirthday();
         this.phone = userClub.getUser().getPhone();

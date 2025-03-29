@@ -3,6 +3,7 @@ package com.example.moim.club.entity;
 import com.example.moim.club.dto.request.ClubInput;
 import com.example.moim.club.dto.request.ClubUpdateInput;
 import com.example.moim.global.entity.BaseEntity;
+import com.example.moim.global.enums.*;
 import com.example.moim.match.entity.Match;
 import jakarta.persistence.*;
 import lombok.Getter;
@@ -22,14 +23,19 @@ public class Club extends BaseEntity {
     private String explanation;
     @Column(length = 500)
     private String introduction;
-    private String category;
+    @Enumerated(value = EnumType.STRING)
+    private ClubCategory clubCategory;
     private String university;
-    private String gender;
-    private String activityArea;
-    private String mainEvent;
-    private String ageRange;
+    @Enumerated(value = EnumType.STRING)
+    private Gender gender;
+    @Enumerated(value = EnumType.STRING)
+    private ActivityArea activityArea;
+    @Enumerated(value = EnumType.STRING)
+    private SportsType sportsType;
+    @Enumerated(value = EnumType.STRING)
+    private AgeRange ageRange;
     private String clubPassword;
-    private String profileImgPath;
+    private String profileImgPath = "기본 이미지 링크";
     private String mainUniformColor;
     private String subUniformColor;
 
@@ -54,12 +60,12 @@ public class Club extends BaseEntity {
         club.title = clubInput.getTitle();
         club.explanation = clubInput.getExplanation();
         club.introduction = clubInput.getIntroduction();
-        club.category = clubInput.getCategory();
-        club.university = clubInput.getUniversity();
-        club.gender = clubInput.getGender();
-        club.activityArea = clubInput.getActivityArea();
-        club.mainEvent = clubInput.getMainEvent();
-        club.ageRange = clubInput.getAgeRange();
+        club.clubCategory = ClubCategory.fromKoreanName(clubInput.getClubCategory());
+        club.university = clubInput.getOrganization();
+        club.gender = Gender.fromKoreanName(clubInput.getGender());
+        club.activityArea = ActivityArea.fromKoreanName(clubInput.getActivityArea());
+        club.sportsType = SportsType.fromKoreanName(clubInput.getSportsType());
+        club.ageRange = AgeRange.fromKoreanName(clubInput.getAgeRange());
         club.clubPassword = clubInput.getClubPassword();
         club.profileImgPath = profileImgPath;
         club.mainUniformColor = clubInput.getMainUniformColor();
@@ -86,23 +92,23 @@ public class Club extends BaseEntity {
         if (clubUpdateInput.getIntroduction() != null) {
             this.introduction = clubUpdateInput.getIntroduction();
         }
-        if (clubUpdateInput.getCategory() != null) {
-            this.category = clubUpdateInput.getCategory();
+        if (clubUpdateInput.getClubCategory() != null) {
+            this.clubCategory = ClubCategory.fromKoreanName(clubUpdateInput.getClubCategory());
         }
-        if (clubUpdateInput.getUniversity() != null) {
-            this.university = clubUpdateInput.getUniversity();
+        if (clubUpdateInput.getOrganization() != null) {
+            this.university = clubUpdateInput.getOrganization();
         }
         if (clubUpdateInput.getGender() != null) {
-            this.gender = clubUpdateInput.getGender();
+            this.gender = Gender.fromKoreanName(clubUpdateInput.getGender());
         }
         if (clubUpdateInput.getActivityArea() != null) {
-            this.activityArea = clubUpdateInput.getActivityArea();
+            this.activityArea = ActivityArea.fromKoreanName(clubUpdateInput.getActivityArea());
         }
         if (clubUpdateInput.getAgeRange() != null) {
-            this.ageRange = clubUpdateInput.getAgeRange();
+            this.ageRange = AgeRange.fromKoreanName(clubUpdateInput.getAgeRange());
         }
-        if (clubUpdateInput.getMainEvent() != null) {
-            this.mainEvent = clubUpdateInput.getMainEvent();
+        if (clubUpdateInput.getSportsType() != null) {
+            this.sportsType = SportsType.fromKoreanName(clubUpdateInput.getSportsType());
         }
         if (profileImgPath != null) {
             if (this.profileImgPath != null) {

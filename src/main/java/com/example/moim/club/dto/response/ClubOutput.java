@@ -1,7 +1,9 @@
 package com.example.moim.club.dto.response;
 
-import com.example.moim.club.entity.Club;
+import com.example.moim.club.entity.*;
+import com.example.moim.global.enums.*;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 import org.springframework.core.io.FileUrlResource;
 
 import java.io.IOException;
@@ -9,18 +11,19 @@ import java.util.Base64;
 import java.util.List;
 
 @Data
+@NoArgsConstructor
 public class ClubOutput {
-    private String userCategoryInClub;
+    private ClubRole clubRole;
     private Long id;
     private String title;
     private String explanation;
     private String introduction;
     private String profileImg;
-    private String category;
-    private String university;
+    private String clubCategory;
+    private String organization;
     private String gender;
     private String activityArea;
-    private String mainEvent;
+    private String sportsType;
     private String ageRange;
     private int memberCount;
     private String mainUniformColor;
@@ -45,8 +48,8 @@ public class ClubOutput {
         }
     }
 
-    public ClubOutput(Club club, String category) {
-        this.userCategoryInClub = category;
+    public ClubOutput(Club club, ClubRole clubRole) {
+        this.clubRole = clubRole;
         this.id = club.getId();
         this.title = club.getTitle();
         this.explanation = club.getExplanation();
@@ -61,18 +64,18 @@ public class ClubOutput {
         }
     }
 
-    public ClubOutput(Club club, List<UserClubOutput> userList, String category) {
-        this.userCategoryInClub = category;
+    public ClubOutput(Club club, List<UserClubOutput> userList, ClubRole clubRole) {
+        this.clubRole = clubRole;
         this.id = club.getId();
         this.title = club.getTitle();
         this.explanation = club.getExplanation();
         this.introduction = club.getIntroduction();
-        this.category = club.getCategory();
-        this.university = club.getUniversity();
-        this.gender = club.getGender();
-        this.activityArea = club.getActivityArea();
-        this.mainEvent = club.getMainEvent();
-        this.ageRange = club.getAgeRange();
+        this.clubCategory = club.getClubCategory().getKoreanName();
+        this.organization = club.getUniversity();
+        this.gender = club.getGender().getKoreanName();
+        this.activityArea = club.getActivityArea().getKoreanName();
+        this.sportsType = club.getSportsType().getKoreanName();
+        this.ageRange = club.getAgeRange().getKoreanName();
         this.mainUniformColor = club.getMainUniformColor();
         this.subUniformColor = club.getSubUniformColor();
         try {

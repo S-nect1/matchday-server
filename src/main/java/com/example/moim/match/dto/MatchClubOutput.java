@@ -14,9 +14,9 @@ public class MatchClubOutput {
     public MatchClubOutput(Club club) {
         this.clubId = club.getId();
         this.title = club.getTitle();
-        this.activityArea = club.getActivityArea();
-        this.ageRange = club.getAgeRange();
-        this.gender = club.getGender();
+        this.activityArea = club.getActivityArea().getKoreanName();
+        this.ageRange = club.getAgeRange().getKoreanName();
+        this.gender = club.getGender().getKoreanName();
     }
 }
 

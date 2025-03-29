@@ -5,10 +5,10 @@ import com.example.moim.club.dto.request.ClubSearchCond;
 import com.example.moim.club.dto.request.ClubUpdateInput;
 import com.example.moim.club.dto.response.ClubOutput;
 import com.example.moim.club.dto.response.ClubSearchOutput;
-import com.example.moim.club.entity.Club;
-import com.example.moim.club.entity.UserClub;
+import com.example.moim.club.entity.*;
 import com.example.moim.club.repository.ClubRepository;
 import com.example.moim.club.repository.UserClubRepository;
+import com.example.moim.global.enums.*;
 import com.example.moim.user.entity.User;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -44,19 +44,19 @@ public class ClubQueryServiceImplTest {
         String title = "amazing title";
         String explanation = "explanation";
         String introduction = "introduction";
-        String category = "category";
-        String university = "university";
-        String gender = "gender";
-        String activityArea = "activityArea";
-        String ageRange = "ageRange";
-        String mainEvent = "mainEvent";
+        ClubCategory clubCategory = ClubCategory.SMALL_GROUP;
+        String organization = "organization";
+        Gender gender = Gender.UNISEX;
+        ActivityArea activityArea = ActivityArea.SEOUL;
+        AgeRange ageRange = AgeRange.TWENTIES;
+        SportsType sportsType = SportsType.SOCCER;
         String clubPassword = "clubPassword";
         MultipartFile profileImg = new MockMultipartFile("profileImg", "profileImg".getBytes());
         String mainUniformColor = "mainUniformColor";
         String subUniformColor = "subUniformColor";
 
-        this.clubInput = ClubInput.builder().title(title).explanation(explanation).introduction(introduction).category(category)
-                .university(university).gender(gender).activityArea(activityArea).ageRange(ageRange).mainEvent(mainEvent)
+        this.clubInput = ClubInput.builder().title(title).explanation(explanation).introduction(introduction).clubCategory(clubCategory.getKoreanName())
+                .organization(organization).gender(gender.getKoreanName()).activityArea(activityArea.getKoreanName()).ageRange(ageRange.getKoreanName()).sportsType(sportsType.getKoreanName())
                 .clubPassword(clubPassword).profileImg(profileImg).mainUniformColor(mainUniformColor).subUniformColor(subUniformColor).build();
     }
 
@@ -65,7 +65,7 @@ public class ClubQueryServiceImplTest {
     void searchClub() {
         //given
         Club club = Club.createClub(clubInput, null);
-        ClubSearchCond clubSearchCond = ClubSearchCond.builder().search("amazing title").build();
+        ClubSearchCond clubSearchCond = ClubSearchCond.builder().search("searchs").build();
 
         //when
         when(clubRepository.findBySearchCond(any(ClubSearchCond.class))).thenReturn(List.of(club));
@@ -93,7 +93,7 @@ public class ClubQueryServiceImplTest {
 
         //then
         assertThat(result.getTitle()).isEqualTo("amazing title");
-        assertThat(result.getUserCategoryInClub()).isEqualTo("creator");
+        assertThat(result.getClubRole()).isEqualTo(ClubRole.CREATOR);
         assertThat(result.getMemberCount()).isEqualTo(1);
         verify(clubRepository, times(1)).findById(any(Long.class));
         verify(userClubRepository, times(1)).findByClubAndUser(any(Club.class), any(User.class));
@@ -101,7 +101,7 @@ public class ClubQueryServiceImplTest {
 
 
     @Test
-    @DisplayName("동아리에 속한 사용자는 제한된 동아리 정보를 조회할 수 있다")
+    @DisplayName("동아리에 속하지 않은 사용자는 제한된 동아리 정보를 조회할 수 있다")
     void findClub_not_member() {
         //given
         Club club = Club.createClub(clubInput, null);
@@ -114,7 +114,7 @@ public class ClubQueryServiceImplTest {
 
         //then
         assertThat(result.getTitle()).isEqualTo("amazing title");
-        assertThat(result.getUserCategoryInClub()).isNull();
+        assertThat(result.getClubRole()).isNull();
         assertThat(result.getMemberCount()).isEqualTo(1);
         verify(clubRepository, times(1)).findById(any(Long.class));
         verify(userClubRepository, times(1)).findByClubAndUser(any(Club.class), any(User.class));

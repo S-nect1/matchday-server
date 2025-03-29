@@ -2,13 +2,12 @@ package com.example.moim.club.service;
 
 import com.example.moim.club.dto.request.*;
 import com.example.moim.club.dto.response.ClubOutput;
-import com.example.moim.club.dto.response.ClubSearchOutput;
 import com.example.moim.club.dto.response.UserClubOutput;
-import com.example.moim.club.entity.Club;
-import com.example.moim.club.entity.UserClub;
+import com.example.moim.club.entity.*;
 import com.example.moim.club.exception.advice.ClubControllerAdvice;
 import com.example.moim.club.repository.ClubRepository;
 import com.example.moim.club.repository.UserClubRepository;
+import com.example.moim.global.enums.*;
 import com.example.moim.global.exception.ResponseCode;
 import com.example.moim.global.util.FileStore;
 import com.example.moim.notification.dto.ClubJoinEvent;
@@ -58,19 +57,19 @@ class ClubCommandServiceImplTest {
         String title = "amazing title";
         String explanation = "explanation";
         String introduction = "introduction";
-        String category = "category";
-        String university = "university";
-        String gender = "gender";
-        String activityArea = "activityArea";
-        String ageRange = "ageRange";
-        String mainEvent = "mainEvent";
+        ClubCategory clubCategory = ClubCategory.SMALL_GROUP;
+        String organization = "organization";
+        Gender gender = Gender.UNISEX;
+        ActivityArea activityArea = ActivityArea.SEOUL;
+        AgeRange ageRange = AgeRange.TWENTIES;
+        SportsType sportsType = SportsType.SOCCER;
         String clubPassword = "clubPassword";
         MultipartFile profileImg = new MockMultipartFile("profileImg", "profileImg".getBytes());
         String mainUniformColor = "mainUniformColor";
         String subUniformColor = "subUniformColor";
 
-        this.clubInput = ClubInput.builder().title(title).explanation(explanation).introduction(introduction).category(category)
-                .university(university).gender(gender).activityArea(activityArea).ageRange(ageRange).mainEvent(mainEvent)
+        this.clubInput = ClubInput.builder().title(title).explanation(explanation).introduction(introduction).clubCategory(clubCategory.getKoreanName())
+                .organization(organization).gender(gender.getKoreanName()).activityArea(activityArea.getKoreanName()).ageRange(ageRange.getKoreanName()).sportsType(sportsType.getKoreanName())
                 .clubPassword(clubPassword).profileImg(profileImg).mainUniformColor(mainUniformColor).subUniformColor(subUniformColor).build();
 
         String updateTitle = "update title";
@@ -170,8 +169,7 @@ class ClubCommandServiceImplTest {
         UserClubOutput result = clubCommandService.saveClubUser(new User(), clubUserSaveInput);
 
         //then
-        assertThat(result.getPosition()).isEqualTo("member");
-        assertThat(result.getCategory()).isEqualTo("newmember");
+        assertThat(result.getClubRole()).isEqualTo(ClubRole.MEMBER.name());
         verify(clubRepository, times(1)).findById(any(Long.class));
         verify(userClubRepository, times(1)).save(any(UserClub.class));
         verify(eventPublisher, times(1)).publishEvent(any(ClubJoinEvent.class));
@@ -201,7 +199,7 @@ class ClubCommandServiceImplTest {
         //given
         Club club = Club.createClub(clubInput, null);
         ClubUserUpdateInput clubUserUpdateInput = ClubUserUpdateInput.builder()
-                .userId(1L).position("member").category("admin").id(1L).build();
+                .userId(1L).clubRole(ClubRole.ADMIN.name()).id(1L).build();
 
         //when
         when(clubRepository.findById(any(Long.class))).thenReturn(Optional.of(club));
@@ -212,8 +210,7 @@ class ClubCommandServiceImplTest {
         UserClubOutput result = clubCommandService.updateClubUser(new User(), clubUserUpdateInput);
 
         //then
-        assertThat(result.getCategory()).isEqualTo("admin");
-        assertThat(result.getPosition()).isEqualTo("member");
+        assertThat(result.getClubRole()).isEqualTo(ClubRole.ADMIN.name());
         verify(clubRepository, times(1)).findById(any(Long.class));
         verify(userClubRepository, times(2)).findByClubAndUser(any(Club.class), any(User.class));
     }
@@ -224,7 +221,7 @@ class ClubCommandServiceImplTest {
         //given
         Club club = Club.createClub(clubInput, null);
         ClubUserUpdateInput clubUserUpdateInput = ClubUserUpdateInput.builder()
-                .userId(1L).position("member").category("admin").id(1L).build();
+                .userId(1L).clubRole(ClubRole.ADMIN.name()).id(1L).build();
 
         //when
         //then

@@ -1,9 +1,10 @@
 package com.example.moim.match.repository;
 
 import com.example.moim.club.entity.Club;
+import com.example.moim.global.enums.AgeRange;
+import com.example.moim.global.enums.Gender;
 import com.example.moim.match.dto.MatchClubSearchCond;
 import com.example.moim.match.dto.MatchSearchCond;
-import com.example.moim.match.entity.Gender;
 import com.example.moim.match.entity.Match;
 import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.core.types.dsl.Expressions;
@@ -79,7 +80,7 @@ public class MatchRepositoryImpl implements MatchRepositoryCustom {
     }
 
     private BooleanExpression genderEq(String gender) {
-        return gender != null ? match.gender.eq(Gender.valueOf(gender)) : null;
+        return gender != null ? match.gender.eq(Gender.fromKoreanName(gender)) : null;
     }
 
     private BooleanExpression areaEq(String area) {
@@ -87,7 +88,7 @@ public class MatchRepositoryImpl implements MatchRepositoryCustom {
     }
 
     private BooleanExpression ageRangeEq(String ageRange) {
-        return ageRange != null ? club.ageRange.eq(ageRange) : null;
+        return ageRange != null ? club.ageRange.eq(AgeRange.fromKoreanName(ageRange)) : null;
     }
 
 //    private BooleanExpression teamAbilityEq(String teamAbility) {

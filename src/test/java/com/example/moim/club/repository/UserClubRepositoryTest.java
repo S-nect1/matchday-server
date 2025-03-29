@@ -2,6 +2,7 @@ package com.example.moim.club.repository;
 
 import com.example.moim.club.entity.Club;
 import com.example.moim.club.entity.UserClub;
+import com.example.moim.global.enums.ClubRole;
 import com.example.moim.user.entity.User;
 import com.example.moim.user.repository.UserRepository;
 import lombok.extern.slf4j.Slf4j;
@@ -19,9 +20,10 @@ import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 
 @Slf4j
 @DataJpaTest
-@TestPropertySource(locations = "classpath:application-test.properties")
+//@TestPropertySource(locations = "classpath:application-test.properties")
 @SqlGroup({
-    @Sql(value = "/sql/user-club-repository-test-data.sql", executionPhase = Sql.ExecutionPhase.BEFORE_TEST_CLASS)
+    @Sql(value = "/sql/user-club-repository-test-data.sql", executionPhase = Sql.ExecutionPhase.BEFORE_TEST_CLASS),
+    @Sql(value = "/sql/user-club-repository-test-data-delete.sql", executionPhase = Sql.ExecutionPhase.AFTER_TEST_CLASS)
 })
 class UserClubRepositoryTest {
 
@@ -115,8 +117,8 @@ class UserClubRepositoryTest {
 
         //then
         assertThat(userClubList.size()).isEqualTo(2);
-        assertThat(userClubList.get(0).getCategory()).isEqualTo("admin");
-        assertThat(userClubList.get(1).getCategory()).isEqualTo("creator");
+        assertThat(userClubList.get(0).getClubRole()).isEqualTo(ClubRole.ADMIN);
+        assertThat(userClubList.get(1).getClubRole()).isEqualTo(ClubRole.CREATOR);
     }
 
     @Test

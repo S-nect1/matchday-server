@@ -5,23 +5,24 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 @Data
+@NoArgsConstructor
 public class ClubSearchCond {
-    private String category;
+    private String clubCategory;
     private String search;
-    private String university;
+    private String organization;
     private String gender;
     private String activityArea;
     private String ageRange;
-    private String mainEvent;
+    private String sportsType;
 
     @Builder
-    public ClubSearchCond(String category, String search, String university, String gender, String activityArea, String ageRange, String mainEvent) {
-        this.category = category;
+    public ClubSearchCond(String clubCategory, String search, String organization, String gender, String activityArea, String ageRange, String sportsType) {
+        this.clubCategory = clubCategory;
         this.search = search;
-        this.university = university;
+        this.organization = organization;
         this.gender = gender;
         this.activityArea = activityArea;
         this.ageRange = ageRange;
-        this.mainEvent = mainEvent;
+        this.sportsType = sportsType;
     }
 }

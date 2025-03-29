@@ -1,7 +1,8 @@
 package com.example.moim.club.repository;
 
 import com.example.moim.club.dto.request.ClubSearchCond;
-import com.example.moim.club.entity.Club;
+import com.example.moim.club.entity.*;
+import com.example.moim.global.enums.*;
 import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import jakarta.persistence.EntityManager;
@@ -18,24 +19,19 @@ public class ClubRepositoryImpl implements ClubRepositoryCustom{
         this.queryFactory = new JPAQueryFactory(em);
     }
 
-    /**
-     * FIXME : 지금은 조건을 and 로 해서 조회하는데, or 로 바꾸는게 적합해보임
-     * @param clubSearchCond
-     * @return
-     */
     @Override
     public List<Club> findBySearchCond(ClubSearchCond clubSearchCond) {
         return queryFactory
                 .selectFrom(club)
-                .where(categoryEq(clubSearchCond.getCategory()), searchContains(clubSearchCond.getSearch()), universityEq(clubSearchCond.getUniversity()),
+                .where(clubCategoryEq(clubSearchCond.getClubCategory()), searchContains(clubSearchCond.getSearch()), universityEq(clubSearchCond.getOrganization()),
                         genderEq(clubSearchCond.getGender()), activityAreaEq(clubSearchCond.getActivityArea()), ageRangeEq(clubSearchCond.getAgeRange()),
-                        mainEventEq(clubSearchCond.getMainEvent()))
+                        sportCategoryEq(clubSearchCond.getSportsType()))
                 .fetch();
     }
 
-    private BooleanExpression categoryEq(String category) {
-        if (hasText(category)) {
-            return club.category.eq(category);
+    private BooleanExpression clubCategoryEq(String clubCategory) {
+        if (clubCategory != null) {
+            return club.clubCategory.eq(ClubCategory.fromKoreanName(clubCategory));
         }
         return null;
     }
@@ -52,37 +48,37 @@ public class ClubRepositoryImpl implements ClubRepositoryCustom{
         return null;
     }
 
-    private BooleanExpression universityEq(String university) {
-        if (hasText(university)) {
-            return club.university.eq(university);
+    private BooleanExpression universityEq(String organization) {
+        if (hasText(organization)) {
+            return club.university.eq(organization);
         }
         return null;
     }
 
     private BooleanExpression genderEq(String gender) {
-        if (hasText(gender)) {
-            return club.gender.eq(gender);
+        if (gender != null) {
+            return club.gender.eq(Gender.fromKoreanName(gender));
         }
         return null;
     }
 
     private BooleanExpression activityAreaEq(String activityArea) {
-        if (hasText(activityArea)) {
-            return club.activityArea.eq(activityArea);
+        if (activityArea != null) {
+            return club.activityArea.eq(ActivityArea.fromKoreanName(activityArea));
         }
         return null;
     }
 
     private BooleanExpression ageRangeEq(String ageRange) {
-        if (hasText(ageRange)) {
-            return club.ageRange.eq(ageRange);
+        if (ageRange != null) {
+            return club.ageRange.eq(AgeRange.fromKoreanName(ageRange));
         }
         return null;
     }
 
-    private BooleanExpression mainEventEq(String mainEvent) {
-        if (hasText(mainEvent)) {
-            return club.mainEvent.eq(mainEvent);
+    private BooleanExpression sportCategoryEq(String sportsType) {
+        if (sportsType != null) {
+            return club.sportsType.eq(SportsType.fromKoreanName(sportsType));
         }
         return null;
     }

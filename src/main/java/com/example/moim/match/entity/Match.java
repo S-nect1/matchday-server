@@ -1,5 +1,7 @@
 package com.example.moim.match.entity;
 
+import com.example.moim.global.enums.AgeRange;
+import com.example.moim.global.enums.Gender;
 import com.example.moim.schedule.dto.ScheduleInput;
 import com.example.moim.club.entity.Club;
 import com.example.moim.schedule.entity.Schedule;
@@ -54,7 +56,7 @@ public class Match extends BaseEntity {
     private MatchStatus matchStatus;
     @Enumerated(EnumType.STRING)
     private Gender gender;
-    private String ageRange;
+    private AgeRange ageRange;
 
     private boolean isBall;
     private String note;
@@ -78,7 +80,7 @@ public class Match extends BaseEntity {
         match.account = matchInput.getAccount();
         match.minParticipants = matchInput.getMinParticipants();
 
-        match.gender = Gender.valueOf(club.getGender());
+        match.gender = club.getGender();
         match.ageRange = club.getAgeRange();
         match.matchStatus = PENDING;// 초기 상태는 매치 대기
         match.matchHalf = (matchInput.getStartTime().getMonth().getValue() <= 6) ? FIRST_HALF : SECOND_HALF;

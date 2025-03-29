@@ -8,6 +8,7 @@ import com.example.moim.club.entity.UserClub;
 import com.example.moim.club.exception.advice.ClubControllerAdvice;
 import com.example.moim.club.repository.ClubRepository;
 import com.example.moim.club.repository.UserClubRepository;
+import com.example.moim.global.enums.ClubRole;
 import com.example.moim.global.exception.ResponseCode;
 import com.example.moim.global.util.FileStore;
 import com.example.moim.notification.dto.ClubJoinEvent;
@@ -31,16 +32,19 @@ public class ClubCommandServiceImpl implements ClubCommandService {
 
     @Transactional
     public ClubOutput saveClub(User user, ClubInput clubInput) throws IOException {
+        /**
+         * FIXME: 비밀번호는 무조건 설정하도록 바꾸기. 사실 모든 값 다 입력하도록 바꿔야 함
+         */
         Club club = clubRepository.save(Club.createClub(clubInput, fileStore.storeFile(clubInput.getProfileImg())));
         UserClub userClub = userClubRepository.save(UserClub.createLeaderUserClub(user, club));
-        return new ClubOutput(club, userClub.getCategory());
+        return new ClubOutput(club, userClub.getClubRole());
     }
 
     @Transactional
     public ClubOutput updateClub(User user, ClubUpdateInput clubUpdateInput) throws IOException {
         Club club = clubRepository.findById(clubUpdateInput.getId()).orElseThrow(() -> new ClubControllerAdvice(ResponseCode.CLUB_NOT_FOUND));
         UserClub userClub = userClubRepository.findByClubAndUser(club, user).orElseThrow(() -> new ClubControllerAdvice(ResponseCode.CLUB_USER_NOT_FOUND));
-        if (!(userClub.getCategory().equals("creator") || userClub.getCategory().equals("admin"))) {
+        if (!(userClub.getClubRole().equals(ClubRole.CREATOR) || userClub.getClubRole().equals(ClubRole.ADMIN))) {
             throw new ClubControllerAdvice(ResponseCode.CLUB_PERMISSION_DENIED);
         }
 
@@ -49,11 +53,17 @@ public class ClubCommandServiceImpl implements ClubCommandService {
         }
 
         club.updateClub(clubUpdateInput, fileStore.storeFile(clubUpdateInput.getProfileImg()));
+        /**
+         * TODO: 왜 여기를 ClubOutput 으로 반환하게 했지..? 여기 void 로 바꾸고 그냥 204 상태 코드 반환하는 걸로 수정하기
+         */
         return new ClubOutput(club);
     }
 
     @Transactional
     public UserClubOutput saveClubUser(User user, ClubUserSaveInput clubUserSaveInput) {
+        /**
+         * FIXME: 이미 가입된 회원인지 체크하기
+         */
         Club club = clubRepository.findById(clubUserSaveInput.getClubId()).orElseThrow(() -> new ClubControllerAdvice(ResponseCode.CLUB_NOT_FOUND));
         if (club.getClubPassword().equals(clubUserSaveInput.getClubPassword())) {
             club.plusMemberCount();
@@ -72,12 +82,13 @@ public class ClubCommandServiceImpl implements ClubCommandService {
     public UserClubOutput updateClubUser(User user, ClubUserUpdateInput clubInput) {
         Club club = clubRepository.findById(clubInput.getId()).orElseThrow(() -> new ClubControllerAdvice(ResponseCode.CLUB_NOT_FOUND));
         UserClub userClub = userClubRepository.findByClubAndUser(club, user).orElseThrow(() -> new ClubControllerAdvice(ResponseCode.CLUB_USER_NOT_FOUND));
-        if (!(userClub.getCategory().equals("creator") || userClub.getCategory().equals("admin"))) {
+        if (!(userClub.getClubRole().equals(ClubRole.CREATOR) || userClub.getClubRole().equals(ClubRole.ADMIN))) {
             throw new ClubControllerAdvice(ResponseCode.CLUB_PERMISSION_DENIED);
         }
 
         UserClub changeUserClub = userClubRepository.findByClubAndUser(club, userRepository.findById(clubInput.getUserId()).get()).get();
-        changeUserClub.changeUserClub(clubInput.getPosition(), clubInput.getCategory());
+//        changeUserClub.changeUserClub(clubInput.getPosition(), clubInput.getResponsibility());
+        changeUserClub.changeUserClub(ClubRole.valueOf(clubInput.getClubRole()));
         return new UserClubOutput(changeUserClub);
     }
 
@@ -85,7 +96,7 @@ public class ClubCommandServiceImpl implements ClubCommandService {
     public void clubPasswordUpdate(User user, ClubPswdUpdateInput clubPswdUpdateInput) {
         Club club = clubRepository.findById(clubPswdUpdateInput.getId()).orElseThrow(() -> new ClubControllerAdvice(ResponseCode.CLUB_NOT_FOUND));
         UserClub userClub = userClubRepository.findByClubAndUser(club, user).orElseThrow(() -> new ClubControllerAdvice(ResponseCode.CLUB_USER_NOT_FOUND));
-        if (!(userClub.getCategory().equals("creator") || userClub.getCategory().equals("admin"))) {
+        if (!(userClub.getClubRole().equals(ClubRole.CREATOR) || userClub.getClubRole().equals(ClubRole.ADMIN))) {
             throw new ClubControllerAdvice(ResponseCode.CLUB_PERMISSION_DENIED);
         }
 
