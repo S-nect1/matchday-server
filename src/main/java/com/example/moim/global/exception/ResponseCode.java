@@ -34,12 +34,14 @@ public enum ResponseCode {
 
     // Match Error
     MATCH_NOT_FOUND(HttpStatus.NOT_FOUND, "MATCH4001", "매치를 찾을 수 없습니다."),
-    REQUIRE_FEE(HttpStatus.BAD_REQUEST, "MATCH4002", "대관비를 입력해주세요."),
-    REQUIRE_ACCOUNT(HttpStatus.BAD_REQUEST, "MATCH4003", "계좌번호를 입력해주세요."),
+    MATCH_REQUIRE_FEE(HttpStatus.BAD_REQUEST, "MATCH4002", "대관비를 입력해주세요."),
+    MATCH_REQUIRE_ACCOUNT(HttpStatus.BAD_REQUEST, "MATCH4003", "계좌번호를 입력해주세요."),
     MATCH_ALREADY_FOUND(HttpStatus.BAD_REQUEST, "MATCH4004", "이미 신청한 매치입니다."),
-    REGISTERED_CLUB_NOT_FOUND(HttpStatus.BAD_REQUEST, "MATCH4005", "가입된 동아리가 없습니다."),
-    APPLICATION_NOT_FOUND(HttpStatus.BAD_REQUEST, "MATCH4006", "올바른 매치가 아닙니다."),
-    TIME_OUT(HttpStatus.BAD_REQUEST, "MATCH4007", "매치가 종료된 후 48시간이 지났습니다."),
+    MATCH_APPLICATION_NOT_FOUND(HttpStatus.BAD_REQUEST, "MATCH4006", "올바른 매치가 아닙니다."),
+    MATCH_TIME_OUT(HttpStatus.BAD_REQUEST, "MATCH4007", "매치가 종료된 후 48시간이 지났습니다."),
+
+    // MatchUser Error
+    MATCH_USER_NOT_FOUND(HttpStatus.BAD_REQUEST, "MATCH4005", "가입된 모임이 없습니다."),
 
     // Token Error
     ACCESS_TOKEN_NOT_FOUND(HttpStatus.BAD_REQUEST, "TOKEN4001", "헤더에 토큰 값이 없습니다"),
