@@ -56,9 +56,6 @@ class MatchAggregateServiceTest {
         ReflectionTestUtils.setField(match, "awayScore", 0);
         // endTime는 현재시각에서 24시간 이전
         ReflectionTestUtils.setField(match, "endTime", LocalDateTime.now().minusHours(24));
-
-        when(homeClub.getId()).thenReturn(1L);
-        when(awayClub.getId()).thenReturn(2L);
     }
 
     @Test
@@ -74,7 +71,7 @@ class MatchAggregateServiceTest {
         ReflectionTestUtils.setField(matchUserAway, "user", new com.example.moim.user.entity.User());
 
         MatchUser matchUserNull = new MatchUser();
-        ReflectionTestUtils.setField(matchUserNull, "score", null);
+        ReflectionTestUtils.setField(matchUserNull, "score", 0);
         ReflectionTestUtils.setField(matchUserNull, "club", homeClub);
         ReflectionTestUtils.setField(matchUserNull, "user", new com.example.moim.user.entity.User());
 
@@ -125,7 +122,7 @@ class MatchAggregateServiceTest {
         when(matchUser2.getClub()).thenReturn(awayClub);
 
         MatchUser matchUser3 = Mockito.mock(MatchUser.class);
-        when(matchUser3.getScore()).thenReturn(null);
+        when(matchUser3.getScore()).thenReturn(0);
         when(matchUser3.getClub()).thenReturn(homeClub);
 
         List<MatchUser> matchUsers = Arrays.asList(matchUser1, matchUser2, matchUser3);
@@ -165,7 +162,7 @@ class MatchAggregateServiceTest {
 
         // match2: 홈 0, 원정 3 (하나는 null 점수)
         MatchUser m2User1 = Mockito.mock(MatchUser.class);
-        when(m2User1.getScore()).thenReturn(null);
+        when(m2User1.getScore()).thenReturn(0);
         when(m2User1.getClub()).thenReturn(homeClub);
 
         MatchUser m2User2 = Mockito.mock(MatchUser.class);
