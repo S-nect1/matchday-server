@@ -38,11 +38,11 @@ public class ClubController implements ClubControllerDocs{
         return BaseResponse.onSuccess(clubCommandService.saveClub(user, clubInput), ResponseCode.OK);
     }
 
-    @PatchMapping(value = "/club", consumes = MediaType.MULTIPART_FORM_DATA_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    @PatchMapping(value = "/club/{id}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
 //    public BaseResponse<ClubOutput> clubUpdate(@AuthenticationPrincipal UserDetailsImpl userDetailsImpl, @ModelAttribute ClubUpdateInput clubUpdateInput) throws IOException {
-    public BaseResponse<ClubUpdateOutput> clubUpdate(@ModelAttribute ClubUpdateInput clubUpdateInput) throws IOException {
+    public BaseResponse<ClubUpdateOutput> clubUpdate(@ModelAttribute ClubUpdateInput clubUpdateInput, @PathVariable("id") Long clubId) throws IOException {
         User user = userRepository.findById(1L).get();
-        return BaseResponse.onSuccess(clubCommandService.updateClub(user, clubUpdateInput), ResponseCode.OK);
+        return BaseResponse.onSuccess(clubCommandService.updateClub(user, clubUpdateInput, clubId), ResponseCode.OK);
     }
 
     @GetMapping("/clubs")

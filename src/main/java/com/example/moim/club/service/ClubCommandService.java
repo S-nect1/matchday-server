@@ -12,7 +12,7 @@ import java.util.List;
 
 public interface ClubCommandService {
     ClubOutput saveClub(User user, ClubInput clubInput) throws IOException;
-    ClubUpdateOutput updateClub(User user, ClubUpdateInput clubUpdateInput) throws IOException;
+    ClubUpdateOutput updateClub(User user, ClubUpdateInput clubUpdateInput, Long clubId) throws IOException;
     UserClubOutput saveClubUser(User user, ClubUserSaveInput clubUserSaveInput);
     UserClubOutput updateClubUser(User user, ClubUserUpdateInput clubInput);
     void clubPasswordUpdate(User user, ClubPswdUpdateInput clubPswdUpdateInput);

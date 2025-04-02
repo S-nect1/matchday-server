@@ -77,7 +77,7 @@ class ClubCommandServiceImplTest {
         String updateExplanation = "update explanation";
 
         this.clubUpdateInput = ClubUpdateInput.builder()
-                .id(1L).title(updateTitle).explanation(updateExplanation)
+                .title(updateTitle).explanation(updateExplanation)
                 .clubPassword("clubPassword").build();
 
     }
@@ -111,7 +111,7 @@ class ClubCommandServiceImplTest {
         when(clubRepository.findById(any(Long.class))).thenReturn(Optional.of(club));
         when(userClubRepository.findByClubAndUser(any(Club.class), any(User.class))).thenReturn(Optional.of(userClub));
         when(fileStore.storeFile(null)).thenReturn(null);
-        ClubUpdateOutput clubOutput = clubCommandService.updateClub(new User(), clubUpdateInput);
+        ClubUpdateOutput clubOutput = clubCommandService.updateClub(new User(), clubUpdateInput, 1L);
         //then
         assertThat(clubOutput).isNotNull();
         assertThat(clubOutput.getTitle()).isEqualTo("update title");
@@ -132,7 +132,7 @@ class ClubCommandServiceImplTest {
         when(clubRepository.findById(any(Long.class))).thenReturn(Optional.of(club));
         when(userClubRepository.findByClubAndUser(any(Club.class), any(User.class))).thenReturn(Optional.of(userClub));
         Exception exception = assertThrows(ClubControllerAdvice.class, () -> {
-            clubCommandService.updateClub(new User(), ClubUpdateInput.builder().id(1L).clubPassword("wrong!").build());
+            clubCommandService.updateClub(new User(), ClubUpdateInput.builder().clubPassword("wrong!").build(), 1L);
         });
         assertThat(exception.getMessage()).isEqualTo(ResponseCode.CLUB_PASSWORD_INCORRECT.getMessage());
         verify(clubRepository, times(1)).findById(any(Long.class));
@@ -150,7 +150,7 @@ class ClubCommandServiceImplTest {
         when(userClubRepository.findByClubAndUser(any(Club.class), any(User.class))).thenReturn(Optional.of(userClub));
         //then
         Exception exception = assertThrows(ClubControllerAdvice.class, () -> {
-            clubCommandService.updateClub(new User(), clubUpdateInput);
+            clubCommandService.updateClub(new User(), clubUpdateInput, 1L);
         });
         assertThat(exception.getMessage()).isEqualTo(ResponseCode.CLUB_PERMISSION_DENIED.getMessage());
         verify(clubRepository, times(1)).findById(any(Long.class));

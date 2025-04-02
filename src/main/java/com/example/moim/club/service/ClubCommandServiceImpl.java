@@ -45,8 +45,8 @@ public class ClubCommandServiceImpl implements ClubCommandService {
     }
 
     @Transactional
-    public ClubUpdateOutput updateClub(User user, ClubUpdateInput clubUpdateInput) throws IOException {
-        Club club = clubRepository.findById(clubUpdateInput.getId()).orElseThrow(() -> new ClubControllerAdvice(ResponseCode.CLUB_NOT_FOUND));
+    public ClubUpdateOutput updateClub(User user, ClubUpdateInput clubUpdateInput, Long clubId) throws IOException {
+        Club club = clubRepository.findById(clubId).orElseThrow(() -> new ClubControllerAdvice(ResponseCode.CLUB_NOT_FOUND));
         UserClub userClub = userClubRepository.findByClubAndUser(club, user).orElseThrow(() -> new ClubControllerAdvice(ResponseCode.CLUB_USER_NOT_FOUND));
         if (!(userClub.getClubRole().equals(ClubRole.CREATOR) || userClub.getClubRole().equals(ClubRole.ADMIN))) {
             throw new ClubControllerAdvice(ResponseCode.CLUB_PERMISSION_DENIED);

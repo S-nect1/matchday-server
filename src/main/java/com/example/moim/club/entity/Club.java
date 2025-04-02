@@ -10,6 +10,7 @@ import com.example.moim.match.entity.Match;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.springframework.util.StringUtils;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -88,35 +89,35 @@ public class Club extends BaseEntity {
     }
 
     public void updateClub(ClubUpdateInput clubUpdateInput, String profileImgPath) {
-        if (clubUpdateInput.getTitle() != null) {
+        if (StringUtils.hasText(clubUpdateInput.getTitle())) {
             this.title = clubUpdateInput.getTitle();
         }
-        if (clubUpdateInput.getExplanation() != null) {
+        if (StringUtils.hasText(clubUpdateInput.getExplanation())) {
             this.explanation = clubUpdateInput.getExplanation();
         }
-        if (clubUpdateInput.getIntroduction() != null) {
+        if (StringUtils.hasText(clubUpdateInput.getIntroduction())) {
             this.introduction = clubUpdateInput.getIntroduction();
         }
-        if (clubUpdateInput.getClubCategory() != null) {
+        if (StringUtils.hasText(clubUpdateInput.getClubCategory())) {
             this.clubCategory = ClubCategory.fromKoreanName(clubUpdateInput.getClubCategory()).orElseThrow(() -> new ClubControllerAdvice(ResponseCode.INVALID_CLUB_CATEGORY));
         }
-        if (clubUpdateInput.getOrganization() != null) {
+        if (StringUtils.hasText(clubUpdateInput.getOrganization())) {
             this.university = clubUpdateInput.getOrganization();
         }
-        if (clubUpdateInput.getGender() != null) {
+        if (StringUtils.hasText(clubUpdateInput.getGender())) {
             this.gender = Gender.fromKoreanName(clubUpdateInput.getGender()).orElseThrow(() -> new ClubControllerAdvice(ResponseCode.INVALID_GENDER));
         }
-        if (clubUpdateInput.getActivityArea() != null) {
+        if (StringUtils.hasText(clubUpdateInput.getActivityArea())) {
             this.activityArea = ActivityArea.fromKoreanName(clubUpdateInput.getActivityArea()).orElseThrow(() -> new ClubControllerAdvice(ResponseCode.INVALID_ACTIVITY_AREA));
         }
-        if (clubUpdateInput.getAgeRange() != null) {
+        if (StringUtils.hasText(clubUpdateInput.getAgeRange())) {
             this.ageRange = AgeRange.fromKoreanName(clubUpdateInput.getAgeRange()).orElseThrow(() -> new ClubControllerAdvice(ResponseCode.INVALID_AGE_RANGE));
         }
-        if (clubUpdateInput.getSportsType() != null) {
+        if (StringUtils.hasText(clubUpdateInput.getSportsType())) {
             this.sportsType = SportsType.fromKoreanName(clubUpdateInput.getSportsType()).orElseThrow(() -> new ClubControllerAdvice(ResponseCode.INVALID_SPORTS_TYPE));
         }
-        if (profileImgPath != null) {
-            if (this.profileImgPath != null) {
+        if (StringUtils.hasText(profileImgPath)) {
+            if (StringUtils.hasText(this.profileImgPath)) {
                 new File(this.profileImgPath).delete();
             }
             this.profileImgPath = profileImgPath;

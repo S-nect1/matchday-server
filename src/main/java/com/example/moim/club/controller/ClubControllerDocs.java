@@ -26,7 +26,7 @@ public interface ClubControllerDocs {
 
     @Operation(summary = "모임 수정", description = "응답으로 받는 profileImg는 Base64 디코딩 필요")
 //    BaseResponse<ClubUpdateOutput> clubUpdate(@AuthenticationPrincipal UserDetailsImpl userDetailsImpl, @ModelAttribute ClubUpdateInput clubUpdateInput) throws IOException;
-    BaseResponse<ClubUpdateOutput> clubUpdate(@ModelAttribute ClubUpdateInput clubUpdateInput) throws IOException;
+    BaseResponse<ClubUpdateOutput> clubUpdate(@ModelAttribute ClubUpdateInput clubUpdateInput, @PathVariable Long clubId) throws IOException;
 
     @Operation(summary = "모임 검색")
 //    BaseResponse<List<ClubSearchOutput>> findClubs(@AuthenticationPrincipal UserDetailsImpl userDetailsImpl, @ModelAttribute ClubSearchCond clubSearchCond);
