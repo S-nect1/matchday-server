@@ -80,7 +80,12 @@ public class MatchRepositoryImpl implements MatchRepositoryCustom {
     }
 
     private BooleanExpression genderEq(String gender) {
-        return gender != null ? match.gender.eq(Gender.fromKoreanName(gender)) : null;
+        if (gender == null) return null;
+
+        return Gender.fromKoreanName(gender)
+                .map(match.gender::eq)
+                .orElse(null);
+//        return gender != null ? match.gender.eq(Gender.fromKoreanName(gender)) : null;
     }
 
     private BooleanExpression areaEq(String area) {
@@ -88,7 +93,12 @@ public class MatchRepositoryImpl implements MatchRepositoryCustom {
     }
 
     private BooleanExpression ageRangeEq(String ageRange) {
-        return ageRange != null ? club.ageRange.eq(AgeRange.fromKoreanName(ageRange)) : null;
+        if (ageRange == null) return null;
+
+        return AgeRange.fromKoreanName(ageRange)
+                .map(match.ageRange::eq)
+                .orElse(null);
+//        return ageRange != null ? club.ageRange.eq(AgeRange.fromKoreanName(ageRange)) : null;
     }
 
 //    private BooleanExpression teamAbilityEq(String teamAbility) {

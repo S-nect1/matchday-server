@@ -2,8 +2,10 @@ package com.example.moim.club.entity;
 
 import com.example.moim.club.dto.request.ClubInput;
 import com.example.moim.club.dto.request.ClubUpdateInput;
+import com.example.moim.club.exception.advice.ClubControllerAdvice;
 import com.example.moim.global.entity.BaseEntity;
 import com.example.moim.global.enums.*;
+import com.example.moim.global.exception.ResponseCode;
 import com.example.moim.match.entity.Match;
 import jakarta.persistence.*;
 import lombok.Getter;
@@ -55,17 +57,20 @@ public class Club extends BaseEntity {
     @OneToMany(mappedBy = "club", cascade = CascadeType.REMOVE)
     private List<Notice> notices = new ArrayList<>();
 
+    /**
+     * TODO : university 는 없을 수도 있으므로, null 일 경우를 처리해주기
+     */
     public static Club createClub(ClubInput clubInput, String profileImgPath) {
         Club club = new Club();
         club.title = clubInput.getTitle();
         club.explanation = clubInput.getExplanation();
         club.introduction = clubInput.getIntroduction();
-        club.clubCategory = ClubCategory.fromKoreanName(clubInput.getClubCategory());
-        club.university = clubInput.getOrganization();
-        club.gender = Gender.fromKoreanName(clubInput.getGender());
-        club.activityArea = ActivityArea.fromKoreanName(clubInput.getActivityArea());
-        club.sportsType = SportsType.fromKoreanName(clubInput.getSportsType());
-        club.ageRange = AgeRange.fromKoreanName(clubInput.getAgeRange());
+        club.clubCategory = ClubCategory.fromKoreanName(clubInput.getClubCategory()).get();
+        club.university = clubInput.getUniversity();
+        club.gender = Gender.fromKoreanName(clubInput.getGender()).get();
+        club.activityArea = ActivityArea.fromKoreanName(clubInput.getActivityArea()).get();
+        club.sportsType = SportsType.fromKoreanName(clubInput.getSportsType()).get();
+        club.ageRange = AgeRange.fromKoreanName(clubInput.getAgeRange()).get();
         club.clubPassword = clubInput.getClubPassword();
         club.profileImgPath = profileImgPath;
         club.mainUniformColor = clubInput.getMainUniformColor();
@@ -93,22 +98,22 @@ public class Club extends BaseEntity {
             this.introduction = clubUpdateInput.getIntroduction();
         }
         if (clubUpdateInput.getClubCategory() != null) {
-            this.clubCategory = ClubCategory.fromKoreanName(clubUpdateInput.getClubCategory());
+            this.clubCategory = ClubCategory.fromKoreanName(clubUpdateInput.getClubCategory()).orElseThrow(() -> new ClubControllerAdvice(ResponseCode.INVALID_CLUB_CATEGORY));
         }
         if (clubUpdateInput.getOrganization() != null) {
             this.university = clubUpdateInput.getOrganization();
         }
         if (clubUpdateInput.getGender() != null) {
-            this.gender = Gender.fromKoreanName(clubUpdateInput.getGender());
+            this.gender = Gender.fromKoreanName(clubUpdateInput.getGender()).orElseThrow(() -> new ClubControllerAdvice(ResponseCode.INVALID_GENDER));
         }
         if (clubUpdateInput.getActivityArea() != null) {
-            this.activityArea = ActivityArea.fromKoreanName(clubUpdateInput.getActivityArea());
+            this.activityArea = ActivityArea.fromKoreanName(clubUpdateInput.getActivityArea()).orElseThrow(() -> new ClubControllerAdvice(ResponseCode.INVALID_ACTIVITY_AREA));
         }
         if (clubUpdateInput.getAgeRange() != null) {
-            this.ageRange = AgeRange.fromKoreanName(clubUpdateInput.getAgeRange());
+            this.ageRange = AgeRange.fromKoreanName(clubUpdateInput.getAgeRange()).orElseThrow(() -> new ClubControllerAdvice(ResponseCode.INVALID_AGE_RANGE));
         }
         if (clubUpdateInput.getSportsType() != null) {
-            this.sportsType = SportsType.fromKoreanName(clubUpdateInput.getSportsType());
+            this.sportsType = SportsType.fromKoreanName(clubUpdateInput.getSportsType()).orElseThrow(() -> new ClubControllerAdvice(ResponseCode.INVALID_SPORTS_TYPE));
         }
         if (profileImgPath != null) {
             if (this.profileImgPath != null) {

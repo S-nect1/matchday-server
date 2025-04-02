@@ -9,17 +9,17 @@ import lombok.NoArgsConstructor;
 public class ClubSearchCond {
     private String clubCategory;
     private String search;
-    private String organization;
+    private String university;
     private String gender;
     private String activityArea;
     private String ageRange;
     private String sportsType;
 
     @Builder
-    public ClubSearchCond(String clubCategory, String search, String organization, String gender, String activityArea, String ageRange, String sportsType) {
+    public ClubSearchCond(String clubCategory, String search, String university, String gender, String activityArea, String ageRange, String sportsType) {
         this.clubCategory = clubCategory;
         this.search = search;
-        this.organization = organization;
+        this.university = university;
         this.gender = gender;
         this.activityArea = activityArea;
         this.ageRange = ageRange;

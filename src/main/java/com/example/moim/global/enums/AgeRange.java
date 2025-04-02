@@ -1,7 +1,7 @@
 package com.example.moim.global.enums;
 
-import com.example.moim.global.enums.exception.EnumControllerAdvice;
-import com.example.moim.global.exception.ResponseCode;
+import java.util.Arrays;
+import java.util.Optional;
 
 public enum AgeRange {
     TWENTIES("20대"),
@@ -19,13 +19,9 @@ public enum AgeRange {
         return koreanName;
     }
 
-    public static AgeRange fromKoreanName(String koreanName) {
-        for (AgeRange area : AgeRange.values()) {
-            if (area.getKoreanName().equals(koreanName)) {
-                return area;
-            }
-        }
-//        throw new IllegalArgumentException("해당 한글 이름에 대응하는 AgeRange가 없습니다: " + koreanName);
-        throw new EnumControllerAdvice(ResponseCode.INVALID_AGE_RANGE);
+    public static Optional<AgeRange> fromKoreanName(String koreanName) {
+        return Arrays.stream(values())
+                .filter(g -> g.getKoreanName().equals(koreanName))
+                .findFirst();
     }
 }

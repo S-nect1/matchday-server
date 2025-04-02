@@ -74,7 +74,7 @@ class MatchServiceTest {
         clubInput.setExplanation("explanation");
         clubInput.setIntroduction("introduction");
         clubInput.setClubCategory(ClubCategory.SCHOOL_GROUP.getKoreanName());
-        clubInput.setOrganization("TestUniv@37.5665@126.9780");
+        clubInput.setUniversity("TestUniv@37.5665@126.9780");
         clubInput.setGender(Gender.MAN.getKoreanName());
         clubInput.setActivityArea(ActivityArea.SEOUL.getKoreanName());
         clubInput.setAgeRange(AgeRange.TWENTIES.getKoreanName());
@@ -500,9 +500,9 @@ class MatchServiceTest {
         MatchClubSearchCond cond = new MatchClubSearchCond();
         Club otherClub = new Club();
         ReflectionTestUtils.setField(otherClub, "id", 2L);
-        ReflectionTestUtils.setField(otherClub, "activityArea", ActivityArea.fromKoreanName("서울"));
-        ReflectionTestUtils.setField(otherClub, "ageRange", AgeRange.fromKoreanName("20대"));
-        ReflectionTestUtils.setField(otherClub, "gender", Gender.fromKoreanName("혼성"));
+        ReflectionTestUtils.setField(otherClub, "activityArea", ActivityArea.fromKoreanName("서울").get());
+        ReflectionTestUtils.setField(otherClub, "ageRange", AgeRange.fromKoreanName("20대").get());
+        ReflectionTestUtils.setField(otherClub, "gender", Gender.fromKoreanName("혼성").get());
 
         when(matchRepository.findClubsBySearchCond(cond)).thenReturn(Arrays.asList(otherClub));
         List<MatchClubOutput> list = matchService.searchMatchClubs(cond, club);

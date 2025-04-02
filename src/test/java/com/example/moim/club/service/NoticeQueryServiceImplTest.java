@@ -44,7 +44,7 @@ public class NoticeQueryServiceImplTest {
         String explanation = "explanation";
         String introduction = "introduction";
         ClubCategory clubCategory = ClubCategory.SMALL_GROUP;
-        String organization = "organization";
+        String university = "university";
         Gender gender = Gender.UNISEX;
         ActivityArea activityArea = ActivityArea.SEOUL;
         AgeRange ageRange = AgeRange.TWENTIES;
@@ -55,7 +55,7 @@ public class NoticeQueryServiceImplTest {
         String subUniformColor = "subUniformColor";
 
         this.clubInput = ClubInput.builder().title(title).explanation(explanation).introduction(introduction).clubCategory(clubCategory.getKoreanName())
-                .organization(organization).gender(gender.getKoreanName()).activityArea(activityArea.getKoreanName()).ageRange(ageRange.getKoreanName()).sportsType(sportsType.getKoreanName())
+                .university(university).gender(gender.getKoreanName()).activityArea(activityArea.getKoreanName()).ageRange(ageRange.getKoreanName()).sportsType(sportsType.getKoreanName())
                 .clubPassword(clubPassword).profileImg(profileImg).mainUniformColor(mainUniformColor).subUniformColor(subUniformColor).build();
 
         // Notice

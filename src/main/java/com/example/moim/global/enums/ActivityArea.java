@@ -1,7 +1,7 @@
 package com.example.moim.global.enums;
 
-import com.example.moim.global.enums.exception.EnumControllerAdvice;
-import com.example.moim.global.exception.ResponseCode;
+import java.util.Arrays;
+import java.util.Optional;
 
 public enum ActivityArea {
     SEOUL("서울"),
@@ -32,13 +32,9 @@ public enum ActivityArea {
         return koreanName;
     }
 
-    public static ActivityArea fromKoreanName(String koreanName) {
-        for (ActivityArea area : ActivityArea.values()) {
-            if (area.getKoreanName().equals(koreanName)) {
-                return area;
-            }
-        }
-//        throw new IllegalArgumentException("해당 한글 이름에 대응하는 ActivityArea가 없습니다: " + koreanName);
-        throw new EnumControllerAdvice(ResponseCode.INVALID_ACTIVITY_AREA);
+    public static Optional<ActivityArea> fromKoreanName(String koreanName) {
+        return Arrays.stream(values())
+                .filter(g -> g.getKoreanName().equals(koreanName))
+                .findFirst();
     }
 }

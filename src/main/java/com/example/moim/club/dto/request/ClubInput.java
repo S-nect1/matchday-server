@@ -1,6 +1,5 @@
 package com.example.moim.club.dto.request;
 
-import com.example.moim.club.entity.*;
 import jakarta.validation.constraints.NotBlank;
 import lombok.Builder;
 import lombok.Data;
@@ -19,8 +18,7 @@ public class ClubInput {
     private String introduction;
     @NotBlank(message = "클럽 카테고리를 지정해야합니다!")
     private String clubCategory;
-    @NotBlank(message = "소속을 적어야합니다!")
-    private String organization; // 소속이 회사일 수도 있고 대학일 수도 있으니까, organization 처럼 포괄적인 이름으로 변경
+    private String university;
     @NotBlank(message = "성별을 지정해야합니다!")
     private String gender;
     @NotBlank(message = "활동 지역을 지정해야합니다!")
@@ -38,12 +36,12 @@ public class ClubInput {
     private String subUniformColor;
 
     @Builder
-    public ClubInput(String title, String explanation, String introduction, String clubCategory, String organization, String gender, String activityArea, String ageRange, String sportsType, String clubPassword, MultipartFile profileImg, String mainUniformColor, String subUniformColor) {
+    public ClubInput(String title, String explanation, String introduction, String clubCategory, String university, String gender, String activityArea, String ageRange, String sportsType, String clubPassword, MultipartFile profileImg, String mainUniformColor, String subUniformColor) {
         this.title = title;
         this.explanation = explanation;
         this.introduction = introduction;
         this.clubCategory = clubCategory;
-        this.organization = organization;
+        this.university = university;
         this.gender = gender;
         this.activityArea = activityArea;
         this.ageRange = ageRange;

@@ -74,7 +74,7 @@ class ScheduleServiceTest {
         this.signupInput = SignupInput.builder().email("email").password("password")
                 .name("name").birthday("birthday").gender(Gender.WOMAN.getKoreanName()).build();
         this.clubInput = ClubInput.builder().title("title").explanation("explanation").introduction("introduction")
-                .clubCategory(ClubCategory.SMALL_GROUP.getKoreanName()).organization("organization").gender(Gender.UNISEX.getKoreanName())
+                .clubCategory(ClubCategory.SMALL_GROUP.getKoreanName()).university("university").gender(Gender.UNISEX.getKoreanName())
                 .activityArea(ActivityArea.SEOUL.getKoreanName()).ageRange(AgeRange.TWENTIES.getKoreanName()).sportsType(SportsType.SOCCER.getKoreanName())
                 .clubPassword("clubPassword").profileImg(new MockMultipartFile("file", "file".getBytes()))
                 .mainUniformColor("mainUniformColor").subUniformColor("subUniformColor").build();

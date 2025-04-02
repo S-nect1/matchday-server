@@ -1,7 +1,7 @@
 package com.example.moim.global.enums;
 
-import com.example.moim.global.enums.exception.EnumControllerAdvice;
-import com.example.moim.global.exception.ResponseCode;
+import java.util.Arrays;
+import java.util.Optional;
 
 public enum MainFoot {
     RIGHT("오른발"),
@@ -18,13 +18,9 @@ public enum MainFoot {
         return koreanName;
     }
 
-    public static MainFoot fromKoreanName(String koreanName) {
-        for (MainFoot foot: MainFoot.values()) {
-            if (foot.getKoreanName().equals(koreanName)) {
-                return foot;
-            }
-        }
-//        throw new IllegalArgumentException("해당 한글 이름에 대응하는 MainFoot(이)가 없습니다: " + koreanName);
-        throw new EnumControllerAdvice(ResponseCode.INVALID_MAIN_FOOT);
+    public static Optional<MainFoot> fromKoreanName(String koreanName) {
+        return Arrays.stream(values())
+                .filter(g -> g.getKoreanName().equals(koreanName))
+                .findFirst();
     }
 }

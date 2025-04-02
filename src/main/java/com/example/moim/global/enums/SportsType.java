@@ -1,7 +1,7 @@
 package com.example.moim.global.enums;
 
-import com.example.moim.global.enums.exception.EnumControllerAdvice;
-import com.example.moim.global.exception.ResponseCode;
+import java.util.Arrays;
+import java.util.Optional;
 
 public enum SportsType {
     SOCCER("축구"), FUTSAL("풋살");
@@ -15,13 +15,9 @@ public enum SportsType {
         return koreanName;
     }
 
-    public static SportsType fromKoreanName(String koreanName) {
-        for (SportsType area : SportsType.values()) {
-            if (area.getKoreanName().equals(koreanName)) {
-                return area;
-            }
-        }
-//        throw new IllegalArgumentException("해당 한글 이름에 대응하는 SportsType가 없습니다: " + koreanName);
-        throw new EnumControllerAdvice(ResponseCode.INVALID_SPORTS_TYPE);
+    public static Optional<SportsType> fromKoreanName(String koreanName) {
+        return Arrays.stream(values())
+                .filter(g -> g.getKoreanName().equals(koreanName))
+                .findFirst();
     }
 }

@@ -5,8 +5,10 @@ import com.example.moim.global.entity.BaseEntity;
 import com.example.moim.global.enums.ActivityArea;
 import com.example.moim.global.enums.Gender;
 import com.example.moim.global.enums.Position;
+import com.example.moim.global.exception.ResponseCode;
 import com.example.moim.notification.entity.Notifications;
 import com.example.moim.user.dto.*;
+import com.example.moim.user.exceptions.advice.UserControllerAdvice;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -58,7 +60,7 @@ public class User extends BaseEntity {
         user.password = signupInput.getPassword();
         user.name = signupInput.getName();
         user.birthday = signupInput.getBirthday();
-        user.gender = Gender.fromKoreanName(signupInput.getGender());
+        user.gender = Gender.fromKoreanName(signupInput.getGender()).orElseThrow(() -> new UserControllerAdvice(ResponseCode.INVALID_GENDER));
         user.phone = signupInput.getPhone();
         user.role = Role.USER;
         return user;
@@ -91,7 +93,7 @@ public class User extends BaseEntity {
     public static User createNaverUser(NaverUserSignup naverUserSignup) {
         User user = new User();
         user.email = naverUserSignup.getEmail();
-        user.gender = Gender.fromKoreanName(naverUserSignup.getGender());
+        user.gender = Gender.fromKoreanName(naverUserSignup.getGender()).orElseThrow(() -> new UserControllerAdvice(ResponseCode.INVALID_GENDER));
         user.role = Role.USER;
         return user;
     }
@@ -102,7 +104,7 @@ public class User extends BaseEntity {
         this.phone = socialSignupInput.getPhone();
         this.imgPath = imgPath;
 //        this.gender = Gender.from(socialSignupInput.getGender());
-        this.gender = Gender.fromKoreanName(socialSignupInput.getGender());
+        this.gender = Gender.fromKoreanName(socialSignupInput.getGender()).orElseThrow(() -> new UserControllerAdvice(ResponseCode.INVALID_GENDER));
         this.activityArea = socialSignupInput.getActivityArea();
         this.height = socialSignupInput.getHeight();
         this.weight = socialSignupInput.getWeight();
@@ -131,7 +133,7 @@ public class User extends BaseEntity {
             this.imgPath = imgPath;
         }
         if (userUpdateInput.getGender() != null && !userUpdateInput.getGender().isBlank()) {
-            this.gender = Gender.fromKoreanName(userUpdateInput.getGender());
+            this.gender = Gender.fromKoreanName(userUpdateInput.getGender()).orElseThrow(() -> new UserControllerAdvice(ResponseCode.INVALID_GENDER));
         }
         if (userUpdateInput.getActivityArea() != null && !userUpdateInput.getActivityArea().name().isBlank()) {
             this.activityArea = userUpdateInput.getActivityArea();
