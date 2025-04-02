@@ -105,7 +105,7 @@ class MatchServiceTest {
         input.setLocation("test");
         input.setAccount("");
         input.setEvent("축구");
-        input.setMatchSize("11");
+        input.setMatchSize("11명");
         input.setMinParticipants(10);
         input.setBank("신한");
 
@@ -412,7 +412,7 @@ class MatchServiceTest {
         ReflectionTestUtils.setField(match, "endTime", LocalDateTime.now().minusHours(24)); // 48시간 이내
         MatchUser matchUser = new MatchUser();
         ReflectionTestUtils.setField(matchUser, "id", 950L);
-        ReflectionTestUtils.setField(matchUser, "score", null);
+        ReflectionTestUtils.setField(matchUser, "score", 0);
         ReflectionTestUtils.setField(matchUser, "user", user);
 
         when(matchUserRepository.findByMatchAndUser(match, user)).thenReturn(matchUser);
@@ -466,7 +466,7 @@ class MatchServiceTest {
         ReflectionTestUtils.setField(opponentClub, "title", "Opponent Club");
 
         ReflectionTestUtils.setField(match, "awayClub", opponentClub);
-        ReflectionTestUtils.setField(match, "event", "축구");
+        ReflectionTestUtils.setField(match, "event", SportsType.SOCCER);
         LocalDateTime startTime = LocalDateTime.of(2025, 5, 10, 15, 0);
         LocalDateTime endTime = LocalDateTime.of(2025, 5, 10, 17, 0);
         ReflectionTestUtils.setField(match, "startTime", startTime);
@@ -485,7 +485,7 @@ class MatchServiceTest {
         // OpponentClubName은 match.findOpponentClub(club).getTitle()로 결정됨.
         // homeClub은 club, awayClub은 opponentClub이므로, opponentClub의 title이 반환되어야 함.
         assertEquals("Opponent Club", output.getOpponentClubName());
-        assertEquals("축구", output.getEvent());
+        assertEquals(SportsType.SOCCER, output.getEvent());
         assertEquals(LocalDate.of(2025, 5, 10), output.getMatchDate());
         assertEquals("test location", output.getLocation());
 
@@ -543,7 +543,7 @@ class MatchServiceTest {
         when(matchRepository.findRegisteredMatch(club)).thenReturn(Arrays.asList(match));
         when(clubRepository.findByActivityArea(club.getActivityArea())).thenReturn(Arrays.asList(club));
 
-        MatchMainOutput output = matchService.matchMainFind(1L, user);
+        MatchMainOutput output = matchService.matchMainFind(1L);
         assertNotNull(output);
         assertEquals("Test Club", output.getClubTitle());
     }

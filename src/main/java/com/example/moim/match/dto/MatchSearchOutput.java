@@ -1,5 +1,6 @@
 package com.example.moim.match.dto;
 
+import com.example.moim.global.enums.SportsType;
 import com.example.moim.match.entity.Match;
 import lombok.Data;
 
@@ -11,7 +12,7 @@ public class MatchSearchOutput {
     private LocalDate matchDate;
     private String period;
     private String name;
-    private String event;
+    private SportsType event;
     private String location;
 
     public MatchSearchOutput(Match match) {

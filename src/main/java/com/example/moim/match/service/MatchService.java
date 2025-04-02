@@ -2,6 +2,8 @@ package com.example.moim.match.service;
 
 import com.example.moim.club.entity.Club;
 import com.example.moim.global.enums.ClubRole;
+import com.example.moim.global.exception.ResponseCode;
+import com.example.moim.match.exception.advice.MatchControllerAdvice;
 import com.example.moim.schedule.entity.Schedule;
 import com.example.moim.schedule.entity.ScheduleVote;
 import com.example.moim.club.entity.UserClub;
@@ -10,8 +12,6 @@ import com.example.moim.schedule.repository.ScheduleRepository;
 import com.example.moim.schedule.repository.ScheduleVoteRepository;
 import com.example.moim.club.repository.UserClubRepository;
 import com.example.moim.schedule.service.ScheduleService;
-import com.example.moim.match.exception.MatchPermissionException;
-import com.example.moim.match.exception.MatchRecordExpireException;
 import com.example.moim.match.dto.*;
 import com.example.moim.match.entity.Match;
 import com.example.moim.match.entity.MatchApplication;
@@ -38,6 +38,7 @@ import java.util.Optional;
 @Service
 @RequiredArgsConstructor
 @Slf4j
+@Transactional(readOnly = true)
 public class MatchService {
 
     private final MatchRepository matchRepository;
@@ -50,11 +51,16 @@ public class MatchService {
     private final MatchUserRepository matchUserRepository;
     private final ScheduleVoteRepository scheduleVoteRepository;
 
+    // PENDING
+    @Transactional
     public MatchOutput saveMatch(User user, MatchInput matchInput) {
-        Club club = clubRepository.findById(matchInput.getClubId()).get();
-        UserClub userClub = userClubRepository.findByClubAndUser(club, user).get();
+        Club club = clubRepository.findById(matchInput.getClubId())
+                .orElseThrow(() -> new MatchControllerAdvice(ResponseCode.CLUB_NOT_FOUND));
+        UserClub userClub = userClubRepository.findByClubAndUser(club, user)
+                .orElseThrow(() -> new MatchControllerAdvice(ResponseCode.MEMBER_NOT_FOUND));
         if (!(userClub.getClubRole().equals(ClubRole.CREATOR) || userClub.getClubRole().equals(ClubRole.ADMIN))) {
-            throw new MatchPermissionException("매치 생성 권한이 없습니다.");
+//            throw new MatchPermissionException("매치 생성 권한이 없습니다.");
+            throw new MatchControllerAdvice(ResponseCode._UNAUTHORIZED);
         }
         matchRepository.findMatchByClub(club).forEach(m -> m.timeDuplicationCheck(matchInput.getStartTime(), matchInput.getEndTime()));
 
@@ -63,7 +69,8 @@ public class MatchService {
             if (fee.isPresent()) {
                 matchInput.setFee(fee.get());
             } else {
-                throw new MatchPermissionException("대관비를 입력해주세요.");
+//                throw new MatchPermissionException("대관비를 입력해주세요.");
+                throw new MatchControllerAdvice(ResponseCode.MATCH_REQUIRE_FEE);
             }
         }
 
@@ -72,29 +79,35 @@ public class MatchService {
             if (clubAccount.isPresent()) {
                 matchInput.setAccount(clubAccount.get());
             } else {
-                throw new MatchPermissionException("계좌번호를 입력해주세요.");
+//                throw new MatchPermissionException("계좌번호를 입력해주세요.");
+                throw new MatchControllerAdvice(ResponseCode.MATCH_REQUIRE_ACCOUNT);
             }
         }
 
-        Match match = matchRepository.save(Match.createMatch(clubRepository.findById(matchInput.getClubId()).get(), matchInput));
+        Match match = matchRepository.save(Match.createMatch(clubRepository.findById(matchInput.getClubId())
+                .orElseThrow(() -> new MatchControllerAdvice(ResponseCode.CLUB_NOT_FOUND)), matchInput));
 
         //일정에 매치 등록
-        Schedule schedule = scheduleRepository.save(Schedule.createSchedule(clubRepository.findById(matchInput.getClubId()).get(), match.createScheduleFromMatch()));
+        Schedule schedule = scheduleRepository.save(Schedule.createSchedule(clubRepository.findById(matchInput.getClubId())
+                .orElseThrow(() -> new MatchControllerAdvice(ResponseCode.CLUB_NOT_FOUND)), match.createScheduleFromMatch()));
         match.setSchedule(schedule);
         matchRepository.save(match);
-
 
         return new MatchOutput(match.getId());
     }
 
+    // FAILED or REGISTERED
     @Transactional
     public MatchRegOutput registerMatch(User user, MatchRegInput matchRegInput) {
-        UserClub userClub = userClubRepository.findByClubAndUser(clubRepository.findById(matchRegInput.getClubId()).get(), user).get();
+        UserClub userClub = userClubRepository.findByClubAndUser(clubRepository.findById(matchRegInput.getClubId())
+                .orElseThrow(() -> new MatchControllerAdvice(ResponseCode.CLUB_NOT_FOUND)), user)
+                .orElseThrow(() -> new MatchControllerAdvice(ResponseCode.MATCH_USER_NOT_FOUND));
         if (!(userClub.getClubRole().equals(ClubRole.CREATOR) || userClub.getClubRole().equals(ClubRole.ADMIN))) {
-            throw new MatchPermissionException("매치 생성 권한이 없습니다.");
+//            throw new MatchPermissionException("매치 생성 권한이 없습니다.");
+            throw new MatchControllerAdvice(ResponseCode._UNAUTHORIZED);
         }
 
-        Match match = matchRepository.findById(matchRegInput.getId()).get();
+        Match match = matchRepository.findById(matchRegInput.getId()).orElseThrow(() -> new MatchControllerAdvice(ResponseCode.MATCH_NOT_FOUND));
 
         if (match.getSchedule().getAttend() < match.getMinParticipants()) {
             match.failMatch();
@@ -107,11 +120,16 @@ public class MatchService {
         return new MatchRegOutput(match.getId());
     }
 
+    // PENDING_APP
+    @Transactional
     public MatchApplyOutput saveMatchApp(User user, Long matchId, Long clubId) {
-        Club club = clubRepository.findById(clubId).get();
-        Match match = matchRepository.findById(matchId).get();
+        Club club = clubRepository.findById(clubId)
+                .orElseThrow(() -> new MatchControllerAdvice(ResponseCode.CLUB_NOT_FOUND));
+        Match match = matchRepository.findById(matchId)
+                .orElseThrow(() -> new MatchControllerAdvice(ResponseCode.MATCH_NOT_FOUND));
 
-        UserClub userClub = userClubRepository.findByClubAndUser(club, user).get();
+        UserClub userClub = userClubRepository.findByClubAndUser(club, user)
+                .orElseThrow(() -> new MatchControllerAdvice(ResponseCode.MEMBER_NOT_FOUND));
         if (!(userClub.getClubRole().equals(ClubRole.CREATOR) || userClub.getClubRole().equals(ClubRole.ADMIN))) {
             eventPublisher.publishEvent(new MatchRequestEvent(match, user, club));
             return null;
@@ -119,7 +137,8 @@ public class MatchService {
 
         MatchApplication existingApplication = matchApplicationRepository.findByMatchAndClub(match, club);
         if (existingApplication != null) {
-            throw new MatchPermissionException("이미 신청한 매치입니다.");
+//            throw new MatchPermissionException("이미 신청한 매치입니다.");
+            throw new MatchControllerAdvice(ResponseCode.MATCH_ALREADY_FOUND);
         }
         matchRepository.findMatchByClub(club).forEach(m -> m.timeDuplicationCheck(match.getStartTime(), match.getEndTime()));
 
@@ -132,13 +151,19 @@ public class MatchService {
         return new MatchApplyOutput(matchApplication.getId());
     }
 
+    // REJECTED or APP_COMPLETED
+    @Transactional
     public MatchApplyOutput applyMatch(User user, MatchApplyInput matchApplyInput) {
-        UserClub userClub = userClubRepository.findByClubAndUser(clubRepository.findById(matchApplyInput.getClubId()).get(), user).get();
+        UserClub userClub = userClubRepository.findByClubAndUser(clubRepository.findById(matchApplyInput.getClubId())
+                        .orElseThrow(() -> new MatchControllerAdvice(ResponseCode.CLUB_NOT_FOUND)), user)
+                .orElseThrow(() -> new MatchControllerAdvice(ResponseCode.MATCH_USER_NOT_FOUND));
         if (!(userClub.getClubRole().equals(ClubRole.CREATOR) || userClub.getClubRole().equals(ClubRole.ADMIN))) {
-            throw new MatchPermissionException("매치 신청 등록 권한이 없습니다.");
+//            throw new MatchPermissionException("매치 신청 등록 권한이 없습니다.");
+            throw new MatchControllerAdvice(ResponseCode._UNAUTHORIZED);
         }
 
-        MatchApplication matchApplication = matchApplicationRepository.findById(matchApplyInput.getId()).get();
+        MatchApplication matchApplication = matchApplicationRepository.findById(matchApplyInput.getId())
+                .orElseThrow(() -> new MatchControllerAdvice(ResponseCode.MATCH_APPLICATION_NOT_FOUND));
 
         if (matchApplication.getSchedule().getAttend() < matchApplication.getMatch().getMinParticipants()) {
             matchApplication.failApply();
@@ -152,23 +177,35 @@ public class MatchService {
         return new MatchApplyOutput(matchApplication.getId());
     }
 
+    // 매치 초대
     public void inviteMatch(User user, Long matchId, Long clubId) {
-        Match match = matchRepository.findById(matchId).get();
-        UserClub userClub = userClubRepository.findByClubAndUser(clubRepository.findById(match.getHomeClub().getId()).get(), user).get();
+        Match match = matchRepository.findById(matchId)
+                .orElseThrow(() -> new MatchControllerAdvice(ResponseCode.MATCH_NOT_FOUND));
+        UserClub userClub = userClubRepository
+                .findByClubAndUser(clubRepository.findById(match.getHomeClub().getId())
+                        .orElseThrow(() -> new MatchControllerAdvice(ResponseCode.CLUB_NOT_FOUND)), user)
+                .orElseThrow(() -> new MatchControllerAdvice(ResponseCode.MATCH_USER_NOT_FOUND));
         if (!(userClub.getClubRole().equals(ClubRole.CREATOR) || userClub.getClubRole().equals(ClubRole.ADMIN))) {
-            throw new MatchPermissionException("매치 초청 권한이 없습니다.");
+//            throw new MatchPermissionException("매치 초청 권한이 없습니다.");
+            throw new MatchControllerAdvice(ResponseCode._UNAUTHORIZED);
         }
 
-        eventPublisher.publishEvent(new MatchInviteEvent(match, clubRepository.findById(clubId).get(), user));
+        eventPublisher.publishEvent(new MatchInviteEvent(match, clubRepository.findById(clubId)
+                .orElseThrow(() -> new MatchControllerAdvice(ResponseCode.CLUB_NOT_FOUND)), user));
     }
 
+    // 매치 확정 -> CONFIRMED
     public MatchConfirmOutput confirmMatch(Long id, Long awayClubId, User user) {
-        Match match = matchRepository.findById(id).get();
-        Club awayClub = clubRepository.findById(awayClubId).get();
+        Match match = matchRepository.findById(id)
+                .orElseThrow(() -> new MatchControllerAdvice(ResponseCode.MATCH_NOT_FOUND));
+        Club awayClub = clubRepository.findById(awayClubId)
+                .orElseThrow(() -> new MatchControllerAdvice(ResponseCode.CLUB_NOT_FOUND));
 
-        UserClub userClub = userClubRepository.findByClubAndUser(match.getHomeClub(), user).get();
+        UserClub userClub = userClubRepository.findByClubAndUser(match.getHomeClub(), user)
+                .orElseThrow(() -> new MatchControllerAdvice(ResponseCode.MATCH_USER_NOT_FOUND));
         if (!(userClub.getClubRole().equals(ClubRole.CREATOR) || userClub.getClubRole().equals(ClubRole.ADMIN))) {
-            throw new MatchPermissionException("매치 확정 권한이 없습니다.");
+//            throw new MatchPermissionException("매치 확정 권한이 없습니다.");
+            throw new MatchControllerAdvice(ResponseCode._UNAUTHORIZED);
         }
 
         match.confirmMatch(awayClub);
@@ -190,7 +227,7 @@ public class MatchService {
         return new MatchConfirmOutput(awayClub);
     }
 
-    //유저가 친선 매치 일정에 참여 투표 시 매치 유저 저장, 수정 필요
+    //유저가 친선 매치 일정에 참여 투표 시 매치 유저 저장, 수정 필요 -> 문제 있나?
     private void saveMatchUserByAttendance(Match match, Schedule schedule) {
         for (ScheduleVote scheduleVote : scheduleVoteRepository.findBySchedule(schedule)) {
             if (scheduleVote.getAttendance().equals("attend")) {
@@ -203,13 +240,16 @@ public class MatchService {
 
     public List<MatchSearchOutput> searchMatch(MatchSearchCond matchSearchCond) {
 
-        return matchRepository.findBySearchCond(matchSearchCond).stream().map(MatchSearchOutput::new).toList();
+        return matchRepository.findBySearchCond(matchSearchCond).stream()
+                .map(MatchSearchOutput::new)
+                .toList();
     }
 
     public List<ConfirmedMatchOutput> findConfirmedMatch(Club club) {
 
         return matchRepository.findConfirmedMatchByClub(club).stream()
-                .map(match -> new ConfirmedMatchOutput(match, club)).toList();
+                .map(match -> new ConfirmedMatchOutput(match, club))
+                .toList();
     }
 
     public List<MatchClubOutput> searchMatchClubs(MatchClubSearchCond matchClubSearchCond, Club club) {
@@ -231,19 +271,21 @@ public class MatchService {
     public MatchRecordOutput saveMatchRecord(Match match, User user, MatchRecordInput matchRecordInput) {
         //매치 종료 48시간 이후면 점수 기록 못하게
         if (LocalDateTime.now().isAfter(match.getEndTime().plusHours(48))) {
-            throw new MatchRecordExpireException();
+//            throw new MatchRecordExpireException();
+            throw new MatchControllerAdvice(ResponseCode.MATCH_TIME_OUT);
         }
         MatchUser matchUser = matchUserRepository.findByMatchAndUser(match, user);
         matchUser.recordScore(matchRecordInput);
         return new MatchRecordOutput(matchUser);
     }
 
-    public MatchMainOutput matchMainFind(Long clubId, User user) {
-        Club myClub = clubRepository.findById(clubId).get();
+    public MatchMainOutput matchMainFind(Long clubId) {
+        Club myClub = clubRepository.findById(clubId).orElseThrow(() -> new MatchControllerAdvice(ResponseCode.CLUB_NOT_FOUND));
 
         List<Match> matches = matchRepository.findRegisteredMatch(myClub);
         String[] myClubCoordinate = myClub.getUniversity().replace("@", ",").split(",");
         List<RegisteredMatchDto> registeredMatchDtos = new ArrayList<>(matches.size());
+
         for (Match match : matches) {
             String[] matchCoordinate = match.getLocation().replace("@", ",").split(",");
             registeredMatchDtos.add(new RegisteredMatchDto(match, distance(Double.parseDouble(myClubCoordinate[2]), Double.parseDouble(myClubCoordinate[1]),

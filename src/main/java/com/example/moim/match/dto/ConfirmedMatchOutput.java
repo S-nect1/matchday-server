@@ -1,6 +1,7 @@
 package com.example.moim.match.dto;
 
 import com.example.moim.club.entity.Club;
+import com.example.moim.global.enums.SportsType;
 import com.example.moim.match.entity.Match;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.Data;
@@ -10,7 +11,7 @@ import java.time.LocalDate;
 @Data
 public class ConfirmedMatchOutput {
     private String OpponentClubName;
-    private String event;
+    private SportsType event;
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy.MM.dd")
     private LocalDate matchDate;
     private String location;

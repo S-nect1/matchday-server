@@ -12,8 +12,7 @@ import java.util.List;
 import static com.example.moim.schedule.entity.QSchedule.schedule;
 import static org.springframework.util.StringUtils.hasText;
 
-import static com.example.moim.club.entity.QClub.*;
-import static com.example.moim.schedule.entity.QSchedule.*;
+import static com.example.moim.club.entity.QClub.club;
 
 public class ScheduleRepositoryImpl implements ScheduleRepositoryCustom {
 

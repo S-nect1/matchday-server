@@ -1,11 +1,9 @@
 package com.example.moim.match.dto;
 
-import com.example.moim.match.entity.Match;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.Null;
 import lombok.Data;
 
 import java.time.LocalDateTime;

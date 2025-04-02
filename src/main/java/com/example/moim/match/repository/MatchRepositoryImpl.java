@@ -3,9 +3,11 @@ package com.example.moim.match.repository;
 import com.example.moim.club.entity.Club;
 import com.example.moim.global.enums.AgeRange;
 import com.example.moim.global.enums.Gender;
+import com.example.moim.global.exception.ResponseCode;
 import com.example.moim.match.dto.MatchClubSearchCond;
 import com.example.moim.match.dto.MatchSearchCond;
 import com.example.moim.match.entity.Match;
+import com.example.moim.match.exception.advice.MatchControllerAdvice;
 import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.core.types.dsl.Expressions;
 import com.querydsl.jpa.impl.JPAQueryFactory;
@@ -61,7 +63,7 @@ public class MatchRepositoryImpl implements MatchRepositoryCustom {
 
     private BooleanExpression searchContains(String search) {
         if (hasText(search)) {
-            return match.event.contains(search)
+            return match.event.stringValue().contains(search)
                     .or(match.name.contains(search))
                     .or(match.location.contains(search))
                     .or(match.fee.stringValue().contains(search))
@@ -76,16 +78,12 @@ public class MatchRepositoryImpl implements MatchRepositoryCustom {
     }
 
     private BooleanExpression matchTypeEq(String matchType) {
-        return matchType != null ? match.event.eq(matchType) : null;
+        return matchType != null ? match.event.stringValue().eq(matchType) : null;
     }
 
     private BooleanExpression genderEq(String gender) {
-        if (gender == null) return null;
-
-        return Gender.fromKoreanName(gender)
-                .map(match.gender::eq)
-                .orElse(null);
-//        return gender != null ? match.gender.eq(Gender.fromKoreanName(gender)) : null;
+        return gender != null ?
+                match.gender.eq(Gender.fromKoreanName(gender).orElseThrow(() -> new MatchControllerAdvice(ResponseCode.INVALID_GENDER))) : null;
     }
 
     private BooleanExpression areaEq(String area) {
@@ -93,12 +91,8 @@ public class MatchRepositoryImpl implements MatchRepositoryCustom {
     }
 
     private BooleanExpression ageRangeEq(String ageRange) {
-        if (ageRange == null) return null;
-
-        return AgeRange.fromKoreanName(ageRange)
-                .map(match.ageRange::eq)
-                .orElse(null);
-//        return ageRange != null ? club.ageRange.eq(AgeRange.fromKoreanName(ageRange)) : null;
+        return ageRange != null ?
+                club.ageRange.eq(AgeRange.fromKoreanName(ageRange).orElseThrow(() -> new MatchControllerAdvice(ResponseCode.INVALID_AGE_RANGE))) : null;
     }
 
 //    private BooleanExpression teamAbilityEq(String teamAbility) {
