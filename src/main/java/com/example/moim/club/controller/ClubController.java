@@ -3,6 +3,7 @@ package com.example.moim.club.controller;
 import com.example.moim.club.dto.request.*;
 import com.example.moim.club.dto.response.ClubOutput;
 import com.example.moim.club.dto.response.ClubSearchOutput;
+import com.example.moim.club.dto.response.ClubUpdateOutput;
 import com.example.moim.club.dto.response.UserClubOutput;
 import com.example.moim.club.service.ClubCommandService;
 import com.example.moim.club.service.ClubCommandServiceImpl;
@@ -39,7 +40,7 @@ public class ClubController implements ClubControllerDocs{
 
     @PatchMapping(value = "/club", consumes = MediaType.MULTIPART_FORM_DATA_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
 //    public BaseResponse<ClubOutput> clubUpdate(@AuthenticationPrincipal UserDetailsImpl userDetailsImpl, @ModelAttribute ClubUpdateInput clubUpdateInput) throws IOException {
-    public BaseResponse<ClubOutput> clubUpdate(@ModelAttribute ClubUpdateInput clubUpdateInput) throws IOException {
+    public BaseResponse<ClubUpdateOutput> clubUpdate(@ModelAttribute ClubUpdateInput clubUpdateInput) throws IOException {
         User user = userRepository.findById(1L).get();
         return BaseResponse.onSuccess(clubCommandService.updateClub(user, clubUpdateInput), ResponseCode.OK);
     }

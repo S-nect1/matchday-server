@@ -3,6 +3,7 @@ package com.example.moim.club.controller;
 import com.example.moim.club.dto.request.*;
 import com.example.moim.club.dto.response.ClubOutput;
 import com.example.moim.club.dto.response.ClubSearchOutput;
+import com.example.moim.club.dto.response.ClubUpdateOutput;
 import com.example.moim.club.dto.response.UserClubOutput;
 import com.example.moim.global.exception.BaseResponse;
 import com.example.moim.user.dto.UserDetailsImpl;
@@ -24,8 +25,8 @@ public interface ClubControllerDocs {
     BaseResponse<ClubOutput> clubSave(@ModelAttribute ClubInput clubInput) throws IOException;
 
     @Operation(summary = "모임 수정", description = "응답으로 받는 profileImg는 Base64 디코딩 필요")
-//    BaseResponse<ClubOutput> clubUpdate(@AuthenticationPrincipal UserDetailsImpl userDetailsImpl, @ModelAttribute ClubUpdateInput clubUpdateInput) throws IOException;
-    BaseResponse<ClubOutput> clubUpdate(@ModelAttribute ClubUpdateInput clubUpdateInput) throws IOException;
+//    BaseResponse<ClubUpdateOutput> clubUpdate(@AuthenticationPrincipal UserDetailsImpl userDetailsImpl, @ModelAttribute ClubUpdateInput clubUpdateInput) throws IOException;
+    BaseResponse<ClubUpdateOutput> clubUpdate(@ModelAttribute ClubUpdateInput clubUpdateInput) throws IOException;
 
     @Operation(summary = "모임 검색")
 //    BaseResponse<List<ClubSearchOutput>> findClubs(@AuthenticationPrincipal UserDetailsImpl userDetailsImpl, @ModelAttribute ClubSearchCond clubSearchCond);

@@ -20,7 +20,7 @@ public class ClubOutput {
     private String introduction;
     private String profileImg;
     private String clubCategory;
-    private String organization;
+    private String university;
     private String gender;
     private String activityArea;
     private String sportsType;
@@ -71,7 +71,7 @@ public class ClubOutput {
         this.explanation = club.getExplanation();
         this.introduction = club.getIntroduction();
         this.clubCategory = club.getClubCategory().getKoreanName();
-        this.organization = club.getUniversity();
+        this.university = club.getUniversity();
         this.gender = club.getGender().getKoreanName();
         this.activityArea = club.getActivityArea().getKoreanName();
         this.sportsType = club.getSportsType().getKoreanName();

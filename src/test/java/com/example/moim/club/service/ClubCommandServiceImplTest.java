@@ -2,6 +2,7 @@ package com.example.moim.club.service;
 
 import com.example.moim.club.dto.request.*;
 import com.example.moim.club.dto.response.ClubOutput;
+import com.example.moim.club.dto.response.ClubUpdateOutput;
 import com.example.moim.club.dto.response.UserClubOutput;
 import com.example.moim.club.entity.*;
 import com.example.moim.club.exception.advice.ClubControllerAdvice;
@@ -110,7 +111,7 @@ class ClubCommandServiceImplTest {
         when(clubRepository.findById(any(Long.class))).thenReturn(Optional.of(club));
         when(userClubRepository.findByClubAndUser(any(Club.class), any(User.class))).thenReturn(Optional.of(userClub));
         when(fileStore.storeFile(null)).thenReturn(null);
-        ClubOutput clubOutput = clubCommandService.updateClub(new User(), clubUpdateInput);
+        ClubUpdateOutput clubOutput = clubCommandService.updateClub(new User(), clubUpdateInput);
         //then
         assertThat(clubOutput).isNotNull();
         assertThat(clubOutput.getTitle()).isEqualTo("update title");

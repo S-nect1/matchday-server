@@ -2,6 +2,7 @@ package com.example.moim.club.service;
 
 import com.example.moim.club.dto.request.*;
 import com.example.moim.club.dto.response.ClubOutput;
+import com.example.moim.club.dto.response.ClubUpdateOutput;
 import com.example.moim.club.dto.response.UserClubOutput;
 import com.example.moim.club.entity.Club;
 import com.example.moim.club.entity.UserClub;
@@ -15,12 +16,15 @@ import com.example.moim.notification.dto.ClubJoinEvent;
 import com.example.moim.user.entity.User;
 import com.example.moim.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.io.IOException;
+import java.util.List;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class ClubCommandServiceImpl implements ClubCommandService {
@@ -41,7 +45,7 @@ public class ClubCommandServiceImpl implements ClubCommandService {
     }
 
     @Transactional
-    public ClubOutput updateClub(User user, ClubUpdateInput clubUpdateInput) throws IOException {
+    public ClubUpdateOutput updateClub(User user, ClubUpdateInput clubUpdateInput) throws IOException {
         Club club = clubRepository.findById(clubUpdateInput.getId()).orElseThrow(() -> new ClubControllerAdvice(ResponseCode.CLUB_NOT_FOUND));
         UserClub userClub = userClubRepository.findByClubAndUser(club, user).orElseThrow(() -> new ClubControllerAdvice(ResponseCode.CLUB_USER_NOT_FOUND));
         if (!(userClub.getClubRole().equals(ClubRole.CREATOR) || userClub.getClubRole().equals(ClubRole.ADMIN))) {
@@ -53,10 +57,11 @@ public class ClubCommandServiceImpl implements ClubCommandService {
         }
 
         club.updateClub(clubUpdateInput, fileStore.storeFile(clubUpdateInput.getProfileImg()));
+        List<UserClubOutput> userList = userClubRepository.findAllByClub(club).stream().map(UserClubOutput::new).toList();
         /**
          * TODO: 왜 여기를 ClubOutput 으로 반환하게 했지..? 여기 void 로 바꾸고 그냥 204 상태 코드 반환하는 걸로 수정하기
          */
-        return new ClubOutput(club);
+        return new ClubUpdateOutput(club, userList);
     }
 
     @Transactional
