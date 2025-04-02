@@ -163,7 +163,7 @@ class ClubCommandServiceImplTest {
     void saveClubUser() {
         //given
         Club club = Club.createClub(clubInput, null);
-        ClubUserSaveInput clubUserSaveInput = ClubUserSaveInput.builder().clubId(1L).clubPassword("clubPassword").build();
+        ClubUserSaveInput clubUserSaveInput = ClubUserSaveInput.builder().clubPassword("clubPassword").build();
 
         //when
         when(clubRepository.findById(any(Long.class))).thenReturn(Optional.of(club));
@@ -182,7 +182,7 @@ class ClubCommandServiceImplTest {
     void saveClubUser_exception_wrong_password() {
         //given
         Club club = Club.createClub(clubInput, null);
-        ClubUserSaveInput clubUserSaveInput = ClubUserSaveInput.builder().clubId(1L).clubPassword("wrong!").build();
+        ClubUserSaveInput clubUserSaveInput = ClubUserSaveInput.builder().clubPassword("wrong!").build();
         //when
         //then
         when(clubRepository.findById(any(Long.class))).thenReturn(Optional.of(club));
