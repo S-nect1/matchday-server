@@ -1,19 +1,14 @@
 package com.example.moim.club.dto.response;
 
-import com.example.moim.club.entity.*;
-import com.example.moim.global.enums.*;
+import com.example.moim.club.entity.Club;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.springframework.core.io.FileUrlResource;
 
-import java.io.IOException;
-import java.util.Base64;
 import java.util.List;
 
 @Data
 @NoArgsConstructor
-public class ClubOutput {
-    private ClubRole clubRole;
+public class ClubSaveOutput {
     private Long id;
     private String title;
     private String explanation;
@@ -30,33 +25,22 @@ public class ClubOutput {
     private String subUniformColor;
 
     private List<UserClubOutput> userList;
-//    private List<ScheduleOutput> scheduleList;
-//    private List<AwardOutput> awardList;
 
-    public ClubOutput(Club club, List<UserClubOutput> userList, ClubRole clubRole) {
-        this.clubRole = clubRole;
+    public ClubSaveOutput(Club club, List<UserClubOutput> userList) {
         this.id = club.getId();
         this.title = club.getTitle();
         this.explanation = club.getExplanation();
         this.introduction = club.getIntroduction();
+        this.profileImg = club.getProfileImgPath();
         this.clubCategory = club.getClubCategory().getKoreanName();
         this.university = club.getUniversity();
         this.gender = club.getGender().getKoreanName();
         this.activityArea = club.getActivityArea().getKoreanName();
         this.sportsType = club.getSportsType().getKoreanName();
         this.ageRange = club.getAgeRange().getKoreanName();
+        this.memberCount = club.getMemberCount();
         this.mainUniformColor = club.getMainUniformColor();
         this.subUniformColor = club.getSubUniformColor();
-        try {
-            if (club.getProfileImgPath() != null) {
-                this.profileImg = Base64.getEncoder().encodeToString(new FileUrlResource(club.getProfileImgPath()).getContentAsByteArray());
-            }
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
-//        this.scheduleList = scheduleOutputs;
-//        this.awardList = awardOutputs;
         this.userList = userList;
-        this.memberCount = club.getMemberCount();
     }
 }

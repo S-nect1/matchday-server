@@ -2,6 +2,7 @@ package com.example.moim.club.service;
 
 import com.example.moim.club.dto.request.*;
 import com.example.moim.club.dto.response.ClubOutput;
+import com.example.moim.club.dto.response.ClubSaveOutput;
 import com.example.moim.club.dto.response.ClubUpdateOutput;
 import com.example.moim.club.dto.response.UserClubOutput;
 import com.example.moim.club.entity.Club;
@@ -23,6 +24,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.io.IOException;
 import java.util.List;
+import java.util.Optional;
 
 @Slf4j
 @Service
@@ -35,13 +37,11 @@ public class ClubCommandServiceImpl implements ClubCommandService {
     private final ApplicationEventPublisher eventPublisher;
 
     @Transactional
-    public ClubOutput saveClub(User user, ClubInput clubInput) throws IOException {
-        /**
-         * FIXME: 비밀번호는 무조건 설정하도록 바꾸기. 사실 모든 값 다 입력하도록 바꿔야 함
-         */
+    public ClubSaveOutput saveClub(User user, ClubInput clubInput) throws IOException {
         Club club = clubRepository.save(Club.createClub(clubInput, fileStore.storeFile(clubInput.getProfileImg())));
         UserClub userClub = userClubRepository.save(UserClub.createLeaderUserClub(user, club));
-        return new ClubOutput(club, userClub.getClubRole());
+        List<UserClubOutput> userList = userClubRepository.findAllByClub(club).stream().map(UserClubOutput::new).toList();
+        return new ClubSaveOutput(club, userList);
     }
 
     @Transactional
@@ -66,11 +66,13 @@ public class ClubCommandServiceImpl implements ClubCommandService {
 
     @Transactional
     public UserClubOutput saveClubUser(User user, ClubUserSaveInput clubUserSaveInput) {
-        /**
-         * FIXME: 이미 가입된 회원인지 체크하기
-         */
         Club club = clubRepository.findById(clubUserSaveInput.getClubId()).orElseThrow(() -> new ClubControllerAdvice(ResponseCode.CLUB_NOT_FOUND));
+        Optional<UserClub> checkUserClub = userClubRepository.findByClubAndUser(club, user);
+
         if (club.getClubPassword().equals(clubUserSaveInput.getClubPassword())) {
+            if (checkUserClub.isPresent()) {
+                throw new ClubControllerAdvice(ResponseCode.CLUB_USER_ALREADY_JOINED);
+            }
             club.plusMemberCount();
             UserClub userClub = userClubRepository.save(UserClub.createUserClub(user, club));
             eventPublisher.publishEvent(new ClubJoinEvent(user, club));

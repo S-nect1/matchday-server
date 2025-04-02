@@ -92,7 +92,7 @@ class ClubCommandServiceImplTest {
         when(clubRepository.save(any(Club.class))).thenReturn(club);
         when(userClubRepository.save(any(UserClub.class))).thenReturn(userClub);
         when(fileStore.storeFile(any())).thenReturn(null);
-        ClubOutput clubOutput = clubCommandService.saveClub(new User(), clubInput);
+        ClubUpdateOutput clubOutput = clubCommandService.saveClub(new User(), clubInput);
 
         //then
         assertThat(clubOutput).isNotNull();

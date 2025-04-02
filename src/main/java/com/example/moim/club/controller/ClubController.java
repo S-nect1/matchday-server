@@ -1,10 +1,7 @@
 package com.example.moim.club.controller;
 
 import com.example.moim.club.dto.request.*;
-import com.example.moim.club.dto.response.ClubOutput;
-import com.example.moim.club.dto.response.ClubSearchOutput;
-import com.example.moim.club.dto.response.ClubUpdateOutput;
-import com.example.moim.club.dto.response.UserClubOutput;
+import com.example.moim.club.dto.response.*;
 import com.example.moim.club.service.ClubCommandService;
 import com.example.moim.club.service.ClubCommandServiceImpl;
 import com.example.moim.club.service.ClubQueryService;
@@ -33,7 +30,7 @@ public class ClubController implements ClubControllerDocs{
 
     @PostMapping(value = "/club", consumes = MediaType.MULTIPART_FORM_DATA_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
 //    public BaseResponse<ClubOutput> clubSave(@AuthenticationPrincipal UserDetailsImpl userDetailsImpl, @ModelAttribute @Valid ClubInput clubInput) throws IOException {
-    public BaseResponse<ClubOutput> clubSave(@ModelAttribute @Valid ClubInput clubInput) throws IOException {
+    public BaseResponse<ClubSaveOutput> clubSave(@ModelAttribute @Valid ClubInput clubInput) throws IOException {
         User user = userRepository.findById(1L).get();
         return BaseResponse.onSuccess(clubCommandService.saveClub(user, clubInput), ResponseCode.OK);
     }
