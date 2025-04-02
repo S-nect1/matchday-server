@@ -31,14 +31,14 @@ public interface ClubControllerDocs {
 
     @Operation(summary = "모임 가입")
 //    BaseResponse<UserClubOutput> clubUserSave(@AuthenticationPrincipal UserDetailsImpl userDetailsImpl, @RequestBody ClubUserSaveInput clubInput);
-    BaseResponse<UserClubOutput> clubUserSave(@RequestBody ClubUserSaveInput clubInput);
+    BaseResponse<UserClubOutput> clubUserSave(@RequestBody ClubUserSaveInput clubInput, @PathVariable Long clubId);
 
 //    @Operation(summary = "모임에 초대")
 //    UserClubOutput clubUserInvite(@AuthenticationPrincipal userDetailsImpl userDetailsImpl, @RequestBody ClubUserSaveInput clubInput);
 
     @Operation(summary = "모임 회원 직책, 분류 수정")
 //    BaseResponse<UserClubOutput> clubUserUpdate(@AuthenticationPrincipal UserDetailsImpl userDetailsImpl, @RequestBody ClubUserUpdateInput clubInput);
-    BaseResponse<UserClubOutput> clubUserUpdate(@RequestBody ClubUserUpdateInput clubInput);
+    BaseResponse<UserClubOutput> clubUserUpdate(@RequestBody ClubUserUpdateInput clubInput, @PathVariable("id") Long clubId);
 
     @Operation(summary = "모임 정보 조회", description = "응답으로 받는 profileImg는 Base64 디코딩 필요")
 //    BaseResponse<ClubOutput> clubFind(@AuthenticationPrincipal UserDetailsImpl userDetailsImpl, @PathVariable Long id);
@@ -46,7 +46,7 @@ public interface ClubControllerDocs {
 
     @Operation(summary = "모임 비밀번호 변경")
 //    BaseResponse clubPasswordUpdate(@AuthenticationPrincipal UserDetailsImpl userDetailsImpl, @RequestBody ClubPswdUpdateInput clubPswdUpdateInput);
-    BaseResponse clubPasswordUpdate(@RequestBody ClubPswdUpdateInput clubPswdUpdateInput);
+    BaseResponse clubPasswordUpdate(@RequestBody ClubPswdUpdateInput clubPswdUpdateInput, @PathVariable Long clubId);
 
 //    @Operation(summary = "모임 사진 변경")
 //    void profileImgUpdate(@AuthenticationPrincipal UserDetailsImpl userDetailsImpl, @ModelAttribute ClubImgInput clubImgInput) throws IOException;

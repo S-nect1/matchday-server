@@ -2,6 +2,7 @@ package com.example.moim.club.service;
 
 import com.example.moim.club.dto.request.*;
 import com.example.moim.club.dto.response.ClubOutput;
+import com.example.moim.club.dto.response.ClubSaveOutput;
 import com.example.moim.club.dto.response.ClubUpdateOutput;
 import com.example.moim.club.dto.response.UserClubOutput;
 import com.example.moim.club.entity.*;
@@ -92,7 +93,7 @@ class ClubCommandServiceImplTest {
         when(clubRepository.save(any(Club.class))).thenReturn(club);
         when(userClubRepository.save(any(UserClub.class))).thenReturn(userClub);
         when(fileStore.storeFile(any())).thenReturn(null);
-        ClubUpdateOutput clubOutput = clubCommandService.saveClub(new User(), clubInput);
+        ClubSaveOutput clubOutput = clubCommandService.saveClub(new User(), clubInput);
 
         //then
         assertThat(clubOutput).isNotNull();
@@ -167,7 +168,7 @@ class ClubCommandServiceImplTest {
         //when
         when(clubRepository.findById(any(Long.class))).thenReturn(Optional.of(club));
         when(userClubRepository.save(any(UserClub.class))).thenReturn(UserClub.createUserClub(new User(), club));
-        UserClubOutput result = clubCommandService.saveClubUser(new User(), clubUserSaveInput);
+        UserClubOutput result = clubCommandService.saveClubUser(new User(), clubUserSaveInput, 1L);
 
         //then
         assertThat(result.getClubRole()).isEqualTo(ClubRole.MEMBER.name());
@@ -186,7 +187,7 @@ class ClubCommandServiceImplTest {
         //then
         when(clubRepository.findById(any(Long.class))).thenReturn(Optional.of(club));
         Exception exception = assertThrows(ClubControllerAdvice.class, () -> {
-            clubCommandService.saveClubUser(new User(), clubUserSaveInput);
+            clubCommandService.saveClubUser(new User(), clubUserSaveInput, 1L);
         });
         assertThat(exception.getMessage()).isEqualTo(ResponseCode.CLUB_PASSWORD_INCORRECT.getMessage());
         verify(clubRepository, times(1)).findById(any(Long.class));
@@ -200,7 +201,7 @@ class ClubCommandServiceImplTest {
         //given
         Club club = Club.createClub(clubInput, null);
         ClubUserUpdateInput clubUserUpdateInput = ClubUserUpdateInput.builder()
-                .userId(1L).clubRole(ClubRole.ADMIN.name()).id(1L).build();
+                .userId(1L).clubRole(ClubRole.ADMIN.name()).build();
 
         //when
         when(clubRepository.findById(any(Long.class))).thenReturn(Optional.of(club));
@@ -208,7 +209,7 @@ class ClubCommandServiceImplTest {
                 .thenReturn(Optional.of(UserClub.createLeaderUserClub(new User(), club)))
                 .thenReturn(Optional.of(UserClub.createUserClub(new User(), club)));
         when(userRepository.findById(any(Long.class))).thenReturn(Optional.of(new User()));
-        UserClubOutput result = clubCommandService.updateClubUser(new User(), clubUserUpdateInput);
+        UserClubOutput result = clubCommandService.updateClubUser(new User(), clubUserUpdateInput, 1L);
 
         //then
         assertThat(result.getClubRole()).isEqualTo(ClubRole.ADMIN.name());
@@ -222,7 +223,7 @@ class ClubCommandServiceImplTest {
         //given
         Club club = Club.createClub(clubInput, null);
         ClubUserUpdateInput clubUserUpdateInput = ClubUserUpdateInput.builder()
-                .userId(1L).clubRole(ClubRole.ADMIN.name()).id(1L).build();
+                .userId(1L).clubRole(ClubRole.ADMIN.name()).build();
 
         //when
         //then
@@ -231,7 +232,7 @@ class ClubCommandServiceImplTest {
                 .thenReturn(Optional.of(UserClub.createUserClub(new User(), club)));
 
         Exception exception = assertThrows(ClubControllerAdvice.class, () -> {
-            clubCommandService.updateClubUser(new User(), clubUserUpdateInput);
+            clubCommandService.updateClubUser(new User(), clubUserUpdateInput, 1L);
         });
         assertThat(exception.getMessage()).isEqualTo(ResponseCode.CLUB_PERMISSION_DENIED.getMessage());
         verify(clubRepository, times(1)).findById(any(Long.class));
@@ -248,7 +249,7 @@ class ClubCommandServiceImplTest {
         //when
         when(clubRepository.findById(any(Long.class))).thenReturn(Optional.of(club));
         when(userClubRepository.findByClubAndUser(any(Club.class), any(User.class))).thenReturn(Optional.of(UserClub.createLeaderUserClub(user, club)));
-        clubCommandService.clubPasswordUpdate(user, clubPswdUpdateInput);
+        clubCommandService.clubPasswordUpdate(user, clubPswdUpdateInput, 1L);
         //then
         assertThat(club.getClubPassword()).isEqualTo("newPassword");
         verify(clubRepository, times(1)).findById(any(Long.class));
@@ -260,7 +261,7 @@ class ClubCommandServiceImplTest {
     void clubPasswordUpdate_exception_wrong_permission() {
         //given
         Club club = Club.createClub(clubInput, null);
-        ClubPswdUpdateInput clubPswdUpdateInput = ClubPswdUpdateInput.builder().id(1L).oldPassword("clubPassword").newPassword("newPassword").rePassword("newPassword").build();
+        ClubPswdUpdateInput clubPswdUpdateInput = ClubPswdUpdateInput.builder().oldPassword("clubPassword").newPassword("newPassword").rePassword("newPassword").build();
         User user = new User();
         //when
         when(clubRepository.findById(any(Long.class))).thenReturn(Optional.of(club));
@@ -268,7 +269,7 @@ class ClubCommandServiceImplTest {
 
         //then
         Exception exception = assertThrows(ClubControllerAdvice.class, () -> {
-            clubCommandService.clubPasswordUpdate(user, clubPswdUpdateInput);
+            clubCommandService.clubPasswordUpdate(user, clubPswdUpdateInput, 1L);
         });
         assertThat(exception.getMessage()).isEqualTo(ResponseCode.CLUB_PERMISSION_DENIED.getMessage());
         verify(clubRepository, times(1)).findById(any(Long.class));
@@ -280,7 +281,7 @@ class ClubCommandServiceImplTest {
     void clubPasswordUpdate_exception_wrong_password() {
         //given
         Club club = Club.createClub(clubInput, null);
-        ClubPswdUpdateInput clubPswdUpdateInput = ClubPswdUpdateInput.builder().id(1L).oldPassword("wrong!").newPassword("newPassword").rePassword("newPassword").build();
+        ClubPswdUpdateInput clubPswdUpdateInput = ClubPswdUpdateInput.builder().oldPassword("wrong!").newPassword("newPassword").rePassword("newPassword").build();
         User user = new User();
         //when
         when(clubRepository.findById(any(Long.class))).thenReturn(Optional.of(club));
@@ -288,7 +289,7 @@ class ClubCommandServiceImplTest {
 
         //then
         Exception exception = assertThrows(ClubControllerAdvice.class, () -> {
-            clubCommandService.clubPasswordUpdate(user, clubPswdUpdateInput);
+            clubCommandService.clubPasswordUpdate(user, clubPswdUpdateInput, 1L);
         });
         assertThat(exception.getMessage()).isEqualTo(ResponseCode.CLUB_PASSWORD_INCORRECT.getMessage());
         verify(clubRepository, times(1)).findById(any(Long.class));
@@ -300,7 +301,7 @@ class ClubCommandServiceImplTest {
     void clubPasswordUpdate_exception_wrong_check_password() {
         //given
         Club club = Club.createClub(clubInput, null);
-        ClubPswdUpdateInput clubPswdUpdateInput = ClubPswdUpdateInput.builder().id(1L).oldPassword("clubPassword").newPassword("newPassword").rePassword("wrong!").build();
+        ClubPswdUpdateInput clubPswdUpdateInput = ClubPswdUpdateInput.builder().oldPassword("clubPassword").newPassword("newPassword").rePassword("wrong!").build();
         User user = new User();
         //when
         when(clubRepository.findById(any(Long.class))).thenReturn(Optional.of(club));
@@ -308,7 +309,7 @@ class ClubCommandServiceImplTest {
 
         //then
         Exception exception = assertThrows(ClubControllerAdvice.class, () -> {
-            clubCommandService.clubPasswordUpdate(user, clubPswdUpdateInput);
+            clubCommandService.clubPasswordUpdate(user, clubPswdUpdateInput, 1L);
         });
         assertThat(exception.getMessage()).isEqualTo(ResponseCode.CLUB_CHECK_PASSWORD_INCORRECT.getMessage());
         verify(clubRepository, times(1)).findById(any(Long.class));

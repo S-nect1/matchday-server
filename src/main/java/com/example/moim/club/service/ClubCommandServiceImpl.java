@@ -46,7 +46,8 @@ public class ClubCommandServiceImpl implements ClubCommandService {
 
     @Transactional
     public ClubUpdateOutput updateClub(User user, ClubUpdateInput clubUpdateInput, Long clubId) throws IOException {
-        Club club = clubRepository.findById(clubId).orElseThrow(() -> new ClubControllerAdvice(ResponseCode.CLUB_NOT_FOUND));
+        Club club = getClub(clubId);
+//        Club club = clubRepository.findById(clubId).orElseThrow(() -> new ClubControllerAdvice(ResponseCode.CLUB_NOT_FOUND));
         UserClub userClub = userClubRepository.findByClubAndUser(club, user).orElseThrow(() -> new ClubControllerAdvice(ResponseCode.CLUB_USER_NOT_FOUND));
         if (!(userClub.getClubRole().equals(ClubRole.CREATOR) || userClub.getClubRole().equals(ClubRole.ADMIN))) {
             throw new ClubControllerAdvice(ResponseCode.CLUB_PERMISSION_DENIED);
@@ -58,15 +59,13 @@ public class ClubCommandServiceImpl implements ClubCommandService {
 
         club.updateClub(clubUpdateInput, fileStore.storeFile(clubUpdateInput.getProfileImg()));
         List<UserClubOutput> userList = userClubRepository.findAllByClub(club).stream().map(UserClubOutput::new).toList();
-        /**
-         * TODO: 왜 여기를 ClubOutput 으로 반환하게 했지..? 여기 void 로 바꾸고 그냥 204 상태 코드 반환하는 걸로 수정하기
-         */
         return new ClubUpdateOutput(club, userList);
     }
 
     @Transactional
-    public UserClubOutput saveClubUser(User user, ClubUserSaveInput clubUserSaveInput) {
-        Club club = clubRepository.findById(clubUserSaveInput.getClubId()).orElseThrow(() -> new ClubControllerAdvice(ResponseCode.CLUB_NOT_FOUND));
+    public UserClubOutput saveClubUser(User user, ClubUserSaveInput clubUserSaveInput, Long clubId) {
+        Club club = getClub(clubId);
+//        Club club = clubRepository.findById(clubId).orElseThrow(() -> new ClubControllerAdvice(ResponseCode.CLUB_NOT_FOUND));
         Optional<UserClub> checkUserClub = userClubRepository.findByClubAndUser(club, user);
 
         if (club.getClubPassword().equals(clubUserSaveInput.getClubPassword())) {
@@ -86,22 +85,24 @@ public class ClubCommandServiceImpl implements ClubCommandService {
 //    }
 
     @Transactional
-    public UserClubOutput updateClubUser(User user, ClubUserUpdateInput clubInput) {
-        Club club = clubRepository.findById(clubInput.getId()).orElseThrow(() -> new ClubControllerAdvice(ResponseCode.CLUB_NOT_FOUND));
+    public UserClubOutput updateClubUser(User user, ClubUserUpdateInput clubUserUpdateInput, Long clubId) {
+        Club club = getClub(clubId);
+//        Club club = clubRepository.findById(clubId).orElseThrow(() -> new ClubControllerAdvice(ResponseCode.CLUB_NOT_FOUND));
         UserClub userClub = userClubRepository.findByClubAndUser(club, user).orElseThrow(() -> new ClubControllerAdvice(ResponseCode.CLUB_USER_NOT_FOUND));
         if (!(userClub.getClubRole().equals(ClubRole.CREATOR) || userClub.getClubRole().equals(ClubRole.ADMIN))) {
             throw new ClubControllerAdvice(ResponseCode.CLUB_PERMISSION_DENIED);
         }
 
-        UserClub changeUserClub = userClubRepository.findByClubAndUser(club, userRepository.findById(clubInput.getUserId()).get()).get();
-//        changeUserClub.changeUserClub(clubInput.getPosition(), clubInput.getResponsibility());
-        changeUserClub.changeUserClub(ClubRole.valueOf(clubInput.getClubRole()));
+        User targetUser = userRepository.findById(clubUserUpdateInput.getUserId()).orElseThrow(() -> new ClubControllerAdvice(ResponseCode.CLUB_USER_NOT_FOUND));
+        UserClub changeUserClub = userClubRepository.findByClubAndUser(club, targetUser).orElseThrow(() -> new ClubControllerAdvice(ResponseCode.CLUB_USER_NOT_FOUND));
+        changeUserClub.changeUserClub(ClubRole.valueOf(clubUserUpdateInput.getClubRole()));
         return new UserClubOutput(changeUserClub);
     }
 
     @Transactional
-    public void clubPasswordUpdate(User user, ClubPswdUpdateInput clubPswdUpdateInput) {
-        Club club = clubRepository.findById(clubPswdUpdateInput.getId()).orElseThrow(() -> new ClubControllerAdvice(ResponseCode.CLUB_NOT_FOUND));
+    public void clubPasswordUpdate(User user, ClubPswdUpdateInput clubPswdUpdateInput, Long clubId) {
+        Club club = getClub(clubId);
+//        Club club = clubRepository.findById(clubPswdUpdateInput.getId()).orElseThrow(() -> new ClubControllerAdvice(ResponseCode.CLUB_NOT_FOUND));
         UserClub userClub = userClubRepository.findByClubAndUser(club, user).orElseThrow(() -> new ClubControllerAdvice(ResponseCode.CLUB_USER_NOT_FOUND));
         if (!(userClub.getClubRole().equals(ClubRole.CREATOR) || userClub.getClubRole().equals(ClubRole.ADMIN))) {
             throw new ClubControllerAdvice(ResponseCode.CLUB_PERMISSION_DENIED);
@@ -115,6 +116,10 @@ public class ClubCommandServiceImpl implements ClubCommandService {
             throw new ClubControllerAdvice(ResponseCode.CLUB_CHECK_PASSWORD_INCORRECT);
         }
         club.updateClubPassword(clubPswdUpdateInput.getNewPassword());
+    }
+
+    private Club getClub(Long clubId) {
+        return clubRepository.findById(clubId).orElseThrow(() -> new ClubControllerAdvice(ResponseCode.CLUB_NOT_FOUND));
     }
 
 //    @Transactional

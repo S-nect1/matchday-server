@@ -10,8 +10,8 @@ import java.util.List;
 public interface ClubCommandService {
     ClubSaveOutput saveClub(User user, ClubInput clubInput) throws IOException;
     ClubUpdateOutput updateClub(User user, ClubUpdateInput clubUpdateInput, Long clubId) throws IOException;
-    UserClubOutput saveClubUser(User user, ClubUserSaveInput clubUserSaveInput);
-    UserClubOutput updateClubUser(User user, ClubUserUpdateInput clubInput);
-    void clubPasswordUpdate(User user, ClubPswdUpdateInput clubPswdUpdateInput);
+    UserClubOutput saveClubUser(User user, ClubUserSaveInput clubUserSaveInput, Long clubId);
+    UserClubOutput updateClubUser(User user, ClubUserUpdateInput clubInput, Long clubId);
+    void clubPasswordUpdate(User user, ClubPswdUpdateInput clubPswdUpdateInput, Long clubId);
 
 }
