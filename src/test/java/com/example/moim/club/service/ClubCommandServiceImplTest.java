@@ -8,6 +8,7 @@ import com.example.moim.club.dto.response.UserClubOutput;
 import com.example.moim.club.entity.*;
 import com.example.moim.club.exception.advice.ClubControllerAdvice;
 import com.example.moim.club.repository.ClubRepository;
+import com.example.moim.club.repository.ClubSearchRepository;
 import com.example.moim.club.repository.UserClubRepository;
 import com.example.moim.global.enums.*;
 import com.example.moim.global.exception.ResponseCode;
@@ -48,6 +49,8 @@ class ClubCommandServiceImplTest {
     private ApplicationEventPublisher eventPublisher;
     @Mock
     private UserRepository userRepository;
+    @Mock
+    private ClubSearchRepository clubSearchRepository;
     @InjectMocks
     private ClubCommandServiceImpl clubCommandService;
 
@@ -89,10 +92,13 @@ class ClubCommandServiceImplTest {
         //given
         Club club = Club.createClub(clubInput, null);
         UserClub userClub = UserClub.createLeaderUserClub(new User(), club);
+        ClubSearch clubSearch = ClubSearch.builder().build();
+        club.updateClubSearch(clubSearch);
         //when
         when(clubRepository.save(any(Club.class))).thenReturn(club);
         when(userClubRepository.save(any(UserClub.class))).thenReturn(userClub);
         when(fileStore.storeFile(any())).thenReturn(null);
+        when(clubSearchRepository.save(any(ClubSearch.class))).thenReturn(clubSearch);
         ClubSaveOutput clubOutput = clubCommandService.saveClub(new User(), clubInput);
 
         //then
@@ -100,6 +106,7 @@ class ClubCommandServiceImplTest {
         verify(clubRepository, times(1)).save(any(Club.class));
         verify(userClubRepository, times(1)).save(any(UserClub.class));
         verify(fileStore, times(1)).storeFile(any());
+        verify(clubSearchRepository, times(1)).save(any(ClubSearch.class));
     }
 
     @Test
@@ -108,6 +115,8 @@ class ClubCommandServiceImplTest {
         //given
         Club club = Club.createClub(clubInput, null);
         UserClub userClub = UserClub.createLeaderUserClub(new User(), club);
+        ClubSearch clubSearch = ClubSearch.builder().build();
+        club.updateClubSearch(clubSearch);
         //when
         when(clubRepository.findById(any(Long.class))).thenReturn(Optional.of(club));
         when(userClubRepository.findByClubAndUser(any(Club.class), any(User.class))).thenReturn(Optional.of(userClub));

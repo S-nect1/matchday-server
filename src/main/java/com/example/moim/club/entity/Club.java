@@ -6,6 +6,7 @@ import com.example.moim.club.exception.advice.ClubControllerAdvice;
 import com.example.moim.global.entity.BaseEntity;
 import com.example.moim.global.enums.*;
 import com.example.moim.global.exception.ResponseCode;
+import com.example.moim.global.util.TextUtils;
 import com.example.moim.match.entity.Match;
 import jakarta.persistence.*;
 import lombok.Getter;
@@ -41,6 +42,8 @@ public class Club extends BaseEntity {
     private String profileImgPath = "기본 이미지 링크";
     private String mainUniformColor;
     private String subUniformColor;
+    @OneToOne(mappedBy = "club")  // 검색을 위한 테이블 매핑
+    private ClubSearch clubSearch;
 
     private Integer memberCount;
     private Integer scheduleCount;
@@ -78,6 +81,11 @@ public class Club extends BaseEntity {
         club.subUniformColor = clubInput.getSubUniformColor();
         club.memberCount = 1;
         return club;
+    }
+
+    public Club updateClubSearch(ClubSearch clubSearch) {
+        this.clubSearch = clubSearch;
+        return this;
     }
 
     public void changeProfileImg(String newImgPath) {

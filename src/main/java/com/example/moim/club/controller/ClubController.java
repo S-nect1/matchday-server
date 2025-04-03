@@ -77,8 +77,8 @@ public class ClubController implements ClubControllerDocs{
     @PatchMapping(value = "/club/{id}/password", consumes = MediaType.APPLICATION_JSON_VALUE)
     public BaseResponse clubPasswordUpdate(@AuthenticationPrincipal UserDetailsImpl userDetailsImpl, @RequestBody @Valid ClubPswdUpdateInput clubPswdUpdateInput, @PathVariable("id") Long clubId) {
 //    public BaseResponse clubPasswordUpdate(@RequestBody @Valid ClubPswdUpdateInput clubPswdUpdateInput, @PathVariable("id") Long clubId) {
-        User user = userRepository.findById(1L).get();
-        clubCommandService.clubPasswordUpdate(user, clubPswdUpdateInput, clubId);
+//        User user = userRepository.findById(1L).get();
+        clubCommandService.clubPasswordUpdate(userDetailsImpl.getUser(), clubPswdUpdateInput, clubId);
         return BaseResponse.onSuccess(null, ResponseCode.OK);
     }
 

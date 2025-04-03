@@ -6,13 +6,16 @@ import com.example.moim.club.dto.response.ClubSaveOutput;
 import com.example.moim.club.dto.response.ClubUpdateOutput;
 import com.example.moim.club.dto.response.UserClubOutput;
 import com.example.moim.club.entity.Club;
+import com.example.moim.club.entity.ClubSearch;
 import com.example.moim.club.entity.UserClub;
 import com.example.moim.club.exception.advice.ClubControllerAdvice;
 import com.example.moim.club.repository.ClubRepository;
+import com.example.moim.club.repository.ClubSearchRepository;
 import com.example.moim.club.repository.UserClubRepository;
 import com.example.moim.global.enums.ClubRole;
 import com.example.moim.global.exception.ResponseCode;
 import com.example.moim.global.util.FileStore;
+import com.example.moim.global.util.TextUtils;
 import com.example.moim.notification.dto.ClubJoinEvent;
 import com.example.moim.user.entity.User;
 import com.example.moim.user.repository.UserRepository;
@@ -34,12 +37,17 @@ public class ClubCommandServiceImpl implements ClubCommandService {
     private final UserClubRepository userClubRepository;
     private final UserRepository userRepository;
     private final FileStore fileStore;
+    private final ClubSearchRepository clubSearchRepository;
     private final ApplicationEventPublisher eventPublisher;
 
     @Transactional
     public ClubSaveOutput saveClub(User user, ClubInput clubInput) throws IOException {
         Club club = clubRepository.save(Club.createClub(clubInput, fileStore.storeFile(clubInput.getProfileImg())));
+        // 검색을 위한 저장
+        saveClubSearch(club);
+
         UserClub userClub = userClubRepository.save(UserClub.createLeaderUserClub(user, club));
+
         List<UserClubOutput> userList = userClubRepository.findAllByClub(club).stream().map(UserClubOutput::new).toList();
         return new ClubSaveOutput(club, userList);
     }
@@ -58,6 +66,8 @@ public class ClubCommandServiceImpl implements ClubCommandService {
         }
 
         club.updateClub(clubUpdateInput, fileStore.storeFile(clubUpdateInput.getProfileImg()));
+        // 검색 정보 동기화를 위한 처리
+        club.getClubSearch().updateFrom(club);
         List<UserClubOutput> userList = userClubRepository.findAllByClub(club).stream().map(UserClubOutput::new).toList();
         return new ClubUpdateOutput(club, userList);
     }
@@ -120,6 +130,18 @@ public class ClubCommandServiceImpl implements ClubCommandService {
 
     private Club getClub(Long clubId) {
         return clubRepository.findById(clubId).orElseThrow(() -> new ClubControllerAdvice(ResponseCode.CLUB_NOT_FOUND));
+    }
+
+    private void saveClubSearch(Club club) {
+        ClubSearch clubSearch = ClubSearch.builder()
+                .club(club)
+                .titleNoSpace(TextUtils.clean(club.getTitle()))
+                .introNoSpace(TextUtils.clean(club.getIntroduction()))
+                .expNoSpace(TextUtils.clean(club.getExplanation()))
+                .allFieldsConcat(TextUtils.concatClean("|", club.getTitle(), club.getIntroduction(), club.getExplanation()))
+                .build();
+
+        club.updateClubSearch(clubSearchRepository.save(clubSearch));
     }
 
 //    @Transactional

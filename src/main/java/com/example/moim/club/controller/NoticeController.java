@@ -24,9 +24,7 @@ public class NoticeController implements NoticeControllerDocs {
     private final NoticeQueryService noticeQueryService;
 
     /**
-     * FIXME: 응답 값이 무조건 있어야 함
-     * @param noticeInput
-     * @param userDetailsImpl
+     * FIXME: 응답 값이 무조건 있어야 함. user 의 권한 체크는 안해도 되나?
      */
     @PostMapping("/notice")
     public BaseResponse noticeSave(NoticeInput noticeInput, @AuthenticationPrincipal UserDetailsImpl userDetailsImpl) {
@@ -36,8 +34,6 @@ public class NoticeController implements NoticeControllerDocs {
 
     /**
      * FIXME: 공지를 시간 순으로 정렬하지 않아도 되나?
-     * @param clubId
-     * @param userDetailsImpl
      * @return
      */
     @GetMapping("/notice/{clubId}")

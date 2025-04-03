@@ -4,6 +4,7 @@ import com.example.moim.club.dto.request.ClubInput;
 import com.example.moim.club.dto.request.ClubSearchCond;
 import com.example.moim.club.entity.*;
 import com.example.moim.global.enums.*;
+import com.example.moim.global.util.TextUtils;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -26,6 +27,8 @@ class ClubRepositoryImplTest {
 
     @Autowired
     private ClubRepository clubRepository;
+    @Autowired
+    private ClubSearchRepository clubSearchRepository;
 
     @BeforeEach
     void init() {
@@ -34,6 +37,7 @@ class ClubRepositoryImplTest {
         String explanation = "explanation";
         String introduction = "introduction";
         ClubCategory clubCategory = ClubCategory.SMALL_GROUP;
+        ClubCategory clubCategory2 = ClubCategory.SCHOOL_GROUP;
         String university = "한양대학교";
         Gender gender = Gender.UNISEX;
         ActivityArea activityArea = ActivityArea.SEOUL;
@@ -47,20 +51,36 @@ class ClubRepositoryImplTest {
         ClubInput clubInput = ClubInput.builder().title(title).explanation(explanation).introduction(introduction).clubCategory(clubCategory.getKoreanName())
                 .university(university).gender(gender.getKoreanName()).activityArea(activityArea.getKoreanName()).ageRange(ageRange.getKoreanName()).sportsType(sportsType.getKoreanName())
                 .clubPassword(clubPassword).profileImg(profileImg).mainUniformColor(mainUniformColor).subUniformColor(subUniformColor).build();
-        ClubInput clubInput2 = ClubInput.builder().title(title2).explanation(explanation).introduction(introduction).clubCategory(clubCategory.getKoreanName())
+        ClubInput clubInput2 = ClubInput.builder().title(title2).explanation(explanation).introduction(introduction).clubCategory(clubCategory2.getKoreanName())
                 .university(university).gender(gender.getKoreanName()).activityArea(activityArea.getKoreanName()).ageRange(ageRange.getKoreanName()).sportsType(sportsType.getKoreanName())
                 .clubPassword(clubPassword).profileImg(profileImg).mainUniformColor(mainUniformColor).subUniformColor(subUniformColor).build();
-        Club club = Club.createClub(clubInput, "/club");
-        Club club2 = Club.createClub(clubInput2, "/club");
-        clubRepository.save(club);
-        clubRepository.save(club2);
+
+        Club savedClub = clubRepository.save(Club.createClub(clubInput, "/club"));
+        Club savedClub2 = clubRepository.save(Club.createClub(clubInput2, "/club"));
+
+        ClubSearch clubSearch = ClubSearch.builder()
+                .club(savedClub)
+                .titleNoSpace(TextUtils.clean(savedClub.getTitle()))
+                .introNoSpace(TextUtils.clean(savedClub.getIntroduction()))
+                .expNoSpace(TextUtils.clean(savedClub.getExplanation()))
+                .allFieldsConcat(TextUtils.concatClean("|", savedClub.getTitle(), savedClub.getIntroduction(), savedClub.getExplanation()))
+                .build();
+        clubSearchRepository.save(clubSearch);
+        ClubSearch clubSearch2 = ClubSearch.builder()
+                .club(savedClub2)
+                .titleNoSpace(TextUtils.clean(savedClub2.getTitle()))
+                .introNoSpace(TextUtils.clean(savedClub2.getIntroduction()))
+                .expNoSpace(TextUtils.clean(savedClub2.getExplanation()))
+                .allFieldsConcat(TextUtils.concatClean("|", savedClub2.getTitle(), savedClub2.getIntroduction(), savedClub2.getExplanation()))
+                .build();
+        clubSearchRepository.save(clubSearch2);
+
     }
 
     @Test
     @DisplayName("findBySearchCond 는 search 와 한양대학교 둘 중 하나만 만족되어도 출력된다")
     void findBySearchCond_all_cond() {
         //given
-        ClubCategory clubCategory = ClubCategory.SMALL_GROUP;
         String keyword = "amazingtitle";
         String university = "한양대학교";
         Gender gender = Gender.UNISEX;
@@ -68,7 +88,7 @@ class ClubRepositoryImplTest {
         AgeRange ageRange = AgeRange.TWENTIES;
         SportsType sportsType = SportsType.SOCCER;
         ClubSearchCond clubSearchCond = ClubSearchCond.builder()
-                .clubCategory(clubCategory.getKoreanName()).search(keyword).university(university).gender(gender.getKoreanName())
+                .search(keyword).university(university).gender(gender.getKoreanName())
                 .activityArea(activityArea.getKoreanName()).ageRange(ageRange.getKoreanName()).sportsType(sportsType.getKoreanName()).build();
         //when
         List<Club> result = clubRepository.findBySearchCond(clubSearchCond);
@@ -81,7 +101,6 @@ class ClubRepositoryImplTest {
     @DisplayName("findBySearchCond 는 search, university 조건의 결과값이 없을 경우 무시될 수 있다")
     void findBySearchCond_avoid_search_and_university() {
         //given
-        ClubCategory clubCategory = ClubCategory.SMALL_GROUP;
         String keyword = "dagdskjlksjdgl";
         String university = "sgkjskjgl;sjdlkgj";
         Gender gender = Gender.UNISEX;
@@ -89,7 +108,7 @@ class ClubRepositoryImplTest {
         AgeRange ageRange = AgeRange.TWENTIES;
         SportsType sportsType = SportsType.SOCCER;
         ClubSearchCond clubSearchCond = ClubSearchCond.builder()
-                .clubCategory(clubCategory.getKoreanName()).search(keyword).university(university).gender(gender.getKoreanName())
+                .search(keyword).university(university).gender(gender.getKoreanName())
                 .activityArea(activityArea.getKoreanName()).ageRange(ageRange.getKoreanName()).sportsType(sportsType.getKoreanName()).build();
         //when
         List<Club> result = clubRepository.findBySearchCond(clubSearchCond);
@@ -103,7 +122,7 @@ class ClubRepositoryImplTest {
     void findBySearchCond_tow_cond() {
         //given
         ClubCategory clubCategory = ClubCategory.SMALL_GROUP;
-        String keyword = "amazingtitle";
+        String keyword = "amazing";
         ClubSearchCond clubSearchCond = ClubSearchCond.builder()
                 .clubCategory(clubCategory.getKoreanName()).search(keyword).university(null).gender(null).activityArea(null).ageRange(null).sportsType(null).build();
         //when
@@ -126,22 +145,37 @@ class ClubRepositoryImplTest {
         assertThat(result.size()).isEqualTo(2);
     }
 
-    /**
-     * FIXME: amazing title 와 amazingtitle 가 같이 결과로 나올 수 있도록 바꾸기
-     */
     @Test
     @DisplayName("findBySearchCond 는 제목으로만 검색할 수 있다.")
     void findBySearchCond_title() {
         //given
-        String search = "amazingtitle";
+        String search = "amazing title";
         ClubSearchCond clubSearchCond = ClubSearchCond.builder()
                 .clubCategory(null).search(search).university(null).gender(null).activityArea(null).ageRange(null).sportsType(null).build();
         //when
         List<Club> result = clubRepository.findBySearchCond(clubSearchCond);
 
         //then
-//        assertThat(result.size()).isEqualTo(2);
-        assertThat(result.size()).isEqualTo(1);
+        assertThat(result.size()).isEqualTo(2);
+    }
+
+    @Test
+    @DisplayName("findBySearchCond 는 띄어쓰기 상관없이 동일한 결과가 나온다.")
+    void findBySearchCond_regardless_space() {
+        //given
+        String search1 = "amazing title";
+        String search2 = "amazingtitle";
+        ClubSearchCond clubSearchCond1 = ClubSearchCond.builder()
+                .clubCategory(null).search(search1).university(null).gender(null).activityArea(null).ageRange(null).sportsType(null).build();
+        ClubSearchCond clubSearchCond2 = ClubSearchCond.builder()
+                .clubCategory(null).search(search2).university(null).gender(null).activityArea(null).ageRange(null).sportsType(null).build();
+
+        //when
+        List<Club> result1 = clubRepository.findBySearchCond(clubSearchCond1);
+        List<Club> result2 = clubRepository.findBySearchCond(clubSearchCond2);
+
+        //then
+        assertThat(result1.size()).isEqualTo(result2.size());
     }
 
     @Test
@@ -155,7 +189,7 @@ class ClubRepositoryImplTest {
         List<Club> result = clubRepository.findBySearchCond(clubSearchCond);
 
         //then
-        assertThat(result.size()).isEqualTo(2);
+        assertThat(result.size()).isEqualTo(1);
     }
 
     @Test

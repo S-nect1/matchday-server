@@ -3,6 +3,7 @@ package com.example.moim.club.repository;
 import com.example.moim.club.dto.request.ClubSearchCond;
 import com.example.moim.club.entity.*;
 import com.example.moim.global.enums.*;
+import com.example.moim.global.util.TextUtils;
 import com.querydsl.core.BooleanBuilder;
 import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.core.types.dsl.Expressions;
@@ -14,6 +15,7 @@ import java.util.List;
 import java.util.Objects;
 
 import static com.example.moim.club.entity.QClub.club;
+import static com.example.moim.club.entity.QClubSearch.clubSearch;
 import static org.springframework.util.StringUtils.hasText;
 
 public class ClubRepositoryImpl implements ClubRepositoryCustom{
@@ -52,6 +54,7 @@ public class ClubRepositoryImpl implements ClubRepositoryCustom{
 
         return queryFactory
                 .selectFrom(club)
+                .join(club.clubSearch, clubSearch)
                 .where(builder)
                 .fetch();
     }
@@ -64,15 +67,10 @@ public class ClubRepositoryImpl implements ClubRepositoryCustom{
                 .orElse(null);
     }
 
-    /**
-     * FIXME : search 로 내용도 같이 확인해주는게 좋을듯. 그리고 contains 는 띄어쓰기 하면 완전 다른 결과가 나오므로 그것에 대한 해결책도 생각하기
-     */
     private BooleanExpression searchContains(String search) {
         if (!hasText(search)) return null;
 
-        return club.title.contains(search)
-                .or(club.introduction.contains(search))
-                .or(club.explanation.contains(search));
+        return clubSearch.allFieldsConcat.contains(TextUtils.clean(search));
     }
 
     /**

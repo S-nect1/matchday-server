@@ -1,9 +1,16 @@
 INSERT INTO club (id, created_date, updated_date, activity_area, age_range, club_category, club_password, explanation, gender, introduction, sports_type, main_uniform_color, match_count, member_count, profile_img_path, schedule_count, sub_uniform_color, title, university)
-VALUES (default, null, null, 'SEOUL', 'TWENTIES', 'SCHOOL_GROUP', 'club_password', 'explanation', 'MAN', 'introduction', 'SOCCER', 'main_uniform_color', 2, 5, null, 2, 'sub_uniform_color', 'title', '한양대학교');
+VALUES (default, null, null, 'SEOUL', 'TWENTIES', 'SCHOOL_GROUP', 'club_password', 'explanation', 'MAN', 'introduction', 'SOCCER', 'main_uniform_color', 2, 5, null, 2, 'sub_uniform_color', 'title nothing', '한양대학교');
 INSERT INTO club (id, created_date, updated_date, activity_area, age_range, club_category, club_password, explanation, gender, introduction, sports_type, main_uniform_color, match_count, member_count, profile_img_path, schedule_count, sub_uniform_color, title, university)
-VALUES (default, null, null, 'SEOUL', 'TWENTIES', 'SCHOOL_GROUP', 'club_password', 'explanation', 'WOMAN', 'introduction', 'SOCCER', 'main_uniform_color', 2, 5, null, 2, 'sub_uniform_color', 'title', '서울대학교');
+VALUES (default, null, null, 'SEOUL', 'TWENTIES', 'SCHOOL_GROUP', 'club_password', 'explanation', 'WOMAN', 'introduction', 'SOCCER', 'main_uniform_color', 2, 5, null, 2, 'sub_uniform_color', 'titlenothing', '서울대학교');
 INSERT INTO club (id, created_date, updated_date, activity_area, age_range, club_category, club_password, explanation, gender, introduction, sports_type, main_uniform_color, match_count, member_count, profile_img_path, schedule_count, sub_uniform_color, title, university)
-VALUES (default, null, null, 'GYEONGGI', 'THIRTIES', 'SOCIAL_GROUP', 'club_password', 'explanation', 'UNISEX', 'introduction', 'FUTSAL', 'main_uniform_color', 2, 5, null, 2, 'sub_uniform_color', 'title', '연세대학교');
+VALUES (default, null, null, 'GYEONGGI', 'THIRTIES', 'SOCIAL_GROUP', 'club_password', 'explanation', 'UNISEX', 'introduction', 'FUTSAL', 'main_uniform_color', 2, 5, null, 2, 'sub_uniform_color', 'title nothing', '연세대학교');
+
+INSERT INTO CLUB_SEARCH (CLUB_ID, CREATED_DATE, UPDATED_DATE, TITLE_NO_SPACE, INTRO_NO_SPACE, EXP_NO_SPACE, ALL_FIELDS_CONCAT)
+VALUES (1, null, null, 'titlenothing', 'introduction', 'explanation', 'titlenothing|introduction|explanation');
+INSERT INTO CLUB_SEARCH (CLUB_ID, CREATED_DATE, UPDATED_DATE, TITLE_NO_SPACE, INTRO_NO_SPACE, EXP_NO_SPACE, ALL_FIELDS_CONCAT)
+VALUES (2, null, null, 'titlenothing', 'introduction', 'explanation', 'titlenothing|introduction|explanation');
+INSERT INTO CLUB_SEARCH (CLUB_ID, CREATED_DATE, UPDATED_DATE, TITLE_NO_SPACE, INTRO_NO_SPACE, EXP_NO_SPACE, ALL_FIELDS_CONCAT)
+VALUES (3, null, null, 'titlenothing', 'introduction', 'explanation', 'titlenothing|introduction|explanation');
 
 INSERT INTO users (user_id, created_date, updated_date, activity_area, birthday, email, fcm_token, gender, height, img_path, main_foot, main_position, name, password, phone, refresh_token, role, sub_position, weight)
 VALUES (default, null, null, 'SEOUL', 'birthday', 'email', 'fcm_token', 'WOMAN', 180, null, 'RIGHT', 'ST', 'name', 'password', 'phone', 'refresh_token123456', 'USER', 'LM', 70);
