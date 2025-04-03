@@ -5,10 +5,12 @@ import com.example.moim.club.entity.*;
 import com.example.moim.club.repository.ClubRepository;
 import com.example.moim.club.repository.UserClubRepository;
 import com.example.moim.global.enums.*;
+import com.example.moim.global.exception.ResponseCode;
 import com.example.moim.match.dto.*;
 import com.example.moim.match.entity.*;
 import com.example.moim.match.exception.MatchPermissionException;
 import com.example.moim.match.exception.MatchRecordExpireException;
+import com.example.moim.match.exception.advice.MatchControllerAdvice;
 import com.example.moim.match.repository.MatchApplicationRepository;
 import com.example.moim.match.repository.MatchRepository;
 import com.example.moim.match.repository.MatchUserRepository;
@@ -142,7 +144,9 @@ class MatchServiceTest {
         when(clubRepository.findById(1L)).thenReturn(Optional.of(club));
         when(userClubRepository.findByClubAndUser(club, user)).thenReturn(Optional.of(newUserClub));
 
-        assertThrows(MatchPermissionException.class, () -> matchService.saveMatch(user, input));
+//        assertThrows(MatchPermissionException.class, () -> matchService.saveMatch(user, input));
+        MatchControllerAdvice thrown = assertThrows(MatchControllerAdvice.class, () -> matchService.saveMatch(user, input));
+        assertEquals(ResponseCode._UNAUTHORIZED, thrown.getErrorCode());
     }
 
     // registerMatch - 정상 플로우 (참가 인원 충족)
@@ -241,7 +245,9 @@ class MatchServiceTest {
         when(userClubRepository.findByClubAndUser(club, user)).thenReturn(Optional.of(leaderUserClub));
         when(matchApplicationRepository.findByMatchAndClub(match, club)).thenReturn(app);
 
-        assertThrows(MatchPermissionException.class, () -> matchService.saveMatchApp(user, matchId, clubId));
+//        assertThrows(MatchPermissionException.class, () -> matchService.saveMatchApp(user, matchId, clubId));
+        MatchControllerAdvice thrown = assertThrows(MatchControllerAdvice.class, () -> matchService.saveMatchApp(user, matchId, clubId));
+        assertEquals(ResponseCode.MATCH_ALREADY_FOUND, thrown.getErrorCode());
     }
 
     // saveMatchApp - 권한 없는 경우 이벤트 발행 후 null 반환
@@ -326,7 +332,9 @@ class MatchServiceTest {
         when(userClubRepository.findByClubAndUser(club, user)).thenReturn(Optional.of(newUserClub));
         when(clubRepository.findById(1L)).thenReturn(Optional.of(club));
 
-        assertThrows(MatchPermissionException.class, () -> matchService.applyMatch(user, applyInput));
+//        assertThrows(MatchPermissionException.class, () -> matchService.applyMatch(user, applyInput));
+        MatchControllerAdvice thrown = assertThrows(MatchControllerAdvice.class, () -> matchService.applyMatch(user, applyInput));
+        assertEquals(ResponseCode._UNAUTHORIZED, thrown.getErrorCode());
     }
 
     // inviteMatch - 정상 플로우
@@ -359,7 +367,9 @@ class MatchServiceTest {
         when(clubRepository.findById(match.getHomeClub().getId())).thenReturn(Optional.of(club));
         when(userClubRepository.findByClubAndUser(club, user)).thenReturn(Optional.of(newUserClub));
 
-        assertThrows(MatchPermissionException.class, () -> matchService.inviteMatch(user, matchId, clubId));
+//        assertThrows(MatchPermissionException.class, () -> matchService.inviteMatch(user, matchId, clubId));
+        MatchControllerAdvice thrown = assertThrows(MatchControllerAdvice.class, () -> matchService.inviteMatch(user, matchId, clubId));
+        assertEquals(ResponseCode._UNAUTHORIZED, thrown.getErrorCode());
     }
 
     // confirmMatch - 정상 플로우
@@ -401,7 +411,9 @@ class MatchServiceTest {
         when(clubRepository.findById(awayClubId)).thenReturn(Optional.of(new Club()));
         when(userClubRepository.findByClubAndUser(club, user)).thenReturn(Optional.of(newUserClub));
 
-        assertThrows(MatchPermissionException.class, () -> matchService.confirmMatch(matchId, awayClubId, user));
+//        assertThrows(MatchPermissionException.class, () -> matchService.confirmMatch(matchId, awayClubId, user));
+        MatchControllerAdvice thrown = assertThrows(MatchControllerAdvice.class, () -> matchService.confirmMatch(matchId, awayClubId, user));
+        assertEquals(ResponseCode._UNAUTHORIZED, thrown.getErrorCode());
     }
 
     // saveMatchRecord - 정상 플로우
@@ -432,7 +444,9 @@ class MatchServiceTest {
         ReflectionTestUtils.setField(match, "endTime", LocalDateTime.now().minusHours(49));
         MatchRecordInput recordInput = new MatchRecordInput();
         recordInput.setScore(10);
-        assertThrows(MatchRecordExpireException.class, () -> matchService.saveMatchRecord(match, user, recordInput));
+//        assertThrows(MatchRecordExpireException.class, () -> matchService.saveMatchRecord(match, user, recordInput));
+        MatchControllerAdvice thrown = assertThrows(MatchControllerAdvice.class, () -> matchService.saveMatchRecord(match, user, recordInput));
+        assertEquals(ResponseCode.MATCH_TIME_OUT, thrown.getErrorCode());
     }
 
     // searchMatch - 조회 기능 테스트
