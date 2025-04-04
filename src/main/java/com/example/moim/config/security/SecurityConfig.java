@@ -65,23 +65,39 @@ public class SecurityConfig {
         httpSecurity.csrf(AbstractHttpConfigurer::disable);
         httpSecurity.csrf(httpSecurityCsrfConfigurer -> httpSecurityCsrfConfigurer.ignoringRequestMatchers("/h2-console/**"))
                 .headers(headers -> headers.frameOptions(HeadersConfigurer.FrameOptionsConfig::disable));
+        /**
+         * FIXME: 이건 API 수동 테스트할때만 필요한 것
+         */
+        httpSecurity.csrf(csrf -> csrf
+                .ignoringRequestMatchers("/club/**")
+        );
         //From 로그인 방식 disable
         httpSecurity.formLogin(AbstractHttpConfigurer::disable);
         //http basic 인증 방식 disable
         httpSecurity.httpBasic(AbstractHttpConfigurer::disable);
+        /**
+         * FIXME: 이건 API 수동 테스트할때만 필요한 것
+         */
         //경로별 인가 작업
-        httpSecurity.authorizeHttpRequests((auth) -> auth
-                .requestMatchers("/", "/user/login", "/user", "/user/google", "/user/kakao", "/user/naver", "/user/info", "/user/refresh/",
-                        "/error", "/swagger-ui.html", "/swagger-ui/**", "/v3/**", "/actuator/**", "/h2-console/**").permitAll()
-                .requestMatchers("/admin").hasAuthority("ADMIN")
-                .anyRequest().authenticated());
+//        httpSecurity.authorizeHttpRequests((auth) -> auth
+//                .requestMatchers("/", "/user/login", "/user", "/user/google", "/user/kakao", "/user/naver", "/user/info", "/user/refresh/",
+//                        "/error", "/swagger-ui.html", "/swagger-ui/**", "/v3/**", "/actuator/**", "/h2-console/**").permitAll()
+//                .requestMatchers("/admin").hasAuthority("ADMIN")
+//                .anyRequest().authenticated());
+        /**
+         * FIXME: 이건 API 수동 테스트할때만 필요한 것
+         */
+        httpSecurity.authorizeHttpRequests((auth) -> auth.anyRequest().permitAll());
 
+        /**
+         * FIXME: 이건 API 수동 테스트할때만 필요한 것
+         */
         //JWTFilter 등록
-        httpSecurity
-                .addFilterBefore(new JWTFilter(jwtUtil), UsernamePasswordAuthenticationFilter.class);
-
-        httpSecurity
-                .addFilterBefore(new JwtExceptionFilter(), JWTFilter.class);
+//        httpSecurity
+//                .addFilterBefore(new JWTFilter(jwtUtil), UsernamePasswordAuthenticationFilter.class);
+//
+//        httpSecurity
+//                .addFilterBefore(new JwtExceptionFilter(), JWTFilter.class);
         
         //세션 설정
         httpSecurity.sessionManagement((session) -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS));

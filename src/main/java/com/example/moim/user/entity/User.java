@@ -2,8 +2,13 @@ package com.example.moim.user.entity;
 
 import com.example.moim.club.entity.UserClub;
 import com.example.moim.global.entity.BaseEntity;
+import com.example.moim.global.enums.ActivityArea;
+import com.example.moim.global.enums.Gender;
+import com.example.moim.global.enums.Position;
+import com.example.moim.global.exception.ResponseCode;
 import com.example.moim.notification.entity.Notifications;
 import com.example.moim.user.dto.*;
+import com.example.moim.user.exceptions.advice.UserControllerAdvice;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -31,12 +36,15 @@ public class User extends BaseEntity {
     private String imgPath;
     @Enumerated(EnumType.STRING)
     private Role role;
-    private String activityArea;
+    @Enumerated(EnumType.STRING)
+    private ActivityArea activityArea;
     private int height;
     private int weight;
     private String mainFoot;
-    private String mainPosition;
-    private String subPosition;
+    @Enumerated(EnumType.STRING)
+    private Position mainPosition;
+    @Enumerated(EnumType.STRING)
+    private Position subPosition;
     @Column(unique = true)
     private String refreshToken;
     private String fcmToken;
@@ -52,7 +60,7 @@ public class User extends BaseEntity {
         user.password = signupInput.getPassword();
         user.name = signupInput.getName();
         user.birthday = signupInput.getBirthday();
-        user.gender = signupInput.getGender();
+        user.gender = Gender.fromKoreanName(signupInput.getGender()).orElseThrow(() -> new UserControllerAdvice(ResponseCode.INVALID_GENDER));
         user.phone = signupInput.getPhone();
         user.role = Role.USER;
         return user;
@@ -64,7 +72,11 @@ public class User extends BaseEntity {
 //        user.name = googleUserSignup.getNames().get(0).get("displayName").toString();
 //        user.birthday = googleUserSignup.getBirthdays().get(0).get("date").toString().replaceAll("[^0-9 ]", "").replace(' ', '.');
         if (!googleUserSignup.getGenders().isEmpty()) {
-            user.gender = Gender.from(googleUserSignup.getGenders().get(0).get("value").toString());
+//            user.gender = Gender.from(googleUserSignup.getGenders().get(0).get("value").toString());
+            /**
+             * FIXME: 구글에서 어떤 값으로 넘어오는지 몰라서, 추후에 고쳐야 함
+             */
+            user.gender = Gender.valueOf(googleUserSignup.getGenders().get(0).get("value").toString());
         }
 //        user.phone = googleUserSignup.getPhoneNumbers().get(0).get("value").toString().replace("-","");
         user.role = Role.USER;
@@ -81,7 +93,7 @@ public class User extends BaseEntity {
     public static User createNaverUser(NaverUserSignup naverUserSignup) {
         User user = new User();
         user.email = naverUserSignup.getEmail();
-        user.gender = Gender.from(naverUserSignup.getGender());
+        user.gender = Gender.fromKoreanName(naverUserSignup.getGender()).orElseThrow(() -> new UserControllerAdvice(ResponseCode.INVALID_GENDER));
         user.role = Role.USER;
         return user;
     }
@@ -91,7 +103,8 @@ public class User extends BaseEntity {
         this.birthday = socialSignupInput.getBirthday();
         this.phone = socialSignupInput.getPhone();
         this.imgPath = imgPath;
-        this.gender = Gender.from(socialSignupInput.getGender());
+//        this.gender = Gender.from(socialSignupInput.getGender());
+        this.gender = Gender.fromKoreanName(socialSignupInput.getGender()).orElseThrow(() -> new UserControllerAdvice(ResponseCode.INVALID_GENDER));
         this.activityArea = socialSignupInput.getActivityArea();
         this.height = socialSignupInput.getHeight();
         this.weight = socialSignupInput.getWeight();
@@ -120,9 +133,9 @@ public class User extends BaseEntity {
             this.imgPath = imgPath;
         }
         if (userUpdateInput.getGender() != null && !userUpdateInput.getGender().isBlank()) {
-            this.gender = Gender.from(userUpdateInput.getGender());
+            this.gender = Gender.fromKoreanName(userUpdateInput.getGender()).orElseThrow(() -> new UserControllerAdvice(ResponseCode.INVALID_GENDER));
         }
-        if (userUpdateInput.getActivityArea() != null && !userUpdateInput.getActivityArea().isBlank()) {
+        if (userUpdateInput.getActivityArea() != null && !userUpdateInput.getActivityArea().name().isBlank()) {
             this.activityArea = userUpdateInput.getActivityArea();
         }
         if (userUpdateInput.getHeight() != null) {

@@ -1,12 +1,12 @@
 package com.example.moim.club.service;
 
-import com.example.moim.club.dto.ClubInput;
-import com.example.moim.club.dto.NoticeInput;
-import com.example.moim.club.dto.NoticeOutput;
-import com.example.moim.club.entity.Club;
-import com.example.moim.club.entity.Notice;
+import com.example.moim.club.dto.request.ClubInput;
+import com.example.moim.club.dto.request.NoticeInput;
+import com.example.moim.club.dto.request.NoticeOutput;
+import com.example.moim.club.entity.*;
 import com.example.moim.club.repository.ClubRepository;
 import com.example.moim.club.repository.NoticeRepository;
+import com.example.moim.global.enums.*;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -17,64 +17,49 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
-import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.times;
 
 @ExtendWith(MockitoExtension.class)
-class NoticeServiceTest {
-
+public class NoticeQueryServiceImplTest {
     @Mock
     private NoticeRepository noticeRepository;
     @Mock
     private ClubRepository clubRepository;
     @InjectMocks
-    private NoticeService noticeService;
+    private NoticeQueryServiceImpl noticeQueryService;
 
     private ClubInput clubInput;
     private NoticeInput noticeInput;
+
     @BeforeEach
     void init() {
         // Club
         String title = "amazing title";
         String explanation = "explanation";
         String introduction = "introduction";
-        String category = "category";
+        ClubCategory clubCategory = ClubCategory.SMALL_GROUP;
         String university = "university";
-        String gender = "gender";
-        String activityArea = "activityArea";
-        String ageRange = "ageRange";
-        String mainEvent = "mainEvent";
+        Gender gender = Gender.UNISEX;
+        ActivityArea activityArea = ActivityArea.SEOUL;
+        AgeRange ageRange = AgeRange.TWENTIES;
+        SportsType sportsType = SportsType.SOCCER;
         String clubPassword = "clubPassword";
         MultipartFile profileImg = new MockMultipartFile("profileImg", "profileImg".getBytes());
         String mainUniformColor = "mainUniformColor";
         String subUniformColor = "subUniformColor";
 
-        this.clubInput = ClubInput.builder().title(title).explanation(explanation).introduction(introduction).category(category)
-                .university(university).gender(gender).activityArea(activityArea).ageRange(ageRange).mainEvent(mainEvent)
+        this.clubInput = ClubInput.builder().title(title).explanation(explanation).introduction(introduction).clubCategory(clubCategory.getKoreanName())
+                .university(university).gender(gender.getKoreanName()).activityArea(activityArea.getKoreanName()).ageRange(ageRange.getKoreanName()).sportsType(sportsType.getKoreanName())
                 .clubPassword(clubPassword).profileImg(profileImg).mainUniformColor(mainUniformColor).subUniformColor(subUniformColor).build();
 
         // Notice
         this.noticeInput = NoticeInput.builder().title("notice title").content("notice content").clubId(1L).build();
-    }
-    @Test
-    @DisplayName("공지를 저장할 수 있다")
-    void saveNotice() {
-        //given
-        Club club = Club.createClub(clubInput, null);
-        Notice notice = Notice.createNotice(club, noticeInput.getTitle(), noticeInput.getContent());
-        //when
-        when(noticeRepository.save(any(Notice.class))).thenReturn(notice);
-        when(clubRepository.findById(any(Long.class))).thenReturn(Optional.of(club));
-        noticeService.saveNotice(noticeInput);
-        //then
-        verify(noticeRepository, times(1)).save(any(Notice.class));
-        verify(clubRepository, times(1)).findById(any(Long.class));
     }
 
     @Test
@@ -88,7 +73,7 @@ class NoticeServiceTest {
         //when
         when(clubRepository.findById(any(Long.class))).thenReturn(Optional.of(club));
         when(noticeRepository.findByClub(any(Club.class))).thenReturn(List.of(notice));
-        List<NoticeOutput> result = noticeService.findNotice(1L);
+        List<NoticeOutput> result = noticeQueryService.findNotice(1L);
         //then
         assertThat(result.size()).isEqualTo(1);
         assertThat(result.get(0).getTitle()).isEqualTo(noticeInput.getTitle());
@@ -106,7 +91,7 @@ class NoticeServiceTest {
         //when
         when(clubRepository.findById(any(Long.class))).thenReturn(Optional.of(club));
         when(noticeRepository.findByClub(any(Club.class))).thenReturn(List.of());
-        List<NoticeOutput> result = noticeService.findNotice(1L);
+        List<NoticeOutput> result = noticeQueryService.findNotice(1L);
         //then
         assertThat(result.size()).isEqualTo(0);
         verify(clubRepository, times(1)).findById(any(Long.class));

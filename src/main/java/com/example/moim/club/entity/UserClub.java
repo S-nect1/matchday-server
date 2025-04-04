@@ -1,6 +1,7 @@
 package com.example.moim.club.entity;
 
 import com.example.moim.global.entity.BaseEntity;
+import com.example.moim.global.enums.ClubRole;
 import com.example.moim.user.entity.User;
 import jakarta.persistence.*;
 import lombok.Getter;
@@ -21,9 +22,9 @@ public class UserClub extends BaseEntity {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "club_id")
     private Club club;
-    private String position;
+    @Enumerated(value = EnumType.STRING)
+    private ClubRole clubRole;
     private LocalDate joinDate;
-    private String category;
     private Integer scheduleCount;
     private Integer matchCount;
 
@@ -31,9 +32,8 @@ public class UserClub extends BaseEntity {
         UserClub userClub = new UserClub();
         userClub.user = user;
         userClub.club = club;
-        userClub.position = "leader";
+        userClub.clubRole = ClubRole.STAFF;
         userClub.joinDate = LocalDate.now();
-        userClub.category = "creator";
         return userClub;
     }
 
@@ -41,19 +41,22 @@ public class UserClub extends BaseEntity {
         UserClub userClub = new UserClub();
         userClub.user = user;
         userClub.club = club;
-        userClub.position = "member";
+        userClub.clubRole = ClubRole.MEMBER;
         userClub.joinDate = LocalDate.now();
-        userClub.category = "newmember";
         //카테고리?
         return userClub;
     }
 
-    public void changeUserClub(String position, String category) {
-        if (position != null) {
-            this.position = position;
-        }
-        if (category != null) {
-            this.category = category;
-        }
+//    public void changeUserClub(String position, ClubRole clubRole) {
+//        if (position != null) {
+//            this.clubRole = position;
+//        }
+//        if (responsibility != null) {
+//            this.responsibility = responsibility;
+//        }
+//    }
+
+    public void changeUserClub(ClubRole clubRole) {
+        this.clubRole = clubRole;
     }
 }

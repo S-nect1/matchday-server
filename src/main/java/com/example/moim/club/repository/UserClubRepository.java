@@ -20,6 +20,12 @@ public interface UserClubRepository extends JpaRepository<UserClub, Long> {
             " where uc.club = :club")
     List<UserClub> findAllByClub(@Param("club") Club club);
 
+    /**
+     * 이건 그냥 findByClubAndUser 이름으로 사용했으면 굳이 작성 안해도 되는 거 같은데?
+     * @param club
+     * @param user
+     * @return
+     */
     Optional<UserClub> findByClubAndUser(Club club, User user);
 
     @Transactional(readOnly = true)
@@ -39,7 +45,6 @@ public interface UserClubRepository extends JpaRepository<UserClub, Long> {
     @Transactional(readOnly = true)
     @Query("select uc from UserClub uc" +
             " where uc.club = :club" +
-            " and (uc.category = 'creator'" +
-            " or uc.category = 'admin')")
+            " and (uc.clubRole = 'STAFF')")
     List<UserClub> findAdminByClub(@Param("club") Club Club);
 }

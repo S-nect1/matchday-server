@@ -1,33 +1,34 @@
-package com.example.moim.club.dto;
+package com.example.moim.club.dto.response;
 
 import com.example.moim.club.entity.UserClub;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 import org.springframework.core.io.FileUrlResource;
+import org.springframework.util.StringUtils;
 
 import java.io.IOException;
 import java.time.LocalDate;
 import java.util.Base64;
 
 @Data
+@NoArgsConstructor
 public class UserClubOutput {
     private Long userId;
+    private Long clubId;
     private String name;
-    private String category;
-    private String position;
+    private String clubRole;
     private LocalDate joinDate;
     private String birthday;
-    private String phone;
     private String img;
 
     public UserClubOutput(UserClub userClub) {
-        this.userId = userClub.getId();
+        this.userId = userClub.getUser().getId();
+        this.clubId = userClub.getClub().getId();
         this.name = userClub.getUser().getName();
-        this.category = userClub.getCategory();
-        this.position = userClub.getPosition();
+        this.clubRole = userClub.getClubRole().getKoreanName();
         this.joinDate = userClub.getJoinDate();
         this.birthday = userClub.getUser().getBirthday();
-        this.phone = userClub.getUser().getPhone();
-        if (userClub.getUser().getImgPath() != null) {
+        if (StringUtils.hasText(userClub.getUser().getImgPath())) {
             try {
                 this.img = Base64.getEncoder().encodeToString(new FileUrlResource(userClub.getUser().getImgPath()).getContentAsByteArray());
             } catch (IOException e) {

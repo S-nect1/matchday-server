@@ -25,9 +25,9 @@ public class LoginOutput {
         this.email = user.getEmail();
         this.name = user.getName();
         this.birthday = user.getBirthday();
-        this.gender = user.getGender().toString();
+        this.gender = user.getGender().getKoreanName();
         this.phone = user.getPhone();
-        this.activityArea = user.getActivityArea();
+        this.activityArea = user.getActivityArea().getKoreanName();
         this.img = user.getImgPath();//base64인코딩 해야함
         this.accessToken = accessToken;
         this.refreshToken = user.getRefreshToken();
@@ -38,16 +38,16 @@ public class LoginOutput {
         this.name = user.getName();
         this.birthday = user.getBirthday();
         if (user.getGender() != null) {
-            this.gender = user.getGender().toString();
+            this.gender = user.getGender().getKoreanName();
         }
         this.phone = user.getPhone();
-        this.activityArea = user.getActivityArea();
+        this.activityArea = user.getActivityArea().getKoreanName();
         this.img = user.getImgPath();//base64인코딩 해야함
         this.height = user.getHeight();
         this.weight = user.getWeight();
         this.mainFoot = user.getMainFoot();
-        this.mainPosition = user.getMainPosition();
-        this.subPosition = user.getSubPosition();
+        this.mainPosition = user.getMainPosition().name();
+        this.subPosition = user.getSubPosition().name();
         this.accessToken = accessToken;
         this.refreshToken = user.getRefreshToken();
         this.hasClub = hasClub;

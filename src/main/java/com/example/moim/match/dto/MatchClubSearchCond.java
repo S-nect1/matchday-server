@@ -1,6 +1,5 @@
 package com.example.moim.match.dto;
 
-import com.example.moim.global.entity.EventType;
 import lombok.Data;
 
 @Data

@@ -1,15 +1,18 @@
 package com.example.moim.club.repository;
 
-import com.example.moim.club.dto.ClubInput;
-import com.example.moim.club.dto.ClubSearchCond;
-import com.example.moim.club.entity.Club;
+import com.example.moim.club.dto.request.ClubInput;
+import com.example.moim.club.dto.request.ClubSearchCond;
+import com.example.moim.club.entity.*;
+import com.example.moim.global.enums.*;
+import com.example.moim.global.util.TextUtils;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.mock.web.MockMultipartFile;
-import org.springframework.test.context.TestPropertySource;
+import org.springframework.test.context.jdbc.Sql;
+import org.springframework.test.context.jdbc.SqlGroup;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
@@ -17,11 +20,15 @@ import java.util.List;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 
 @DataJpaTest
-@TestPropertySource(locations = "classpath:application-test.properties")
+@SqlGroup(
+        @Sql(value = "/sql/user-club-repository-test-data-delete.sql", executionPhase = Sql.ExecutionPhase.AFTER_TEST_CLASS)
+)
 class ClubRepositoryImplTest {
 
     @Autowired
     private ClubRepository clubRepository;
+    @Autowired
+    private ClubSearchRepository clubSearchRepository;
 
     @BeforeEach
     void init() {
@@ -29,62 +36,100 @@ class ClubRepositoryImplTest {
         String title2 = "amazingtitle";
         String explanation = "explanation";
         String introduction = "introduction";
-        String category = "category";
-        String university = "university";
-        String gender = "gender";
-        String activityArea = "activityArea";
-        String ageRange = "ageRange";
-        String mainEvent = "mainEvent";
+        ClubCategory clubCategory = ClubCategory.SMALL_GROUP;
+        ClubCategory clubCategory2 = ClubCategory.SCHOOL_GROUP;
+        String university = "한양대학교";
+        Gender gender = Gender.UNISEX;
+        ActivityArea activityArea = ActivityArea.SEOUL;
+        AgeRange ageRange = AgeRange.TWENTIES;
+        SportsType sportsType = SportsType.SOCCER;
         String clubPassword = "clubPassword";
         MultipartFile profileImg = new MockMultipartFile("profileImg", "profileImg".getBytes());
         String mainUniformColor = "mainUniformColor";
         String subUniformColor = "subUniformColor";
 
-        ClubInput clubInput = ClubInput.builder().title(title).explanation(explanation).introduction(introduction).category(category)
-                .university(university).gender(gender).activityArea(activityArea).ageRange(ageRange).mainEvent(mainEvent)
+        ClubInput clubInput = ClubInput.builder().title(title).explanation(explanation).introduction(introduction).clubCategory(clubCategory.getKoreanName())
+                .university(university).gender(gender.getKoreanName()).activityArea(activityArea.getKoreanName()).ageRange(ageRange.getKoreanName()).sportsType(sportsType.getKoreanName())
                 .clubPassword(clubPassword).profileImg(profileImg).mainUniformColor(mainUniformColor).subUniformColor(subUniformColor).build();
-        ClubInput clubInput2 = ClubInput.builder().title(title2).explanation(explanation).introduction(introduction).category(category)
-                .university(university).gender(gender).activityArea(activityArea).ageRange(ageRange).mainEvent(mainEvent)
+        ClubInput clubInput2 = ClubInput.builder().title(title2).explanation(explanation).introduction(introduction).clubCategory(clubCategory2.getKoreanName())
+                .university(university).gender(gender.getKoreanName()).activityArea(activityArea.getKoreanName()).ageRange(ageRange.getKoreanName()).sportsType(sportsType.getKoreanName())
                 .clubPassword(clubPassword).profileImg(profileImg).mainUniformColor(mainUniformColor).subUniformColor(subUniformColor).build();
-        Club club = Club.createClub(clubInput, "/club");
-        Club club2 = Club.createClub(clubInput2, "/club");
-        clubRepository.save(club);
-        clubRepository.save(club2);
+
+        Club savedClub = clubRepository.save(Club.createClub(clubInput, "/club"));
+        Club savedClub2 = clubRepository.save(Club.createClub(clubInput2, "/club"));
+
+        ClubSearch clubSearch = ClubSearch.builder()
+                .club(savedClub)
+                .titleNoSpace(TextUtils.clean(savedClub.getTitle()))
+                .introNoSpace(TextUtils.clean(savedClub.getIntroduction()))
+                .expNoSpace(TextUtils.clean(savedClub.getExplanation()))
+                .allFieldsConcat(TextUtils.concatClean("|", savedClub.getTitle(), savedClub.getIntroduction(), savedClub.getExplanation()))
+                .build();
+        clubSearchRepository.save(clubSearch);
+        ClubSearch clubSearch2 = ClubSearch.builder()
+                .club(savedClub2)
+                .titleNoSpace(TextUtils.clean(savedClub2.getTitle()))
+                .introNoSpace(TextUtils.clean(savedClub2.getIntroduction()))
+                .expNoSpace(TextUtils.clean(savedClub2.getExplanation()))
+                .allFieldsConcat(TextUtils.concatClean("|", savedClub2.getTitle(), savedClub2.getIntroduction(), savedClub2.getExplanation()))
+                .build();
+        clubSearchRepository.save(clubSearch2);
+
     }
 
     @Test
-    @DisplayName("findBySearchCond 는 조건이 둘 다 만족해야 출력된다") // and 조건 이었네,,?
+    @DisplayName("findBySearchCond 는 search 와 한양대학교 둘 중 하나만 만족되어도 출력된다")
     void findBySearchCond_all_cond() {
         //given
-        String category = "nothing";
-        String search = "title";
-        String university = "university";
-        String gender = "gender";
-        String activityArea = "activityArea";
-        String ageRange = "ageRange";
-        String mainEvent = "mainEvent";
+        String keyword = "amazingtitle";
+        String university = "한양대학교";
+        Gender gender = Gender.UNISEX;
+        ActivityArea activityArea = ActivityArea.SEOUL;
+        AgeRange ageRange = AgeRange.TWENTIES;
+        SportsType sportsType = SportsType.SOCCER;
         ClubSearchCond clubSearchCond = ClubSearchCond.builder()
-                .category(category).search(search).university(university).gender(gender).activityArea(activityArea).ageRange(ageRange).mainEvent(mainEvent).build();
+                .search(keyword).university(university).gender(gender.getKoreanName())
+                .activityArea(activityArea.getKoreanName()).ageRange(ageRange.getKoreanName()).sportsType(sportsType.getKoreanName()).build();
         //when
         List<Club> result = clubRepository.findBySearchCond(clubSearchCond);
 
         //then
-        assertThat(result.size()).isEqualTo(0);
+        assertThat(result.size()).isEqualTo(2);
     }
 
     @Test
-    @DisplayName("findBySearchCond 는 아무런 검색 조건이 2개일 때, 둘 다 만족해야 출력된다") // and 조건 이었네,,?
-    void findBySearchCond_tow_cond() {
+    @DisplayName("findBySearchCond 는 search, university 조건의 결과값이 없을 경우 무시될 수 있다")
+    void findBySearchCond_avoid_search_and_university() {
         //given
-        String category = "nothing";
-        String search = "title";
+        String keyword = "dagdskjlksjdgl";
+        String university = "sgkjskjgl;sjdlkgj";
+        Gender gender = Gender.UNISEX;
+        ActivityArea activityArea = ActivityArea.SEOUL;
+        AgeRange ageRange = AgeRange.TWENTIES;
+        SportsType sportsType = SportsType.SOCCER;
         ClubSearchCond clubSearchCond = ClubSearchCond.builder()
-                .category(category).search(search).university(null).gender(null).activityArea(null).ageRange(null).mainEvent(null).build();
+                .search(keyword).university(university).gender(gender.getKoreanName())
+                .activityArea(activityArea.getKoreanName()).ageRange(ageRange.getKoreanName()).sportsType(sportsType.getKoreanName()).build();
         //when
         List<Club> result = clubRepository.findBySearchCond(clubSearchCond);
 
         //then
-        assertThat(result.size()).isEqualTo(0);
+        assertThat(result.size()).isEqualTo(2);
+    }
+
+    @Test
+    @DisplayName("findBySearchCond 는 검색 조건이 hard 조건과 soft 조건 2개일 때, 둘 다 만족해야 출력된다")
+    void findBySearchCond_tow_cond() {
+        //given
+        ClubCategory clubCategory = ClubCategory.SMALL_GROUP;
+        String keyword = "amazing";
+        ClubSearchCond clubSearchCond = ClubSearchCond.builder()
+                .clubCategory(clubCategory.getKoreanName()).search(keyword).university(null).gender(null).activityArea(null).ageRange(null).sportsType(null).build();
+        //when
+        List<Club> result = clubRepository.findBySearchCond(clubSearchCond);
+
+        //then
+        assertThat(result.size()).isEqualTo(1);
     }
 
     @Test
@@ -92,7 +137,7 @@ class ClubRepositoryImplTest {
     void findBySearchCond_null() {
         //given
         ClubSearchCond clubSearchCond = ClubSearchCond.builder()
-                .category(null).search(null).university(null).gender(null).activityArea(null).ageRange(null).mainEvent(null).build();
+                .clubCategory(null).search(null).university(null).gender(null).activityArea(null).ageRange(null).sportsType(null).build();
         //when
         List<Club> result = clubRepository.findBySearchCond(clubSearchCond);
 
@@ -104,37 +149,56 @@ class ClubRepositoryImplTest {
     @DisplayName("findBySearchCond 는 제목으로만 검색할 수 있다.")
     void findBySearchCond_title() {
         //given
-        String search = "title";
+        String search = "amazing title";
         ClubSearchCond clubSearchCond = ClubSearchCond.builder()
-                .category(null).search(search).university(null).gender(null).activityArea(null).ageRange(null).mainEvent(null).build();
+                .clubCategory(null).search(search).university(null).gender(null).activityArea(null).ageRange(null).sportsType(null).build();
         //when
         List<Club> result = clubRepository.findBySearchCond(clubSearchCond);
 
         //then
         assertThat(result.size()).isEqualTo(2);
+    }
+
+    @Test
+    @DisplayName("findBySearchCond 는 띄어쓰기 상관없이 동일한 결과가 나온다.")
+    void findBySearchCond_regardless_space() {
+        //given
+        String search1 = "amazing title";
+        String search2 = "amazingtitle";
+        ClubSearchCond clubSearchCond1 = ClubSearchCond.builder()
+                .clubCategory(null).search(search1).university(null).gender(null).activityArea(null).ageRange(null).sportsType(null).build();
+        ClubSearchCond clubSearchCond2 = ClubSearchCond.builder()
+                .clubCategory(null).search(search2).university(null).gender(null).activityArea(null).ageRange(null).sportsType(null).build();
+
+        //when
+        List<Club> result1 = clubRepository.findBySearchCond(clubSearchCond1);
+        List<Club> result2 = clubRepository.findBySearchCond(clubSearchCond2);
+
+        //then
+        assertThat(result1.size()).isEqualTo(result2.size());
     }
 
     @Test
     @DisplayName("findBySearchCond 는 카테고리로만 검색할 수 있다.")
     void findBySearchCond_category() {
         //given
-        String category = "category";
+        ClubCategory clubCategory = ClubCategory.SMALL_GROUP;
         ClubSearchCond clubSearchCond = ClubSearchCond.builder()
-                .category(category).search(null).university(null).gender(null).activityArea(null).ageRange(null).mainEvent(null).build();
+                .clubCategory(clubCategory.getKoreanName()).search(null).university(null).gender(null).activityArea(null).ageRange(null).sportsType(null).build();
         //when
         List<Club> result = clubRepository.findBySearchCond(clubSearchCond);
 
         //then
-        assertThat(result.size()).isEqualTo(2);
+        assertThat(result.size()).isEqualTo(1);
     }
 
     @Test
-    @DisplayName("findBySearchCond 는 대학으로만 검색할 수 있다.")
+    @DisplayName("findBySearchCond 는 소속으로만 검색할 수 있다.")
     void findBySearchCond_university() {
         //given
-        String university = "university";
+        String organization = "한양대학교";
         ClubSearchCond clubSearchCond = ClubSearchCond.builder()
-                .category(null).search(null).university(university).gender(null).activityArea(null).ageRange(null).mainEvent(null).build();
+                .clubCategory(null).search(null).university(organization).gender(null).activityArea(null).ageRange(null).sportsType(null).build();
         //when
         List<Club> result = clubRepository.findBySearchCond(clubSearchCond);
 
@@ -146,9 +210,9 @@ class ClubRepositoryImplTest {
     @DisplayName("findBySearchCond 는 성별로만 검색할 수 있다.")
     void findBySearchCond_gender() {
         //given
-        String gender = "gender";
+        Gender gender = Gender.UNISEX;
         ClubSearchCond clubSearchCond = ClubSearchCond.builder()
-                .category(null).search(null).university(null).gender(gender).activityArea(null).ageRange(null).mainEvent(null).build();
+                .clubCategory(null).search(null).university(null).gender(gender.getKoreanName()).activityArea(null).ageRange(null).sportsType(null).build();
         //when
         List<Club> result = clubRepository.findBySearchCond(clubSearchCond);
 
@@ -160,9 +224,9 @@ class ClubRepositoryImplTest {
     @DisplayName("findBySearchCond 는 활동지역으로만 검색할 수 있다.")
     void findBySearchCond_activityArea() {
         //given
-        String activityArea = "activityArea";
+        ActivityArea activityArea = ActivityArea.SEOUL;
         ClubSearchCond clubSearchCond = ClubSearchCond.builder()
-                .category(null).search(null).university(null).gender(null).activityArea(activityArea).ageRange(null).mainEvent(null).build();
+                .clubCategory(null).search(null).university(null).gender(null).activityArea(activityArea.getKoreanName()).ageRange(null).sportsType(null).build();
         //when
         List<Club> result = clubRepository.findBySearchCond(clubSearchCond);
 
@@ -174,9 +238,9 @@ class ClubRepositoryImplTest {
     @DisplayName("findBySearchCond 는 연령대로만 검색할 수 있다.")
     void findBySearchCond_ageRange() {
         //given
-        String ageRange = "ageRange";
+        AgeRange ageRange = AgeRange.TWENTIES;
         ClubSearchCond clubSearchCond = ClubSearchCond.builder()
-                .category(null).search(null).university(null).gender(null).activityArea(null).ageRange(ageRange).mainEvent(null).build();
+                .clubCategory(null).search(null).university(null).gender(null).activityArea(null).ageRange(ageRange.getKoreanName()).sportsType(null).build();
         //when
         List<Club> result = clubRepository.findBySearchCond(clubSearchCond);
 
@@ -188,9 +252,9 @@ class ClubRepositoryImplTest {
     @DisplayName("findBySearchCond 는 종목으로만 검색할 수 있다.")
     void findBySearchCond_mainEvent() {
         //given
-        String mainEvent = "mainEvent";
+        SportsType sportsType = SportsType.SOCCER;
         ClubSearchCond clubSearchCond = ClubSearchCond.builder()
-                .category(null).search(null).university(null).gender(null).activityArea(null).ageRange(null).mainEvent(mainEvent).build();
+                .clubCategory(null).search(null).university(null).gender(null).activityArea(null).ageRange(null).sportsType(sportsType.getKoreanName()).build();
         //when
         List<Club> result = clubRepository.findBySearchCond(clubSearchCond);
 

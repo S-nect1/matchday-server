@@ -1,8 +1,12 @@
 package com.example.moim.club.controller;
 
-import com.example.moim.club.dto.NoticeInput;
-import com.example.moim.club.dto.NoticeOutput;
-import com.example.moim.club.service.NoticeService;
+import com.example.moim.club.dto.request.NoticeInput;
+import com.example.moim.club.dto.request.NoticeOutput;
+import com.example.moim.club.service.NoticeCommandService;
+import com.example.moim.club.service.NoticeCommandServiceImpl;
+import com.example.moim.club.service.NoticeQueryService;
+import com.example.moim.global.exception.BaseResponse;
+import com.example.moim.global.exception.ResponseCode;
 import com.example.moim.user.dto.UserDetailsImpl;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -16,26 +20,24 @@ import java.util.List;
 @RestController
 @RequiredArgsConstructor
 public class NoticeController implements NoticeControllerDocs {
-    private final NoticeService noticeService;
+    private final NoticeCommandService noticeCommandService;
+    private final NoticeQueryService noticeQueryService;
 
     /**
-     * FIXME: 응답 값이 무조건 있어야 함
-     * @param noticeInput
-     * @param userDetailsImpl
+     * FIXME: 응답 값이 무조건 있어야 함. user 의 권한 체크는 안해도 되나?
      */
     @PostMapping("/notice")
-    public void noticeSave(NoticeInput noticeInput, @AuthenticationPrincipal UserDetailsImpl userDetailsImpl) {
-        noticeService.saveNotice(noticeInput);
+    public BaseResponse noticeSave(NoticeInput noticeInput, @AuthenticationPrincipal UserDetailsImpl userDetailsImpl) {
+        noticeCommandService.saveNotice(noticeInput);
+        return BaseResponse.onSuccess(null, ResponseCode.OK);
     }
 
     /**
      * FIXME: 공지를 시간 순으로 정렬하지 않아도 되나?
-     * @param clubId
-     * @param userDetailsImpl
      * @return
      */
     @GetMapping("/notice/{clubId}")
-    public List<NoticeOutput> noticeSave(@PathVariable Long clubId, @AuthenticationPrincipal UserDetailsImpl userDetailsImpl) {
-        return noticeService.findNotice(clubId);
+    public BaseResponse<List<NoticeOutput>> noticeSave(@PathVariable Long clubId, @AuthenticationPrincipal UserDetailsImpl userDetailsImpl) {
+        return BaseResponse.onSuccess(noticeQueryService.findNotice(clubId), ResponseCode.OK);
     }
 }

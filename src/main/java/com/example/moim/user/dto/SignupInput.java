@@ -1,6 +1,6 @@
 package com.example.moim.user.dto;
 
-import com.example.moim.user.entity.Gender;
+import com.example.moim.global.enums.Gender;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Pattern;
@@ -19,13 +19,13 @@ public class SignupInput {
     @NotBlank
     private String birthday;
 
-    private Gender gender;
+    private String gender;
     @NotBlank
     @Pattern(regexp = "010(\\d{4})(\\d{4})$", message = "휴대폰 번호 양식에 맞지 않습니다.")
     private String phone;
 
     @Builder
-    public SignupInput(String email, String password, String name, String birthday, Gender gender, String phone) {
+    public SignupInput(String email, String password, String name, String birthday, String gender, String phone) {
         this.email = email;
         this.password = password;
         this.name = name;
