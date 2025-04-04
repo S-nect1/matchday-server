@@ -7,7 +7,7 @@ import com.example.moim.club.repository.ClubRepository;
 import com.example.moim.club.repository.UserClubRepository;
 import com.example.moim.club.exception.ClubPasswordException;
 import com.example.moim.club.exception.ClubPermissionException;
-import com.example.moim.global.util.FileStore;
+import com.example.moim.global.util.file.service.FileService;
 import com.example.moim.notification.dto.ClubJoinEvent;
 import com.example.moim.user.entity.User;
 import com.example.moim.user.repository.UserRepository;
@@ -26,11 +26,11 @@ public class ClubService {
     private final ClubRepository clubRepository;
     private final UserClubRepository userClubRepository;
     private final UserRepository userRepository;
-    private final FileStore fileStore;
+    private final FileService fileService;
     private final ApplicationEventPublisher eventPublisher;
 
     public ClubOutput saveClub(User user, ClubInput clubInput) throws IOException {
-        Club club = clubRepository.save(Club.createClub(clubInput, fileStore.storeFile(clubInput.getProfileImg())));
+        Club club = clubRepository.save(Club.createClub(clubInput, fileService.upload(clubInput.getProfileImg(), "/club_profile")));
         UserClub userClub = userClubRepository.save(UserClub.createLeaderUserClub(user, club));
         return new ClubOutput(club, userClub.getCategory());
     }
@@ -47,7 +47,7 @@ public class ClubService {
             throw new ClubPasswordException("모임 비밀번호가 틀렸습니다.");
         }
 
-        club.updateClub(clubUpdateInput, fileStore.storeFile(clubUpdateInput.getProfileImg()));
+        club.updateClub(clubUpdateInput, fileService.upload(clubUpdateInput.getProfileImg(), "/club_profile"));
         return new ClubOutput(club);
     }
 
