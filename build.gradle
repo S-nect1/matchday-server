@@ -43,8 +43,12 @@ dependencies {
     // Health Check
     implementation 'org.springframework.boot:spring-boot-starter-actuator'
 
+    // AWS 서비스 연동을 쉽게 도와주는 Spring Cloud 통합 패키지
+    implementation 'org.springframework.cloud:spring-cloud-starter-aws:2.2.6.RELEASE'
+
     compileOnly 'org.projectlombok:lombok'
     runtimeOnly 'com.mysql:mysql-connector-j'
+//    runtimeOnly 'com.h2database:h2'
     annotationProcessor 'org.projectlombok:lombok'
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
     testCompileOnly 'org.projectlombok:lombok'

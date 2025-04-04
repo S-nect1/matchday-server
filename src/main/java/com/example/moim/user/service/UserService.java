@@ -1,8 +1,8 @@
 package com.example.moim.user.service;
 
 import com.example.moim.club.repository.UserClubRepository;
-import com.example.moim.global.util.FileStore;
 import com.example.moim.config.jwt.JWTUtil;
+import com.example.moim.global.util.file.service.FileService;
 import com.example.moim.user.dto.*;
 import com.example.moim.user.entity.User;
 import com.example.moim.user.repository.UserRepository;
@@ -25,7 +25,7 @@ public class UserService {
     private final BCryptPasswordEncoder bCryptPasswordEncoder;
     private final AuthenticationManager authenticationManager;
     private final JWTUtil jwtUtil;
-    private final FileStore fileStore;
+    private final FileService fileService;
 
     public void signup(SignupInput signupInput) {
         signupInput.setPassword(bCryptPasswordEncoder.encode(signupInput.getPassword()));
@@ -60,13 +60,13 @@ public class UserService {
     @Transactional
     public void saveUserInfo(User loginUser, SocialSignupInput socialSignupInput) throws IOException {
         User user = userRepository.findById(loginUser.getId()).get();
-        user.fillUserInfo(socialSignupInput, fileStore.storeFile(socialSignupInput.getImg()));
+        user.fillUserInfo(socialSignupInput, fileService.upload(socialSignupInput.getImg(), "/user_profile"));
     }
 
     @Transactional
     public void updateUserInfo(User loginUser, UserUpdateInput userUpdateInput) throws IOException {
         User user = userRepository.findById(loginUser.getId()).get();
-        user.updateUserInfo(userUpdateInput, fileStore.storeFile(userUpdateInput.getImg()));
+        user.updateUserInfo(userUpdateInput, fileService.upload(userUpdateInput.getImg(), "/user_profile"));
     }
 
     @Transactional

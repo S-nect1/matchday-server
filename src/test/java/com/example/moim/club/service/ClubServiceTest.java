@@ -7,7 +7,7 @@ import com.example.moim.club.exception.ClubPasswordException;
 import com.example.moim.club.exception.ClubPermissionException;
 import com.example.moim.club.repository.ClubRepository;
 import com.example.moim.club.repository.UserClubRepository;
-import com.example.moim.global.util.FileStore;
+import com.example.moim.global.util.file.service.FileService;
 import com.example.moim.notification.dto.ClubJoinEvent;
 import com.example.moim.user.entity.User;
 import com.example.moim.user.repository.UserRepository;
@@ -18,7 +18,6 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.web.multipart.MultipartFile;
@@ -40,7 +39,7 @@ class ClubServiceTest {
     @Mock
     private UserClubRepository userClubRepository;
     @Mock
-    private FileStore fileStore;
+    private FileService fileService;
     @Mock
     private ApplicationEventPublisher eventPublisher;
     @Mock
@@ -89,14 +88,14 @@ class ClubServiceTest {
         //when
         when(clubRepository.save(any(Club.class))).thenReturn(club);
         when(userClubRepository.save(any(UserClub.class))).thenReturn(userClub);
-        when(fileStore.storeFile(any())).thenReturn(null);
+        when(fileService.upload(any(), any(String.class))).thenReturn(null);
         ClubOutput clubOutput = clubService.saveClub(new User(), clubInput);
 
         //then
         assertThat(clubOutput).isNotNull();
         verify(clubRepository, times(1)).save(any(Club.class));
         verify(userClubRepository, times(1)).save(any(UserClub.class));
-        verify(fileStore, times(1)).storeFile(any());
+        verify(fileService, times(1)).upload(any(), any(String.class));
     }
 
     @Test
@@ -108,7 +107,7 @@ class ClubServiceTest {
         //when
         when(clubRepository.findById(any(Long.class))).thenReturn(Optional.of(club));
         when(userClubRepository.findByClubAndUser(any(Club.class), any(User.class))).thenReturn(Optional.of(userClub));
-        when(fileStore.storeFile(null)).thenReturn(null);
+        when(fileService.upload(any(), any(String.class))).thenReturn(null);
         ClubOutput clubOutput = clubService.updateClub(new User(), clubUpdateInput);
         //then
         assertThat(clubOutput).isNotNull();
@@ -116,7 +115,7 @@ class ClubServiceTest {
         assertThat(clubOutput.getExplanation()).isEqualTo("update explanation");
         verify(clubRepository, times(1)).findById(any(Long.class));
         verify(userClubRepository, times(1)).findByClubAndUser(any(Club.class), any(User.class));
-        verify(fileStore, times(1)).storeFile(any());
+        verify(fileService, times(1)).upload(any(), any(String.class));
     }
 
     @Test
