@@ -210,7 +210,7 @@ class ClubCommandServiceImplTest {
         //given
         Club club = Club.createClub(clubInput, null);
         ClubUserUpdateInput clubUserUpdateInput = ClubUserUpdateInput.builder()
-                .userId(1L).clubRole(ClubRole.VICE_PRESIDENT.getKoreanName()).build();
+                .userId(1L).clubRole(ClubRole.STAFF.getKoreanName()).build();
 
         //when
         when(clubRepository.findById(any(Long.class))).thenReturn(Optional.of(club));
@@ -221,7 +221,7 @@ class ClubCommandServiceImplTest {
         UserClubOutput result = clubCommandService.updateClubUser(new User(), clubUserUpdateInput, 1L);
 
         //then
-        assertThat(result.getClubRole()).isEqualTo(ClubRole.VICE_PRESIDENT.getKoreanName());
+        assertThat(result.getClubRole()).isEqualTo(ClubRole.STAFF.getKoreanName());
         verify(clubRepository, times(1)).findById(any(Long.class));
         verify(userClubRepository, times(2)).findByClubAndUser(any(Club.class), any(User.class));
     }
@@ -232,7 +232,7 @@ class ClubCommandServiceImplTest {
         //given
         Club club = Club.createClub(clubInput, null);
         ClubUserUpdateInput clubUserUpdateInput = ClubUserUpdateInput.builder()
-                .userId(1L).clubRole(ClubRole.VICE_PRESIDENT.getKoreanName()).build();
+                .userId(1L).clubRole(ClubRole.STAFF.getKoreanName()).build();
 
         //when
         //then

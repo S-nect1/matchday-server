@@ -5,9 +5,7 @@ import java.util.Arrays;
 import java.util.Optional;
 
 public enum ClubRole {
-    PRESIDENT("회장"),     // 회장
-    VICE_PRESIDENT("부회장"), // 부회장
-    GENERAL_AFFAIRS("총무"), // 총무
+    STAFF("운영진"), // 운영진
     MEMBER("일반회원"); // 일반회원
 
     private final String koreanName;

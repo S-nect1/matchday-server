@@ -57,7 +57,7 @@ public class ClubCommandServiceImpl implements ClubCommandService {
         Club club = getClub(clubId);
 //        Club club = clubRepository.findById(clubId).orElseThrow(() -> new ClubControllerAdvice(ResponseCode.CLUB_NOT_FOUND));
         UserClub userClub = userClubRepository.findByClubAndUser(club, user).orElseThrow(() -> new ClubControllerAdvice(ResponseCode.CLUB_USER_NOT_FOUND));
-        if (!(userClub.getClubRole().equals(ClubRole.PRESIDENT) || userClub.getClubRole().equals(ClubRole.VICE_PRESIDENT))) {
+        if (!(userClub.getClubRole().equals(ClubRole.STAFF))) {
             throw new ClubControllerAdvice(ResponseCode.CLUB_PERMISSION_DENIED);
         }
 
@@ -99,7 +99,7 @@ public class ClubCommandServiceImpl implements ClubCommandService {
         Club club = getClub(clubId);
 //        Club club = clubRepository.findById(clubId).orElseThrow(() -> new ClubControllerAdvice(ResponseCode.CLUB_NOT_FOUND));
         UserClub userClub = userClubRepository.findByClubAndUser(club, user).orElseThrow(() -> new ClubControllerAdvice(ResponseCode.CLUB_USER_NOT_FOUND));
-        if (!(userClub.getClubRole().equals(ClubRole.PRESIDENT) || userClub.getClubRole().equals(ClubRole.VICE_PRESIDENT))) {
+        if (!(userClub.getClubRole().equals(ClubRole.STAFF))) {
             throw new ClubControllerAdvice(ResponseCode.CLUB_PERMISSION_DENIED);
         }
 
@@ -114,7 +114,7 @@ public class ClubCommandServiceImpl implements ClubCommandService {
         Club club = getClub(clubId);
 //        Club club = clubRepository.findById(clubPswdUpdateInput.getId()).orElseThrow(() -> new ClubControllerAdvice(ResponseCode.CLUB_NOT_FOUND));
         UserClub userClub = userClubRepository.findByClubAndUser(club, user).orElseThrow(() -> new ClubControllerAdvice(ResponseCode.CLUB_USER_NOT_FOUND));
-        if (!(userClub.getClubRole().equals(ClubRole.PRESIDENT) || userClub.getClubRole().equals(ClubRole.VICE_PRESIDENT))) {
+        if (!(userClub.getClubRole().equals(ClubRole.STAFF))) {
             throw new ClubControllerAdvice(ResponseCode.CLUB_PERMISSION_DENIED);
         }
 
