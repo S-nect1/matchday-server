@@ -22,9 +22,9 @@ INSERT INTO users (user_id, created_date, updated_date, activity_area, birthday,
 VALUES (default, null, null, 'GYEONGGI', 'birthday', 'email', 'fcm_token', 'MAN', 180, null, 'BOTH', 'MANAGER', 'name', 'password', 'phone', 'refresh_token12345678910', 'USER', 'GK', 70);
 
 INSERT INTO user_club (id, created_date, updated_date, club_role, join_date, match_count, schedule_count, club_id, user_id)
-VALUES (default, null, null, 'CREATOR', '2024-12-11', 2, 2, 1, 1);
+VALUES (default, null, null, 'PRESIDENT', '2024-12-11', 2, 2, 1, 1);
 ---- 3번 동아리에 가입한 유저들
 INSERT INTO user_club (id, created_date, updated_date, club_role, join_date, match_count, schedule_count, club_id, user_id)
-VALUES (default, null, null, 'ADMIN', '2024-12-11', 2, 2, 3, 3);
+VALUES (default, null, null, 'VICE_PRESIDENT', '2024-12-11', 2, 2, 3, 3);
 INSERT INTO user_club (id, created_date, updated_date, club_role, join_date, match_count, schedule_count, club_id, user_id)
-VALUES (default, null, null, 'CREATOR', '2024-12-11', 2, 2, 3, 4);
+VALUES (default, null, null, 'PRESIDENT', '2024-12-11', 2, 2, 3, 4);

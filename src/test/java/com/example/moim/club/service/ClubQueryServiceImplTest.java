@@ -93,7 +93,7 @@ public class ClubQueryServiceImplTest {
 
         //then
         assertThat(result.getTitle()).isEqualTo("amazing title");
-        assertThat(result.getClubRole()).isEqualTo(ClubRole.CREATOR);
+        assertThat(result.getClubRole()).isEqualTo(ClubRole.PRESIDENT);
         assertThat(result.getMemberCount()).isEqualTo(1);
         verify(clubRepository, times(1)).findById(any(Long.class));
         verify(userClubRepository, times(1)).findByClubAndUser(any(Club.class), any(User.class));

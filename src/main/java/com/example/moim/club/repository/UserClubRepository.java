@@ -45,7 +45,8 @@ public interface UserClubRepository extends JpaRepository<UserClub, Long> {
     @Transactional(readOnly = true)
     @Query("select uc from UserClub uc" +
             " where uc.club = :club" +
-            " and (uc.clubRole = 'CREATOR'" +
-            " or uc.clubRole = 'ADMIN')")
+            " and (uc.clubRole = 'PRESIDENT'" +
+            " or uc.clubRole = 'VICE_PRESIDENT'" +
+            " or uc.clubRole = 'GENERAL_AFFAIRS')")
     List<UserClub> findAdminByClub(@Param("club") Club Club);
 }

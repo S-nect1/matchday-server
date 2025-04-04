@@ -70,7 +70,8 @@ public enum ResponseCode {
     INVALID_AGE_RANGE(HttpStatus.BAD_REQUEST, "ENUM4004", "유효하지 않은 연령대입니다."),
     INVALID_ACTIVITY_AREA(HttpStatus.BAD_REQUEST, "ENUM4005", "유효하지 않은 지역입니다."),
     INVALID_MAIN_FOOT(HttpStatus.BAD_REQUEST, "ENUM4006", "유효하지 않은 주발입니다."),
-    INVALID_SPORTS_TYPE(HttpStatus.BAD_REQUEST, "ENUM4007", "유효하지 않은 종목입니다.");
+    INVALID_SPORTS_TYPE(HttpStatus.BAD_REQUEST, "ENUM4007", "유효하지 않은 종목입니다."),
+    INVALID_CLUB_ROLE(HttpStatus.BAD_REQUEST, "ENUM4008", "유효하지 않은 모임 역할입니다.");
 
     private final HttpStatus httpStatus;
     private final String code;

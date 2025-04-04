@@ -32,7 +32,7 @@ public class UserClub extends BaseEntity {
         UserClub userClub = new UserClub();
         userClub.user = user;
         userClub.club = club;
-        userClub.clubRole = ClubRole.CREATOR;
+        userClub.clubRole = ClubRole.PRESIDENT;
         userClub.joinDate = LocalDate.now();
         return userClub;
     }

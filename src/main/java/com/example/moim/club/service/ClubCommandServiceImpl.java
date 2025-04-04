@@ -57,7 +57,7 @@ public class ClubCommandServiceImpl implements ClubCommandService {
         Club club = getClub(clubId);
 //        Club club = clubRepository.findById(clubId).orElseThrow(() -> new ClubControllerAdvice(ResponseCode.CLUB_NOT_FOUND));
         UserClub userClub = userClubRepository.findByClubAndUser(club, user).orElseThrow(() -> new ClubControllerAdvice(ResponseCode.CLUB_USER_NOT_FOUND));
-        if (!(userClub.getClubRole().equals(ClubRole.CREATOR) || userClub.getClubRole().equals(ClubRole.ADMIN))) {
+        if (!(userClub.getClubRole().equals(ClubRole.PRESIDENT) || userClub.getClubRole().equals(ClubRole.VICE_PRESIDENT))) {
             throw new ClubControllerAdvice(ResponseCode.CLUB_PERMISSION_DENIED);
         }
 
@@ -99,13 +99,13 @@ public class ClubCommandServiceImpl implements ClubCommandService {
         Club club = getClub(clubId);
 //        Club club = clubRepository.findById(clubId).orElseThrow(() -> new ClubControllerAdvice(ResponseCode.CLUB_NOT_FOUND));
         UserClub userClub = userClubRepository.findByClubAndUser(club, user).orElseThrow(() -> new ClubControllerAdvice(ResponseCode.CLUB_USER_NOT_FOUND));
-        if (!(userClub.getClubRole().equals(ClubRole.CREATOR) || userClub.getClubRole().equals(ClubRole.ADMIN))) {
+        if (!(userClub.getClubRole().equals(ClubRole.PRESIDENT) || userClub.getClubRole().equals(ClubRole.VICE_PRESIDENT))) {
             throw new ClubControllerAdvice(ResponseCode.CLUB_PERMISSION_DENIED);
         }
 
         User targetUser = userRepository.findById(clubUserUpdateInput.getUserId()).orElseThrow(() -> new ClubControllerAdvice(ResponseCode.CLUB_USER_NOT_FOUND));
         UserClub changeUserClub = userClubRepository.findByClubAndUser(club, targetUser).orElseThrow(() -> new ClubControllerAdvice(ResponseCode.CLUB_USER_NOT_FOUND));
-        changeUserClub.changeUserClub(ClubRole.valueOf(clubUserUpdateInput.getClubRole()));
+        changeUserClub.changeUserClub(ClubRole.fromKoreanName(clubUserUpdateInput.getClubRole()).orElseThrow(() -> new ClubControllerAdvice(ResponseCode.INVALID_CLUB_ROLE)));
         return new UserClubOutput(changeUserClub);
     }
 
@@ -114,7 +114,7 @@ public class ClubCommandServiceImpl implements ClubCommandService {
         Club club = getClub(clubId);
 //        Club club = clubRepository.findById(clubPswdUpdateInput.getId()).orElseThrow(() -> new ClubControllerAdvice(ResponseCode.CLUB_NOT_FOUND));
         UserClub userClub = userClubRepository.findByClubAndUser(club, user).orElseThrow(() -> new ClubControllerAdvice(ResponseCode.CLUB_USER_NOT_FOUND));
-        if (!(userClub.getClubRole().equals(ClubRole.CREATOR) || userClub.getClubRole().equals(ClubRole.ADMIN))) {
+        if (!(userClub.getClubRole().equals(ClubRole.PRESIDENT) || userClub.getClubRole().equals(ClubRole.VICE_PRESIDENT))) {
             throw new ClubControllerAdvice(ResponseCode.CLUB_PERMISSION_DENIED);
         }
 

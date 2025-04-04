@@ -25,7 +25,7 @@ public class UserClubOutput {
         this.userId = userClub.getUser().getId();
         this.clubId = userClub.getClub().getId();
         this.name = userClub.getUser().getName();
-        this.clubRole = userClub.getClubRole().name();
+        this.clubRole = userClub.getClubRole().getKoreanName();
         this.joinDate = userClub.getJoinDate();
         this.birthday = userClub.getUser().getBirthday();
         if (StringUtils.hasText(userClub.getUser().getImgPath())) {

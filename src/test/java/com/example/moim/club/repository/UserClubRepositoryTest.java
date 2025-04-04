@@ -117,8 +117,8 @@ class UserClubRepositoryTest {
 
         //then
         assertThat(userClubList.size()).isEqualTo(2);
-        assertThat(userClubList.get(0).getClubRole()).isEqualTo(ClubRole.ADMIN);
-        assertThat(userClubList.get(1).getClubRole()).isEqualTo(ClubRole.CREATOR);
+        assertThat(userClubList.get(0).getClubRole()).isEqualTo(ClubRole.VICE_PRESIDENT);
+        assertThat(userClubList.get(1).getClubRole()).isEqualTo(ClubRole.PRESIDENT);
     }
 
     @Test
