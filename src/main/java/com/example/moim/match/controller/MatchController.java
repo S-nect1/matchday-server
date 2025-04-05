@@ -37,12 +37,30 @@ public class MatchController {
         return BaseResponse.onSuccess(matchService.registerMatch(userDetailsImpl.getUser(), matchRegInput), ResponseCode.OK);
     }
 
+    // 매치 생성 취소
+    @DeleteMapping("/match")
+    public BaseResponse<String> matchCreationCancel(@RequestParam Long matchId,
+                                                    @AuthenticationPrincipal UserDetailsImpl userDetailsImpl) {
+        String result = matchService.cancelMatch(userDetailsImpl.getUser(), matchId);
+        return BaseResponse.onSuccess(result, ResponseCode.OK);
+    }
+
+
     //매치 신청 생성
     @PostMapping("/match-apply")
     public BaseResponse<MatchApplyOutput> matchApplySave(@RequestParam Long matchId,
                                            @RequestParam Long clubId,
                                            @AuthenticationPrincipal UserDetailsImpl userDetailsImpl) {
         return BaseResponse.onSuccess(matchService.saveMatchApp(userDetailsImpl.getUser(), matchId, clubId), ResponseCode.OK);
+    }
+
+    // 매치 신청 취소
+    @DeleteMapping("/match-apply")
+    public BaseResponse<String> matchApplyCancel(@RequestParam Long matchId,
+                                                 @RequestParam Long clubId,
+                                                 @AuthenticationPrincipal UserDetailsImpl userDetailsImpl) {
+        String result = matchService.cancelMatchApplication(userDetailsImpl.getUser(), matchId, clubId);
+        return BaseResponse.onSuccess(result, ResponseCode.OK);
     }
 
     //매치 신청 완료
@@ -67,6 +85,14 @@ public class MatchController {
                                            @RequestParam Long clubId,
                                            @AuthenticationPrincipal UserDetailsImpl userDetailsImpl) {
         return BaseResponse.onSuccess(matchService.confirmMatch(matchId, clubId, userDetailsImpl.getUser()), ResponseCode.OK);
+    }
+
+    // 확정된 매치 취소
+    @DeleteMapping("/match-confirm")
+    public BaseResponse<String> cancelConfirmedMatch(@RequestParam Long matchId,
+                                                     @AuthenticationPrincipal UserDetailsImpl userDetailsImpl) {
+        String result = matchService.cancelConfirmedMatch(userDetailsImpl.getUser(), matchId);
+        return BaseResponse.onSuccess(result, ResponseCode.OK);
     }
 
     //등록된 매치 검색
@@ -120,5 +146,4 @@ public class MatchController {
     public BaseResponse<MatchMainOutput> findMatchMain(@PathVariable Long clubId, @AuthenticationPrincipal UserDetailsImpl userDetailsImpl) {
         return BaseResponse.onSuccess(matchService.matchMainFind(clubId), ResponseCode.OK);
     }
-
 }
