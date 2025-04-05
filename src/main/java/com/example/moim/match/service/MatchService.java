@@ -4,6 +4,8 @@ import com.example.moim.club.entity.Club;
 import com.example.moim.global.exception.ResponseCode;
 import com.example.moim.match.entity.*;
 import com.example.moim.match.exception.advice.MatchControllerAdvice;
+import com.example.moim.notification.dto.MatchCancelClubEvent;
+import com.example.moim.notification.dto.MatchCancelUserEvent;
 import com.example.moim.schedule.entity.Schedule;
 import com.example.moim.schedule.entity.ScheduleVote;
 import com.example.moim.club.entity.UserClub;
@@ -128,35 +130,34 @@ public class MatchService {
         }
 
         if(match.getMatchStatus() == MatchStatus.PENDING) {     // 생성 대기 상태 취소
-//            List<ScheduleVote> votes = scheduleVoteRepository.findBySchedule(match.getSchedule());
-//            for(ScheduleVote vote : votes) {
-//                if("attend".equals(vote.getAttendance())) {
-//                    // 홈 팀 알림 발송
-//                    eventPublisher.publishEvent(new MatchCreationCancelEvent(match, vote.getUser(), "PENDING"));
-//                }
-//            }
+            List<ScheduleVote> votes = scheduleVoteRepository.findBySchedule(match.getSchedule());
+            for(ScheduleVote vote : votes) {
+                if("attend".equals(vote.getAttendance())) {
+                    // 홈 팀 알림 발송
+                    eventPublisher.publishEvent(new MatchCancelUserEvent(match, vote.getUser()));
+                }
+            }
             matchRepository.delete(match);
             return "매치가 취소되었습니다.";
 
         } else if(match.getMatchStatus() == MatchStatus.REGISTERED) {   // 생성 완료 상태 취소
-//            List<MatchApplication> applications = matchApplicationRepository.findByMatch(match);
-//            for(MatchApplication app : applications) {
-//                // 신청 팀 알림 발송
-//                eventPublisher.publishEvent(new MatchCreationCancelEvent(match, app.getClub(), "REGISTERED"));
-//            }
+            List<MatchApplication> applications = matchApplicationRepository.findByMatch(match);
+            for(MatchApplication app : applications) {
+                // 모든 신청팀 알림 발송
+                eventPublisher.publishEvent(new MatchCancelClubEvent(match, app.getClub()));
+            }
 
-//            List<ScheduleVote> votes = scheduleVoteRepository.findBySchedule(match.getSchedule());
-//            for(ScheduleVote vote : votes) {
-//                if("attend".equals(vote.getAttendance())) {
-//                    // 홈 팀 알림 발송
-//                    eventPublisher.publishEvent(new MatchCreationCancelEvent(match, vote.getUser(), "REGISTERED"));
-//                }
-//            }
+            List<ScheduleVote> votes = scheduleVoteRepository.findBySchedule(match.getSchedule());
+            for(ScheduleVote vote : votes) {
+                if("attend".equals(vote.getAttendance())) {
+                    // 홈 팀 알림 발송
+                    eventPublisher.publishEvent(new MatchCancelUserEvent(match, vote.getUser()));
+                }
+            }
             matchRepository.delete(match);
             return "매치가 취소되었습니다.";
-        } else {
-            throw new MatchControllerAdvice(ResponseCode.MATCH_CANNOT_CANCEL);
         }
+        throw new MatchControllerAdvice(ResponseCode.MATCH_CANNOT_CANCEL);
     }
 
     // PENDING_APP
@@ -240,9 +241,9 @@ public class MatchService {
         matchApplicationRepository.save(application);
 
         // 신청 완료 상태였다면 팀한테 알림 발송
-//        if (wasCompleted) {
-//            eventPublisher.publishEvent(new MatchApplicationCancelEvent(match, club, "APP_COMPLETED"));
-//        }
+        if (wasCompleted) {
+            eventPublisher.publishEvent(new MatchCancelClubEvent(match, club));
+        }
 
         return "매치 신청이 취소되었습니다.";
     }
@@ -396,6 +397,8 @@ public class MatchService {
 
         if(homeUserClubOpt.isPresent()) {       // 생성팀의 취소
             // 참가 팀원과 상대팀에 알림 발송 및 상태 변경(FAILED)
+            eventPublisher.publishEvent(new MatchCancelClubEvent(match, match.getAwayClub()));
+
             match.failMatch();
             matchRepository.save(match);
 
@@ -408,6 +411,8 @@ public class MatchService {
 
         } else if(awayUserClubOpt.isPresent()) {        // 참가팀의 취소
             // awayClub 정보를 제거하고 상태를 REGISTERED로 복구
+            eventPublisher.publishEvent(new MatchCancelClubEvent(match, match.getHomeClub()));
+
             match.cancelConfirmation();
             matchRepository.save(match);
 

@@ -88,6 +88,26 @@ public class Notifications extends BaseEntity {
         return notifications;
     }
 
+    public static Notifications createMatchCancelUserNotification(MatchCancelUserEvent event, User targetUser) {
+        Notifications notification = new Notifications();
+        notification.targetUser = targetUser;
+        notification.title = "매치 취소 알림";
+        notification.category = "친선 매치";
+        notification.contents = "매치 '" + event.getMatch().getName() + "'가 취소되었습니다.";
+        notification.isRead = false;
+        return notification;
+    }
+
+    public static Notifications createMatchCancelClubNotification(MatchCancelClubEvent event, User targetUser) {
+        Notifications notification = new Notifications();
+        notification.targetUser = targetUser;
+        notification.title = "매치 신청 취소 알림";
+        notification.category = "친선 매치";
+        notification.contents = "신청하신 매치 '" + event.getMatch().getName() + "'가 취소되었습니다.";
+        notification.isRead = false;
+        return notification;
+    }
+
     public void setRead(Boolean read) {
         isRead = read;
     }
