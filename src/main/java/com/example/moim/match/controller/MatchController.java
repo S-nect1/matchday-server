@@ -47,7 +47,7 @@ public class MatchController {
 
 
     //매치 신청 생성
-    @PostMapping("/match-apply")
+    @PostMapping("/match-application")
     public BaseResponse<MatchApplyOutput> matchApplySave(@RequestParam Long matchId,
                                            @RequestParam Long clubId,
                                            @AuthenticationPrincipal UserDetailsImpl userDetailsImpl) {
@@ -55,7 +55,7 @@ public class MatchController {
     }
 
     // 매치 신청 취소
-    @DeleteMapping("/match-apply")
+    @DeleteMapping("/match-application")
     public BaseResponse<String> matchApplyCancel(@RequestParam Long matchId,
                                                  @RequestParam Long clubId,
                                                  @AuthenticationPrincipal UserDetailsImpl userDetailsImpl) {
@@ -64,7 +64,7 @@ public class MatchController {
     }
 
     //매치 신청 완료
-    @PatchMapping("/match-apply")
+    @PatchMapping("/match-application")
     public BaseResponse<MatchApplyOutput> matchApply(@RequestBody @Valid MatchApplyInput matchApplyInput,
                                        @AuthenticationPrincipal UserDetailsImpl userDetailsImpl) {
         return BaseResponse.onSuccess(matchService.applyMatch(userDetailsImpl.getUser(), matchApplyInput), ResponseCode.OK);
