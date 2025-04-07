@@ -6,6 +6,7 @@ WORKDIR /app
 COPY . .
 
 RUN ./gradlew build
+#RUN ./gradlew build -x test
 
 # Run stage
 

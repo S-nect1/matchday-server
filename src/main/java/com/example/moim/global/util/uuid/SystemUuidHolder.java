@@ -7,7 +7,7 @@ import org.springframework.stereotype.Component;
 import java.util.UUID;
 
 @Slf4j
-@Profile("!test")
+//@Profile("!test")
 @Component
 public class SystemUuidHolder implements UuidHolder {
     @Override

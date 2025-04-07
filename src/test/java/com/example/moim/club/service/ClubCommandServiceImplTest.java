@@ -1,12 +1,17 @@
 package com.example.moim.club.service;
 
-import com.example.moim.club.dto.*;
-import com.example.moim.club.entity.Club;
-import com.example.moim.club.entity.UserClub;
-import com.example.moim.club.exception.ClubPasswordException;
-import com.example.moim.club.exception.ClubPermissionException;
+import com.example.moim.club.dto.request.*;
+import com.example.moim.club.dto.response.ClubOutput;
+import com.example.moim.club.dto.response.ClubSaveOutput;
+import com.example.moim.club.dto.response.ClubUpdateOutput;
+import com.example.moim.club.dto.response.UserClubOutput;
+import com.example.moim.club.entity.*;
+import com.example.moim.club.exception.advice.ClubControllerAdvice;
 import com.example.moim.club.repository.ClubRepository;
+import com.example.moim.club.repository.ClubSearchRepository;
 import com.example.moim.club.repository.UserClubRepository;
+import com.example.moim.global.enums.*;
+import com.example.moim.global.exception.ResponseCode;
 import com.example.moim.global.util.file.service.FileService;
 import com.example.moim.notification.dto.ClubJoinEvent;
 import com.example.moim.user.entity.User;
@@ -32,7 +37,7 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
-class ClubServiceTest {
+class ClubCommandServiceImplTest {
 
     @Mock
     private ClubRepository clubRepository;
@@ -44,8 +49,10 @@ class ClubServiceTest {
     private ApplicationEventPublisher eventPublisher;
     @Mock
     private UserRepository userRepository;
+    @Mock
+    private ClubSearchRepository clubSearchRepository;
     @InjectMocks
-    private ClubService clubService;
+    private ClubCommandServiceImpl clubCommandService;
 
     private ClubInput clubInput;
     private ClubUpdateInput clubUpdateInput;
@@ -55,26 +62,26 @@ class ClubServiceTest {
         String title = "amazing title";
         String explanation = "explanation";
         String introduction = "introduction";
-        String category = "category";
-        String university = "university";
-        String gender = "gender";
-        String activityArea = "activityArea";
-        String ageRange = "ageRange";
-        String mainEvent = "mainEvent";
+        ClubCategory clubCategory = ClubCategory.SMALL_GROUP;
+        String organization = "organization";
+        Gender gender = Gender.UNISEX;
+        ActivityArea activityArea = ActivityArea.SEOUL;
+        AgeRange ageRange = AgeRange.TWENTIES;
+        SportsType sportsType = SportsType.SOCCER;
         String clubPassword = "clubPassword";
         MultipartFile profileImg = new MockMultipartFile("profileImg", "profileImg".getBytes());
         String mainUniformColor = "mainUniformColor";
         String subUniformColor = "subUniformColor";
 
-        this.clubInput = ClubInput.builder().title(title).explanation(explanation).introduction(introduction).category(category)
-                .university(university).gender(gender).activityArea(activityArea).ageRange(ageRange).mainEvent(mainEvent)
+        this.clubInput = ClubInput.builder().title(title).explanation(explanation).introduction(introduction).clubCategory(clubCategory.getKoreanName())
+                .university(organization).gender(gender.getKoreanName()).activityArea(activityArea.getKoreanName()).ageRange(ageRange.getKoreanName()).sportsType(sportsType.getKoreanName())
                 .clubPassword(clubPassword).profileImg(profileImg).mainUniformColor(mainUniformColor).subUniformColor(subUniformColor).build();
 
         String updateTitle = "update title";
         String updateExplanation = "update explanation";
 
         this.clubUpdateInput = ClubUpdateInput.builder()
-                .id(1L).title(updateTitle).explanation(updateExplanation)
+                .title(updateTitle).explanation(updateExplanation)
                 .clubPassword("clubPassword").build();
 
     }
@@ -85,17 +92,21 @@ class ClubServiceTest {
         //given
         Club club = Club.createClub(clubInput, null);
         UserClub userClub = UserClub.createLeaderUserClub(new User(), club);
+        ClubSearch clubSearch = ClubSearch.builder().build();
+        club.updateClubSearch(clubSearch);
         //when
         when(clubRepository.save(any(Club.class))).thenReturn(club);
         when(userClubRepository.save(any(UserClub.class))).thenReturn(userClub);
         when(fileService.upload(any(), any(String.class))).thenReturn(null);
-        ClubOutput clubOutput = clubService.saveClub(new User(), clubInput);
+        when(clubSearchRepository.save(any(ClubSearch.class))).thenReturn(clubSearch);
+        ClubSaveOutput clubOutput = clubCommandService.saveClub(new User(), clubInput);
 
         //then
         assertThat(clubOutput).isNotNull();
         verify(clubRepository, times(1)).save(any(Club.class));
         verify(userClubRepository, times(1)).save(any(UserClub.class));
         verify(fileService, times(1)).upload(any(), any(String.class));
+        verify(clubSearchRepository, times(1)).save(any(ClubSearch.class));
     }
 
     @Test
@@ -104,11 +115,13 @@ class ClubServiceTest {
         //given
         Club club = Club.createClub(clubInput, null);
         UserClub userClub = UserClub.createLeaderUserClub(new User(), club);
+        ClubSearch clubSearch = ClubSearch.builder().build();
+        club.updateClubSearch(clubSearch);
         //when
         when(clubRepository.findById(any(Long.class))).thenReturn(Optional.of(club));
         when(userClubRepository.findByClubAndUser(any(Club.class), any(User.class))).thenReturn(Optional.of(userClub));
         when(fileService.upload(any(), any(String.class))).thenReturn(null);
-        ClubOutput clubOutput = clubService.updateClub(new User(), clubUpdateInput);
+        ClubUpdateOutput clubOutput = clubCommandService.updateClub(new User(), clubUpdateInput, 1L);
         //then
         assertThat(clubOutput).isNotNull();
         assertThat(clubOutput.getTitle()).isEqualTo("update title");
@@ -128,9 +141,10 @@ class ClubServiceTest {
         //then
         when(clubRepository.findById(any(Long.class))).thenReturn(Optional.of(club));
         when(userClubRepository.findByClubAndUser(any(Club.class), any(User.class))).thenReturn(Optional.of(userClub));
-        assertThrows(ClubPasswordException.class, () -> {
-            clubService.updateClub(new User(), ClubUpdateInput.builder().id(1L).clubPassword("wrong!").build());
+        Exception exception = assertThrows(ClubControllerAdvice.class, () -> {
+            clubCommandService.updateClub(new User(), ClubUpdateInput.builder().clubPassword("wrong!").build(), 1L);
         });
+        assertThat(exception.getMessage()).isEqualTo(ResponseCode.CLUB_PASSWORD_INCORRECT.getMessage());
         verify(clubRepository, times(1)).findById(any(Long.class));
         verify(userClubRepository, times(1)).findByClubAndUser(any(Club.class), any(User.class));
     }
@@ -145,30 +159,12 @@ class ClubServiceTest {
         when(clubRepository.findById(any(Long.class))).thenReturn(Optional.of(club));
         when(userClubRepository.findByClubAndUser(any(Club.class), any(User.class))).thenReturn(Optional.of(userClub));
         //then
-        assertThrows(ClubPermissionException.class, () -> {
-            clubService.updateClub(new User(), clubUpdateInput);
+        Exception exception = assertThrows(ClubControllerAdvice.class, () -> {
+            clubCommandService.updateClub(new User(), clubUpdateInput, 1L);
         });
+        assertThat(exception.getMessage()).isEqualTo(ResponseCode.CLUB_PERMISSION_DENIED.getMessage());
         verify(clubRepository, times(1)).findById(any(Long.class));
         verify(userClubRepository, times(1)).findByClubAndUser(any(Club.class), any(User.class));
-    }
-
-    @Test
-    @DisplayName("동아리 정보로 동아리들을 조회할 수 있다")
-    void searchClub() {
-        //given
-        Club club = Club.createClub(clubInput, null);
-        ClubSearchCond clubSearchCond = ClubSearchCond.builder().search("amazing title").build();
-
-        //when
-        when(clubRepository.findBySearchCond(any(ClubSearchCond.class))).thenReturn(List.of(club));
-        List<ClubSearchOutput> result = clubService.searchClub(clubSearchCond);
-
-        //then
-        assertThat(result.size()).isEqualTo(1);
-        assertThat(result.get(0).getTitle()).isEqualTo(club.getTitle());
-        assertThat(result.get(0).getExplanation()).isEqualTo(club.getExplanation());
-        verify(clubRepository, times(1)).findBySearchCond(any(ClubSearchCond.class));
-
     }
 
     @Test
@@ -176,16 +172,15 @@ class ClubServiceTest {
     void saveClubUser() {
         //given
         Club club = Club.createClub(clubInput, null);
-        ClubUserSaveInput clubUserSaveInput = ClubUserSaveInput.builder().clubId(1L).clubPassword("clubPassword").build();
+        ClubUserSaveInput clubUserSaveInput = ClubUserSaveInput.builder().clubPassword("clubPassword").build();
 
         //when
         when(clubRepository.findById(any(Long.class))).thenReturn(Optional.of(club));
         when(userClubRepository.save(any(UserClub.class))).thenReturn(UserClub.createUserClub(new User(), club));
-        UserClubOutput result = clubService.saveClubUser(new User(), clubUserSaveInput);
+        UserClubOutput result = clubCommandService.saveClubUser(new User(), clubUserSaveInput, 1L);
 
         //then
-        assertThat(result.getPosition()).isEqualTo("member");
-        assertThat(result.getCategory()).isEqualTo("newmember");
+        assertThat(result.getClubRole()).isEqualTo(ClubRole.MEMBER.getKoreanName());
         verify(clubRepository, times(1)).findById(any(Long.class));
         verify(userClubRepository, times(1)).save(any(UserClub.class));
         verify(eventPublisher, times(1)).publishEvent(any(ClubJoinEvent.class));
@@ -196,13 +191,14 @@ class ClubServiceTest {
     void saveClubUser_exception_wrong_password() {
         //given
         Club club = Club.createClub(clubInput, null);
-        ClubUserSaveInput clubUserSaveInput = ClubUserSaveInput.builder().clubId(1L).clubPassword("wrong!").build();
+        ClubUserSaveInput clubUserSaveInput = ClubUserSaveInput.builder().clubPassword("wrong!").build();
         //when
         //then
         when(clubRepository.findById(any(Long.class))).thenReturn(Optional.of(club));
-        assertThrows(ClubPasswordException.class, () -> {
-            clubService.saveClubUser(new User(), clubUserSaveInput);
+        Exception exception = assertThrows(ClubControllerAdvice.class, () -> {
+            clubCommandService.saveClubUser(new User(), clubUserSaveInput, 1L);
         });
+        assertThat(exception.getMessage()).isEqualTo(ResponseCode.CLUB_PASSWORD_INCORRECT.getMessage());
         verify(clubRepository, times(1)).findById(any(Long.class));
         verify(userClubRepository, times(0)).save(any(UserClub.class));
         verify(eventPublisher, times(0)).publishEvent(any(ClubJoinEvent.class));
@@ -214,7 +210,7 @@ class ClubServiceTest {
         //given
         Club club = Club.createClub(clubInput, null);
         ClubUserUpdateInput clubUserUpdateInput = ClubUserUpdateInput.builder()
-                .userId(1L).position("member").category("admin").id(1L).build();
+                .userId(1L).clubRole(ClubRole.STAFF.getKoreanName()).build();
 
         //when
         when(clubRepository.findById(any(Long.class))).thenReturn(Optional.of(club));
@@ -222,11 +218,10 @@ class ClubServiceTest {
                 .thenReturn(Optional.of(UserClub.createLeaderUserClub(new User(), club)))
                 .thenReturn(Optional.of(UserClub.createUserClub(new User(), club)));
         when(userRepository.findById(any(Long.class))).thenReturn(Optional.of(new User()));
-        UserClubOutput result = clubService.updateClubUser(new User(), clubUserUpdateInput);
+        UserClubOutput result = clubCommandService.updateClubUser(new User(), clubUserUpdateInput, 1L);
 
         //then
-        assertThat(result.getCategory()).isEqualTo("admin");
-        assertThat(result.getPosition()).isEqualTo("member");
+        assertThat(result.getClubRole()).isEqualTo(ClubRole.STAFF.getKoreanName());
         verify(clubRepository, times(1)).findById(any(Long.class));
         verify(userClubRepository, times(2)).findByClubAndUser(any(Club.class), any(User.class));
     }
@@ -237,7 +232,7 @@ class ClubServiceTest {
         //given
         Club club = Club.createClub(clubInput, null);
         ClubUserUpdateInput clubUserUpdateInput = ClubUserUpdateInput.builder()
-                .userId(1L).position("member").category("admin").id(1L).build();
+                .userId(1L).clubRole(ClubRole.STAFF.getKoreanName()).build();
 
         //when
         //then
@@ -245,49 +240,10 @@ class ClubServiceTest {
         when(userClubRepository.findByClubAndUser(any(Club.class), any(User.class)))
                 .thenReturn(Optional.of(UserClub.createUserClub(new User(), club)));
 
-        assertThrows(ClubPermissionException.class, () -> {
-            clubService.updateClubUser(new User(), clubUserUpdateInput);
+        Exception exception = assertThrows(ClubControllerAdvice.class, () -> {
+            clubCommandService.updateClubUser(new User(), clubUserUpdateInput, 1L);
         });
-        verify(clubRepository, times(1)).findById(any(Long.class));
-        verify(userClubRepository, times(1)).findByClubAndUser(any(Club.class), any(User.class));
-    }
-
-    @Test
-    @DisplayName("동아리에 속한 사용자는 동아리 정보를 조회할 수 있다")
-    void findClub() {
-        //given
-        Club club = Club.createClub(clubInput, null);
-        Long id = 1L;
-        User user = new User();
-        //when
-        when(clubRepository.findById(any(Long.class))).thenReturn(Optional.of(club));
-        when(userClubRepository.findByClubAndUser(any(Club.class), any(User.class))).thenReturn(Optional.of(UserClub.createLeaderUserClub(user, club)));
-        ClubOutput result = clubService.findClub(id, user);
-
-        //then
-        assertThat(result.getTitle()).isEqualTo("amazing title");
-        assertThat(result.getUserCategoryInClub()).isEqualTo("creator");
-        assertThat(result.getMemberCount()).isEqualTo(1);
-        verify(clubRepository, times(1)).findById(any(Long.class));
-        verify(userClubRepository, times(1)).findByClubAndUser(any(Club.class), any(User.class));
-    }
-
-    @Test
-    @DisplayName("동아리에 속한 사용자는 제한된 동아리 정보를 조회할 수 있다")
-    void findClub_not_member() {
-        //given
-        Club club = Club.createClub(clubInput, null);
-        Long id = 1L;
-        User user = new User();
-        //when
-        when(clubRepository.findById(any(Long.class))).thenReturn(Optional.of(club));
-        when(userClubRepository.findByClubAndUser(any(Club.class), any(User.class))).thenReturn(Optional.empty());
-        ClubOutput result = clubService.findClub(id, user);
-
-        //then
-        assertThat(result.getTitle()).isEqualTo("amazing title");
-        assertThat(result.getUserCategoryInClub()).isNull();
-        assertThat(result.getMemberCount()).isEqualTo(1);
+        assertThat(exception.getMessage()).isEqualTo(ResponseCode.CLUB_PERMISSION_DENIED.getMessage());
         verify(clubRepository, times(1)).findById(any(Long.class));
         verify(userClubRepository, times(1)).findByClubAndUser(any(Club.class), any(User.class));
     }
@@ -302,7 +258,7 @@ class ClubServiceTest {
         //when
         when(clubRepository.findById(any(Long.class))).thenReturn(Optional.of(club));
         when(userClubRepository.findByClubAndUser(any(Club.class), any(User.class))).thenReturn(Optional.of(UserClub.createLeaderUserClub(user, club)));
-        clubService.clubPasswordUpdate(user, clubPswdUpdateInput);
+        clubCommandService.clubPasswordUpdate(user, clubPswdUpdateInput, 1L);
         //then
         assertThat(club.getClubPassword()).isEqualTo("newPassword");
         verify(clubRepository, times(1)).findById(any(Long.class));
@@ -314,16 +270,17 @@ class ClubServiceTest {
     void clubPasswordUpdate_exception_wrong_permission() {
         //given
         Club club = Club.createClub(clubInput, null);
-        ClubPswdUpdateInput clubPswdUpdateInput = ClubPswdUpdateInput.builder().id(1L).oldPassword("clubPassword").newPassword("newPassword").rePassword("newPassword").build();
+        ClubPswdUpdateInput clubPswdUpdateInput = ClubPswdUpdateInput.builder().oldPassword("clubPassword").newPassword("newPassword").rePassword("newPassword").build();
         User user = new User();
         //when
         when(clubRepository.findById(any(Long.class))).thenReturn(Optional.of(club));
         when(userClubRepository.findByClubAndUser(any(Club.class), any(User.class))).thenReturn(Optional.of(UserClub.createUserClub(user, club)));
 
         //then
-        assertThrows(ClubPermissionException.class, () -> {
-            clubService.clubPasswordUpdate(user, clubPswdUpdateInput);
+        Exception exception = assertThrows(ClubControllerAdvice.class, () -> {
+            clubCommandService.clubPasswordUpdate(user, clubPswdUpdateInput, 1L);
         });
+        assertThat(exception.getMessage()).isEqualTo(ResponseCode.CLUB_PERMISSION_DENIED.getMessage());
         verify(clubRepository, times(1)).findById(any(Long.class));
         verify(userClubRepository, times(1)).findByClubAndUser(any(Club.class), any(User.class));
     }
@@ -333,19 +290,19 @@ class ClubServiceTest {
     void clubPasswordUpdate_exception_wrong_password() {
         //given
         Club club = Club.createClub(clubInput, null);
-        ClubPswdUpdateInput clubPswdUpdateInput = ClubPswdUpdateInput.builder().id(1L).oldPassword("wrong!").newPassword("newPassword").rePassword("newPassword").build();
+        ClubPswdUpdateInput clubPswdUpdateInput = ClubPswdUpdateInput.builder().oldPassword("wrong!").newPassword("newPassword").rePassword("newPassword").build();
         User user = new User();
         //when
         when(clubRepository.findById(any(Long.class))).thenReturn(Optional.of(club));
         when(userClubRepository.findByClubAndUser(any(Club.class), any(User.class))).thenReturn(Optional.of(UserClub.createLeaderUserClub(user, club)));
 
         //then
-        ClubPasswordException clubPasswordException = assertThrows(ClubPasswordException.class, () -> {
-            clubService.clubPasswordUpdate(user, clubPswdUpdateInput);
+        Exception exception = assertThrows(ClubControllerAdvice.class, () -> {
+            clubCommandService.clubPasswordUpdate(user, clubPswdUpdateInput, 1L);
         });
+        assertThat(exception.getMessage()).isEqualTo(ResponseCode.CLUB_PASSWORD_INCORRECT.getMessage());
         verify(clubRepository, times(1)).findById(any(Long.class));
         verify(userClubRepository, times(1)).findByClubAndUser(any(Club.class), any(User.class));
-        assertThat(clubPasswordException.getMessage()).contains("모임 비밀번호가 틀렸습니다.");
     }
 
     @Test
@@ -353,18 +310,18 @@ class ClubServiceTest {
     void clubPasswordUpdate_exception_wrong_check_password() {
         //given
         Club club = Club.createClub(clubInput, null);
-        ClubPswdUpdateInput clubPswdUpdateInput = ClubPswdUpdateInput.builder().id(1L).oldPassword("clubPassword").newPassword("newPassword").rePassword("wrong!").build();
+        ClubPswdUpdateInput clubPswdUpdateInput = ClubPswdUpdateInput.builder().oldPassword("clubPassword").newPassword("newPassword").rePassword("wrong!").build();
         User user = new User();
         //when
         when(clubRepository.findById(any(Long.class))).thenReturn(Optional.of(club));
         when(userClubRepository.findByClubAndUser(any(Club.class), any(User.class))).thenReturn(Optional.of(UserClub.createLeaderUserClub(user, club)));
 
         //then
-        ClubPasswordException clubPasswordException = assertThrows(ClubPasswordException.class, () -> {
-            clubService.clubPasswordUpdate(user, clubPswdUpdateInput);
+        Exception exception = assertThrows(ClubControllerAdvice.class, () -> {
+            clubCommandService.clubPasswordUpdate(user, clubPswdUpdateInput, 1L);
         });
+        assertThat(exception.getMessage()).isEqualTo(ResponseCode.CLUB_CHECK_PASSWORD_INCORRECT.getMessage());
         verify(clubRepository, times(1)).findById(any(Long.class));
         verify(userClubRepository, times(1)).findByClubAndUser(any(Club.class), any(User.class));
-        assertThat(clubPasswordException.getMessage()).contains("비밀번호 확인이 틀렸습니다.");
     }
 }

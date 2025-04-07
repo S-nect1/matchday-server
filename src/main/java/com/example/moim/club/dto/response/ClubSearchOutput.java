@@ -1,13 +1,15 @@
-package com.example.moim.club.dto;
+package com.example.moim.club.dto.response;
 
 import com.example.moim.club.entity.Club;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 import org.springframework.core.io.FileUrlResource;
 
 import java.io.IOException;
 import java.util.Base64;
 
 @Data
+@NoArgsConstructor
 public class ClubSearchOutput {
     private Long id;
     private String title;

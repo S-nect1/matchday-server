@@ -1,5 +1,7 @@
 package com.example.moim.user.dto;
 
+import com.example.moim.global.enums.ActivityArea;
+import com.example.moim.global.enums.Position;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.Pattern;
 import lombok.Data;
@@ -17,12 +19,12 @@ public class UserUpdateInput {
     private String gender;
     private MultipartFile img;
     @Schema(description = "서울, 인천, 경기 북부, 경기 남부", example = "서울")
-    private String activityArea;
+    private ActivityArea activityArea;
     private Integer height;
     private Integer weight;
     @Schema(description = "주로 쓰는 발. 왼발, 오른발", example = "왼발")
     private String mainFoot;
-    private String mainPosition;
-    private String subPosition;
+    private Position mainPosition;
+    private Position subPosition;
     private String fcmToken;
 }

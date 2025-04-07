@@ -29,9 +29,6 @@ public enum ResponseCode {
     // Review Error
     REVIEW_ALREADY_FOUND(HttpStatus.BAD_REQUEST, "REVIEW4001", "지정된 리뷰의 개수를 초과했습니다."),
 
-    // Club Error
-    CLUB_NOT_FOUND(HttpStatus.NOT_FOUND, "CLUB4001", "클럽을 찾을 수 없습니다."),
-
     // Match Error
     MATCH_NOT_FOUND(HttpStatus.NOT_FOUND, "MATCH4001", "매치를 찾을 수 없습니다."),
     MATCH_REQUIRE_FEE(HttpStatus.BAD_REQUEST, "MATCH4002", "대관비를 입력해주세요."),
@@ -53,18 +50,28 @@ public enum ResponseCode {
     S3_UPLOAD_FAIL(HttpStatus.BAD_REQUEST, "S34001", "파일 업로드에 실패했습니다."),
     S3_PATH_NOT_FOUND(HttpStatus.BAD_REQUEST, "S34002", "파일이 존재하지 않습니다."),
 
-    // Store Error
-    SEARCH_KEYWORD_NOT_FOUND(HttpStatus.BAD_REQUEST, "STORE4001", "입력된 검색어가 없습니다."),
-    PAGE_NOT_FOUND(HttpStatus.BAD_REQUEST, "STORE4002", "없는 페이지입니다."),
-    STORE_NOT_FOUND(HttpStatus.BAD_REQUEST, "STORE4003", "존재하지 않는 상점입니다."),
-    ALREADY_HEART_EXCEPTION(HttpStatus.BAD_REQUEST, "STORE4004", "이미 관심 상점으로 등록되었습니다."),
-    NOT_HEART_EXCEPTION(HttpStatus.BAD_REQUEST, "STORE4005", "해당 상점은 관심 상점으로 등록되지 않았으므로 삭제할 수 없습니다."),
-    PAGE_AND_SIZE_NOT_CORRECT(HttpStatus.BAD_REQUEST, "STORE4006", "page 와 size 는 0 과 양수만 입력 가능합니다."),
+    // Club Error
+    CLUB_NOT_FOUND(HttpStatus.BAD_REQUEST, "CLUB4001", "존재하지 않는 모임입니다."),
+    CLUB_USER_NOT_FOUND(HttpStatus.BAD_REQUEST, "CLUB4002", "가입되지 않은 회원입니다."),
+    CLUB_PERMISSION_DENIED(HttpStatus.FORBIDDEN, "CLUB4003", "모임 정보를 수정할 권한이 없습니다."),
+    CLUB_PASSWORD_INCORRECT(HttpStatus.UNAUTHORIZED, "CLUB4004", "모임 비밀번호가 틀렸습니다."),
+    CLUB_CHECK_PASSWORD_INCORRECT(HttpStatus.UNAUTHORIZED, "CLUB4005", "모임 확인 비밀번호가 틀렸습니다."),
+    CLUB_USER_ALREADY_JOINED(HttpStatus.CONFLICT, "CLUB4006", "해당 사용자는 이미 모임에 가입되어 있습니다."),
 
     // File Error
     FILE_MAX_SIZE_OVER(HttpStatus.PAYLOAD_TOO_LARGE, "FILE4001", "100MB 이하 파일만 업로드 할 수 있습니다."),
     FILE_CONTENT_TYPE_NOT_IMAGE(HttpStatus.UNSUPPORTED_MEDIA_TYPE, "FILE4002", "이미지 파일만 업로드할 수 있습니다."),
-    FILE_SAVE_FAIL(HttpStatus.INTERNAL_SERVER_ERROR, "FILE4003", "파일 저장에 실패했습니다. 서버에 문의하세요.");
+    FILE_SAVE_FAIL(HttpStatus.INTERNAL_SERVER_ERROR, "FILE4003", "파일 저장에 실패했습니다. 서버에 문의하세요."),
+
+    // Enum Error
+    INVALID_ENUM_VALUE(HttpStatus.BAD_REQUEST, "ENUM4001", "지원하지 않는 카테고리입니다."),
+    INVALID_GENDER(HttpStatus.BAD_REQUEST, "ENUM4002", "유효하지 않은 성별입니다."),
+    INVALID_CLUB_CATEGORY(HttpStatus.BAD_REQUEST, "ENUM4003", "유효하지 않은 클럽 종류입니다."),
+    INVALID_AGE_RANGE(HttpStatus.BAD_REQUEST, "ENUM4004", "유효하지 않은 연령대입니다."),
+    INVALID_ACTIVITY_AREA(HttpStatus.BAD_REQUEST, "ENUM4005", "유효하지 않은 지역입니다."),
+    INVALID_MAIN_FOOT(HttpStatus.BAD_REQUEST, "ENUM4006", "유효하지 않은 주발입니다."),
+    INVALID_SPORTS_TYPE(HttpStatus.BAD_REQUEST, "ENUM4007", "유효하지 않은 종목입니다."),
+    INVALID_CLUB_ROLE(HttpStatus.BAD_REQUEST, "ENUM4008", "유효하지 않은 모임 역할입니다.");
 
     private final HttpStatus httpStatus;
     private final String code;
