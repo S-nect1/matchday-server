@@ -1,8 +1,10 @@
 package com.example.moim.match.entity;
 
-import com.example.moim.global.entity.AgeRange;
-import com.example.moim.global.entity.EventType;
-import com.example.moim.global.entity.Gender;
+import com.example.moim.global.enums.AgeRange;
+import com.example.moim.global.enums.Gender;
+import com.example.moim.global.enums.SportsType;
+import com.example.moim.global.exception.ResponseCode;
+import com.example.moim.match.exception.advice.MatchControllerAdvice;
 import com.example.moim.schedule.dto.ScheduleInput;
 import com.example.moim.club.entity.Club;
 import com.example.moim.schedule.entity.Schedule;
@@ -45,7 +47,7 @@ public class Match extends BaseEntity {
     private String name;
 
     @Enumerated(EnumType.STRING)
-    private EventType event;
+    private SportsType event;
     @Enumerated(EnumType.STRING)
     private MatchSize matchSize;
 
@@ -78,7 +80,7 @@ public class Match extends BaseEntity {
 
         match.homeClub = club;
         match.name = createMatchName(club, matchInput);
-        match.event = EventType.fromKoreanName(matchInput.getEvent());
+        match.event = SportsType.fromKoreanName(matchInput.getEvent()).orElseThrow(() -> new MatchControllerAdvice(ResponseCode.INVALID_SPORTS_TYPE));
         match.matchSize = MatchSize.fromKoreanName(matchInput.getMatchSize());
         match.startTime = matchInput.getStartTime();
         match.endTime = matchInput.getEndTime();
@@ -88,8 +90,8 @@ public class Match extends BaseEntity {
         match.account = matchInput.getAccount();
         match.minParticipants = matchInput.getMinParticipants();
 
-        match.gender = Gender.fromKoreanName(club.getGender());
-        match.ageRange = AgeRange.fromKoreanName(club.getAgeRange());
+        match.gender = club.getGender();
+        match.ageRange = club.getAgeRange();
         match.matchStatus = PENDING;    // 초기 상태는 매치 대기
         match.matchHalf = (matchInput.getStartTime().getMonth().getValue() <= 6) ? FIRST_HALF : SECOND_HALF;
         match.homeScore = 0;

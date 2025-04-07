@@ -1,5 +1,6 @@
 package com.example.moim.user.dto;
 
+import com.example.moim.global.enums.Gender;
 import com.example.moim.user.entity.User;
 import lombok.Data;
 import org.springframework.core.io.FileUrlResource;
@@ -27,7 +28,7 @@ public class UserOutput {
         this.email = user.getEmail();
         this.name = user.getName();
         this.birthday = user.getBirthday();
-        this.gender = user.getGender().toString();
+        this.gender = user.getGender().getKoreanName();
         this.phone = user.getPhone();
         this.hasClub = hasClub;
         if (user.getImgPath() != null) {
@@ -37,12 +38,12 @@ public class UserOutput {
                 throw new RuntimeException(e);
             }
         }
-        this.activityArea = user.getActivityArea();
+        this.activityArea = user.getActivityArea().getKoreanName();
         this.height = user.getHeight();
         this.weight = user.getWeight();
         this.mainFoot = user.getMainFoot();
-        this.mainPosition = user.getMainPosition();
-        this.subPosition = user.getSubPosition();
+        this.mainPosition = user.getMainPosition().name();
+        this.subPosition = user.getSubPosition().name();
     }
 
     public UserOutput(LoginOutput loginOutput) {

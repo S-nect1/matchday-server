@@ -1,6 +1,7 @@
 package com.example.moim.match.service;
 
 import com.example.moim.club.entity.Club;
+import com.example.moim.global.enums.ClubRole;
 import com.example.moim.global.exception.ResponseCode;
 import com.example.moim.match.exception.advice.MatchControllerAdvice;
 import com.example.moim.schedule.entity.Schedule;
@@ -57,7 +58,7 @@ public class MatchService {
                 .orElseThrow(() -> new MatchControllerAdvice(ResponseCode.CLUB_NOT_FOUND));
         UserClub userClub = userClubRepository.findByClubAndUser(club, user)
                 .orElseThrow(() -> new MatchControllerAdvice(ResponseCode.MEMBER_NOT_FOUND));
-        if (!(userClub.getCategory().equals("creator") || userClub.getCategory().equals("admin"))) {
+        if (!(userClub.getClubRole().equals(ClubRole.STAFF))) {
 //            throw new MatchPermissionException("매치 생성 권한이 없습니다.");
             throw new MatchControllerAdvice(ResponseCode._UNAUTHORIZED);
         }
@@ -101,7 +102,7 @@ public class MatchService {
         UserClub userClub = userClubRepository.findByClubAndUser(clubRepository.findById(matchRegInput.getClubId())
                 .orElseThrow(() -> new MatchControllerAdvice(ResponseCode.CLUB_NOT_FOUND)), user)
                 .orElseThrow(() -> new MatchControllerAdvice(ResponseCode.MATCH_USER_NOT_FOUND));
-        if (!(userClub.getCategory().equals("creator") || userClub.getCategory().equals("admin"))) {
+        if (!(userClub.getClubRole().equals(ClubRole.STAFF))) {
 //            throw new MatchPermissionException("매치 생성 권한이 없습니다.");
             throw new MatchControllerAdvice(ResponseCode._UNAUTHORIZED);
         }
@@ -129,7 +130,7 @@ public class MatchService {
 
         UserClub userClub = userClubRepository.findByClubAndUser(club, user)
                 .orElseThrow(() -> new MatchControllerAdvice(ResponseCode.MEMBER_NOT_FOUND));
-        if (!(userClub.getCategory().equals("creator") || userClub.getCategory().equals("admin"))) {
+        if (!(userClub.getClubRole().equals(ClubRole.STAFF))) {
             eventPublisher.publishEvent(new MatchRequestEvent(match, user, club));
             return null;
         }
@@ -156,7 +157,7 @@ public class MatchService {
         UserClub userClub = userClubRepository.findByClubAndUser(clubRepository.findById(matchApplyInput.getClubId())
                         .orElseThrow(() -> new MatchControllerAdvice(ResponseCode.CLUB_NOT_FOUND)), user)
                 .orElseThrow(() -> new MatchControllerAdvice(ResponseCode.MATCH_USER_NOT_FOUND));
-        if (!(userClub.getCategory().equals("creator") || userClub.getCategory().equals("admin"))) {
+        if (!(userClub.getClubRole().equals(ClubRole.STAFF))) {
 //            throw new MatchPermissionException("매치 신청 등록 권한이 없습니다.");
             throw new MatchControllerAdvice(ResponseCode._UNAUTHORIZED);
         }
@@ -184,7 +185,7 @@ public class MatchService {
                 .findByClubAndUser(clubRepository.findById(match.getHomeClub().getId())
                         .orElseThrow(() -> new MatchControllerAdvice(ResponseCode.CLUB_NOT_FOUND)), user)
                 .orElseThrow(() -> new MatchControllerAdvice(ResponseCode.MATCH_USER_NOT_FOUND));
-        if (!(userClub.getCategory().equals("creator") || userClub.getCategory().equals("admin"))) {
+        if (!(userClub.getClubRole().equals(ClubRole.STAFF))) {
 //            throw new MatchPermissionException("매치 초청 권한이 없습니다.");
             throw new MatchControllerAdvice(ResponseCode._UNAUTHORIZED);
         }
@@ -202,7 +203,7 @@ public class MatchService {
 
         UserClub userClub = userClubRepository.findByClubAndUser(match.getHomeClub(), user)
                 .orElseThrow(() -> new MatchControllerAdvice(ResponseCode.MATCH_USER_NOT_FOUND));
-        if (!(userClub.getCategory().equals("creator") || userClub.getCategory().equals("admin"))) {
+        if (!(userClub.getClubRole().equals(ClubRole.STAFF))) {
 //            throw new MatchPermissionException("매치 확정 권한이 없습니다.");
             throw new MatchControllerAdvice(ResponseCode._UNAUTHORIZED);
         }
