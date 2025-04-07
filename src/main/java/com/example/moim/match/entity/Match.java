@@ -121,6 +121,12 @@ public class Match extends BaseEntity {
         this.matchStatus = FAILED;
     }
 
+    // 매치 확정 취소
+    public void cancelConfirmation() {
+        this.awayClub = null;
+        this.matchStatus = MatchStatus.REGISTERED;
+    }
+
     private static String createMatchName(Club club, MatchInput matchInput) {
         String clubName = club.getTitle();
         String matchType = matchInput.getEvent(); // 종목 (축구, 풋살 등)

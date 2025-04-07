@@ -3,7 +3,10 @@ package com.example.moim.match.service;
 import com.example.moim.club.entity.Club;
 import com.example.moim.global.enums.ClubRole;
 import com.example.moim.global.exception.ResponseCode;
+import com.example.moim.match.entity.*;
 import com.example.moim.match.exception.advice.MatchControllerAdvice;
+import com.example.moim.notification.dto.MatchCancelClubEvent;
+import com.example.moim.notification.dto.MatchCancelUserEvent;
 import com.example.moim.schedule.entity.Schedule;
 import com.example.moim.schedule.entity.ScheduleVote;
 import com.example.moim.club.entity.UserClub;
@@ -13,9 +16,6 @@ import com.example.moim.schedule.repository.ScheduleVoteRepository;
 import com.example.moim.club.repository.UserClubRepository;
 import com.example.moim.schedule.service.ScheduleService;
 import com.example.moim.match.dto.*;
-import com.example.moim.match.entity.Match;
-import com.example.moim.match.entity.MatchApplication;
-import com.example.moim.match.entity.MatchUser;
 import com.example.moim.match.repository.MatchApplicationRepository;
 import com.example.moim.match.repository.MatchRepository;
 import com.example.moim.match.repository.MatchUserRepository;
@@ -33,6 +33,8 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
+
+import static com.example.moim.global.enums.ClubRole.STAFF;
 
 
 @Service
@@ -58,7 +60,7 @@ public class MatchService {
                 .orElseThrow(() -> new MatchControllerAdvice(ResponseCode.CLUB_NOT_FOUND));
         UserClub userClub = userClubRepository.findByClubAndUser(club, user)
                 .orElseThrow(() -> new MatchControllerAdvice(ResponseCode.MEMBER_NOT_FOUND));
-        if (!(userClub.getClubRole().equals(ClubRole.STAFF))) {
+        if (!(userClub.getClubRole().equals(STAFF))) {
 //            throw new MatchPermissionException("매치 생성 권한이 없습니다.");
             throw new MatchControllerAdvice(ResponseCode._UNAUTHORIZED);
         }
@@ -102,7 +104,7 @@ public class MatchService {
         UserClub userClub = userClubRepository.findByClubAndUser(clubRepository.findById(matchRegInput.getClubId())
                 .orElseThrow(() -> new MatchControllerAdvice(ResponseCode.CLUB_NOT_FOUND)), user)
                 .orElseThrow(() -> new MatchControllerAdvice(ResponseCode.MATCH_USER_NOT_FOUND));
-        if (!(userClub.getClubRole().equals(ClubRole.STAFF))) {
+        if (!(userClub.getClubRole().equals(STAFF))) {
 //            throw new MatchPermissionException("매치 생성 권한이 없습니다.");
             throw new MatchControllerAdvice(ResponseCode._UNAUTHORIZED);
         }
@@ -120,6 +122,47 @@ public class MatchService {
         return new MatchRegOutput(match.getId());
     }
 
+    // 매치 생성 취소
+    public String cancelMatch(User user, Long matchId) {
+        Match match = matchRepository.findById(matchId)
+                .orElseThrow(() -> new MatchControllerAdvice(ResponseCode.MATCH_NOT_FOUND));
+        UserClub userClub = userClubRepository.findByClubAndUser(match.getHomeClub(), user)
+                .orElseThrow(() -> new MatchControllerAdvice(ResponseCode.MATCH_USER_NOT_FOUND));
+        if (!(userClub.getClubRole().equals(STAFF))) {
+            throw new MatchControllerAdvice(ResponseCode._UNAUTHORIZED);
+        }
+
+        if(match.getMatchStatus() == MatchStatus.PENDING) {     // 생성 대기 상태 취소
+            List<ScheduleVote> votes = scheduleVoteRepository.findBySchedule(match.getSchedule());
+            for(ScheduleVote vote : votes) {
+                if("attend".equals(vote.getAttendance())) {
+                    // 홈 팀 알림 발송
+                    eventPublisher.publishEvent(new MatchCancelUserEvent(match, vote.getUser()));
+                }
+            }
+            matchRepository.delete(match);
+            return "매치가 취소되었습니다.";
+
+        } else if(match.getMatchStatus() == MatchStatus.REGISTERED) {   // 생성 완료 상태 취소
+            List<MatchApplication> applications = matchApplicationRepository.findByMatch(match);
+            for(MatchApplication app : applications) {
+                // 모든 신청팀 알림 발송
+                eventPublisher.publishEvent(new MatchCancelClubEvent(match, app.getClub()));
+            }
+
+            List<ScheduleVote> votes = scheduleVoteRepository.findBySchedule(match.getSchedule());
+            for(ScheduleVote vote : votes) {
+                if("attend".equals(vote.getAttendance())) {
+                    // 홈 팀 알림 발송
+                    eventPublisher.publishEvent(new MatchCancelUserEvent(match, vote.getUser()));
+                }
+            }
+            matchRepository.delete(match);
+            return "매치가 취소되었습니다.";
+        }
+        throw new MatchControllerAdvice(ResponseCode.MATCH_CANNOT_CANCEL);
+    }
+
     // PENDING_APP
     @Transactional
     public MatchApplyOutput saveMatchApp(User user, Long matchId, Long clubId) {
@@ -130,7 +173,7 @@ public class MatchService {
 
         UserClub userClub = userClubRepository.findByClubAndUser(club, user)
                 .orElseThrow(() -> new MatchControllerAdvice(ResponseCode.MEMBER_NOT_FOUND));
-        if (!(userClub.getClubRole().equals(ClubRole.STAFF))) {
+        if (!(userClub.getClubRole().equals(STAFF))) {
             eventPublisher.publishEvent(new MatchRequestEvent(match, user, club));
             return null;
         }
@@ -157,7 +200,7 @@ public class MatchService {
         UserClub userClub = userClubRepository.findByClubAndUser(clubRepository.findById(matchApplyInput.getClubId())
                         .orElseThrow(() -> new MatchControllerAdvice(ResponseCode.CLUB_NOT_FOUND)), user)
                 .orElseThrow(() -> new MatchControllerAdvice(ResponseCode.MATCH_USER_NOT_FOUND));
-        if (!(userClub.getClubRole().equals(ClubRole.STAFF))) {
+        if (!(userClub.getClubRole().equals(STAFF))) {
 //            throw new MatchPermissionException("매치 신청 등록 권한이 없습니다.");
             throw new MatchControllerAdvice(ResponseCode._UNAUTHORIZED);
         }
@@ -177,6 +220,37 @@ public class MatchService {
         return new MatchApplyOutput(matchApplication.getId());
     }
 
+    // 매치 신청 취소
+    public String cancelMatchApplication(User user, Long matchId, Long clubId) {
+        Club club = clubRepository.findById(clubId)
+                .orElseThrow(() -> new MatchControllerAdvice(ResponseCode.CLUB_NOT_FOUND));
+        Match match = matchRepository.findById(matchId)
+                .orElseThrow(() -> new MatchControllerAdvice(ResponseCode.MATCH_NOT_FOUND));
+        UserClub userClub = userClubRepository.findByClubAndUser(match.getAwayClub(), user)
+                .orElseThrow(() -> new MatchControllerAdvice(ResponseCode.MATCH_USER_NOT_FOUND));
+        if (userClub.getClubRole() != STAFF) {
+            throw new MatchControllerAdvice(ResponseCode._UNAUTHORIZED);
+        }
+
+        MatchApplication application = matchApplicationRepository.findByMatchAndClub(match, club);
+        if (application == null) {
+            throw new MatchControllerAdvice(ResponseCode.MATCH_APPLICATION_NOT_FOUND);
+        }
+
+        // 기존 상태를 확인
+        boolean wasCompleted = (application.getStatus() == MatchAppStatus.APP_COMPLETED);
+
+        application.rejectMatch();
+        matchApplicationRepository.save(application);
+
+        // 신청 완료 상태였다면 팀한테 알림 발송
+        if (wasCompleted) {
+            eventPublisher.publishEvent(new MatchCancelClubEvent(match, club));
+        }
+
+        return "매치 신청이 취소되었습니다.";
+    }
+
     // 매치 초대
     public void inviteMatch(User user, Long matchId, Long clubId) {
         Match match = matchRepository.findById(matchId)
@@ -185,7 +259,7 @@ public class MatchService {
                 .findByClubAndUser(clubRepository.findById(match.getHomeClub().getId())
                         .orElseThrow(() -> new MatchControllerAdvice(ResponseCode.CLUB_NOT_FOUND)), user)
                 .orElseThrow(() -> new MatchControllerAdvice(ResponseCode.MATCH_USER_NOT_FOUND));
-        if (!(userClub.getClubRole().equals(ClubRole.STAFF))) {
+        if (!(userClub.getClubRole().equals(STAFF))) {
 //            throw new MatchPermissionException("매치 초청 권한이 없습니다.");
             throw new MatchControllerAdvice(ResponseCode._UNAUTHORIZED);
         }
@@ -203,7 +277,7 @@ public class MatchService {
 
         UserClub userClub = userClubRepository.findByClubAndUser(match.getHomeClub(), user)
                 .orElseThrow(() -> new MatchControllerAdvice(ResponseCode.MATCH_USER_NOT_FOUND));
-        if (!(userClub.getClubRole().equals(ClubRole.STAFF))) {
+        if (userClub.getClubRole() != STAFF) {
 //            throw new MatchPermissionException("매치 확정 권한이 없습니다.");
             throw new MatchControllerAdvice(ResponseCode._UNAUTHORIZED);
         }
@@ -310,5 +384,49 @@ public class MatchService {
 
     private static Double toRad(Double value) {
         return value * Math.PI / 180;
+    }
+
+    // 확정된 매치 취소
+    public String cancelConfirmedMatch(User user, Long matchId) {
+        Match match = matchRepository.findById(matchId)
+                .orElseThrow(() -> new MatchControllerAdvice(ResponseCode.MATCH_NOT_FOUND));
+        if(match.getMatchStatus() != MatchStatus.CONFIRMED) {
+            throw new MatchControllerAdvice(ResponseCode.MATCH_NOT_CONFIRMED);
+        }
+
+        // 생성팀과 참가팀 소속 여부 확인
+        Optional<UserClub> homeUserClubOpt = userClubRepository.findByClubAndUser(match.getHomeClub(), user);
+        Optional<UserClub> awayUserClubOpt = userClubRepository.findByClubAndUser(match.getAwayClub(), user);
+
+        if(homeUserClubOpt.isPresent()) {       // 생성팀의 취소
+            // 참가 팀원과 상대팀에 알림 발송 및 상태 변경(FAILED)
+            eventPublisher.publishEvent(new MatchCancelClubEvent(match, match.getAwayClub()));
+
+            match.failMatch();
+            matchRepository.save(match);
+
+            MatchApplication application = matchApplicationRepository.findByMatchAndClub(match, match.getAwayClub());
+            if(application != null) {
+                application.rejectMatch();
+                matchApplicationRepository.save(application);
+            }
+            return "매치가 생성팀에 의해 취소되었습니다.";
+
+        } else if(awayUserClubOpt.isPresent()) {        // 참가팀의 취소
+            // awayClub 정보를 제거하고 상태를 REGISTERED로 복구
+            eventPublisher.publishEvent(new MatchCancelClubEvent(match, match.getHomeClub()));
+
+            match.cancelConfirmation();
+            matchRepository.save(match);
+
+            MatchApplication application = matchApplicationRepository.findByMatchAndClub(match, match.getAwayClub());
+            if(application != null) {
+                application.rejectMatch();
+                matchApplicationRepository.save(application);
+            }
+            return "참가팀의 매치 참여가 취소되어 매치가 재등록되었습니다.";
+        } else {
+            throw new MatchControllerAdvice(ResponseCode.MATCH_USER_NOT_FOUND);
+        }
     }
 }

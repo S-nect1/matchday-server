@@ -36,9 +36,11 @@ public enum ResponseCode {
     MATCH_ALREADY_FOUND(HttpStatus.BAD_REQUEST, "MATCH4004", "이미 신청한 매치입니다."),
     MATCH_APPLICATION_NOT_FOUND(HttpStatus.BAD_REQUEST, "MATCH4006", "올바른 매치가 아닙니다."),
     MATCH_TIME_OUT(HttpStatus.BAD_REQUEST, "MATCH4007", "매치가 종료된 후 48시간이 지났습니다."),
+    MATCH_NOT_CONFIRMED(HttpStatus.BAD_REQUEST, "MATCH4008", "확정된 매치가 아닙니다."),
 
     // MatchUser Error
     MATCH_USER_NOT_FOUND(HttpStatus.BAD_REQUEST, "MATCH4005", "가입된 모임이 없습니다."),
+    MATCH_CANNOT_CANCEL(HttpStatus.BAD_REQUEST, "MATCH4006", "매치를 취소할 수 없습니다."),
 
     // Token Error
     ACCESS_TOKEN_NOT_FOUND(HttpStatus.BAD_REQUEST, "TOKEN4001", "헤더에 토큰 값이 없습니다"),
