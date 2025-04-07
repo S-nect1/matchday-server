@@ -1,12 +1,12 @@
 package com.example.moim.schedule.service;
 
-import com.example.moim.club.dto.ClubInput;
-import com.example.moim.club.entity.Club;
-import com.example.moim.club.entity.UserClub;
-import com.example.moim.club.exception.ClubPermissionException;
+import com.example.moim.club.dto.request.ClubInput;
+import com.example.moim.club.entity.*;
+import com.example.moim.club.exception.advice.ClubControllerAdvice;
 import com.example.moim.club.repository.ClubRepository;
 import com.example.moim.club.repository.UserClubRepository;
-import com.example.moim.match.dto.MatchInput;
+import com.example.moim.global.enums.*;
+import com.example.moim.global.exception.ResponseCode;
 import com.example.moim.match.entity.Match;
 import com.example.moim.match.entity.MatchApplication;
 import com.example.moim.match.repository.MatchApplicationRepository;
@@ -15,10 +15,10 @@ import com.example.moim.notification.dto.ScheduleSaveEvent;
 import com.example.moim.schedule.dto.*;
 import com.example.moim.schedule.entity.Schedule;
 import com.example.moim.schedule.entity.ScheduleVote;
+import com.example.moim.schedule.exception.advice.ScheduleControllerAdvice;
 import com.example.moim.schedule.repository.ScheduleRepository;
 import com.example.moim.schedule.repository.ScheduleVoteRepository;
 import com.example.moim.user.dto.SignupInput;
-import com.example.moim.user.entity.Gender;
 import com.example.moim.user.entity.User;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -72,10 +72,10 @@ class ScheduleServiceTest {
                 .category("soccer")
                 .note("note").build();
         this.signupInput = SignupInput.builder().email("email").password("password")
-                .name("name").birthday("birthday").gender(Gender.WOMAN).build();
+                .name("name").birthday("birthday").gender(Gender.WOMAN.getKoreanName()).build();
         this.clubInput = ClubInput.builder().title("title").explanation("explanation").introduction("introduction")
-                .category("category").university("university").gender(Gender.WOMAN.name())
-                .activityArea("activityArea").ageRange("ageRange").mainEvent("mainEvent")
+                .clubCategory(ClubCategory.SMALL_GROUP.getKoreanName()).university("university").gender(Gender.UNISEX.getKoreanName())
+                .activityArea(ActivityArea.SEOUL.getKoreanName()).ageRange(AgeRange.TWENTIES.getKoreanName()).sportsType(SportsType.SOCCER.getKoreanName())
                 .clubPassword("clubPassword").profileImg(new MockMultipartFile("file", "file".getBytes()))
                 .mainUniformColor("mainUniformColor").subUniformColor("subUniformColor").build();
         this.scheduleUpdateInput = ScheduleUpdateInput.builder().clubId(1L).id(1L).title("update title").location("update location")
@@ -118,9 +118,10 @@ class ScheduleServiceTest {
         when(clubRepository.findById(any(Long.class))).thenReturn(Optional.of(club));
         when(userClubRepository.findByClubAndUser(club, user)).thenReturn(Optional.of(userClub));
         //then
-        assertThrows(ClubPermissionException.class, () -> {
+        Exception exception = assertThrows(ScheduleControllerAdvice.class, () -> {
             scheduleService.saveSchedule(scheduleInput, user);
         });
+        assertThat(exception.getMessage()).isEqualTo(ResponseCode.CLUB_PERMISSION_DENIED.getMessage());
         verify(clubRepository, times(1)).findById(any(Long.class));
         verify(userClubRepository, times(1)).findByClubAndUser(any(Club.class), any(User.class));
     }
@@ -157,9 +158,10 @@ class ScheduleServiceTest {
         when(userClubRepository.findByClubAndUser(any(Club.class), any(User.class))).thenReturn(Optional.of(userClub));
         when(clubRepository.findById(any(Long.class))).thenReturn(Optional.of(club));
         //then
-        assertThrows(ClubPermissionException.class, () -> {
+        Exception exception = assertThrows(ScheduleControllerAdvice.class, () -> {
             scheduleService.updateSchedule(scheduleUpdateInput, user);
         });
+        assertThat(exception.getMessage()).isEqualTo(ResponseCode.CLUB_PERMISSION_DENIED.getMessage());
         verify(userClubRepository, times(1)).findByClubAndUser(any(Club.class), any(User.class));
         verify(clubRepository, times(1)).findById(any(Long.class));
     }
@@ -346,9 +348,10 @@ class ScheduleServiceTest {
         when(scheduleRepository.findById(any(Long.class))).thenReturn(Optional.of(schedule));
         when(userClubRepository.findByClubAndUser(any(Club.class), any(User.class))).thenReturn(Optional.of(userClub));
         //then
-        assertThrows(ClubPermissionException.class, () -> {
+        Exception exception = assertThrows(ScheduleControllerAdvice.class, () -> {
             scheduleService.closeSchedule(1L, user);
         });
+        assertThat(exception.getMessage()).isEqualTo(ResponseCode.CLUB_PERMISSION_DENIED.getMessage());
         verify(scheduleRepository, times(1)).findById(any(Long.class));
         verify(userClubRepository, times(1)).findByClubAndUser(any(Club.class), any(User.class));
     }
