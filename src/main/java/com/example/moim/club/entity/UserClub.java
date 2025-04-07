@@ -23,7 +23,7 @@ public class UserClub extends BaseEntity {
     @JoinColumn(name = "club_id")
     private Club club;
     @Enumerated(value = EnumType.STRING)
-    private ClubRole clubRole;
+    private ClubRole clubRole;      // notnull
     private LocalDate joinDate;
     private Integer scheduleCount;
     private Integer matchCount;

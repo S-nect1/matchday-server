@@ -39,6 +39,26 @@ public class NotificationEventHandler {
                 .map(userClub -> Notifications.createScheduleSaveNotification(scheduleSaveEvent, userClub.getUser())).toList());
     }
 
+    @Async
+    @EventListener
+    public void handleMatchCancelUserEvent(MatchCancelUserEvent event) {
+        log.info("매치 취소 이벤트 발생 매치 ID: {}", event.getMatch().getId());
+        Notifications notification = Notifications.createMatchCancelUserNotification(event, event.getTargetUser());
+        sendNotification(notification);
+    }
+
+    @Async
+    @EventListener
+    public void handleMatchCancelClubEvent(MatchCancelClubEvent event) {
+        log.info("매치 취소 이벤트 발생 매치 ID: {}", event.getMatch().getId());
+        // 해당 이벤트 대상 클럽의 모든 사용자에게 알림 생성
+        List<Notifications> notifications = userClubRepository.findAllByClub(event.getTargetClub())
+                .stream()
+                .map(userClub -> Notifications.createMatchCancelClubNotification(event, userClub.getUser()))
+                .toList();
+        sendEachNotification(notifications);
+    }
+
 //    @Async
 //    @Transactional(propagation = Propagation.REQUIRES_NEW)
 //    @TransactionalEventListener
