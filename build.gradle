@@ -41,14 +41,19 @@ dependencies {
     runtimeOnly 'io.jsonwebtoken:jjwt-impl:0.12.3'
     runtimeOnly 'io.jsonwebtoken:jjwt-jackson:0.12.3'
 
+    //FCM 추가
     implementation 'com.google.firebase:firebase-admin:9.2.0'
+
+    // Health Check
     implementation 'org.springframework.boot:spring-boot-starter-actuator'
 
-    compileOnly 'org.projectlombok:lombok'
-    annotationProcessor 'org.projectlombok:lombok'
+    // AWS 서비스 연동을 쉽게 도와주는 Spring Cloud 통합 패키지
+    implementation 'org.springframework.cloud:spring-cloud-starter-aws:2.2.6.RELEASE'
 
-    runtimeOnly 'com.mysql:mysql-connector-j'
-//    runtimeOnly 'com.h2database:h2'
+    compileOnly 'org.projectlombok:lombok'
+//    runtimeOnly 'com.mysql:mysql-connector-j'
+    runtimeOnly 'com.h2database:h2'
+    annotationProcessor 'org.projectlombok:lombok'
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
     testCompileOnly 'org.projectlombok:lombok'
     testAnnotationProcessor 'org.projectlombok:lombok'

@@ -1,7 +1,6 @@
 package com.example.moim.club.service;
 
 import com.example.moim.club.dto.request.*;
-import com.example.moim.club.dto.response.ClubOutput;
 import com.example.moim.club.dto.response.ClubSaveOutput;
 import com.example.moim.club.dto.response.ClubUpdateOutput;
 import com.example.moim.club.dto.response.UserClubOutput;
@@ -14,8 +13,8 @@ import com.example.moim.club.repository.ClubSearchRepository;
 import com.example.moim.club.repository.UserClubRepository;
 import com.example.moim.global.enums.ClubRole;
 import com.example.moim.global.exception.ResponseCode;
-import com.example.moim.global.util.FileStore;
 import com.example.moim.global.util.TextUtils;
+import com.example.moim.global.util.file.service.FileService;
 import com.example.moim.notification.dto.ClubJoinEvent;
 import com.example.moim.user.entity.User;
 import com.example.moim.user.repository.UserRepository;
@@ -36,13 +35,13 @@ public class ClubCommandServiceImpl implements ClubCommandService {
     private final ClubRepository clubRepository;
     private final UserClubRepository userClubRepository;
     private final UserRepository userRepository;
-    private final FileStore fileStore;
+    private final FileService fileService;
     private final ClubSearchRepository clubSearchRepository;
     private final ApplicationEventPublisher eventPublisher;
 
     @Transactional
     public ClubSaveOutput saveClub(User user, ClubInput clubInput) throws IOException {
-        Club club = clubRepository.save(Club.createClub(clubInput, fileStore.storeFile(clubInput.getProfileImg())));
+        Club club = clubRepository.save(Club.createClub(clubInput, fileService.upload(clubInput.getProfileImg(), "/club-profile")));
         // 검색을 위한 저장
         saveClubSearch(club);
 
@@ -65,7 +64,7 @@ public class ClubCommandServiceImpl implements ClubCommandService {
             throw new ClubControllerAdvice(ResponseCode.CLUB_PASSWORD_INCORRECT);
         }
 
-        club.updateClub(clubUpdateInput, fileStore.storeFile(clubUpdateInput.getProfileImg()));
+        club.updateClub(clubUpdateInput, fileService.upload(clubUpdateInput.getProfileImg(), "/club-profile"));
         // 검색 정보 동기화를 위한 처리
         club.getClubSearch().updateFrom(club);
         List<UserClubOutput> userList = userClubRepository.findAllByClub(club).stream().map(UserClubOutput::new).toList();

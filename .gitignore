@@ -41,3 +41,4 @@ build/generated/
 application-local.properties
 application-test.properties
 application-s3.properties
+test_img_dir

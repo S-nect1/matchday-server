@@ -1,6 +1,6 @@
 package com.example.moim.club.dto.request;
 
-import com.example.moim.global.util.ValidFile;
+import com.example.moim.global.util.file.exception.ValidFile;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.springframework.web.multipart.MultipartFile;
