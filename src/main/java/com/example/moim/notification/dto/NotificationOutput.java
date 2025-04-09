@@ -1,26 +1,26 @@
 package com.example.moim.notification.dto;
 
-import com.example.moim.notification.entity.Notification;
-import lombok.Data;
-
+import com.example.moim.notification.entity.NotificationEntity;
 import java.time.format.DateTimeFormatter;
+import lombok.Data;
 
 @Data
 public class NotificationOutput {
     private Long id;
+    private String notificationType;
     private String title;
-    private String category;
     private String content;
-    private String time;
+    private String createdAt;
     private Boolean isRead;
+    private String actionUrl;
 
-    public NotificationOutput(Notification notification) {
-        this.id = notification.getId();
-        this.title = notification.getTitle();
-        this.category = notification.getCategory();
-        this.content = notification.getContents();
-        this.time = notification.getCreatedDate().format(DateTimeFormatter.ofPattern("MM/dd HH:mm"));
-        notification.setRead(true);
-        this.isRead = notification.getIsRead();
+    public NotificationOutput(NotificationEntity notificationEntity) {
+        this.id = notificationEntity.getId();
+        this.title = notificationEntity.getTitle();
+        this.notificationType = notificationEntity.getType().name();
+        this.content = notificationEntity.getContent();
+        this.createdAt = notificationEntity.getCreatedDate().format(DateTimeFormatter.ofPattern("yyyy/MM/dd HH:mm"));
+        this.isRead = notificationEntity.getIsRead();
+        this.actionUrl = notificationEntity.getType().getCategory() + "/" + notificationEntity.getLinkedId();
     }
 }
