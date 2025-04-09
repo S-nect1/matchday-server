@@ -12,7 +12,8 @@ import com.example.moim.club.entity.Club;
 import com.example.moim.notification.dto.ClubJoinEvent;
 import com.example.moim.notification.dto.NotificationExistOutput;
 import com.example.moim.notification.dto.NotificationOutput;
-import com.example.moim.notification.entity.Notification;
+import com.example.moim.notification.entity.NotificationEntity;
+import com.example.moim.notification.entity.NotificationType;
 import com.example.moim.notification.repository.NotificationRepository;
 import com.example.moim.user.entity.User;
 import java.util.Collections;
@@ -41,7 +42,7 @@ class NotificationServiceTest {
         when(notificationRepository.existsByTargetUserAndIsRead(user, false)).thenReturn(false);
 
         // when
-        NotificationExistOutput result = notificationService.checkNotice(user);
+        NotificationExistOutput result = notificationService.checkUnread(user);
 
         // then
         assertFalse(result.getHasNotice());
@@ -55,7 +56,7 @@ class NotificationServiceTest {
         when(notificationRepository.existsByTargetUserAndIsRead(user, false)).thenReturn(true);
 
         // when
-        NotificationExistOutput result = notificationService.checkNotice(user);
+        NotificationExistOutput result = notificationService.checkUnread(user);
 
         // then
         assertTrue(result.getHasNotice());
@@ -69,7 +70,7 @@ class NotificationServiceTest {
         when(notificationRepository.findByTargetUser(user)).thenReturn(Collections.emptyList());
 
         // when
-        List<NotificationOutput> result = notificationService.findNotice(user);
+        List<NotificationOutput> result = notificationService.findAll(user);
 
         // then
         assertTrue(result.isEmpty());
@@ -82,13 +83,19 @@ class NotificationServiceTest {
         User user = new User();
         Club club = new Club();
         ClubJoinEvent clubJoinEvent = new ClubJoinEvent(user, club);
-        Notification notification = Notification.createClubJoinNotification(clubJoinEvent, user);
-        notification.setCreatedDate();
-        List<Notification> notifications = List.of(notification);
-        when(notificationRepository.findByTargetUser(user)).thenReturn(notifications);
+        NotificationEntity notificationEntity = NotificationEntity.create(clubJoinEvent.getUser()
+                , NotificationType.CLUB_JOIN
+                , NotificationType.CLUB_JOIN.formatMessage(
+                        clubJoinEvent.getUser().getName()
+                        , clubJoinEvent.getClub().getTitle())
+                , clubJoinEvent.getClub().getTitle()
+                , clubJoinEvent.getClub().getId());
+        notificationEntity.setCreatedDate();
+        List<NotificationEntity> notificationEntities = List.of(notificationEntity);
+        when(notificationRepository.findByTargetUser(user)).thenReturn(notificationEntities);
 
         // when
-        List<NotificationOutput> result = notificationService.findNotice(user);
+        List<NotificationOutput> result = notificationService.findAll(user);
 
         // then
         assertEquals(1, result.size());
@@ -102,21 +109,21 @@ class NotificationServiceTest {
         doNothing().when(notificationRepository).deleteById(nonExistentId);
 
         // when
-        notificationService.removeNotice(nonExistentId);
+        notificationService.remove(nonExistentId);
 
         // then
         verify(notificationRepository, times(1)).deleteById(nonExistentId);
     }
 
     @Test
-    @DisplayName("알림 ID로 알림을 삭제할 수 있다")
+    @DisplayName("알림 ID로 알림을 삭제할 수 있다") // FIXME : 근데 알림 삭제가 왜 필요하지? 읽음 처리도 아니고?
     void shouldDeleteNotificationById() {
         // given
         Long notificationId = 1L;
         doNothing().when(notificationRepository).deleteById(notificationId);
 
         // when
-        notificationService.removeNotice(notificationId);
+        notificationService.remove(notificationId);
 
         // then
         verify(notificationRepository, times(1)).deleteById(notificationId);
