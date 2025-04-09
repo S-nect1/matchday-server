@@ -34,7 +34,7 @@ public class NotificationEntity extends BaseEntity {
     private NotificationStatus status;
 
     @Builder
-    private NotificationEntity(User targetUser, NotificationType type, String title, String content, Long linkedId) {
+    public NotificationEntity(User targetUser, NotificationType type, String title, String content, Long linkedId) {
         this.targetUser = targetUser;
         this.type = type;
         this.title = title;
