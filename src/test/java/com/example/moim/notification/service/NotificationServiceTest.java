@@ -9,12 +9,14 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import com.example.moim.club.entity.Club;
+import com.example.moim.notification.controller.port.NotificationService;
 import com.example.moim.notification.dto.ClubJoinEvent;
 import com.example.moim.notification.dto.NotificationExistOutput;
 import com.example.moim.notification.dto.NotificationOutput;
 import com.example.moim.notification.entity.NotificationEntity;
 import com.example.moim.notification.entity.NotificationType;
-import com.example.moim.notification.repository.NotificationRepository;
+import com.example.moim.notification.repository.NotificationJpaRepository;
+import com.example.moim.notification.service.port.NotificationRepository;
 import com.example.moim.user.entity.User;
 import java.util.Collections;
 import java.util.List;
@@ -32,7 +34,7 @@ class NotificationServiceTest {
     private NotificationRepository notificationRepository;
 
     @InjectMocks
-    private NotificationService notificationService;
+    private NotificationServiceImpl notificationService;
 
     @Test
     @DisplayName("사용자에게 읽지 않은 알림이 없으면 false 반환한다")

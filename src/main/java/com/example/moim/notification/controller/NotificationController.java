@@ -1,8 +1,8 @@
 package com.example.moim.notification.controller;
 
+import com.example.moim.notification.controller.port.NotificationService;
 import com.example.moim.notification.dto.NotificationExistOutput;
 import com.example.moim.notification.dto.NotificationOutput;
-import com.example.moim.notification.service.NotificationService;
 import com.example.moim.user.dto.UserDetailsImpl;
 import java.util.List;
 import lombok.RequiredArgsConstructor;

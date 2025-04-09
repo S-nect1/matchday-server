@@ -1,10 +1,11 @@
 package com.example.moim.notification.service;
 
+import com.example.moim.notification.controller.port.NotificationService;
 import com.example.moim.notification.dto.NotificationExistOutput;
 import com.example.moim.notification.dto.NotificationOutput;
 import com.example.moim.notification.entity.NotificationEntity;
-import com.example.moim.notification.repository.NotificationRepository;
 import com.example.moim.notification.repository.NotificationSender;
+import com.example.moim.notification.service.port.NotificationRepository;
 import com.example.moim.user.entity.User;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
@@ -13,7 +14,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @RequiredArgsConstructor
-public class NotificationService {
+public class NotificationServiceImpl implements NotificationService {
     private final NotificationRepository notificationRepository;
     private final NotificationSender notificationSender;
 
