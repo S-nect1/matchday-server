@@ -1,5 +1,6 @@
 package com.example.moim.notification.service;
 
+import com.example.moim.notification.controller.port.NotificationService;
 import com.example.moim.notification.entity.NotificationEntity;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
@@ -24,7 +25,7 @@ public class NotificationEventDispatcher {
                     @SuppressWarnings("unchecked")
                     NotificationStrategy<Object> s = (NotificationStrategy<Object>) strategy;
                     List<NotificationEntity> notificationEntities = s.generate(event);
-//                    notificationService.sendAll(notificationEntities);
+                    notificationService.sendAll(notificationEntities);
                 });
     }
 }
