@@ -10,6 +10,7 @@ import com.example.moim.club.repository.UserClubRepository;
 import com.example.moim.global.enums.*;
 import com.example.moim.user.dto.SignupInput;
 import com.example.moim.user.entity.User;
+import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -17,9 +18,13 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.data.domain.Slice;
 import org.springframework.mock.web.MockMultipartFile;
+import org.springframework.test.util.ReflectionTestUtils;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
@@ -28,6 +33,7 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 import static org.mockito.Mockito.times;
 
+@Slf4j
 @ExtendWith(MockitoExtension.class)
 public class NoticeQueryServiceImplTest {
     @Mock
@@ -90,15 +96,17 @@ public class NoticeQueryServiceImplTest {
         notice.setUpdatedDate();
         //when
         when(clubRepository.findById(any(Long.class))).thenReturn(Optional.of(club));
-        when(noticeRepository.findByClub(any(Club.class))).thenReturn(List.of(notice));
+        when(noticeRepository.findByCursor(any(Long.class), any(Integer.class), any(Club.class))).thenReturn(List.of(notice));
         when(userClubRepository.findByClubAndUser(any(Club.class), any(User.class))).thenReturn(Optional.of(userClub));
-        List<NoticeOutput> result = noticeQueryService.findNotice(user, 1L);
+        Slice<NoticeOutput> result = noticeQueryService.findNotice(user, 1L, 0L);
+
         //then
-        assertThat(result.size()).isEqualTo(1);
-        assertThat(result.get(0).getTitle()).isEqualTo(noticeInput.getTitle());
-        assertThat(result.get(0).getContent()).isEqualTo(noticeInput.getContent());
+        assertThat(result.getSize()).isEqualTo(20);
+        assertThat(result.getNumberOfElements()).isEqualTo(1);
+        assertThat(result.hasNext()).isFalse();
+        assertThat(result.getContent().get(0).getTitle()).isEqualTo("notice title");
         verify(clubRepository, times(1)).findById(any(Long.class));
-        verify(noticeRepository, times(1)).findByClub(any(Club.class));
+        verify(noticeRepository, times(1)).findByCursor(any(Long.class), any(Integer.class), any(Club.class));
     }
 
     @Test
@@ -111,12 +119,47 @@ public class NoticeQueryServiceImplTest {
 
         //when
         when(clubRepository.findById(any(Long.class))).thenReturn(Optional.of(club));
-        when(noticeRepository.findByClub(any(Club.class))).thenReturn(List.of());
+        when(noticeRepository.findByCursor(any(Long.class), any(Integer.class), any(Club.class))).thenReturn(List.of());
         when(userClubRepository.findByClubAndUser(any(Club.class), any(User.class))).thenReturn(Optional.of(userClub));
-        List<NoticeOutput> result = noticeQueryService.findNotice(user, 1L);
+        Slice<NoticeOutput> result = noticeQueryService.findNotice(user, 1L, 0L);
         //then
-        assertThat(result.size()).isEqualTo(0);
+        assertThat(result.getSize()).isEqualTo(20);
+        assertThat(result.getNumberOfElements()).isEqualTo(0);
+        assertThat(result.hasNext()).isFalse();
+        assertThat(result.hasContent()).isFalse();
         verify(clubRepository, times(1)).findById(any(Long.class));
-        verify(noticeRepository, times(1)).findByClub(any(Club.class));
+        verify(noticeRepository, times(1)).findByCursor(any(Long.class), any(Integer.class), any(Club.class));
+    }
+
+    @Test
+    @DisplayName("동아리에 등록된 공지를 조회하면 나중에 저장된 순으로 정렬되어 있다.")
+    void findNotice_sort() {
+        //given
+        Club club = Club.createClub(clubInput, null);
+        Notice notice = Notice.createNotice(club, noticeInput.getTitle(), noticeInput.getContent());
+        ReflectionTestUtils.setField(notice, "id", 1L);
+        LocalDateTime localDateTime = LocalDateTime.now();
+        ReflectionTestUtils.setField(notice, "createdDate", localDateTime);
+        Notice notice2 = Notice.createNotice(club, noticeInput.getTitle(), noticeInput.getContent());
+        ReflectionTestUtils.setField(notice2, "id", 2L);
+        LocalDateTime localDateTime2 = LocalDateTime.now();
+        ReflectionTestUtils.setField(notice2, "createdDate", localDateTime2);
+        User user = User.createUser(signupInput);
+        UserClub userClub = UserClub.createUserClub(user, club);
+
+        //when
+        when(clubRepository.findById(any(Long.class))).thenReturn(Optional.of(club));
+        when(noticeRepository.findByCursor(any(Long.class), any(Integer.class), any(Club.class))).thenReturn(List.of(notice, notice2));
+        when(userClubRepository.findByClubAndUser(any(Club.class), any(User.class))).thenReturn(Optional.of(userClub));
+        Slice<NoticeOutput> result = noticeQueryService.findNotice(user, 1L, 0L);
+
+        //then
+        assertThat(result.getSize()).isEqualTo(20);
+        assertThat(result.getNumberOfElements()).isEqualTo(2);
+        assertThat(result.hasNext()).isFalse();
+        assertThat(result.getContent().get(0).getCreatedDate()).isEqualTo(LocalDate.from(localDateTime2));
+        assertThat(result.getContent().get(1).getCreatedDate()).isEqualTo(LocalDate.from(localDateTime));
+        verify(clubRepository, times(1)).findById(any(Long.class));
+        verify(noticeRepository, times(1)).findByCursor(any(Long.class), any(Integer.class), any(Club.class));
     }
 }
