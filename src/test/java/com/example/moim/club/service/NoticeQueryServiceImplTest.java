@@ -2,11 +2,14 @@ package com.example.moim.club.service;
 
 import com.example.moim.club.dto.request.ClubInput;
 import com.example.moim.club.dto.request.NoticeInput;
-import com.example.moim.club.dto.request.NoticeOutput;
+import com.example.moim.club.dto.response.NoticeOutput;
 import com.example.moim.club.entity.*;
 import com.example.moim.club.repository.ClubRepository;
 import com.example.moim.club.repository.NoticeRepository;
+import com.example.moim.club.repository.UserClubRepository;
 import com.example.moim.global.enums.*;
+import com.example.moim.user.dto.SignupInput;
+import com.example.moim.user.entity.User;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -31,11 +34,14 @@ public class NoticeQueryServiceImplTest {
     private NoticeRepository noticeRepository;
     @Mock
     private ClubRepository clubRepository;
+    @Mock
+    private UserClubRepository userClubRepository;
     @InjectMocks
     private NoticeQueryServiceImpl noticeQueryService;
 
     private ClubInput clubInput;
     private NoticeInput noticeInput;
+    private SignupInput signupInput;
 
     @BeforeEach
     void init() {
@@ -60,6 +66,16 @@ public class NoticeQueryServiceImplTest {
 
         // Notice
         this.noticeInput = NoticeInput.builder().title("notice title").content("notice content").clubId(1L).build();
+
+        // User
+        this.signupInput = SignupInput.builder()
+                .email("email")
+                .phone("phone")
+                .birthday("2000-08-28")
+                .name("name")
+                .password("password")
+                .gender(Gender.WOMAN.getKoreanName())
+                .build();
     }
 
     @Test
@@ -68,12 +84,15 @@ public class NoticeQueryServiceImplTest {
         //given
         Club club = Club.createClub(clubInput, null);
         Notice notice = Notice.createNotice(club, noticeInput.getTitle(), noticeInput.getContent());
+        User user = User.createUser(signupInput);
+        UserClub userClub = UserClub.createUserClub(user, club);
         notice.setCreatedDate();
         notice.setUpdatedDate();
         //when
         when(clubRepository.findById(any(Long.class))).thenReturn(Optional.of(club));
         when(noticeRepository.findByClub(any(Club.class))).thenReturn(List.of(notice));
-        List<NoticeOutput> result = noticeQueryService.findNotice(1L);
+        when(userClubRepository.findByClubAndUser(any(Club.class), any(User.class))).thenReturn(Optional.of(userClub));
+        List<NoticeOutput> result = noticeQueryService.findNotice(user, 1L);
         //then
         assertThat(result.size()).isEqualTo(1);
         assertThat(result.get(0).getTitle()).isEqualTo(noticeInput.getTitle());
@@ -87,11 +106,14 @@ public class NoticeQueryServiceImplTest {
     void findNotice_zero_notice() {
         //given
         Club club = Club.createClub(clubInput, null);
+        User user = User.createUser(signupInput);
+        UserClub userClub = UserClub.createUserClub(user, club);
 
         //when
         when(clubRepository.findById(any(Long.class))).thenReturn(Optional.of(club));
         when(noticeRepository.findByClub(any(Club.class))).thenReturn(List.of());
-        List<NoticeOutput> result = noticeQueryService.findNotice(1L);
+        when(userClubRepository.findByClubAndUser(any(Club.class), any(User.class))).thenReturn(Optional.of(userClub));
+        List<NoticeOutput> result = noticeQueryService.findNotice(user, 1L);
         //then
         assertThat(result.size()).isEqualTo(0);
         verify(clubRepository, times(1)).findById(any(Long.class));
