@@ -24,11 +24,13 @@ public class NoticeCommandServiceImpl implements NoticeCommandService {
     private final ClubRepository clubRepository;
     private final UserClubRepository userClubRepository;
 
-    public NoticeOutput saveNotice(User user, NoticeInput noticeInput) {
-        Club club = clubRepository.findById(noticeInput.getClubId()).orElseThrow(() -> new ClubControllerAdvice(ResponseCode.CLUB_NOT_FOUND));
+    public NoticeOutput saveNotice(User user, NoticeInput noticeInput, Long clubId) {
+        log.debug("saveNotice 진입");
+        Club club = clubRepository.findById(clubId).orElseThrow(() -> new ClubControllerAdvice(ResponseCode.CLUB_NOT_FOUND));
         UserClub userClub = userClubRepository.findByClubAndUser(club, user).orElseThrow(() -> new ClubControllerAdvice(ResponseCode.CLUB_USER_NOT_FOUND));
 
         if (!userClub.getClubRole().equals(ClubRole.STAFF)) { // 공지 등록 권한 확인
+            log.debug("권한 오류");
             throw new ClubControllerAdvice(ResponseCode.CLUB_PERMISSION_DENIED);
         }
 

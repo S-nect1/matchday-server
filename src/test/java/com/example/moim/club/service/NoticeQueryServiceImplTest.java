@@ -71,7 +71,7 @@ public class NoticeQueryServiceImplTest {
                 .clubPassword(clubPassword).profileImg(profileImg).mainUniformColor(mainUniformColor).subUniformColor(subUniformColor).build();
 
         // Notice
-        this.noticeInput = NoticeInput.builder().title("notice title").content("notice content").clubId(1L).build();
+        this.noticeInput = NoticeInput.builder().title("notice title").content("notice content").build();
 
         // User
         this.signupInput = SignupInput.builder()

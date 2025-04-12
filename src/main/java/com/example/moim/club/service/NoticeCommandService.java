@@ -5,5 +5,5 @@ import com.example.moim.club.dto.response.NoticeOutput;
 import com.example.moim.user.entity.User;
 
 public interface NoticeCommandService {
-    NoticeOutput saveNotice(User user, NoticeInput noticeInput);
+    NoticeOutput saveNotice(User user, NoticeInput noticeInput, Long clubId);
 }

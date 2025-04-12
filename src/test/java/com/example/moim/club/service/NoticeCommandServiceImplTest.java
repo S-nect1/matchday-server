@@ -65,7 +65,7 @@ class NoticeCommandServiceImplTest {
                 .clubPassword(clubPassword).profileImg(profileImg).mainUniformColor(mainUniformColor).subUniformColor(subUniformColor).build();
 
         // Notice
-        this.noticeInput = NoticeInput.builder().title("notice title").content("notice content").clubId(1L).build();
+        this.noticeInput = NoticeInput.builder().title("notice title").content("notice content").build();
 
         // User
         this.signupInput = SignupInput.builder()
@@ -91,7 +91,7 @@ class NoticeCommandServiceImplTest {
         when(noticeRepository.save(any(Notice.class))).thenReturn(notice);
         when(clubRepository.findById(any(Long.class))).thenReturn(Optional.of(club));
         when(userClubRepository.findByClubAndUser(any(Club.class), any(User.class))).thenReturn(Optional.of(userClub));
-        noticeCommandServiceImpl.saveNotice(user, noticeInput);
+        noticeCommandServiceImpl.saveNotice(user, noticeInput, 1L);
         //then
         verify(noticeRepository, times(1)).save(any(Notice.class));
         verify(clubRepository, times(1)).findById(any(Long.class));
