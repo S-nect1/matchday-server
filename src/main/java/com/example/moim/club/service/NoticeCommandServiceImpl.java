@@ -36,6 +36,10 @@ public class NoticeCommandServiceImpl implements NoticeCommandService {
 
         Notice notice = noticeRepository.save(Notice.createNotice(club, noticeInput.getTitle(), noticeInput.getContent()));
 
+        /**
+         * TODO: 알림 보내는 부분 구현해야함
+         */
+
         return new NoticeOutput(notice);
     }
 }
