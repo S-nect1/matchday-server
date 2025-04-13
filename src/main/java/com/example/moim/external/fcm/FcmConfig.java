@@ -16,7 +16,7 @@ public class FcmConfig {
 
     @Bean
     FirebaseMessaging firebaseMessaging() throws IOException {
-        ClassPathResource resource = new ClassPathResource("secret/sample-firebase-test-f3c27-firebase-adminsdk-fbsvc-4a5440cd44.json");
+        ClassPathResource resource = new ClassPathResource("secret/sample-firebase-test-f3c27-firebase-adminsdk-fbsvc-c15b4b66c6.json");
         InputStream refreshToken = resource.getInputStream();
 
         FirebaseApp firebaseApp = null;
