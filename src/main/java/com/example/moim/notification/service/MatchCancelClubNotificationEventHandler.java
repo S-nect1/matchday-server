@@ -10,17 +10,17 @@ import org.springframework.stereotype.Component;
 
 @Component
 @RequiredArgsConstructor
-public class MatchCancelClubNotificationStrategy implements NotificationStrategy<MatchCancelClubEvent> {
+public class MatchCancelClubNotificationEventHandler implements NotificationEventHandler<MatchCancelClubEvent> {
 
     private final UserClubRepository userClubRepository;
 
     @Override
-    public boolean supports(Object event) {
+    public boolean canHandle(Object event) {
         return event instanceof MatchCancelClubEvent;
     }
 
     @Override
-    public List<NotificationEntity> generate(MatchCancelClubEvent event) {
+    public List<NotificationEntity> handle(MatchCancelClubEvent event) {
         return userClubRepository.findAllByClub(event.getTargetClub()).stream()
                 .map(userClub -> NotificationEntity.create(userClub.getUser()
                         , NotificationType.MATCH_CANCEL_CLUB

@@ -12,19 +12,19 @@ import org.springframework.stereotype.Component;
 @RequiredArgsConstructor
 public class NotificationEventDispatcher {
 
-    private final List<NotificationStrategy<?>> strategies;
+    private final List<NotificationEventHandler<?>> handlers;
     private final NotificationService notificationService;
 
     @Async
     @EventListener
     public void dispatchEvent(Object event) {
-        strategies.stream()
-                .filter(strategy -> strategy.supports(event))
+        handlers.stream()
+                .filter(strategy -> strategy.canHandle(event))
                 .findFirst()
                 .ifPresent(strategy -> {
                     @SuppressWarnings("unchecked")
-                    NotificationStrategy<Object> s = (NotificationStrategy<Object>) strategy;
-                    List<NotificationEntity> notificationEntities = s.generate(event);
+                    NotificationEventHandler<Object> s = (NotificationEventHandler<Object>) strategy;
+                    List<NotificationEntity> notificationEntities = s.handle(event);
                     notificationService.sendAll(notificationEntities);
                 });
     }

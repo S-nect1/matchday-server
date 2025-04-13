@@ -31,15 +31,15 @@ class NotificationEventDispatcherTest {
     @TestConfiguration
     static class TestStrategyConfig {
         @Bean
-        public NotificationStrategy<DummyEvent> dummyStrategy() {
-            return new NotificationStrategy<>() {
+        public NotificationEventHandler<DummyEvent> dummyStrategy() {
+            return new NotificationEventHandler<>() {
                 @Override
-                public boolean supports(Object event) {
+                public boolean canHandle(Object event) {
                     return event instanceof DummyEvent;
                 }
 
                 @Override
-                public List<NotificationEntity> generate(DummyEvent event) {
+                public List<NotificationEntity> handle(DummyEvent event) {
                     return List.of(NotificationEntity.builder()
                             .title("test")
                             .content("test")

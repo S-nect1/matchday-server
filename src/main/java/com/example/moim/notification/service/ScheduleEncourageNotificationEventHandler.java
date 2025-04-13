@@ -7,15 +7,15 @@ import java.util.List;
 import org.springframework.stereotype.Component;
 
 @Component
-public class ScheduleEncourageNotificationStrategy implements NotificationStrategy<ScheduleEncourageEvent> {
+public class ScheduleEncourageNotificationEventHandler implements NotificationEventHandler<ScheduleEncourageEvent> {
 
     @Override
-    public boolean supports(Object event) {
+    public boolean canHandle(Object event) {
         return event instanceof ScheduleEncourageEvent;
     }
 
     @Override
-    public List<NotificationEntity> generate(ScheduleEncourageEvent event) {
+    public List<NotificationEntity> handle(ScheduleEncourageEvent event) {
         return event.getUserList().stream()
                 .map(user -> NotificationEntity.create(
                         user

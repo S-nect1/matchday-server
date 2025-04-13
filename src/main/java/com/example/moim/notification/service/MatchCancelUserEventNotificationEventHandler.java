@@ -9,15 +9,15 @@ import org.springframework.stereotype.Component;
 
 @Component
 @RequiredArgsConstructor
-public class MatchCancelUserEventNotificationStrategy implements NotificationStrategy<MatchCancelUserEvent> {
+public class MatchCancelUserEventNotificationEventHandler implements NotificationEventHandler<MatchCancelUserEvent> {
 
     @Override
-    public boolean supports(Object event) {
+    public boolean canHandle(Object event) {
         return event instanceof MatchCancelUserEvent;
     }
 
     @Override
-    public List<NotificationEntity> generate(MatchCancelUserEvent event) {
+    public List<NotificationEntity> handle(MatchCancelUserEvent event) {
         return List.of(
                 NotificationEntity.create(event.getTargetUser()
                         , NotificationType.MATCH_CANCEL_USER

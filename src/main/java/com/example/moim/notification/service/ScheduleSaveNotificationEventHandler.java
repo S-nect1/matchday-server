@@ -10,17 +10,17 @@ import org.springframework.stereotype.Component;
 
 @Component
 @RequiredArgsConstructor
-public class ScheduleSaveNotificationStrategy implements NotificationStrategy<ScheduleSaveEvent> {
+public class ScheduleSaveNotificationEventHandler implements NotificationEventHandler<ScheduleSaveEvent> {
 
     private final UserClubRepository userClubRepository;
 
     @Override
-    public boolean supports(Object event) {
+    public boolean canHandle(Object event) {
         return event instanceof ScheduleSaveEvent;
     }
 
     @Override
-    public List<NotificationEntity> generate(ScheduleSaveEvent event) {
+    public List<NotificationEntity> handle(ScheduleSaveEvent event) {
         return userClubRepository.findAllByClub(event.getSchedule().getClub())
                         .stream()
                         .map(userClub -> NotificationEntity.create(event.getUser()
