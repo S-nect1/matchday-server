@@ -53,7 +53,7 @@ class NotificationEventDispatcherTest {
 
     @Test
     @DisplayName("이벤트가 발생하면 비동기로 알림을 전송한다")
-    void shouldSendNotificationWhenEventIsDispatched() {
+    void dispatchEvent_shouldSendNotification_whenEventIsDispatched() {
         // given
         User user = User.builder().fcmToken("test-token").build();
         DummyEvent event = new DummyEvent(NotificationType.MATCH_SUCCESS, user);

@@ -35,7 +35,7 @@ class FcmNotificationSenderTest {
 
     @Test
     @DisplayName("FCM 토큰이 유효한 경우 FirebaseMessaging.send()가 호출되고 상태가 SENT로 설정된다")
-    void shouldCallFirebaseMessaging_andMarkAsSent() throws FirebaseMessagingException {
+    void send_shouldCallFirebaseMessaging_andMarkAsSent() throws FirebaseMessagingException {
         // given
         User user = User.builder().fcmToken("valid_token").build();
         NotificationEntity notification = NotificationEntity.builder()
@@ -78,7 +78,7 @@ class FcmNotificationSenderTest {
 
     @Test
     @DisplayName("FirebaseMessagingException이 발생하면 상태가 FAILED로 설정된다")
-    void shouldHandleFirebaseMessagingException() throws FirebaseMessagingException {
+    void send_shouldHandleFirebaseMessagingException() throws FirebaseMessagingException {
         // given
         User user = User.builder().fcmToken("valid-token").build();
         NotificationEntity notification = NotificationEntity.builder()
