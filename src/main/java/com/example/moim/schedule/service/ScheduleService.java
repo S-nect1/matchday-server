@@ -8,12 +8,8 @@ import com.example.moim.match.dto.MatchApplyClubOutput;
 import com.example.moim.match.repository.MatchApplicationRepository;
 import com.example.moim.notification.dto.ScheduleEncourageEvent;
 import com.example.moim.notification.dto.ScheduleSaveEvent;
-import com.example.moim.schedule.dto.ScheduleDetailOutput;
-import com.example.moim.schedule.dto.ScheduleInput;
-import com.example.moim.schedule.dto.ScheduleOutput;
-import com.example.moim.schedule.dto.ScheduleSearchInput;
-import com.example.moim.schedule.dto.ScheduleUpdateInput;
-import com.example.moim.schedule.dto.ScheduleVoteInput;
+import com.example.moim.schedule.dto.*;
+import com.example.moim.schedule.entity.Comment;
 import com.example.moim.schedule.entity.Schedule;
 import com.example.moim.schedule.entity.ScheduleVote;
 import com.example.moim.schedule.exception.advice.ScheduleControllerAdvice;
@@ -59,13 +55,13 @@ public class ScheduleService {
     }
 
     @Transactional
-    public ScheduleOutput updateSchedule(ScheduleUpdateInput scheduleUpdateInput, User user) {
+    public ScheduleOutput updateSchedule(ScheduleUpdateInput scheduleUpdateInput, Long scheduleId, User user) {
         UserClub userClub = userClubRepository.findByClubAndUser(clubRepository.findById(scheduleUpdateInput.getClubId()).get(), user).get();
         if (!(userClub.getClubRole().equals(ClubRole.STAFF))) {
             throw new ScheduleControllerAdvice(ResponseCode.CLUB_PERMISSION_DENIED);
         }
 
-        Schedule schedule = scheduleRepository.findById(scheduleUpdateInput.getId()).get();
+        Schedule schedule = scheduleRepository.findById(scheduleId).get();
         schedule.updateSchedule(scheduleUpdateInput);
         return new ScheduleOutput(schedule);
     }
@@ -156,7 +152,7 @@ public class ScheduleService {
         schedule.closeSchedule();
     }
 
-//    public void saveComment(CommentInput commentInput, User user) {
-//        commentRepository.save(Comment.createComment(user, scheduleRepository.findById(commentInput.getId()).get(), commentInput.getContents()));
-//    }
+    public void saveComment(CommentInput commentInput, User user) {
+        commentRepository.save(Comment.createComment(user, scheduleRepository.findById(commentInput.getId()).get(), commentInput.getContents()));
+    }
 }

@@ -138,7 +138,7 @@ class ScheduleServiceTest {
         when(userClubRepository.findByClubAndUser(any(Club.class), any(User.class))).thenReturn(Optional.of(userClub));
         when(clubRepository.findById(any(Long.class))).thenReturn(Optional.of(club));
         when(scheduleRepository.findById(any(Long.class))).thenReturn(Optional.of(schedule));
-        ScheduleOutput scheduleOutput = scheduleService.updateSchedule(scheduleUpdateInput, user);
+        ScheduleOutput scheduleOutput = scheduleService.updateSchedule(scheduleUpdateInput, 1L, user);
         //then
         assertThat(scheduleOutput.getTitle()).isEqualTo("update title");
         assertThat(scheduleOutput.getLocation()).isEqualTo("update location");
@@ -159,7 +159,7 @@ class ScheduleServiceTest {
         when(clubRepository.findById(any(Long.class))).thenReturn(Optional.of(club));
         //then
         Exception exception = assertThrows(ScheduleControllerAdvice.class, () -> {
-            scheduleService.updateSchedule(scheduleUpdateInput, user);
+            scheduleService.updateSchedule(scheduleUpdateInput, 1L, user);
         });
         assertThat(exception.getMessage()).isEqualTo(ResponseCode.CLUB_PERMISSION_DENIED.getMessage());
         verify(userClubRepository, times(1)).findByClubAndUser(any(Club.class), any(User.class));

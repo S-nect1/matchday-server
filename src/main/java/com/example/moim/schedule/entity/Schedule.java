@@ -75,12 +75,24 @@ public class Schedule extends BaseEntity {
     }
 
     public void updateSchedule(ScheduleUpdateInput scheduleUpdateInput) {
-        this.title = scheduleUpdateInput.getTitle();
-        this.location = scheduleUpdateInput.getLocation();
-        this.startTime = scheduleUpdateInput.getStartTime();
-        this.endTime = scheduleUpdateInput.getEndTime();
-        this.minPeople = scheduleUpdateInput.getMinPeople();
-        this.category = scheduleUpdateInput.getCategory();
+        if (scheduleUpdateInput.getTitle() != null) {
+            this.title = scheduleUpdateInput.getTitle();
+        }
+        if (scheduleUpdateInput.getLocation() != null) {
+            this.location = scheduleUpdateInput.getLocation();
+        }
+        if (scheduleUpdateInput.getStartTime() != null) {
+            this.startTime = scheduleUpdateInput.getStartTime();
+        }
+        if (scheduleUpdateInput.getEndTime() != null) {
+            this.endTime = scheduleUpdateInput.getEndTime();
+        }
+        if (scheduleUpdateInput.getMinPeople() != null) {
+            this.minPeople = scheduleUpdateInput.getMinPeople();
+        }
+        if (scheduleUpdateInput.getCategory() != null) {
+            this.category = scheduleUpdateInput.getCategory();
+        }
         if (scheduleUpdateInput.getNote() != null) {
             this.note = scheduleUpdateInput.getNote();
         }

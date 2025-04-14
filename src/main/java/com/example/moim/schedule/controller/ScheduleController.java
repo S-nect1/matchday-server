@@ -1,12 +1,7 @@
 package com.example.moim.schedule.controller;
 
+import com.example.moim.schedule.dto.*;
 import com.example.moim.schedule.service.ScheduleService;
-import com.example.moim.schedule.dto.ScheduleDetailOutput;
-import com.example.moim.schedule.dto.ScheduleInput;
-import com.example.moim.schedule.dto.ScheduleOutput;
-import com.example.moim.schedule.dto.ScheduleSearchInput;
-import com.example.moim.schedule.dto.ScheduleUpdateInput;
-import com.example.moim.schedule.dto.ScheduleVoteInput;
 import com.example.moim.user.dto.UserDetailsImpl;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -26,9 +21,9 @@ public class ScheduleController implements ScheduleControllerDocs{
         return scheduleService.saveSchedule(scheduleInput, userDetailsImpl.getUser());
     }
 
-    @PatchMapping("/schedule")
-    public ScheduleOutput scheduleUpdate(@RequestBody ScheduleUpdateInput scheduleUpdateInput, @AuthenticationPrincipal UserDetailsImpl userDetailsImpl) {
-        return scheduleService.updateSchedule(scheduleUpdateInput, userDetailsImpl.getUser());
+    @PatchMapping("/schedule/{scheduleId}")
+    public ScheduleOutput scheduleUpdate(@RequestBody ScheduleUpdateInput scheduleUpdateInput, @PathVariable("scheduleId") Long scheduleId, @AuthenticationPrincipal UserDetailsImpl userDetailsImpl) {
+        return scheduleService.updateSchedule(scheduleUpdateInput, scheduleId, userDetailsImpl.getUser());
     }
 
     @GetMapping(value = "/schedule", produces = MediaType.APPLICATION_JSON_VALUE)
@@ -66,8 +61,8 @@ public class ScheduleController implements ScheduleControllerDocs{
         scheduleService.closeSchedule(id, userDetailsImpl.getUser());
     }
 
-//    @PostMapping("/schedule/comment")
-//    public void scheduleComment(@RequestBody @Valid CommentInput commentInput, @AuthenticationPrincipal UserDetailsImpl userDetailsImpl) {
-//        scheduleService.saveComment(commentInput, userDetailsImpl.getUser());
-//    }
+    @PostMapping("/schedule/comment")
+    public void scheduleComment(@RequestBody @Valid CommentInput commentInput, @AuthenticationPrincipal UserDetailsImpl userDetailsImpl) {
+        scheduleService.saveComment(commentInput, userDetailsImpl.getUser());
+    }
 }

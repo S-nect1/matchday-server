@@ -22,7 +22,7 @@ public interface ScheduleControllerDocs {
     ScheduleOutput scheduleSave(@RequestBody ScheduleInput scheduleInput, @AuthenticationPrincipal UserDetailsImpl userDetailsImpl);
 
     @Operation(summary = "일정 수정", description = "startTime, endTime 형식은 yyyy-MM-dd HH:mm")
-    ScheduleOutput scheduleUpdate(@RequestBody ScheduleUpdateInput scheduleUpdateInput, @AuthenticationPrincipal UserDetailsImpl userDetailsImpl);
+    ScheduleOutput scheduleUpdate(@RequestBody ScheduleUpdateInput scheduleUpdateInput, @PathVariable Long scheduleId, @AuthenticationPrincipal UserDetailsImpl userDetailsImpl);
 
     @Operation(summary = "한달 일정 조회", description = "쿼리파라미터 예시: /schedule?date=202404&clubId=6&search=친선 경기&category=친선 경기")
     List<ScheduleOutput> scheduleFind(@ModelAttribute ScheduleSearchInput scheduleSearchInput);
