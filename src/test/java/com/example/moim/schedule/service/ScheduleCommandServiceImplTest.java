@@ -11,10 +11,10 @@ import com.example.moim.notification.dto.ScheduleEncourageEvent;
 import com.example.moim.notification.dto.ScheduleSaveEvent;
 import com.example.moim.schedule.dto.*;
 import com.example.moim.schedule.entity.Schedule;
-import com.example.moim.schedule.entity.ScheduleVote;
+import com.example.moim.schedule.vote.entity.ScheduleVote;
 import com.example.moim.schedule.exception.advice.ScheduleControllerAdvice;
 import com.example.moim.schedule.repository.ScheduleRepository;
-import com.example.moim.schedule.repository.ScheduleVoteRepository;
+import com.example.moim.schedule.vote.repository.ScheduleVoteRepository;
 import com.example.moim.user.dto.SignupInput;
 import com.example.moim.user.entity.User;
 import org.junit.jupiter.api.BeforeEach;
@@ -45,10 +45,6 @@ class ScheduleCommandServiceImplTest {
     private ScheduleRepository scheduleRepository;
     @Mock
     private UserClubRepository userClubRepository;
-    @Mock
-    private ScheduleVoteRepository scheduleVoteRepository;
-    @Mock
-    private MatchApplicationRepository matchApplicationRepository;
     @Mock
     private ApplicationEventPublisher applicationEventPublisher;
     @InjectMocks
@@ -163,47 +159,6 @@ class ScheduleCommandServiceImplTest {
         verify(clubRepository, times(1)).findById(any(Long.class));
     }
 
-
-    @Test
-    @DisplayName("멤버는 일정 참가에 대해 재투표를 할 수 있다")
-    void voteSchedule_re() {
-        //given
-        Club club = Club.from(clubInput, null);
-        Schedule schedule = Schedule.from(club, scheduleInput);
-        ScheduleVoteInput scheduleVoteInput = ScheduleVoteInput.builder().id(1L).attendance("false").build();
-        User user = User.createUser(signupInput);
-        ScheduleVote scheduleVote = ScheduleVote.createScheduleVote(user, schedule, "true");
-        //when
-        when(scheduleRepository.findById(any(Long.class))).thenReturn(Optional.of(schedule));
-        when(scheduleVoteRepository.findByScheduleAndUser(any(Schedule.class), any(User.class))).thenReturn(Optional.of(scheduleVote));
-        scheduleCommandService.voteSchedule(scheduleVoteInput, user);
-        //then
-        assertThat(scheduleVote.getAttendance()).isEqualTo("false");
-        verify(scheduleRepository, times(1)).findById(any(Long.class));
-        verify(scheduleVoteRepository, times(1)).findByScheduleAndUser(any(Schedule.class), any(User.class));
-    }
-
-    @Test
-    @DisplayName("멤버는 일정 참가에 대해 투표를 할 수 있다")
-    void voteSchedule() {
-        //given
-        Club club = Club.from(clubInput, null);
-        Schedule schedule = Schedule.from(club, scheduleInput);
-        ScheduleVoteInput scheduleVoteInput = ScheduleVoteInput.builder().id(1L).attendance("false").build();
-        User user = User.createUser(signupInput);
-        ScheduleVote scheduleVote = ScheduleVote.createScheduleVote(user, schedule, "false");
-        //when
-        when(scheduleRepository.findById(any(Long.class))).thenReturn(Optional.of(schedule));
-        when(scheduleVoteRepository.findByScheduleAndUser(any(Schedule.class), any(User.class))).thenReturn(Optional.empty());
-        when(scheduleVoteRepository.save(any(ScheduleVote.class))).thenReturn(scheduleVote);
-        scheduleCommandService.voteSchedule(scheduleVoteInput, user);
-        //then
-        assertThat(scheduleVote.getAttendance()).isEqualTo("false");
-        verify(scheduleRepository, times(1)).findById(any(Long.class));
-        verify(scheduleVoteRepository, times(1)).findByScheduleAndUser(any(Schedule.class), any(User.class));
-        verify(scheduleVoteRepository, times(1)).save(any(ScheduleVote.class));
-    }
-
     @Test
     @DisplayName("일정을 삭제할 수 있다")
     void deleteSchedule() {
@@ -213,25 +168,6 @@ class ScheduleCommandServiceImplTest {
         scheduleCommandService.deleteSchedule(id);
         //then
         verify(scheduleRepository, times(1)).deleteById(any(Long.class));
-    }
-
-    @Test
-    @DisplayName("운영진은 투표를 독려할 수 있다")
-    void voteEncourage() {
-        //given
-        Long id = 1L;
-        Club club = Club.from(clubInput, null);
-        User user = User.createUser(signupInput);
-        Schedule schedule = Schedule.from(club, scheduleInput);
-        UserClub userClub = UserClub.createLeaderUserClub(user, club);
-        //when
-        when(scheduleRepository.findWithClubById(any(Long.class))).thenReturn(schedule);
-        when(userClubRepository.findUserByClub(club)).thenReturn(List.of(userClub));
-        scheduleCommandService.voteEncourage(id);
-        //then
-        verify(scheduleRepository, times(1)).findWithClubById(any(Long.class));
-        verify(userClubRepository, times(1)).findUserByClub(any(Club.class));
-        verify(applicationEventPublisher, times(1)).publishEvent(any(ScheduleEncourageEvent.class));
     }
 
     @Test

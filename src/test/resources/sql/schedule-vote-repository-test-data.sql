@@ -30,7 +30,7 @@ values (2, 3, '운동 매치 스케줄2', '서울시 마포구', '2024-03-12 14:
 insert into `comment` (id, user_id, schedule_id, contents)
 values (1, 3, 1, '회사 면접이 잡혀있어서 못 갑니다');
 -- 투표 생성
-insert into `schedule_vote` (id, user_id, schedule_id, attendance)
-values (1, 3, 1, 'true');
-insert into `schedule_vote` (id, user_id, schedule_id, attendance)
-values (2, 4, 1, 'true');
+insert into `schedule_vote` (id, user_id, schedule_id, is_attendance)
+values (1, 3, 1, 1);
+insert into `schedule_vote` (id, user_id, schedule_id, is_attendance)
+values (2, 4, 1, 1);

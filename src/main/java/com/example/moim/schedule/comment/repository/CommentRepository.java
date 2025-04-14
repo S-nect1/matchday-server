@@ -1,6 +1,6 @@
-package com.example.moim.schedule.repository;
+package com.example.moim.schedule.comment.repository;
 
-import com.example.moim.schedule.entity.Comment;
+import com.example.moim.schedule.comment.entity.Comment;
 import com.example.moim.schedule.entity.Schedule;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;

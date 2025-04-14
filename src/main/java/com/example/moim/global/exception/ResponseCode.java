@@ -77,7 +77,8 @@ public enum ResponseCode {
     INVALID_MAIN_FOOT(HttpStatus.BAD_REQUEST, "ENUM4006", "유효하지 않은 주발입니다."),
     INVALID_SPORTS_TYPE(HttpStatus.BAD_REQUEST, "ENUM4007", "유효하지 않은 종목입니다."),
     INVALID_CLUB_ROLE(HttpStatus.BAD_REQUEST, "ENUM4008", "유효하지 않은 모임 역할입니다."),
-    INVALID_SCHEDULE_CATEGORY(HttpStatus.BAD_REQUEST, "ENUM4009", "유효하지 않은 일정 종류입니다.");
+    INVALID_SCHEDULE_CATEGORY(HttpStatus.BAD_REQUEST, "ENUM4009", "유효하지 않은 일정 종류입니다."),
+    INVALID_ATTENDANCE_TYPE(HttpStatus.BAD_REQUEST, "ENUM4010", "유효하지 않은 투표입니다.(참석/불참)");
 
     private final HttpStatus httpStatus;
     private final String code;

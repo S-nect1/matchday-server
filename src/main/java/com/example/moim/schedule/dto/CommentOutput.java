@@ -1,6 +1,6 @@
 package com.example.moim.schedule.dto;
 
-import com.example.moim.schedule.entity.Comment;
+import com.example.moim.schedule.comment.entity.Comment;
 import lombok.Data;
 
 @Data

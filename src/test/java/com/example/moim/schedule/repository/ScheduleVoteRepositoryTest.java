@@ -1,7 +1,8 @@
 package com.example.moim.schedule.repository;
 
 import com.example.moim.schedule.entity.Schedule;
-import com.example.moim.schedule.entity.ScheduleVote;
+import com.example.moim.schedule.vote.entity.ScheduleVote;
+import com.example.moim.schedule.vote.repository.ScheduleVoteRepository;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;

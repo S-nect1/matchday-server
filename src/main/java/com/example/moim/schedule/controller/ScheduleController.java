@@ -48,16 +48,6 @@ public class ScheduleController implements ScheduleControllerDocs{
         scheduleCommandService.deleteSchedule(id);
     }
 
-    @PatchMapping("/schedules/vote")
-    public void scheduleVote(@RequestBody ScheduleVoteInput scheduleVoteInput, @AuthenticationPrincipal UserDetailsImpl userDetailsImpl) {
-        scheduleCommandService.voteSchedule(scheduleVoteInput, userDetailsImpl.getUser());
-    }
-
-    @PostMapping("/schedules/encourage/{id}")
-    public void voteEncourage(@PathVariable Long id) {
-        scheduleCommandService.voteEncourage(id);
-    }
-
     @PatchMapping("/schedules/close/{id}")
     public void scheduleClose(@PathVariable Long id, @AuthenticationPrincipal UserDetailsImpl userDetailsImpl) {
         scheduleCommandService.closeSchedule(id, userDetailsImpl.getUser());

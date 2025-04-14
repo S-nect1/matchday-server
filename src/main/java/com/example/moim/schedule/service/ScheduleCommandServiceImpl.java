@@ -8,13 +8,13 @@ import com.example.moim.match.repository.MatchApplicationRepository;
 import com.example.moim.notification.dto.ScheduleEncourageEvent;
 import com.example.moim.notification.dto.ScheduleSaveEvent;
 import com.example.moim.schedule.dto.*;
-import com.example.moim.schedule.entity.Comment;
+import com.example.moim.schedule.comment.entity.Comment;
 import com.example.moim.schedule.entity.Schedule;
-import com.example.moim.schedule.entity.ScheduleVote;
+import com.example.moim.schedule.vote.entity.ScheduleVote;
 import com.example.moim.schedule.exception.advice.ScheduleControllerAdvice;
-import com.example.moim.schedule.repository.CommentRepository;
+import com.example.moim.schedule.comment.repository.CommentRepository;
 import com.example.moim.schedule.repository.ScheduleRepository;
-import com.example.moim.schedule.repository.ScheduleVoteRepository;
+import com.example.moim.schedule.vote.repository.ScheduleVoteRepository;
 import com.example.moim.user.entity.User;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -34,7 +34,6 @@ public class ScheduleCommandServiceImpl implements ScheduleCommandService {
     private final UserClubRepository userClubRepository;
     private final CommentRepository commentRepository;
     private final ApplicationEventPublisher eventPublisher;
-    private final ScheduleVoteRepository scheduleVoteRepository;
     private final MatchApplicationRepository matchApplicationRepository;
 
     public ScheduleOutput saveSchedule(ScheduleInput scheduleInput, User user) {
@@ -77,48 +76,11 @@ public class ScheduleCommandServiceImpl implements ScheduleCommandService {
 
     /**
      * TODO: void -> 기본 응답
-     * @param scheduleVoteInput
-     * @param user
-     */
-    @Transactional
-    public void voteSchedule(ScheduleVoteInput scheduleVoteInput, User user) {
-        Schedule schedule = getSchedule(scheduleVoteInput.getId());
-        Optional<ScheduleVote> originalScheduleVote = scheduleVoteRepository.findByScheduleAndUser(schedule, user);
-
-        //투표 처음이면
-        if (originalScheduleVote.isEmpty()) {
-            scheduleVoteRepository.save(ScheduleVote.createScheduleVote(user, schedule, scheduleVoteInput.getAttendance()));
-            schedule.vote(scheduleVoteInput.getAttendance());
-        } else { // 재투표인 경우
-            schedule.reVote(originalScheduleVote.get().getAttendance(), scheduleVoteInput.getAttendance());
-            originalScheduleVote.get().changeAttendance(scheduleVoteInput.getAttendance());
-        }
-        /**
-         * TODO: 왜 알림 보내려고 했는지 확인하고 로직 추가하기
-         */
-//        if (scheduleVoteInput.getAttendance().equals("attend")) {
-//            eventPublisher.publishEvent(new ScheduleVoteEvent(schedule, user));
-//        }
-    }
-
-    /**
-     * TODO: void -> 기본 응답
      * FIXME: 운영진인지 아닌지 체크하는 로직 필요함(필터에서 걸러주면 필요 X)
      * @param id
      */
     public void deleteSchedule(Long id) {
         scheduleRepository.deleteById(id);
-    }
-
-    /**
-     * TODO: void -> 기본 응답
-     * FIXME: 운영진인지 아닌지 체크하는 로직 필요함(필터에서 걸러주면 필요 X)
-     * @param id
-     */
-    public void voteEncourage(Long id) {
-        Schedule schedule = scheduleRepository.findWithClubById(id);
-        List<User> userList = userClubRepository.findUserByClub(schedule.getClub()).stream().map(UserClub::getUser).toList();
-        eventPublisher.publishEvent(new ScheduleEncourageEvent(schedule, userList));
     }
 
     /**

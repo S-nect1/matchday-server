@@ -17,7 +17,7 @@ import com.example.moim.notification.dto.MatchInviteEvent;
 import com.example.moim.notification.dto.MatchRequestEvent;
 import com.example.moim.schedule.entity.Schedule;
 import com.example.moim.schedule.repository.ScheduleRepository;
-import com.example.moim.schedule.repository.ScheduleVoteRepository;
+import com.example.moim.schedule.vote.repository.ScheduleVoteRepository;
 import com.example.moim.user.entity.User;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
