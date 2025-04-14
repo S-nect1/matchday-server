@@ -2,7 +2,6 @@ package com.example.moim.schedule.service;
 
 import com.example.moim.club.dto.request.ClubInput;
 import com.example.moim.club.entity.*;
-import com.example.moim.club.exception.advice.ClubControllerAdvice;
 import com.example.moim.club.repository.ClubRepository;
 import com.example.moim.club.repository.UserClubRepository;
 import com.example.moim.global.enums.*;
@@ -89,7 +88,7 @@ class ScheduleServiceTest {
     void saveSchedule() {
         //given
         Club club = Club.createClub(clubInput, null);
-        Schedule schedule = Schedule.createSchedule(club, scheduleInput);
+        Schedule schedule = Schedule.from(club, scheduleInput);
         User user = User.createUser(signupInput);
         UserClub userClub = UserClub.createLeaderUserClub(user, club);
         //when
@@ -133,7 +132,7 @@ class ScheduleServiceTest {
         Club club = Club.createClub(clubInput, null);
         User user = User.createUser(signupInput);
         UserClub userClub = UserClub.createLeaderUserClub(user, club);
-        Schedule schedule = Schedule.createSchedule(club, scheduleInput);
+        Schedule schedule = Schedule.from(club, scheduleInput);
         //when
         when(userClubRepository.findByClubAndUser(any(Club.class), any(User.class))).thenReturn(Optional.of(userClub));
         when(clubRepository.findById(any(Long.class))).thenReturn(Optional.of(club));
@@ -171,7 +170,7 @@ class ScheduleServiceTest {
     void findSchedule() {
         //given
         Club club = Club.createClub(clubInput, null);
-        Schedule schedule = Schedule.createSchedule(club, scheduleInput);
+        Schedule schedule = Schedule.from(club, scheduleInput);
         ScheduleSearchInput scheduleSearchInput = ScheduleSearchInput.builder().date(202412).clubId(1L).search("title").category("soccer").build();
 
         //when
@@ -211,7 +210,7 @@ class ScheduleServiceTest {
     void findDaySchedule() {
         //given
         Club club = Club.createClub(clubInput, null);
-        Schedule schedule = Schedule.createSchedule(club, scheduleInput);
+        Schedule schedule = Schedule.from(club, scheduleInput);
         ScheduleSearchInput scheduleSearchInput = ScheduleSearchInput.builder().date(20241211).clubId(1L).search("title").category("soccer").build();
 
         //when
@@ -234,7 +233,7 @@ class ScheduleServiceTest {
         //given
         Club club = Club.createClub(clubInput, null);
         MatchApplication matchApplication = MatchApplication.applyMatch(new Match(), club);
-        Schedule schedule = Schedule.createSchedule(club, scheduleInput);
+        Schedule schedule = Schedule.from(club, scheduleInput);
         schedule.setCreatedDate();
         schedule.setUpdatedDate();
         //when
@@ -254,7 +253,7 @@ class ScheduleServiceTest {
     void voteSchedule_re() {
         //given
         Club club = Club.createClub(clubInput, null);
-        Schedule schedule = Schedule.createSchedule(club, scheduleInput);
+        Schedule schedule = Schedule.from(club, scheduleInput);
         ScheduleVoteInput scheduleVoteInput = ScheduleVoteInput.builder().id(1L).attendance("false").build();
         User user = User.createUser(signupInput);
         ScheduleVote scheduleVote = ScheduleVote.createScheduleVote(user, schedule, "true");
@@ -273,7 +272,7 @@ class ScheduleServiceTest {
     void voteSchedule() {
         //given
         Club club = Club.createClub(clubInput, null);
-        Schedule schedule = Schedule.createSchedule(club, scheduleInput);
+        Schedule schedule = Schedule.from(club, scheduleInput);
         ScheduleVoteInput scheduleVoteInput = ScheduleVoteInput.builder().id(1L).attendance("false").build();
         User user = User.createUser(signupInput);
         ScheduleVote scheduleVote = ScheduleVote.createScheduleVote(user, schedule, "false");
@@ -307,7 +306,7 @@ class ScheduleServiceTest {
         Long id = 1L;
         Club club = Club.createClub(clubInput, null);
         User user = User.createUser(signupInput);
-        Schedule schedule = Schedule.createSchedule(club, scheduleInput);
+        Schedule schedule = Schedule.from(club, scheduleInput);
         UserClub userClub = UserClub.createLeaderUserClub(user, club);
         //when
         when(scheduleRepository.findScheduleById(any(Long.class))).thenReturn(schedule);
@@ -325,7 +324,7 @@ class ScheduleServiceTest {
         //given
         Club club = Club.createClub(clubInput, null);
         User user = User.createUser(signupInput);
-        Schedule schedule = Schedule.createSchedule(club, scheduleInput);
+        Schedule schedule = Schedule.from(club, scheduleInput);
         UserClub userClub = UserClub.createLeaderUserClub(user, club);
         //when
         when(scheduleRepository.findById(any(Long.class))).thenReturn(Optional.of(schedule));
@@ -342,7 +341,7 @@ class ScheduleServiceTest {
         //given
         Club club = Club.createClub(clubInput, null);
         User user = User.createUser(signupInput);
-        Schedule schedule = Schedule.createSchedule(club, scheduleInput);
+        Schedule schedule = Schedule.from(club, scheduleInput);
         UserClub userClub = UserClub.createUserClub(user, club);
         //when
         when(scheduleRepository.findById(any(Long.class))).thenReturn(Optional.of(schedule));

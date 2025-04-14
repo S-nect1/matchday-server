@@ -42,15 +42,19 @@ public class ScheduleService {
     private final MatchApplicationRepository matchApplicationRepository;
 
     public ScheduleOutput saveSchedule(ScheduleInput scheduleInput, User user) {
-        UserClub userClub = userClubRepository.findByClubAndUser(clubRepository.findById(scheduleInput.getClubId()).get(), user).get();
+        Club club = clubRepository.findById(scheduleInput.getClubId()).orElseThrow(() -> new ScheduleControllerAdvice(ResponseCode.CLUB_NOT_FOUND));
+        UserClub userClub = userClubRepository.findByClubAndUser(club, user).orElseThrow(() -> new ScheduleControllerAdvice(ResponseCode.CLUB_USER_NOT_FOUND));
         if (!(userClub.getClubRole().equals(ClubRole.STAFF))) {
             throw new ScheduleControllerAdvice(ResponseCode.CLUB_PERMISSION_DENIED);
         }
 
-        Schedule schedule = scheduleRepository.save(
-                Schedule.createSchedule(clubRepository.findById(scheduleInput.getClubId()).get(), scheduleInput));
+        Schedule schedule = scheduleRepository.save(Schedule.from(club, scheduleInput));
 
+        /**
+         * TODO: 알림 리팩터링 버전으로 다시 적용해야 함
+         */
         eventPublisher.publishEvent(new ScheduleSaveEvent(schedule, user));
+
         return new ScheduleOutput(schedule);
     }
 
@@ -62,7 +66,7 @@ public class ScheduleService {
         }
 
         Schedule schedule = scheduleRepository.findById(scheduleId).get();
-        schedule.updateSchedule(scheduleUpdateInput);
+        schedule.update(scheduleUpdateInput);
         return new ScheduleOutput(schedule);
     }
 
@@ -149,7 +153,7 @@ public class ScheduleService {
             throw new ScheduleControllerAdvice(ResponseCode.CLUB_PERMISSION_DENIED);
         }
 
-        schedule.closeSchedule();
+        schedule.close();
     }
 
     public void saveComment(CommentInput commentInput, User user) {

@@ -35,7 +35,7 @@ public class Schedule extends BaseEntity {
     @OneToMany(mappedBy = "schedule", cascade = CascadeType.REMOVE)
     private List<Comment> comment = new ArrayList<>();
 
-    public static Schedule createSchedule(Club club, ScheduleInput scheduleInput) {
+    public static Schedule from(Club club, ScheduleInput scheduleInput) {
         Schedule schedule = new Schedule();
         schedule.club = club;
         schedule.title = scheduleInput.getTitle();
@@ -74,7 +74,7 @@ public class Schedule extends BaseEntity {
         }
     }
 
-    public void updateSchedule(ScheduleUpdateInput scheduleUpdateInput) {
+    public void update(ScheduleUpdateInput scheduleUpdateInput) {
         if (scheduleUpdateInput.getTitle() != null) {
             this.title = scheduleUpdateInput.getTitle();
         }
@@ -98,7 +98,7 @@ public class Schedule extends BaseEntity {
         }
     }
 
-    public void closeSchedule() {
+    public void close() {
         this.isClose = true;
     }
 

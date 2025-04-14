@@ -1,7 +1,6 @@
 package com.example.moim.match.service;
 
 import com.example.moim.club.entity.Club;
-import com.example.moim.global.enums.ClubRole;
 import com.example.moim.global.exception.ResponseCode;
 import com.example.moim.match.entity.*;
 import com.example.moim.match.exception.advice.MatchControllerAdvice;
@@ -90,7 +89,7 @@ public class MatchService {
                 .orElseThrow(() -> new MatchControllerAdvice(ResponseCode.CLUB_NOT_FOUND)), matchInput));
 
         //일정에 매치 등록
-        Schedule schedule = scheduleRepository.save(Schedule.createSchedule(clubRepository.findById(matchInput.getClubId())
+        Schedule schedule = scheduleRepository.save(Schedule.from(clubRepository.findById(matchInput.getClubId())
                 .orElseThrow(() -> new MatchControllerAdvice(ResponseCode.CLUB_NOT_FOUND)), match.createScheduleFromMatch()));
         match.setSchedule(schedule);
         matchRepository.save(match);
@@ -186,7 +185,7 @@ public class MatchService {
         matchRepository.findMatchByClub(club).forEach(m -> m.timeDuplicationCheck(match.getStartTime(), match.getEndTime()));
 
         MatchApplication matchApplication = matchApplicationRepository.save(MatchApplication.applyMatch(match, club));
-        Schedule schedule = scheduleRepository.save(Schedule.createSchedule(matchApplication.getClub(), matchApplication.getMatch().createScheduleFromMatch()));
+        Schedule schedule = scheduleRepository.save(Schedule.from(matchApplication.getClub(), matchApplication.getMatch().createScheduleFromMatch()));
 
         matchApplication.setSchedule(schedule);
         matchApplicationRepository.save(matchApplication);
