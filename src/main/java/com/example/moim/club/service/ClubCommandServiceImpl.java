@@ -41,7 +41,7 @@ public class ClubCommandServiceImpl implements ClubCommandService {
 
     @Transactional
     public ClubSaveOutput saveClub(User user, ClubInput clubInput) throws IOException {
-        Club club = clubRepository.save(Club.createClub(clubInput, fileService.upload(clubInput.getProfileImg(), "/club-profile")));
+        Club club = clubRepository.save(Club.from(clubInput, fileService.upload(clubInput.getProfileImg(), "/club-profile")));
         // 검색을 위한 저장
         saveClubSearch(club);
 
@@ -64,7 +64,7 @@ public class ClubCommandServiceImpl implements ClubCommandService {
             throw new ClubControllerAdvice(ResponseCode.CLUB_PASSWORD_INCORRECT);
         }
 
-        club.updateClub(clubUpdateInput, fileService.upload(clubUpdateInput.getProfileImg(), "/club-profile"));
+        club.update(clubUpdateInput, fileService.upload(clubUpdateInput.getProfileImg(), "/club-profile"));
         // 검색 정보 동기화를 위한 처리
         club.getClubSearch().updateFrom(club);
         List<UserClubOutput> userList = userClubRepository.findAllByClub(club).stream().map(UserClubOutput::new).toList();
@@ -124,7 +124,7 @@ public class ClubCommandServiceImpl implements ClubCommandService {
         if (!clubPswdUpdateInput.getNewPassword().equals(clubPswdUpdateInput.getRePassword())) {
             throw new ClubControllerAdvice(ResponseCode.CLUB_CHECK_PASSWORD_INCORRECT);
         }
-        club.updateClubPassword(clubPswdUpdateInput.getNewPassword());
+        club.updatePassword(clubPswdUpdateInput.getNewPassword());
     }
 
     private Club getClub(Long clubId) {
@@ -140,7 +140,7 @@ public class ClubCommandServiceImpl implements ClubCommandService {
                 .allFieldsConcat(TextUtils.concatClean("|", club.getTitle(), club.getIntroduction(), club.getExplanation()))
                 .build();
 
-        club.updateClubSearch(clubSearchRepository.save(clubSearch));
+        club.updateSearch(clubSearchRepository.save(clubSearch));
     }
 
 //    @Transactional

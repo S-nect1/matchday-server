@@ -6,7 +6,6 @@ import com.example.moim.club.exception.advice.ClubControllerAdvice;
 import com.example.moim.global.entity.BaseEntity;
 import com.example.moim.global.enums.*;
 import com.example.moim.global.exception.ResponseCode;
-import com.example.moim.global.util.TextUtils;
 import com.example.moim.match.entity.Match;
 import jakarta.persistence.*;
 import lombok.Getter;
@@ -61,10 +60,7 @@ public class Club extends BaseEntity {
     @OneToMany(mappedBy = "club", cascade = CascadeType.REMOVE)
     private List<Notice> notices = new ArrayList<>();
 
-    /**
-     * TODO : university 는 없을 수도 있으므로, null 일 경우를 처리해주기
-     */
-    public static Club createClub(ClubInput clubInput, String profileImgPath) {
+    public static Club from(ClubInput clubInput, String profileImgPath) {
         Club club = new Club();
         club.title = clubInput.getTitle();
         club.explanation = clubInput.getExplanation();
@@ -83,7 +79,7 @@ public class Club extends BaseEntity {
         return club;
     }
 
-    public Club updateClubSearch(ClubSearch clubSearch) {
+    public Club updateSearch(ClubSearch clubSearch) {
         this.clubSearch = clubSearch;
         return this;
     }
@@ -96,7 +92,7 @@ public class Club extends BaseEntity {
         memberCount++;
     }
 
-    public void updateClub(ClubUpdateInput clubUpdateInput, String profileImgPath) {
+    public void update(ClubUpdateInput clubUpdateInput, String profileImgPath) {
         if (StringUtils.hasText(clubUpdateInput.getTitle())) {
             this.title = clubUpdateInput.getTitle();
         }
@@ -132,7 +128,7 @@ public class Club extends BaseEntity {
         }
     }
 
-    public void updateClubPassword(String newPassword) {
+    public void updatePassword(String newPassword) {
         this.clubPassword = newPassword;
     }
 }

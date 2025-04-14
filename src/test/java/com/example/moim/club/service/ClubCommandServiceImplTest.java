@@ -1,7 +1,6 @@
 package com.example.moim.club.service;
 
 import com.example.moim.club.dto.request.*;
-import com.example.moim.club.dto.response.ClubOutput;
 import com.example.moim.club.dto.response.ClubSaveOutput;
 import com.example.moim.club.dto.response.ClubUpdateOutput;
 import com.example.moim.club.dto.response.UserClubOutput;
@@ -28,7 +27,6 @@ import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
-import java.util.List;
 import java.util.Optional;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
@@ -90,10 +88,10 @@ class ClubCommandServiceImplTest {
     @DisplayName("새로운 동아리를 저장할 수 있다")
     void saveClub() throws IOException {
         //given
-        Club club = Club.createClub(clubInput, null);
+        Club club = Club.from(clubInput, null);
         UserClub userClub = UserClub.createLeaderUserClub(new User(), club);
         ClubSearch clubSearch = ClubSearch.builder().build();
-        club.updateClubSearch(clubSearch);
+        club.updateSearch(clubSearch);
         //when
         when(clubRepository.save(any(Club.class))).thenReturn(club);
         when(userClubRepository.save(any(UserClub.class))).thenReturn(userClub);
@@ -113,10 +111,10 @@ class ClubCommandServiceImplTest {
     @DisplayName("동아리 정보를 업데이트 할 수 있다")
     void updateClub() throws IOException {
         //given
-        Club club = Club.createClub(clubInput, null);
+        Club club = Club.from(clubInput, null);
         UserClub userClub = UserClub.createLeaderUserClub(new User(), club);
         ClubSearch clubSearch = ClubSearch.builder().build();
-        club.updateClubSearch(clubSearch);
+        club.updateSearch(clubSearch);
         //when
         when(clubRepository.findById(any(Long.class))).thenReturn(Optional.of(club));
         when(userClubRepository.findByClubAndUser(any(Club.class), any(User.class))).thenReturn(Optional.of(userClub));
@@ -135,7 +133,7 @@ class ClubCommandServiceImplTest {
     @DisplayName("동아리 정보를 업데이트 할 때 비밀번호가 틀리면 예외가 발생한다")
     void updateClub_exception_wrong_password() {
         //given
-        Club club = Club.createClub(clubInput, null);
+        Club club = Club.from(clubInput, null);
         UserClub userClub = UserClub.createLeaderUserClub(new User(), club);
         //when
         //then
@@ -153,7 +151,7 @@ class ClubCommandServiceImplTest {
     @DisplayName("동아리 정보를 업데이트 할 때 권한이 없으면 예외가 발생한다")
     void updateClub_exception_wrong_auth() {
         //given
-        Club club = Club.createClub(clubInput, null);
+        Club club = Club.from(clubInput, null);
         UserClub userClub = UserClub.createUserClub(new User(), club);
         //when
         when(clubRepository.findById(any(Long.class))).thenReturn(Optional.of(club));
@@ -171,7 +169,7 @@ class ClubCommandServiceImplTest {
     @DisplayName("사용자는 동아리에 가입할 수 있다")
     void saveClubUser() {
         //given
-        Club club = Club.createClub(clubInput, null);
+        Club club = Club.from(clubInput, null);
         ClubUserSaveInput clubUserSaveInput = ClubUserSaveInput.builder().clubPassword("clubPassword").build();
 
         //when
@@ -190,7 +188,7 @@ class ClubCommandServiceImplTest {
     @DisplayName("사용자가 동아리에 가입할 때 틀린 비밀번호를 입력하면 예외가 발생한다")
     void saveClubUser_exception_wrong_password() {
         //given
-        Club club = Club.createClub(clubInput, null);
+        Club club = Club.from(clubInput, null);
         ClubUserSaveInput clubUserSaveInput = ClubUserSaveInput.builder().clubPassword("wrong!").build();
         //when
         //then
@@ -208,7 +206,7 @@ class ClubCommandServiceImplTest {
     @DisplayName("운영진은 동아리에 관련된 사용자 정보를 변경할 수 있다")
     void updateClubUser() {
         //given
-        Club club = Club.createClub(clubInput, null);
+        Club club = Club.from(clubInput, null);
         ClubUserUpdateInput clubUserUpdateInput = ClubUserUpdateInput.builder()
                 .userId(1L).clubRole(ClubRole.STAFF.getKoreanName()).build();
 
@@ -230,7 +228,7 @@ class ClubCommandServiceImplTest {
     @DisplayName("운영진이 아니면 동아리에 속한 사용자의 정보를 변경하려 할 때 예외가 발생한다")
     void updateClubUser_exception_wrong_permission() {
         //given
-        Club club = Club.createClub(clubInput, null);
+        Club club = Club.from(clubInput, null);
         ClubUserUpdateInput clubUserUpdateInput = ClubUserUpdateInput.builder()
                 .userId(1L).clubRole(ClubRole.STAFF.getKoreanName()).build();
 
@@ -252,7 +250,7 @@ class ClubCommandServiceImplTest {
     @DisplayName("운영진은 동아리 인증 비밀번호를 바꿀 수 있다")
     void clubPasswordUpdate() {
         //given
-        Club club = Club.createClub(clubInput, null);
+        Club club = Club.from(clubInput, null);
         ClubPswdUpdateInput clubPswdUpdateInput = ClubPswdUpdateInput.builder().id(1L).oldPassword("clubPassword").newPassword("newPassword").rePassword("newPassword").build();
         User user = new User();
         //when
@@ -269,7 +267,7 @@ class ClubCommandServiceImplTest {
     @DisplayName("일반 멤버가 인증 비밀번호를 바꾸려고 하면 예외가 발생한다")
     void clubPasswordUpdate_exception_wrong_permission() {
         //given
-        Club club = Club.createClub(clubInput, null);
+        Club club = Club.from(clubInput, null);
         ClubPswdUpdateInput clubPswdUpdateInput = ClubPswdUpdateInput.builder().oldPassword("clubPassword").newPassword("newPassword").rePassword("newPassword").build();
         User user = new User();
         //when
@@ -289,7 +287,7 @@ class ClubCommandServiceImplTest {
     @DisplayName("운영진이 동아리 비밀번호를 잘못 입력하면 예외가 발생한다")
     void clubPasswordUpdate_exception_wrong_password() {
         //given
-        Club club = Club.createClub(clubInput, null);
+        Club club = Club.from(clubInput, null);
         ClubPswdUpdateInput clubPswdUpdateInput = ClubPswdUpdateInput.builder().oldPassword("wrong!").newPassword("newPassword").rePassword("newPassword").build();
         User user = new User();
         //when
@@ -309,7 +307,7 @@ class ClubCommandServiceImplTest {
     @DisplayName("운영진이 새로운 비밀번호와 확인 비밀번호를 다르게 입력하면 예외가 발생한다")
     void clubPasswordUpdate_exception_wrong_check_password() {
         //given
-        Club club = Club.createClub(clubInput, null);
+        Club club = Club.from(clubInput, null);
         ClubPswdUpdateInput clubPswdUpdateInput = ClubPswdUpdateInput.builder().oldPassword("clubPassword").newPassword("newPassword").rePassword("wrong!").build();
         User user = new User();
         //when

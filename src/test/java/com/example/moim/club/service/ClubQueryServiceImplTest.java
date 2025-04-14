@@ -2,7 +2,6 @@ package com.example.moim.club.service;
 
 import com.example.moim.club.dto.request.ClubInput;
 import com.example.moim.club.dto.request.ClubSearchCond;
-import com.example.moim.club.dto.request.ClubUpdateInput;
 import com.example.moim.club.dto.response.ClubOutput;
 import com.example.moim.club.dto.response.ClubSearchOutput;
 import com.example.moim.club.entity.*;
@@ -64,7 +63,7 @@ public class ClubQueryServiceImplTest {
     @DisplayName("동아리 정보로 동아리들을 조회할 수 있다")
     void searchClub() {
         //given
-        Club club = Club.createClub(clubInput, null);
+        Club club = Club.from(clubInput, null);
         ClubSearchCond clubSearchCond = ClubSearchCond.builder().search("searchs").build();
 
         //when
@@ -83,7 +82,7 @@ public class ClubQueryServiceImplTest {
     @DisplayName("동아리에 속한 사용자는 동아리 정보를 조회할 수 있다")
     void findClub() {
         //given
-        Club club = Club.createClub(clubInput, null);
+        Club club = Club.from(clubInput, null);
         Long id = 1L;
         User user = new User();
         //when
@@ -104,7 +103,7 @@ public class ClubQueryServiceImplTest {
     @DisplayName("동아리에 속하지 않은 사용자는 제한된 동아리 정보를 조회할 수 있다")
     void findClub_not_member() {
         //given
-        Club club = Club.createClub(clubInput, null);
+        Club club = Club.from(clubInput, null);
         Long id = 1L;
         User user = new User();
         //when

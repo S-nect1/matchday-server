@@ -66,7 +66,7 @@ public class NoticeQueryServiceImplTest {
     @DisplayName("동아리 별 공지들을 조회할 수 있다")
     void findNotice() {
         //given
-        Club club = Club.createClub(clubInput, null);
+        Club club = Club.from(clubInput, null);
         Notice notice = Notice.createNotice(club, noticeInput.getTitle(), noticeInput.getContent());
         notice.setCreatedDate();
         notice.setUpdatedDate();
@@ -86,7 +86,7 @@ public class NoticeQueryServiceImplTest {
     @DisplayName("동아리에 등록된 공지가 없을 경우 빈 리스트를 반환한다")
     void findNotice_zero_notice() {
         //given
-        Club club = Club.createClub(clubInput, null);
+        Club club = Club.from(clubInput, null);
 
         //when
         when(clubRepository.findById(any(Long.class))).thenReturn(Optional.of(club));

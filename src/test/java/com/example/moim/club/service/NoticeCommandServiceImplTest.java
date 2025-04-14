@@ -2,7 +2,6 @@ package com.example.moim.club.service;
 
 import com.example.moim.club.dto.request.ClubInput;
 import com.example.moim.club.dto.request.NoticeInput;
-import com.example.moim.club.dto.request.NoticeOutput;
 import com.example.moim.club.entity.*;
 import com.example.moim.club.repository.ClubRepository;
 import com.example.moim.club.repository.NoticeRepository;
@@ -17,7 +16,6 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.util.List;
 import java.util.Optional;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
@@ -64,7 +62,7 @@ class NoticeCommandServiceImplTest {
     @DisplayName("공지를 저장할 수 있다")
     void saveNotice() {
         //given
-        Club club = Club.createClub(clubInput, null);
+        Club club = Club.from(clubInput, null);
         Notice notice = Notice.createNotice(club, noticeInput.getTitle(), noticeInput.getContent());
         //when
         when(noticeRepository.save(any(Notice.class))).thenReturn(notice);

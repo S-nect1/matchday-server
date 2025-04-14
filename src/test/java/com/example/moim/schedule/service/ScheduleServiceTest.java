@@ -87,7 +87,7 @@ class ScheduleServiceTest {
     @DisplayName("운영진은 일정을 생성할 수 있다")
     void saveSchedule() {
         //given
-        Club club = Club.createClub(clubInput, null);
+        Club club = Club.from(clubInput, null);
         Schedule schedule = Schedule.from(club, scheduleInput);
         User user = User.createUser(signupInput);
         UserClub userClub = UserClub.createLeaderUserClub(user, club);
@@ -110,7 +110,7 @@ class ScheduleServiceTest {
     @DisplayName("일반 멤버는 일정을 생성할 때 예외가 발생한다")
     void saveSchedule_wrong_permission() {
         //given
-        Club club = Club.createClub(clubInput, null);
+        Club club = Club.from(clubInput, null);
         User user = User.createUser(signupInput);
         UserClub userClub = UserClub.createUserClub(user, club);
         //when
@@ -129,7 +129,7 @@ class ScheduleServiceTest {
     @DisplayName("운영진은 일정을 변경할 수 있다")
     void updateSchedule() {
         //given
-        Club club = Club.createClub(clubInput, null);
+        Club club = Club.from(clubInput, null);
         User user = User.createUser(signupInput);
         UserClub userClub = UserClub.createLeaderUserClub(user, club);
         Schedule schedule = Schedule.from(club, scheduleInput);
@@ -150,7 +150,7 @@ class ScheduleServiceTest {
     @DisplayName("일반 멤버는 일정을 수정할 때 예외가 발생한다")
     void updateSchedule_wrong_permission() {
         //given
-        Club club = Club.createClub(clubInput, null);
+        Club club = Club.from(clubInput, null);
         User user = User.createUser(signupInput);
         UserClub userClub = UserClub.createUserClub(user, club);
         //when
@@ -169,7 +169,7 @@ class ScheduleServiceTest {
     @DisplayName("한달 일정 조회하기")
     void findSchedule() {
         //given
-        Club club = Club.createClub(clubInput, null);
+        Club club = Club.from(clubInput, null);
         Schedule schedule = Schedule.from(club, scheduleInput);
         ScheduleSearchInput scheduleSearchInput = ScheduleSearchInput.builder().date(202412).clubId(1L).search("title").category("soccer").build();
 
@@ -191,7 +191,7 @@ class ScheduleServiceTest {
     @DisplayName("한달 일정이 없으면 빈 리스트를 반환한다")
     void findSchedule_zero_schedule() {
         //given
-        Club club = Club.createClub(clubInput, null);
+        Club club = Club.from(clubInput, null);
         ScheduleSearchInput scheduleSearchInput = ScheduleSearchInput.builder().date(202412).clubId(1L).search("title").category("soccer").build();
 
         //when
@@ -209,7 +209,7 @@ class ScheduleServiceTest {
     @DisplayName("동아리의 하루 일정을 조회할 수 있다")
     void findDaySchedule() {
         //given
-        Club club = Club.createClub(clubInput, null);
+        Club club = Club.from(clubInput, null);
         Schedule schedule = Schedule.from(club, scheduleInput);
         ScheduleSearchInput scheduleSearchInput = ScheduleSearchInput.builder().date(20241211).clubId(1L).search("title").category("soccer").build();
 
@@ -231,7 +231,7 @@ class ScheduleServiceTest {
     @DisplayName("스케줄로 그 스케줄의 매치 신청 내역 등 자세한 정보를 볼 수 있다")
     void findScheduleDetail() {
         //given
-        Club club = Club.createClub(clubInput, null);
+        Club club = Club.from(clubInput, null);
         MatchApplication matchApplication = MatchApplication.applyMatch(new Match(), club);
         Schedule schedule = Schedule.from(club, scheduleInput);
         schedule.setCreatedDate();
@@ -252,7 +252,7 @@ class ScheduleServiceTest {
     @DisplayName("멤버는 일정 참가에 대해 재투표를 할 수 있다")
     void voteSchedule_re() {
         //given
-        Club club = Club.createClub(clubInput, null);
+        Club club = Club.from(clubInput, null);
         Schedule schedule = Schedule.from(club, scheduleInput);
         ScheduleVoteInput scheduleVoteInput = ScheduleVoteInput.builder().id(1L).attendance("false").build();
         User user = User.createUser(signupInput);
@@ -271,7 +271,7 @@ class ScheduleServiceTest {
     @DisplayName("멤버는 일정 참가에 대해 투표를 할 수 있다")
     void voteSchedule() {
         //given
-        Club club = Club.createClub(clubInput, null);
+        Club club = Club.from(clubInput, null);
         Schedule schedule = Schedule.from(club, scheduleInput);
         ScheduleVoteInput scheduleVoteInput = ScheduleVoteInput.builder().id(1L).attendance("false").build();
         User user = User.createUser(signupInput);
@@ -304,7 +304,7 @@ class ScheduleServiceTest {
     void voteEncourage() {
         //given
         Long id = 1L;
-        Club club = Club.createClub(clubInput, null);
+        Club club = Club.from(clubInput, null);
         User user = User.createUser(signupInput);
         Schedule schedule = Schedule.from(club, scheduleInput);
         UserClub userClub = UserClub.createLeaderUserClub(user, club);
@@ -322,7 +322,7 @@ class ScheduleServiceTest {
     @DisplayName("운영진은 일정 투표를 마감할 수 있다")
     void closeSchedule() {
         //given
-        Club club = Club.createClub(clubInput, null);
+        Club club = Club.from(clubInput, null);
         User user = User.createUser(signupInput);
         Schedule schedule = Schedule.from(club, scheduleInput);
         UserClub userClub = UserClub.createLeaderUserClub(user, club);
@@ -339,7 +339,7 @@ class ScheduleServiceTest {
     @DisplayName("일반 회원이 일정 투표를 마감할 때 예외가 발생한다")
     void closeSchedule_wrong_permission() {
         //given
-        Club club = Club.createClub(clubInput, null);
+        Club club = Club.from(clubInput, null);
         User user = User.createUser(signupInput);
         Schedule schedule = Schedule.from(club, scheduleInput);
         UserClub userClub = UserClub.createUserClub(user, club);

@@ -55,8 +55,8 @@ class ClubRepositoryImplTest {
                 .university(university).gender(gender.getKoreanName()).activityArea(activityArea.getKoreanName()).ageRange(ageRange.getKoreanName()).sportsType(sportsType.getKoreanName())
                 .clubPassword(clubPassword).profileImg(profileImg).mainUniformColor(mainUniformColor).subUniformColor(subUniformColor).build();
 
-        Club savedClub = clubRepository.save(Club.createClub(clubInput, "/club"));
-        Club savedClub2 = clubRepository.save(Club.createClub(clubInput2, "/club"));
+        Club savedClub = clubRepository.save(Club.from(clubInput, "/club"));
+        Club savedClub2 = clubRepository.save(Club.from(clubInput2, "/club"));
 
         ClubSearch clubSearch = ClubSearch.builder()
                 .club(savedClub)
