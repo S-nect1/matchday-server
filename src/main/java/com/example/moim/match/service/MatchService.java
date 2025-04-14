@@ -13,7 +13,7 @@ import com.example.moim.club.repository.ClubRepository;
 import com.example.moim.schedule.repository.ScheduleRepository;
 import com.example.moim.schedule.repository.ScheduleVoteRepository;
 import com.example.moim.club.repository.UserClubRepository;
-import com.example.moim.schedule.service.ScheduleService;
+import com.example.moim.schedule.service.ScheduleCommandServiceImpl;
 import com.example.moim.match.dto.*;
 import com.example.moim.match.repository.MatchApplicationRepository;
 import com.example.moim.match.repository.MatchRepository;
@@ -45,7 +45,7 @@ public class MatchService {
     private final MatchRepository matchRepository;
     private final UserClubRepository userClubRepository;
     private final ClubRepository clubRepository;
-    private final ScheduleService scheduleService;
+    private final ScheduleCommandServiceImpl scheduleCommandServiceImpl;
     private final ScheduleRepository scheduleRepository;
     private final MatchApplicationRepository matchApplicationRepository;
     private final ApplicationEventPublisher eventPublisher;

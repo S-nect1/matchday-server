@@ -4,7 +4,6 @@ import com.example.moim.club.entity.*;
 import com.example.moim.club.repository.*;
 import com.example.moim.global.enums.ClubRole;
 import com.example.moim.global.exception.ResponseCode;
-import com.example.moim.match.dto.MatchApplyClubOutput;
 import com.example.moim.match.repository.MatchApplicationRepository;
 import com.example.moim.notification.dto.ScheduleEncourageEvent;
 import com.example.moim.notification.dto.ScheduleSaveEvent;
@@ -23,16 +22,13 @@ import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.time.LocalDateTime;
-import java.time.Month;
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 @Slf4j
 @Service
 @RequiredArgsConstructor
-public class ScheduleService {
+public class ScheduleCommandServiceImpl implements ScheduleCommandService {
     private final ClubRepository clubRepository;
     private final ScheduleRepository scheduleRepository;
     private final UserClubRepository userClubRepository;
@@ -77,35 +73,6 @@ public class ScheduleService {
         eventPublisher.publishEvent(new ScheduleSaveEvent(schedule, user));
 
         return new ScheduleOutput(schedule);
-    }
-
-    public List<ScheduleOutput> findMonthSchedule(ScheduleSearchInput scheduleSearchInput) {
-        Club club = getClub(scheduleSearchInput.getClubId());
-
-        return scheduleRepository.findByClubAndTime(club,
-                        LocalDateTime.of(scheduleSearchInput.getDate() / 100, scheduleSearchInput.getDate() % 100, 1, 0, 0, 0).minusDays(6),
-                        LocalDateTime.of(scheduleSearchInput.getDate() / 100, scheduleSearchInput.getDate() % 100, Month.of(scheduleSearchInput.getDate() % 100).minLength(), 23, 59, 59).plusDays(6),
-                        scheduleSearchInput.getSearch(),
-                        scheduleSearchInput.getCategory())
-                .stream().map(ScheduleOutput::new).collect(Collectors.toList());
-    }
-
-    public List<ScheduleOutput> findDaySchedule(ScheduleSearchInput scheduleSearchInput) {
-        LocalDateTime searchDate = LocalDateTime.of(scheduleSearchInput.getDate() / 10000, (scheduleSearchInput.getDate() / 100) % 100, scheduleSearchInput.getDate() % 100,
-                0, 0, 0);
-        Club club = getClub(scheduleSearchInput.getClubId());
-
-        return scheduleRepository.findByClubAndTime(club,
-                        searchDate, searchDate.plusDays(1), scheduleSearchInput.getSearch(), scheduleSearchInput.getCategory())
-                .stream().map(ScheduleOutput::new).collect(Collectors.toList());
-    }
-
-    public ScheduleDetailOutput findScheduleDetail(Long scheduleId) {
-        Schedule schedule = getSchedule(scheduleId);
-
-        return new ScheduleDetailOutput(schedule,
-//                scheduleVoteRepository.findBySchedule(schedule).stream().map(ScheduleUserOutput::new).toList(),
-                matchApplicationRepository.findBySchedule(schedule).stream().map(MatchApplyClubOutput::new).toList());
     }
 
     /**

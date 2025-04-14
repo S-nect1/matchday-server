@@ -2,6 +2,7 @@ package com.example.moim.schedule.repository;
 
 import com.example.moim.club.entity.Club;
 import com.example.moim.schedule.entity.Schedule;
+import com.example.moim.schedule.entity.ScheduleCategory;
 import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import jakarta.persistence.EntityManager;
@@ -47,9 +48,9 @@ public class ScheduleRepositoryImpl implements ScheduleRepositoryCustom {
         return null;
     }
 
-    private BooleanExpression categoryContains(String category) {
+    private BooleanExpression categoryEq(String category) {
         if (hasText(category)) {
-            return schedule.category.contains(category);
+            return schedule.category.eq(ScheduleCategory.valueOf(category));
         }
         return null;
     }

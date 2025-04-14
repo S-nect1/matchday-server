@@ -37,7 +37,7 @@ public class ScheduleDetailOutput {
         this.period = schedule.getStartTime().toLocalDate().toString() + " " +
                 schedule.getStartTime().toLocalTime().toString() + " ~ " + schedule.getEndTime().toLocalTime().toString();
         this.minPeople = schedule.getMinPeople();
-        this.category = schedule.getCategory();
+        this.category = schedule.getCategory().getKoreanName();
         this.note = schedule.getNote();
         this.attend = schedule.getAttend();
         this.nonAttend = schedule.getNonAttend();

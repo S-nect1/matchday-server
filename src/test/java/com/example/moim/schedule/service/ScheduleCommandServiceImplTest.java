@@ -6,8 +6,6 @@ import com.example.moim.club.repository.ClubRepository;
 import com.example.moim.club.repository.UserClubRepository;
 import com.example.moim.global.enums.*;
 import com.example.moim.global.exception.ResponseCode;
-import com.example.moim.match.entity.Match;
-import com.example.moim.match.entity.MatchApplication;
 import com.example.moim.match.repository.MatchApplicationRepository;
 import com.example.moim.notification.dto.ScheduleEncourageEvent;
 import com.example.moim.notification.dto.ScheduleSaveEvent;
@@ -39,7 +37,7 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
-class ScheduleServiceTest {
+class ScheduleCommandServiceImplTest {
 
     @Mock
     private ClubRepository clubRepository;
@@ -54,7 +52,7 @@ class ScheduleServiceTest {
     @Mock
     private ApplicationEventPublisher applicationEventPublisher;
     @InjectMocks
-    private ScheduleService scheduleService;
+    private ScheduleCommandServiceImpl scheduleCommandService;
 
     // 필요한 공동 객체
     private ScheduleInput scheduleInput;
@@ -68,7 +66,7 @@ class ScheduleServiceTest {
                 .startTime(LocalDateTime.of(2024, 12, 13, 12, 30, 0))
                 .endTime(LocalDateTime.of(2024, 12, 13, 17, 30, 0))
                 .minPeople(10)
-                .category("soccer")
+                .category("정기 운동")
                 .note("note").build();
         this.signupInput = SignupInput.builder().email("email").password("password")
                 .name("name").birthday("birthday").gender(Gender.WOMAN.getKoreanName()).build();
@@ -77,10 +75,10 @@ class ScheduleServiceTest {
                 .activityArea(ActivityArea.SEOUL.getKoreanName()).ageRange(AgeRange.TWENTIES.getKoreanName()).sportsType(SportsType.SOCCER.getKoreanName())
                 .clubPassword("clubPassword").profileImg(new MockMultipartFile("file", "file".getBytes()))
                 .mainUniformColor("mainUniformColor").subUniformColor("subUniformColor").build();
-        this.scheduleUpdateInput = ScheduleUpdateInput.builder().clubId(1L).id(1L).title("update title").location("update location")
+        this.scheduleUpdateInput = ScheduleUpdateInput.builder().clubId(1L).title("update title").location("update location")
                 .startTime(LocalDateTime.of(2024, 12, 13, 12, 30, 0))
                 .endTime(LocalDateTime.of(2024, 12, 13, 17, 30, 0))
-                .minPeople(10).category("soccer").note("note").build();
+                .minPeople(10).category("친선 매치").note("note").build();
     }
 
     @Test
@@ -95,12 +93,12 @@ class ScheduleServiceTest {
         when(clubRepository.findById(any(Long.class))).thenReturn(Optional.of(club));
         when(userClubRepository.findByClubAndUser(club, user)).thenReturn(Optional.of(userClub));
         when(scheduleRepository.save(any(Schedule.class))).thenReturn(schedule);
-        ScheduleOutput scheduleOutput = scheduleService.saveSchedule(scheduleInput, user);
+        ScheduleOutput scheduleOutput = scheduleCommandService.saveSchedule(scheduleInput, user);
         //then
         assertThat(scheduleOutput.getTitle()).isEqualTo("title");
         assertThat(scheduleOutput.getMinPeople()).isEqualTo(10);
         assertThat(scheduleOutput.getNote()).isEqualTo("note");
-        verify(clubRepository, times(2)).findById(any(Long.class));
+        verify(clubRepository, times(1)).findById(any(Long.class));
         verify(userClubRepository, times(1)).findByClubAndUser(any(Club.class), any(User.class));
         verify(scheduleRepository, times(1)).save(any(Schedule.class));
         verify(applicationEventPublisher, times(1)).publishEvent(any(ScheduleSaveEvent.class));
@@ -118,7 +116,7 @@ class ScheduleServiceTest {
         when(userClubRepository.findByClubAndUser(club, user)).thenReturn(Optional.of(userClub));
         //then
         Exception exception = assertThrows(ScheduleControllerAdvice.class, () -> {
-            scheduleService.saveSchedule(scheduleInput, user);
+            scheduleCommandService.saveSchedule(scheduleInput, user);
         });
         assertThat(exception.getMessage()).isEqualTo(ResponseCode.CLUB_PERMISSION_DENIED.getMessage());
         verify(clubRepository, times(1)).findById(any(Long.class));
@@ -137,7 +135,7 @@ class ScheduleServiceTest {
         when(userClubRepository.findByClubAndUser(any(Club.class), any(User.class))).thenReturn(Optional.of(userClub));
         when(clubRepository.findById(any(Long.class))).thenReturn(Optional.of(club));
         when(scheduleRepository.findById(any(Long.class))).thenReturn(Optional.of(schedule));
-        ScheduleOutput scheduleOutput = scheduleService.updateSchedule(scheduleUpdateInput, 1L, user);
+        ScheduleOutput scheduleOutput = scheduleCommandService.updateSchedule(scheduleUpdateInput, 1L, user);
         //then
         assertThat(scheduleOutput.getTitle()).isEqualTo("update title");
         assertThat(scheduleOutput.getLocation()).isEqualTo("update location");
@@ -158,95 +156,13 @@ class ScheduleServiceTest {
         when(clubRepository.findById(any(Long.class))).thenReturn(Optional.of(club));
         //then
         Exception exception = assertThrows(ScheduleControllerAdvice.class, () -> {
-            scheduleService.updateSchedule(scheduleUpdateInput, 1L, user);
+            scheduleCommandService.updateSchedule(scheduleUpdateInput, 1L, user);
         });
         assertThat(exception.getMessage()).isEqualTo(ResponseCode.CLUB_PERMISSION_DENIED.getMessage());
         verify(userClubRepository, times(1)).findByClubAndUser(any(Club.class), any(User.class));
         verify(clubRepository, times(1)).findById(any(Long.class));
     }
 
-    @Test
-    @DisplayName("한달 일정 조회하기")
-    void findSchedule() {
-        //given
-        Club club = Club.from(clubInput, null);
-        Schedule schedule = Schedule.from(club, scheduleInput);
-        ScheduleSearchInput scheduleSearchInput = ScheduleSearchInput.builder().date(202412).clubId(1L).search("title").category("soccer").build();
-
-        //when
-        when(clubRepository.findById(any(Long.class))).thenReturn(Optional.of(club));
-        when(scheduleRepository.findByClubAndTime(any(Club.class), any(LocalDateTime.class), any(LocalDateTime.class), any(String.class), any(String.class))).thenReturn(List.of(schedule));
-        List<ScheduleOutput> result = scheduleService.findMonthSchedule(scheduleSearchInput);
-
-        //then
-        assertThat(result.size()).isEqualTo(1);
-        assertThat(result.get(0).getTitle()).isEqualTo("title");
-        assertThat(result.get(0).getNote()).isEqualTo("note");
-        assertThat(result.get(0).getCategory()).isEqualTo("soccer");
-        verify(clubRepository, times(1)).findById(any(Long.class));
-        verify(scheduleRepository, times(1)).findByClubAndTime(any(Club.class), any(LocalDateTime.class), any(LocalDateTime.class), any(String.class), any(String.class));
-    }
-
-    @Test
-    @DisplayName("한달 일정이 없으면 빈 리스트를 반환한다")
-    void findSchedule_zero_schedule() {
-        //given
-        Club club = Club.from(clubInput, null);
-        ScheduleSearchInput scheduleSearchInput = ScheduleSearchInput.builder().date(202412).clubId(1L).search("title").category("soccer").build();
-
-        //when
-        when(clubRepository.findById(any(Long.class))).thenReturn(Optional.of(club));
-        when(scheduleRepository.findByClubAndTime(any(Club.class), any(LocalDateTime.class), any(LocalDateTime.class), any(String.class), any(String.class))).thenReturn(List.of());
-        List<ScheduleOutput> result = scheduleService.findMonthSchedule(scheduleSearchInput);
-
-        //then
-        assertThat(result.size()).isEqualTo(0);
-        verify(clubRepository, times(1)).findById(any(Long.class));
-        verify(scheduleRepository, times(1)).findByClubAndTime(any(Club.class), any(LocalDateTime.class), any(LocalDateTime.class), any(String.class), any(String.class));
-    }
-
-    @Test
-    @DisplayName("동아리의 하루 일정을 조회할 수 있다")
-    void findDaySchedule() {
-        //given
-        Club club = Club.from(clubInput, null);
-        Schedule schedule = Schedule.from(club, scheduleInput);
-        ScheduleSearchInput scheduleSearchInput = ScheduleSearchInput.builder().date(20241211).clubId(1L).search("title").category("soccer").build();
-
-        //when
-        when(clubRepository.findById(any(Long.class))).thenReturn(Optional.of(club));
-        when(scheduleRepository.findByClubAndTime(any(Club.class), any(LocalDateTime.class), any(LocalDateTime.class), any(String.class), any(String.class))).thenReturn(List.of(schedule));
-        List<ScheduleOutput> result = scheduleService.findDaySchedule(scheduleSearchInput);
-
-        //then
-        assertThat(result.size()).isEqualTo(1);
-        assertThat(result.get(0).getTitle()).isEqualTo("title");
-        assertThat(result.get(0).getNote()).isEqualTo("note");
-        assertThat(result.get(0).getCategory()).isEqualTo("soccer");
-        verify(clubRepository, times(1)).findById(any(Long.class));
-        verify(scheduleRepository, times(1)).findByClubAndTime(any(Club.class), any(LocalDateTime.class), any(LocalDateTime.class), any(String.class), any(String.class));
-    }
-
-    @Test
-    @DisplayName("스케줄로 그 스케줄의 매치 신청 내역 등 자세한 정보를 볼 수 있다")
-    void findScheduleDetail() {
-        //given
-        Club club = Club.from(clubInput, null);
-        MatchApplication matchApplication = MatchApplication.applyMatch(new Match(), club);
-        Schedule schedule = Schedule.from(club, scheduleInput);
-        schedule.setCreatedDate();
-        schedule.setUpdatedDate();
-        //when
-        when(scheduleRepository.findById(any(Long.class))).thenReturn(Optional.of(schedule));
-        when(matchApplicationRepository.findBySchedule(any(Schedule.class))).thenReturn(List.of(matchApplication));
-        ScheduleDetailOutput result = scheduleService.findScheduleDetail(1L);
-        //then
-        assertThat(result.getMatchApplyClubList().size()).isEqualTo(1);
-        assertThat(result.getTitle()).isEqualTo("title");
-        assertThat(result.getCategory()).isEqualTo("soccer");
-        verify(scheduleRepository, times(1)).findById(any(Long.class));
-        verify(matchApplicationRepository, times(1)).findBySchedule(any(Schedule.class));
-    }
 
     @Test
     @DisplayName("멤버는 일정 참가에 대해 재투표를 할 수 있다")
@@ -258,12 +174,12 @@ class ScheduleServiceTest {
         User user = User.createUser(signupInput);
         ScheduleVote scheduleVote = ScheduleVote.createScheduleVote(user, schedule, "true");
         //when
-        when(scheduleRepository.findWithClubById(any(Long.class))).thenReturn(schedule);
+        when(scheduleRepository.findById(any(Long.class))).thenReturn(Optional.of(schedule));
         when(scheduleVoteRepository.findByScheduleAndUser(any(Schedule.class), any(User.class))).thenReturn(Optional.of(scheduleVote));
-        scheduleService.voteSchedule(scheduleVoteInput, user);
+        scheduleCommandService.voteSchedule(scheduleVoteInput, user);
         //then
         assertThat(scheduleVote.getAttendance()).isEqualTo("false");
-        verify(scheduleRepository, times(1)).findWithClubById(any(Long.class));
+        verify(scheduleRepository, times(1)).findById(any(Long.class));
         verify(scheduleVoteRepository, times(1)).findByScheduleAndUser(any(Schedule.class), any(User.class));
     }
 
@@ -277,13 +193,13 @@ class ScheduleServiceTest {
         User user = User.createUser(signupInput);
         ScheduleVote scheduleVote = ScheduleVote.createScheduleVote(user, schedule, "false");
         //when
-        when(scheduleRepository.findWithClubById(any(Long.class))).thenReturn(schedule);
+        when(scheduleRepository.findById(any(Long.class))).thenReturn(Optional.of(schedule));
         when(scheduleVoteRepository.findByScheduleAndUser(any(Schedule.class), any(User.class))).thenReturn(Optional.empty());
         when(scheduleVoteRepository.save(any(ScheduleVote.class))).thenReturn(scheduleVote);
-        scheduleService.voteSchedule(scheduleVoteInput, user);
+        scheduleCommandService.voteSchedule(scheduleVoteInput, user);
         //then
         assertThat(scheduleVote.getAttendance()).isEqualTo("false");
-        verify(scheduleRepository, times(1)).findWithClubById(any(Long.class));
+        verify(scheduleRepository, times(1)).findById(any(Long.class));
         verify(scheduleVoteRepository, times(1)).findByScheduleAndUser(any(Schedule.class), any(User.class));
         verify(scheduleVoteRepository, times(1)).save(any(ScheduleVote.class));
     }
@@ -294,7 +210,7 @@ class ScheduleServiceTest {
         //given
         Long id = 1L;
         //when
-        scheduleService.deleteSchedule(id);
+        scheduleCommandService.deleteSchedule(id);
         //then
         verify(scheduleRepository, times(1)).deleteById(any(Long.class));
     }
@@ -311,7 +227,7 @@ class ScheduleServiceTest {
         //when
         when(scheduleRepository.findWithClubById(any(Long.class))).thenReturn(schedule);
         when(userClubRepository.findUserByClub(club)).thenReturn(List.of(userClub));
-        scheduleService.voteEncourage(id);
+        scheduleCommandService.voteEncourage(id);
         //then
         verify(scheduleRepository, times(1)).findWithClubById(any(Long.class));
         verify(userClubRepository, times(1)).findUserByClub(any(Club.class));
@@ -327,11 +243,11 @@ class ScheduleServiceTest {
         Schedule schedule = Schedule.from(club, scheduleInput);
         UserClub userClub = UserClub.createLeaderUserClub(user, club);
         //when
-        when(scheduleRepository.findById(any(Long.class))).thenReturn(Optional.of(schedule));
+        when(scheduleRepository.findWithClubById(any(Long.class))).thenReturn(schedule);
         when(userClubRepository.findByClubAndUser(any(Club.class), any(User.class))).thenReturn(Optional.of(userClub));
-        scheduleService.closeSchedule(1L, user);
+        scheduleCommandService.closeSchedule(1L, user);
         //then
-        verify(scheduleRepository, times(1)).findById(any(Long.class));
+        verify(scheduleRepository, times(1)).findWithClubById(any(Long.class));
         verify(userClubRepository, times(1)).findByClubAndUser(any(Club.class), any(User.class));
     }
 
@@ -344,14 +260,14 @@ class ScheduleServiceTest {
         Schedule schedule = Schedule.from(club, scheduleInput);
         UserClub userClub = UserClub.createUserClub(user, club);
         //when
-        when(scheduleRepository.findById(any(Long.class))).thenReturn(Optional.of(schedule));
+        when(scheduleRepository.findWithClubById(any(Long.class))).thenReturn(schedule);
         when(userClubRepository.findByClubAndUser(any(Club.class), any(User.class))).thenReturn(Optional.of(userClub));
         //then
         Exception exception = assertThrows(ScheduleControllerAdvice.class, () -> {
-            scheduleService.closeSchedule(1L, user);
+            scheduleCommandService.closeSchedule(1L, user);
         });
         assertThat(exception.getMessage()).isEqualTo(ResponseCode.CLUB_PERMISSION_DENIED.getMessage());
-        verify(scheduleRepository, times(1)).findById(any(Long.class));
+        verify(scheduleRepository, times(1)).findWithClubById(any(Long.class));
         verify(userClubRepository, times(1)).findByClubAndUser(any(Club.class), any(User.class));
     }
 }

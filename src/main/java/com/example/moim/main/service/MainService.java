@@ -2,10 +2,10 @@ package com.example.moim.main.service;
 
 import com.example.moim.schedule.dto.ScheduleSearchInput;
 import com.example.moim.club.repository.ClubRepository;
-import com.example.moim.schedule.service.ScheduleService;
 import com.example.moim.main.dto.MainOutput;
 import com.example.moim.main.dto.NoClubMainOutput;
 import com.example.moim.main.dto.RecommendClubListOutput;
+import com.example.moim.schedule.service.ScheduleQueryService;
 import com.example.moim.user.entity.User;
 import com.example.moim.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
@@ -15,7 +15,7 @@ import java.time.LocalDate;
 @Service
 @RequiredArgsConstructor
 public class MainService {
-    private final ScheduleService scheduleService;
+    private final ScheduleQueryService scheduleQueryService;
     private final UserRepository userRepository;
     private final ClubRepository clubRepository;
 
@@ -27,7 +27,7 @@ public class MainService {
 
     public MainOutput mainPage(Long clubId) {
         return new MainOutput(clubRepository.findById(clubId).get(),
-                scheduleService.findMonthSchedule(new ScheduleSearchInput(Integer.parseInt(LocalDate.now().toString().replace("-", "")),
+                scheduleQueryService.findMonthSchedule(new ScheduleSearchInput(Integer.parseInt(LocalDate.now().toString().replace("-", "")),
                 clubId, null, null)));
     }
 }

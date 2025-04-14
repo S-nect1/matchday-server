@@ -28,6 +28,7 @@ public class Schedule extends BaseEntity {
     private LocalDateTime startTime;
     private LocalDateTime endTime;
     private int minPeople;
+    @Enumerated(value = EnumType.STRING)
     private ScheduleCategory category;
     private String note;
     private int attend;

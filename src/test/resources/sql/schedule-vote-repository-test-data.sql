@@ -23,9 +23,9 @@ INSERT INTO user_club (id, created_date, updated_date, club_role, join_date, mat
 VALUES (default, null, null, 'STAFF', '2024-12-11', 2, 2, 3, 4);
 -- 스케줄 생성
 insert into `schedule` (id, club_id, title, location, start_time, end_time, min_people, category, note, attend, non_attend, is_close)
-values (1, 3, '운동 매치 스케줄', '서울시 마포구', '2024-03-11 14:30:00', '2024-03-11 17:30:00', 10, 'soccor', 'note', 10, 12, 0);
+values (1, 3, '운동 매치 스케줄', '서울시 마포구', '2024-03-11 14:30:00', '2024-03-11 17:30:00', 10, 'REGULAR_TRAINING', 'note', 10, 12, 0);
 insert into `schedule` (id, club_id, title, location, start_time, end_time, min_people, category, note, attend, non_attend, is_close)
-values (2, 3, '운동 매치 스케줄2', '서울시 마포구', '2024-03-12 14:30:00', '2024-03-12 17:30:00', 10, 'soccor', 'note', 10, 12, 0);
+values (2, 3, '운동 매치 스케줄2', '서울시 마포구', '2024-03-12 14:30:00', '2024-03-12 17:30:00', 10, 'REGULAR_TRAINING', 'note', 10, 12, 0);
 -- 댓글 생성
 insert into `comment` (id, user_id, schedule_id, contents)
 values (1, 3, 1, '회사 면접이 잡혀있어서 못 갑니다');

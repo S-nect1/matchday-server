@@ -23,7 +23,7 @@ public class ScheduleOutput {
         this.date = schedule.getStartTime().toLocalDate();
         this.period = schedule.getStartTime().toLocalTime().toString() + " ~ " + schedule.getEndTime().toLocalTime().toString();
         this.minPeople = schedule.getMinPeople();
-        this.category = schedule.getCategory();
+        this.category = schedule.getCategory().getKoreanName();
         if (schedule.getNote() != null) {
             this.note = schedule.getNote();
         }
