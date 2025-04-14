@@ -12,7 +12,6 @@ import org.springframework.test.context.jdbc.SqlGroup;
 import java.util.List;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
-import static org.junit.jupiter.api.Assertions.*;
 
 @DataJpaTest
 @SqlGroup({
@@ -30,7 +29,7 @@ class ScheduleVoteRepositoryTest {
     @DisplayName("스케줄 객체로 투표 현황을 조회할 수 있다")
     void findBySchedule() {
         //given
-        Schedule schedule = scheduleRepository.findScheduleById(1L);
+        Schedule schedule = scheduleRepository.findWithClubById(1L);
         //when
         List<ScheduleVote> result = scheduleVoteRepository.findBySchedule(schedule);
         //then

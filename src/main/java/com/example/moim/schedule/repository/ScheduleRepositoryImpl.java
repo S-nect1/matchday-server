@@ -55,7 +55,7 @@ public class ScheduleRepositoryImpl implements ScheduleRepositoryCustom {
     }
 
     @Override
-    public Schedule findScheduleById(Long id) {
+    public Schedule findWithClubById(Long id) {
         return queryFactory
                 .selectFrom(schedule)
                 .join(schedule.club, club).fetchJoin()

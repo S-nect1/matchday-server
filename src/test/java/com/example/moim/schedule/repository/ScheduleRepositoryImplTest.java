@@ -14,7 +14,6 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
-import static org.junit.jupiter.api.Assertions.*;
 
 @DataJpaTest
 @SqlGroup({
@@ -50,7 +49,7 @@ class ScheduleRepositoryImplTest {
         //given
         Long scheduleId = 1L;
         //when
-        Schedule result = scheduleRepository.findScheduleById(scheduleId);
+        Schedule result = scheduleRepository.findWithClubById(scheduleId);
         //then
         assertThat(result.getTitle()).isEqualTo("운동 매치 스케줄");
         assertThat(result.getComment().get(0).getContents()).isEqualTo("회사 면접이 잡혀있어서 못 갑니다");

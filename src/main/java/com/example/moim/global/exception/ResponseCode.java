@@ -60,6 +60,9 @@ public enum ResponseCode {
     CLUB_CHECK_PASSWORD_INCORRECT(HttpStatus.UNAUTHORIZED, "CLUB4005", "모임 확인 비밀번호가 틀렸습니다."),
     CLUB_USER_ALREADY_JOINED(HttpStatus.CONFLICT, "CLUB4006", "해당 사용자는 이미 모임에 가입되어 있습니다."),
 
+    // Schedule Error
+    SCHEDULE_NOT_FOUND(HttpStatus.BAD_REQUEST, "SCHEDULE4001", "존재하지 않는 일정입니다."),
+
     // File Error
     FILE_MAX_SIZE_OVER(HttpStatus.PAYLOAD_TOO_LARGE, "FILE4001", "100MB 이하 파일만 업로드 할 수 있습니다."),
     FILE_CONTENT_TYPE_NOT_IMAGE(HttpStatus.UNSUPPORTED_MEDIA_TYPE, "FILE4002", "이미지 파일만 업로드할 수 있습니다."),

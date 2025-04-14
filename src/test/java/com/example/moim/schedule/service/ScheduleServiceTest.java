@@ -176,7 +176,7 @@ class ScheduleServiceTest {
         //when
         when(clubRepository.findById(any(Long.class))).thenReturn(Optional.of(club));
         when(scheduleRepository.findByClubAndTime(any(Club.class), any(LocalDateTime.class), any(LocalDateTime.class), any(String.class), any(String.class))).thenReturn(List.of(schedule));
-        List<ScheduleOutput> result = scheduleService.findSchedule(scheduleSearchInput);
+        List<ScheduleOutput> result = scheduleService.findMonthSchedule(scheduleSearchInput);
 
         //then
         assertThat(result.size()).isEqualTo(1);
@@ -197,7 +197,7 @@ class ScheduleServiceTest {
         //when
         when(clubRepository.findById(any(Long.class))).thenReturn(Optional.of(club));
         when(scheduleRepository.findByClubAndTime(any(Club.class), any(LocalDateTime.class), any(LocalDateTime.class), any(String.class), any(String.class))).thenReturn(List.of());
-        List<ScheduleOutput> result = scheduleService.findSchedule(scheduleSearchInput);
+        List<ScheduleOutput> result = scheduleService.findMonthSchedule(scheduleSearchInput);
 
         //then
         assertThat(result.size()).isEqualTo(0);
@@ -258,12 +258,12 @@ class ScheduleServiceTest {
         User user = User.createUser(signupInput);
         ScheduleVote scheduleVote = ScheduleVote.createScheduleVote(user, schedule, "true");
         //when
-        when(scheduleRepository.findScheduleById(any(Long.class))).thenReturn(schedule);
+        when(scheduleRepository.findWithClubById(any(Long.class))).thenReturn(schedule);
         when(scheduleVoteRepository.findByScheduleAndUser(any(Schedule.class), any(User.class))).thenReturn(Optional.of(scheduleVote));
         scheduleService.voteSchedule(scheduleVoteInput, user);
         //then
         assertThat(scheduleVote.getAttendance()).isEqualTo("false");
-        verify(scheduleRepository, times(1)).findScheduleById(any(Long.class));
+        verify(scheduleRepository, times(1)).findWithClubById(any(Long.class));
         verify(scheduleVoteRepository, times(1)).findByScheduleAndUser(any(Schedule.class), any(User.class));
     }
 
@@ -277,13 +277,13 @@ class ScheduleServiceTest {
         User user = User.createUser(signupInput);
         ScheduleVote scheduleVote = ScheduleVote.createScheduleVote(user, schedule, "false");
         //when
-        when(scheduleRepository.findScheduleById(any(Long.class))).thenReturn(schedule);
+        when(scheduleRepository.findWithClubById(any(Long.class))).thenReturn(schedule);
         when(scheduleVoteRepository.findByScheduleAndUser(any(Schedule.class), any(User.class))).thenReturn(Optional.empty());
         when(scheduleVoteRepository.save(any(ScheduleVote.class))).thenReturn(scheduleVote);
         scheduleService.voteSchedule(scheduleVoteInput, user);
         //then
         assertThat(scheduleVote.getAttendance()).isEqualTo("false");
-        verify(scheduleRepository, times(1)).findScheduleById(any(Long.class));
+        verify(scheduleRepository, times(1)).findWithClubById(any(Long.class));
         verify(scheduleVoteRepository, times(1)).findByScheduleAndUser(any(Schedule.class), any(User.class));
         verify(scheduleVoteRepository, times(1)).save(any(ScheduleVote.class));
     }
@@ -309,11 +309,11 @@ class ScheduleServiceTest {
         Schedule schedule = Schedule.from(club, scheduleInput);
         UserClub userClub = UserClub.createLeaderUserClub(user, club);
         //when
-        when(scheduleRepository.findScheduleById(any(Long.class))).thenReturn(schedule);
+        when(scheduleRepository.findWithClubById(any(Long.class))).thenReturn(schedule);
         when(userClubRepository.findUserByClub(club)).thenReturn(List.of(userClub));
         scheduleService.voteEncourage(id);
         //then
-        verify(scheduleRepository, times(1)).findScheduleById(any(Long.class));
+        verify(scheduleRepository, times(1)).findWithClubById(any(Long.class));
         verify(userClubRepository, times(1)).findUserByClub(any(Club.class));
         verify(applicationEventPublisher, times(1)).publishEvent(any(ScheduleEncourageEvent.class));
     }

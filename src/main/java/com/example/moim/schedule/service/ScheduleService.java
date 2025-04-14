@@ -42,8 +42,8 @@ public class ScheduleService {
     private final MatchApplicationRepository matchApplicationRepository;
 
     public ScheduleOutput saveSchedule(ScheduleInput scheduleInput, User user) {
-        Club club = clubRepository.findById(scheduleInput.getClubId()).orElseThrow(() -> new ScheduleControllerAdvice(ResponseCode.CLUB_NOT_FOUND));
-        UserClub userClub = userClubRepository.findByClubAndUser(club, user).orElseThrow(() -> new ScheduleControllerAdvice(ResponseCode.CLUB_USER_NOT_FOUND));
+        Club club = getClub(scheduleInput.getClubId());
+        UserClub userClub = getUserClub(club, user);
         if (!(userClub.getClubRole().equals(ClubRole.STAFF))) {
             throw new ScheduleControllerAdvice(ResponseCode.CLUB_PERMISSION_DENIED);
         }
@@ -60,13 +60,22 @@ public class ScheduleService {
 
     @Transactional
     public ScheduleOutput updateSchedule(ScheduleUpdateInput scheduleUpdateInput, Long scheduleId, User user) {
-        UserClub userClub = userClubRepository.findByClubAndUser(clubRepository.findById(scheduleUpdateInput.getClubId()).get(), user).get();
+        Club club = getClub(scheduleUpdateInput.getClubId());
+        UserClub userClub = getUserClub(club, user);
+
         if (!(userClub.getClubRole().equals(ClubRole.STAFF))) {
             throw new ScheduleControllerAdvice(ResponseCode.CLUB_PERMISSION_DENIED);
         }
 
-        Schedule schedule = scheduleRepository.findById(scheduleId).get();
+        Schedule schedule = getSchedule(scheduleId);
+
         schedule.update(scheduleUpdateInput);
+
+        /**
+         * TODO: 알림 리팩터링 버전으로 다시 적용해야 함
+         */
+        eventPublisher.publishEvent(new ScheduleSaveEvent(schedule, user));
+
         return new ScheduleOutput(schedule);
     }
 
@@ -75,8 +84,10 @@ public class ScheduleService {
      * @param scheduleSearchInput
      * @return
      */
-    public List<ScheduleOutput> findSchedule(ScheduleSearchInput scheduleSearchInput) {
-        return scheduleRepository.findByClubAndTime(clubRepository.findById(scheduleSearchInput.getClubId()).get(),
+    public List<ScheduleOutput> findMonthSchedule(ScheduleSearchInput scheduleSearchInput) {
+        Club club = getClub(scheduleSearchInput.getClubId());
+
+        return scheduleRepository.findByClubAndTime(club,
                         LocalDateTime.of(scheduleSearchInput.getDate() / 100, scheduleSearchInput.getDate() % 100, 1, 0, 0, 0).minusDays(6),
                         LocalDateTime.of(scheduleSearchInput.getDate() / 100, scheduleSearchInput.getDate() % 100, Month.of(scheduleSearchInput.getDate() % 100).minLength(), 23, 59, 59).plusDays(6),
                         scheduleSearchInput.getSearch(),
@@ -87,13 +98,16 @@ public class ScheduleService {
     public List<ScheduleOutput> findDaySchedule(ScheduleSearchInput scheduleSearchInput) {
         LocalDateTime searchDate = LocalDateTime.of(scheduleSearchInput.getDate() / 10000, (scheduleSearchInput.getDate() / 100) % 100, scheduleSearchInput.getDate() % 100,
                 0, 0, 0);
-        return scheduleRepository.findByClubAndTime(clubRepository.findById(scheduleSearchInput.getClubId()).get(),
+        Club club = getClub(scheduleSearchInput.getClubId());
+
+        return scheduleRepository.findByClubAndTime(club,
                         searchDate, searchDate.plusDays(1), scheduleSearchInput.getSearch(), scheduleSearchInput.getCategory())
                 .stream().map(ScheduleOutput::new).collect(Collectors.toList());
     }
 
     public ScheduleDetailOutput findScheduleDetail(Long id) {
-        Schedule schedule = scheduleRepository.findById(id).get();
+        Schedule schedule = getSchedule(id);
+
         return new ScheduleDetailOutput(schedule,
 //                scheduleVoteRepository.findBySchedule(schedule).stream().map(ScheduleUserOutput::new).toList(),
                 matchApplicationRepository.findBySchedule(schedule).stream().map(MatchApplyClubOutput::new).toList());
@@ -106,16 +120,20 @@ public class ScheduleService {
      */
     @Transactional
     public void voteSchedule(ScheduleVoteInput scheduleVoteInput, User user) {
-        Schedule schedule = scheduleRepository.findScheduleById(scheduleVoteInput.getId());
+        Schedule schedule = getSchedule(scheduleVoteInput.getId());
         Optional<ScheduleVote> originalScheduleVote = scheduleVoteRepository.findByScheduleAndUser(schedule, user);
+
         //투표 처음이면
         if (originalScheduleVote.isEmpty()) {
             scheduleVoteRepository.save(ScheduleVote.createScheduleVote(user, schedule, scheduleVoteInput.getAttendance()));
             schedule.vote(scheduleVoteInput.getAttendance());
-        } else {// 재투표인 경우
+        } else { // 재투표인 경우
             schedule.reVote(originalScheduleVote.get().getAttendance(), scheduleVoteInput.getAttendance());
             originalScheduleVote.get().changeAttendance(scheduleVoteInput.getAttendance());
         }
+        /**
+         * TODO: 왜 알림 보내려고 했는지 확인하고 로직 추가하기
+         */
 //        if (scheduleVoteInput.getAttendance().equals("attend")) {
 //            eventPublisher.publishEvent(new ScheduleVoteEvent(schedule, user));
 //        }
@@ -136,7 +154,7 @@ public class ScheduleService {
      * @param id
      */
     public void voteEncourage(Long id) {
-        Schedule schedule = scheduleRepository.findScheduleById(id);
+        Schedule schedule = scheduleRepository.findWithClubById(id);
         List<User> userList = userClubRepository.findUserByClub(schedule.getClub()).stream().map(UserClub::getUser).toList();
         eventPublisher.publishEvent(new ScheduleEncourageEvent(schedule, userList));
     }
@@ -147,8 +165,8 @@ public class ScheduleService {
      */
     @Transactional
     public void closeSchedule(Long id, User user) {
-        Schedule schedule = scheduleRepository.findById(id).get();
-        UserClub userClub = userClubRepository.findByClubAndUser(schedule.getClub(), user).get();
+        Schedule schedule = scheduleRepository.findWithClubById(id);
+        UserClub userClub = getUserClub(schedule.getClub(), user);
         if (!(userClub.getClubRole().equals(ClubRole.STAFF))) {
             throw new ScheduleControllerAdvice(ResponseCode.CLUB_PERMISSION_DENIED);
         }
@@ -157,6 +175,19 @@ public class ScheduleService {
     }
 
     public void saveComment(CommentInput commentInput, User user) {
-        commentRepository.save(Comment.createComment(user, scheduleRepository.findById(commentInput.getId()).get(), commentInput.getContents()));
+        Schedule schedule = getSchedule(commentInput.getId());
+        commentRepository.save(Comment.createComment(user, schedule, commentInput.getContents()));
+    }
+
+    private Club getClub(Long clubId) {
+        return clubRepository.findById(clubId).orElseThrow(() -> new ScheduleControllerAdvice(ResponseCode.CLUB_NOT_FOUND));
+    }
+
+    private UserClub getUserClub(Club club, User user) {
+        return userClubRepository.findByClubAndUser(club, user).orElseThrow(() -> new ScheduleControllerAdvice(ResponseCode.CLUB_USER_NOT_FOUND));
+    }
+
+    private Schedule getSchedule(Long scheduleId) {
+        return scheduleRepository.findById(scheduleId).orElseThrow(() -> new ScheduleControllerAdvice(ResponseCode.SCHEDULE_NOT_FOUND));
     }
 }
