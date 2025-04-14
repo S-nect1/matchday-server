@@ -59,7 +59,7 @@ public class ScheduleService {
     }
 
     @Transactional
-    public ScheduleOutput updateSchedule(ScheduleUpdateInput scheduleUpdateInput, Long scheduleId, User user) {
+    public ScheduleOutput updateSchedule(ScheduleUpdateInput scheduleUpdateInput, Long id, User user) {
         Club club = getClub(scheduleUpdateInput.getClubId());
         UserClub userClub = getUserClub(club, user);
 
@@ -67,7 +67,7 @@ public class ScheduleService {
             throw new ScheduleControllerAdvice(ResponseCode.CLUB_PERMISSION_DENIED);
         }
 
-        Schedule schedule = getSchedule(scheduleId);
+        Schedule schedule = getSchedule(id);
 
         schedule.update(scheduleUpdateInput);
 
@@ -105,8 +105,8 @@ public class ScheduleService {
                 .stream().map(ScheduleOutput::new).collect(Collectors.toList());
     }
 
-    public ScheduleDetailOutput findScheduleDetail(Long id) {
-        Schedule schedule = getSchedule(id);
+    public ScheduleDetailOutput findScheduleDetail(Long scheduleId) {
+        Schedule schedule = getSchedule(scheduleId);
 
         return new ScheduleDetailOutput(schedule,
 //                scheduleVoteRepository.findBySchedule(schedule).stream().map(ScheduleUserOutput::new).toList(),

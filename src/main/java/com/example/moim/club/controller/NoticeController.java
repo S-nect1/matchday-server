@@ -26,7 +26,7 @@ public class NoticeController implements NoticeControllerDocs {
     /**
      * FIXME: 응답 값이 무조건 있어야 함. user 의 권한 체크는 안해도 되나?
      */
-    @PostMapping("/notice")
+    @PostMapping("/notices")
     public BaseResponse noticeSave(NoticeInput noticeInput, @AuthenticationPrincipal UserDetailsImpl userDetailsImpl) {
         noticeCommandService.saveNotice(noticeInput);
         return BaseResponse.onSuccess(null, ResponseCode.OK);
@@ -36,7 +36,7 @@ public class NoticeController implements NoticeControllerDocs {
      * FIXME: 공지를 시간 순으로 정렬하지 않아도 되나?
      * @return
      */
-    @GetMapping("/notice/{clubId}")
+    @GetMapping("/notices/{clubId}")
     public BaseResponse<List<NoticeOutput>> noticeSave(@PathVariable Long clubId, @AuthenticationPrincipal UserDetailsImpl userDetailsImpl) {
         return BaseResponse.onSuccess(noticeQueryService.findNotice(clubId), ResponseCode.OK);
     }
