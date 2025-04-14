@@ -1,9 +1,11 @@
 package com.example.moim.schedule.entity;
 
 import com.example.moim.club.entity.Club;
+import com.example.moim.global.exception.ResponseCode;
 import com.example.moim.schedule.dto.ScheduleInput;
 import com.example.moim.schedule.dto.ScheduleUpdateInput;
 import com.example.moim.global.entity.BaseEntity;
+import com.example.moim.schedule.exception.advice.ScheduleControllerAdvice;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -26,7 +28,7 @@ public class Schedule extends BaseEntity {
     private LocalDateTime startTime;
     private LocalDateTime endTime;
     private int minPeople;
-    private String category;
+    private ScheduleCategory category;
     private String note;
     private int attend;
     private int nonAttend;
@@ -43,7 +45,7 @@ public class Schedule extends BaseEntity {
         schedule.startTime = scheduleInput.getStartTime();
         schedule.endTime = scheduleInput.getEndTime();
         schedule.minPeople = scheduleInput.getMinPeople();
-        schedule.category = scheduleInput.getCategory();
+        schedule.category = ScheduleCategory.fromKoreanName(scheduleInput.getCategory()).orElseThrow(() -> new ScheduleControllerAdvice(ResponseCode.INVALID_SCHEDULE_CATEGORY));
         if (scheduleInput.getNote() != null) {
             schedule.note = scheduleInput.getNote();
         }
@@ -91,7 +93,7 @@ public class Schedule extends BaseEntity {
             this.minPeople = scheduleUpdateInput.getMinPeople();
         }
         if (scheduleUpdateInput.getCategory() != null) {
-            this.category = scheduleUpdateInput.getCategory();
+            this.category = ScheduleCategory.fromKoreanName(scheduleUpdateInput.getCategory()).orElseThrow(() -> new ScheduleControllerAdvice(ResponseCode.INVALID_SCHEDULE_CATEGORY));
         }
         if (scheduleUpdateInput.getNote() != null) {
             this.note = scheduleUpdateInput.getNote();

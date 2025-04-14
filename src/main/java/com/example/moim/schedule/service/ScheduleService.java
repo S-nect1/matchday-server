@@ -79,11 +79,6 @@ public class ScheduleService {
         return new ScheduleOutput(schedule);
     }
 
-    /**
-     * TODO: 이름 명확하게 변경하기. findMontSchedule 등으로
-     * @param scheduleSearchInput
-     * @return
-     */
     public List<ScheduleOutput> findMonthSchedule(ScheduleSearchInput scheduleSearchInput) {
         Club club = getClub(scheduleSearchInput.getClubId());
 
