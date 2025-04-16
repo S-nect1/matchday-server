@@ -1,9 +1,12 @@
 package com.example.moim.match.entity;
 
 import com.example.moim.club.entity.Club;
+import com.example.moim.global.exception.ResponseCode;
+import com.example.moim.match.exception.advice.MatchControllerAdvice;
 import com.example.moim.schedule.entity.ScheduleVote;
 import com.example.moim.club.entity.UserClub;
 import com.example.moim.match.dto.MatchRecordInput;
+import com.example.moim.statistic.entity.Statistic;
 import com.example.moim.user.entity.User;
 import jakarta.persistence.*;
 import lombok.Getter;
@@ -25,6 +28,7 @@ public class MatchUser {
     private Club club;
 
     private int score;
+    private String season;
 
     public static MatchUser createMatchUser(Match match, ScheduleVote scheduleVote) {
         MatchUser matchUser = new MatchUser();
@@ -32,6 +36,7 @@ public class MatchUser {
         matchUser.user = scheduleVote.getUser();
         matchUser.club = findUserClubInMatch(match, scheduleVote.getUser());
         matchUser.score = 0;
+        matchUser.season = Statistic.getCurrentSeason();
 
         return matchUser;
     }
@@ -48,6 +53,7 @@ public class MatchUser {
             }
         }
 
-        throw new RuntimeException("해당 유저는 매치에 참여한 클럽 소속이 아닙니다.");
+//        throw new RuntimeException("해당 유저는 매치에 참여한 클럽 소속이 아닙니다.");
+        throw new MatchControllerAdvice(ResponseCode.MATCH_USER_NOT_ATTENDANCE);
     }
 }

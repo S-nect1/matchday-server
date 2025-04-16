@@ -164,7 +164,8 @@ public class Match extends BaseEntity {
     public void timeDuplicationCheck(LocalDateTime startTime, LocalDateTime endTime) {
         if ((startTime.isBefore(this.startTime) && endTime.isBefore(this.startTime)) ||
         (startTime.isAfter(this.endTime) && endTime.isAfter(this.endTime))) {
-            throw new MatchRecordExpireException("해당 시간대에 다른 매치 일정이 있습니다");
+//            throw new MatchRecordExpireException("해당 시간대에 다른 매치 일정이 있습니다");
+            throw new MatchControllerAdvice(ResponseCode.MATCH_DUPLICATED);
         }
     }
 }

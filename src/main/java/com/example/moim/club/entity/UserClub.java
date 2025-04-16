@@ -28,6 +28,8 @@ public class UserClub extends BaseEntity {
     private Integer scheduleCount;
     private Integer matchCount;
 
+    private int score;
+
     public static UserClub createLeaderUserClub(User user, Club club) {
         UserClub userClub = new UserClub();
         userClub.user = user;
@@ -58,5 +60,9 @@ public class UserClub extends BaseEntity {
 
     public void changeUserClub(ClubRole clubRole) {
         this.clubRole = clubRole;
+    }
+
+    public void updateScore(int score) {
+        this.score += score;
     }
 }

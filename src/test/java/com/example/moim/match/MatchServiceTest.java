@@ -8,8 +8,6 @@ import com.example.moim.global.enums.*;
 import com.example.moim.global.exception.ResponseCode;
 import com.example.moim.match.dto.*;
 import com.example.moim.match.entity.*;
-import com.example.moim.match.exception.MatchPermissionException;
-import com.example.moim.match.exception.MatchRecordExpireException;
 import com.example.moim.match.exception.advice.MatchControllerAdvice;
 import com.example.moim.match.repository.MatchApplicationRepository;
 import com.example.moim.match.repository.MatchRepository;

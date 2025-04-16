@@ -4,6 +4,7 @@ import com.example.moim.match.entity.Match;
 import com.example.moim.match.entity.MatchUser;
 import com.example.moim.match.repository.MatchRepository;
 import com.example.moim.match.repository.MatchUserRepository;
+import com.example.moim.statistic.service.StatisticService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.scheduling.annotation.Scheduled;
@@ -19,6 +20,7 @@ import java.util.concurrent.TimeUnit;
 public class MatchAggregateService {
     private final MatchRepository matchRepository;
     private final MatchUserRepository matchUserRepository;
+    private final StatisticService statisticService;
 
     //한시간마다 지금시간-48< 매치 끝나는시간 <지금시간이면 집계
     @Scheduled(fixedRate = 1, timeUnit = TimeUnit.HOURS)
@@ -43,6 +45,8 @@ public class MatchAggregateService {
             }
             log.info("Match ID: {}, homeScore: {}, awayScore: {}", match.getId(), homeScore, awayScore);
             match.setMatchScore(homeScore, awayScore);
+
+            statisticService.updateStatistic(match);
         }
     }
 
