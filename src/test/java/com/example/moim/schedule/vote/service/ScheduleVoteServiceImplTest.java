@@ -6,11 +6,13 @@ import com.example.moim.club.entity.UserClub;
 import com.example.moim.club.repository.ClubRepository;
 import com.example.moim.club.repository.UserClubRepository;
 import com.example.moim.global.enums.*;
+import com.example.moim.global.exception.ResponseCode;
 import com.example.moim.match.repository.MatchApplicationRepository;
 import com.example.moim.notification.dto.ScheduleEncourageEvent;
 import com.example.moim.schedule.dto.ScheduleInput;
 import com.example.moim.schedule.dto.ScheduleVoteInput;
 import com.example.moim.schedule.entity.Schedule;
+import com.example.moim.schedule.exception.advice.ScheduleControllerAdvice;
 import com.example.moim.schedule.repository.ScheduleRepository;
 import com.example.moim.schedule.vote.entity.ScheduleVote;
 import com.example.moim.schedule.vote.repository.ScheduleVoteRepository;
@@ -31,6 +33,7 @@ import java.util.List;
 import java.util.Optional;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 import static org.mockito.Mockito.times;
@@ -39,15 +42,11 @@ import static org.mockito.Mockito.times;
 class ScheduleVoteServiceImplTest {
 
     @Mock
-    private ClubRepository clubRepository;
-    @Mock
     private ScheduleRepository scheduleRepository;
     @Mock
     private UserClubRepository userClubRepository;
     @Mock
     private ScheduleVoteRepository scheduleVoteRepository;
-    @Mock
-    private MatchApplicationRepository matchApplicationRepository;
     @Mock
     private ApplicationEventPublisher applicationEventPublisher;
     @InjectMocks
@@ -133,6 +132,44 @@ class ScheduleVoteServiceImplTest {
         verify(scheduleRepository, times(1)).findWithClubById(any(Long.class));
         verify(userClubRepository, times(1)).findUserByClub(any(Club.class));
         verify(applicationEventPublisher, times(1)).publishEvent(any(ScheduleEncourageEvent.class));
+    }
+
+
+    @Test
+    @DisplayName("운영진은 일정 투표를 마감할 수 있다")
+    void closeSchedule() {
+        //given
+        Club club = Club.from(clubInput, null);
+        User user = User.createUser(signupInput);
+        Schedule schedule = Schedule.from(club, scheduleInput);
+        UserClub userClub = UserClub.createLeaderUserClub(user, club);
+        //when
+        when(scheduleRepository.findWithClubById(any(Long.class))).thenReturn(schedule);
+        when(userClubRepository.findByClubAndUser(any(Club.class), any(User.class))).thenReturn(Optional.of(userClub));
+        scheduleVoteService.closeScheduleVote(1L, user);
+        //then
+        verify(scheduleRepository, times(1)).findWithClubById(any(Long.class));
+        verify(userClubRepository, times(1)).findByClubAndUser(any(Club.class), any(User.class));
+    }
+
+    @Test
+    @DisplayName("일반 회원이 일정 투표를 마감할 때 예외가 발생한다")
+    void closeSchedule_wrong_permission() {
+        //given
+        Club club = Club.from(clubInput, null);
+        User user = User.createUser(signupInput);
+        Schedule schedule = Schedule.from(club, scheduleInput);
+        UserClub userClub = UserClub.createUserClub(user, club);
+        //when
+        when(scheduleRepository.findWithClubById(any(Long.class))).thenReturn(schedule);
+        when(userClubRepository.findByClubAndUser(any(Club.class), any(User.class))).thenReturn(Optional.of(userClub));
+        //then
+        Exception exception = assertThrows(ScheduleControllerAdvice.class, () -> {
+            scheduleVoteService.closeScheduleVote(1L, user);
+        });
+        assertThat(exception.getMessage()).isEqualTo(ResponseCode.CLUB_PERMISSION_DENIED.getMessage());
+        verify(scheduleRepository, times(1)).findWithClubById(any(Long.class));
+        verify(userClubRepository, times(1)).findByClubAndUser(any(Club.class), any(User.class));
     }
 
 

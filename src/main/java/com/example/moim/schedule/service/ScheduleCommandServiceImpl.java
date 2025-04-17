@@ -32,7 +32,6 @@ public class ScheduleCommandServiceImpl implements ScheduleCommandService {
     private final ClubRepository clubRepository;
     private final ScheduleRepository scheduleRepository;
     private final UserClubRepository userClubRepository;
-    private final CommentRepository commentRepository;
     private final ApplicationEventPublisher eventPublisher;
     private final MatchApplicationRepository matchApplicationRepository;
 
@@ -81,26 +80,6 @@ public class ScheduleCommandServiceImpl implements ScheduleCommandService {
      */
     public void deleteSchedule(Long id) {
         scheduleRepository.deleteById(id);
-    }
-
-    /**
-     * TODO: void -> 기본 응답, 이름 명확하게 바꾸기 closeScheduleVote 등
-     * @param id
-     */
-    @Transactional
-    public void closeSchedule(Long id, User user) {
-        Schedule schedule = scheduleRepository.findWithClubById(id);
-        UserClub userClub = getUserClub(schedule.getClub(), user);
-        if (!(userClub.getClubRole().equals(ClubRole.STAFF))) {
-            throw new ScheduleControllerAdvice(ResponseCode.CLUB_PERMISSION_DENIED);
-        }
-
-        schedule.close();
-    }
-
-    public void saveComment(CommentInput commentInput, User user) {
-        Schedule schedule = getSchedule(commentInput.getId());
-        commentRepository.save(Comment.createComment(user, schedule, commentInput.getContents()));
     }
 
     private Club getClub(Long clubId) {

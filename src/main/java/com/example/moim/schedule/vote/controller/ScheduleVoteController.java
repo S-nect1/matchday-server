@@ -11,15 +11,20 @@ import org.springframework.web.bind.annotation.*;
 @RequiredArgsConstructor
 public class ScheduleVoteController implements ScheduleVoteControllerDocs {
 
-    private ScheduleVoteService scheduleVoteService;
+    private final ScheduleVoteService scheduleVoteService;
 
     @PatchMapping("/schedules/vote")
-    public void scheduleVote(@RequestBody ScheduleVoteInput scheduleVoteInput, @AuthenticationPrincipal UserDetailsImpl userDetailsImpl) {
+    public void createScheduleVote(@RequestBody ScheduleVoteInput scheduleVoteInput, @AuthenticationPrincipal UserDetailsImpl userDetailsImpl) {
         scheduleVoteService.voteSchedule(scheduleVoteInput, userDetailsImpl.getUser());
     }
 
     @PostMapping("/schedules/encourage/{id}")
-    public void voteEncourage(@PathVariable Long id) {
+    public void encourageVote(@PathVariable Long id) {
         scheduleVoteService.voteEncourage(id);
+    }
+
+    @PatchMapping("/schedules/close/{id}")
+    public void closeScheduleVote(@PathVariable Long id, @AuthenticationPrincipal UserDetailsImpl userDetailsImpl) {
+        scheduleVoteService.closeScheduleVote(id, userDetailsImpl.getUser());
     }
 }

@@ -7,7 +7,7 @@ import com.example.moim.schedule.dto.ScheduleSearchInput;
 import java.util.List;
 
 public interface ScheduleQueryService {
-    List<ScheduleOutput> findMonthSchedule(ScheduleSearchInput scheduleSearchInput);
-    List<ScheduleOutput> findDaySchedule(ScheduleSearchInput scheduleSearchInput);
+    List<ScheduleOutput> findMonthlySchedulesWithFilter(ScheduleSearchInput scheduleSearchInput);
+    List<ScheduleOutput> findScheduleByDay(ScheduleSearchInput scheduleSearchInput);
     ScheduleDetailOutput findScheduleDetail(Long scheduleId);
 }

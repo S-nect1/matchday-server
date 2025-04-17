@@ -6,15 +6,11 @@ import com.example.moim.club.repository.ClubRepository;
 import com.example.moim.club.repository.UserClubRepository;
 import com.example.moim.global.enums.*;
 import com.example.moim.global.exception.ResponseCode;
-import com.example.moim.match.repository.MatchApplicationRepository;
-import com.example.moim.notification.dto.ScheduleEncourageEvent;
 import com.example.moim.notification.dto.ScheduleSaveEvent;
 import com.example.moim.schedule.dto.*;
 import com.example.moim.schedule.entity.Schedule;
-import com.example.moim.schedule.vote.entity.ScheduleVote;
 import com.example.moim.schedule.exception.advice.ScheduleControllerAdvice;
 import com.example.moim.schedule.repository.ScheduleRepository;
-import com.example.moim.schedule.vote.repository.ScheduleVoteRepository;
 import com.example.moim.user.dto.SignupInput;
 import com.example.moim.user.entity.User;
 import org.junit.jupiter.api.BeforeEach;
@@ -28,7 +24,6 @@ import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.mock.web.MockMultipartFile;
 
 import java.time.LocalDateTime;
-import java.util.List;
 import java.util.Optional;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
@@ -168,42 +163,5 @@ class ScheduleCommandServiceImplTest {
         scheduleCommandService.deleteSchedule(id);
         //then
         verify(scheduleRepository, times(1)).deleteById(any(Long.class));
-    }
-
-    @Test
-    @DisplayName("운영진은 일정 투표를 마감할 수 있다")
-    void closeSchedule() {
-        //given
-        Club club = Club.from(clubInput, null);
-        User user = User.createUser(signupInput);
-        Schedule schedule = Schedule.from(club, scheduleInput);
-        UserClub userClub = UserClub.createLeaderUserClub(user, club);
-        //when
-        when(scheduleRepository.findWithClubById(any(Long.class))).thenReturn(schedule);
-        when(userClubRepository.findByClubAndUser(any(Club.class), any(User.class))).thenReturn(Optional.of(userClub));
-        scheduleCommandService.closeSchedule(1L, user);
-        //then
-        verify(scheduleRepository, times(1)).findWithClubById(any(Long.class));
-        verify(userClubRepository, times(1)).findByClubAndUser(any(Club.class), any(User.class));
-    }
-
-    @Test
-    @DisplayName("일반 회원이 일정 투표를 마감할 때 예외가 발생한다")
-    void closeSchedule_wrong_permission() {
-        //given
-        Club club = Club.from(clubInput, null);
-        User user = User.createUser(signupInput);
-        Schedule schedule = Schedule.from(club, scheduleInput);
-        UserClub userClub = UserClub.createUserClub(user, club);
-        //when
-        when(scheduleRepository.findWithClubById(any(Long.class))).thenReturn(schedule);
-        when(userClubRepository.findByClubAndUser(any(Club.class), any(User.class))).thenReturn(Optional.of(userClub));
-        //then
-        Exception exception = assertThrows(ScheduleControllerAdvice.class, () -> {
-            scheduleCommandService.closeSchedule(1L, user);
-        });
-        assertThat(exception.getMessage()).isEqualTo(ResponseCode.CLUB_PERMISSION_DENIED.getMessage());
-        verify(scheduleRepository, times(1)).findWithClubById(any(Long.class));
-        verify(userClubRepository, times(1)).findByClubAndUser(any(Club.class), any(User.class));
     }
 }

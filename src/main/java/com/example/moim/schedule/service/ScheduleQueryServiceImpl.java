@@ -27,7 +27,7 @@ public class ScheduleQueryServiceImpl implements ScheduleQueryService {
     private final ClubRepository clubRepository;
     private final MatchApplicationRepository matchApplicationRepository;
 
-    public List<ScheduleOutput> findMonthSchedule(ScheduleSearchInput scheduleSearchInput) {
+    public List<ScheduleOutput> findMonthlySchedulesWithFilter(ScheduleSearchInput scheduleSearchInput) {
         Club club = getClub(scheduleSearchInput.getClubId());
 
         return scheduleRepository.findByClubAndTime(club,
@@ -38,7 +38,7 @@ public class ScheduleQueryServiceImpl implements ScheduleQueryService {
                 .stream().map(ScheduleOutput::new).collect(Collectors.toList());
     }
 
-    public List<ScheduleOutput> findDaySchedule(ScheduleSearchInput scheduleSearchInput) {
+    public List<ScheduleOutput> findScheduleByDay(ScheduleSearchInput scheduleSearchInput) {
         LocalDateTime searchDate = LocalDateTime.of(scheduleSearchInput.getDate() / 10000, (scheduleSearchInput.getDate() / 100) % 100, scheduleSearchInput.getDate() % 100,
                 0, 0, 0);
         Club club = getClub(scheduleSearchInput.getClubId());

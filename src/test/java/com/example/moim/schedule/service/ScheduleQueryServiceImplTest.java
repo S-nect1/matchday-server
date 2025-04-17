@@ -70,7 +70,7 @@ public class ScheduleQueryServiceImplTest {
         //when
         when(clubRepository.findById(any(Long.class))).thenReturn(Optional.of(club));
         when(scheduleRepository.findByClubAndTime(any(Club.class), any(LocalDateTime.class), any(LocalDateTime.class), any(String.class), any(String.class))).thenReturn(List.of(schedule));
-        List<ScheduleOutput> result = scheduleQueryService.findMonthSchedule(scheduleSearchInput);
+        List<ScheduleOutput> result = scheduleQueryService.findMonthlySchedulesWithFilter(scheduleSearchInput);
 
         //then
         assertThat(result.size()).isEqualTo(1);
@@ -91,7 +91,7 @@ public class ScheduleQueryServiceImplTest {
         //when
         when(clubRepository.findById(any(Long.class))).thenReturn(Optional.of(club));
         when(scheduleRepository.findByClubAndTime(any(Club.class), any(LocalDateTime.class), any(LocalDateTime.class), any(String.class), any(String.class))).thenReturn(List.of());
-        List<ScheduleOutput> result = scheduleQueryService.findMonthSchedule(scheduleSearchInput);
+        List<ScheduleOutput> result = scheduleQueryService.findMonthlySchedulesWithFilter(scheduleSearchInput);
 
         //then
         assertThat(result.size()).isEqualTo(0);
@@ -110,7 +110,7 @@ public class ScheduleQueryServiceImplTest {
         //when
         when(clubRepository.findById(any(Long.class))).thenReturn(Optional.of(club));
         when(scheduleRepository.findByClubAndTime(any(Club.class), any(LocalDateTime.class), any(LocalDateTime.class), any(String.class), any(String.class))).thenReturn(List.of(schedule));
-        List<ScheduleOutput> result = scheduleQueryService.findDaySchedule(scheduleSearchInput);
+        List<ScheduleOutput> result = scheduleQueryService.findScheduleByDay(scheduleSearchInput);
 
         //then
         assertThat(result.size()).isEqualTo(1);

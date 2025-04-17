@@ -1,7 +1,9 @@
 package com.example.moim.schedule.vote.service;
 
+import com.example.moim.club.entity.Club;
 import com.example.moim.club.entity.UserClub;
 import com.example.moim.club.repository.UserClubRepository;
+import com.example.moim.global.enums.ClubRole;
 import com.example.moim.global.exception.ResponseCode;
 import com.example.moim.notification.dto.ScheduleEncourageEvent;
 import com.example.moim.schedule.dto.ScheduleVoteInput;
@@ -68,7 +70,26 @@ public class ScheduleVoteServiceImpl implements ScheduleVoteService {
         eventPublisher.publishEvent(new ScheduleEncourageEvent(schedule, userList));
     }
 
+    /**
+     * TODO: void -> 기본 응답, 이름 명확하게 바꾸기 closeScheduleVote 등
+     * @param id
+     */
+    @Transactional
+    public void closeScheduleVote(Long id, User user) {
+        Schedule schedule = scheduleRepository.findWithClubById(id);
+        UserClub userClub = getUserClub(schedule.getClub(), user);
+        if (!(userClub.getClubRole().equals(ClubRole.STAFF))) {
+            throw new ScheduleControllerAdvice(ResponseCode.CLUB_PERMISSION_DENIED);
+        }
+
+        schedule.close();
+    }
+
     private Schedule getSchedule(Long scheduleId) {
         return scheduleRepository.findById(scheduleId).orElseThrow(() -> new ScheduleControllerAdvice(ResponseCode.SCHEDULE_NOT_FOUND));
+    }
+
+    private UserClub getUserClub(Club club, User user) {
+        return userClubRepository.findByClubAndUser(club, user).orElseThrow(() -> new ScheduleControllerAdvice(ResponseCode.CLUB_USER_NOT_FOUND));
     }
 }

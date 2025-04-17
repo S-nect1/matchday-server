@@ -27,7 +27,7 @@ public class MainService {
 
     public MainOutput mainPage(Long clubId) {
         return new MainOutput(clubRepository.findById(clubId).get(),
-                scheduleQueryService.findMonthSchedule(new ScheduleSearchInput(Integer.parseInt(LocalDate.now().toString().replace("-", "")),
+                scheduleQueryService.findMonthlySchedulesWithFilter(new ScheduleSearchInput(Integer.parseInt(LocalDate.now().toString().replace("-", "")),
                 clubId, null, null)));
     }
 }

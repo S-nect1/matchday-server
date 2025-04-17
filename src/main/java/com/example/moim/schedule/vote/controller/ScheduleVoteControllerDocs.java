@@ -9,8 +9,12 @@ import org.springframework.web.bind.annotation.RequestBody;
 
 public interface ScheduleVoteControllerDocs {
     @Operation(summary = "일정 참가 투표", description = "참가면 attendance = attend, 참가 취소는 absent")
-    void scheduleVote(@RequestBody ScheduleVoteInput scheduleVoteInput, @AuthenticationPrincipal UserDetailsImpl userDetailsImpl);
+    void createScheduleVote(@RequestBody ScheduleVoteInput scheduleVoteInput, @AuthenticationPrincipal UserDetailsImpl userDetailsImpl);
 
     @Operation(summary = "일정 참가 투표 독려")
-    void voteEncourage(@PathVariable Long id);
+    void encourageVote(@PathVariable Long id);
+
+    @Operation(summary = "일정 참가 투표 마감")
+    void closeScheduleVote(@PathVariable Long id, @AuthenticationPrincipal UserDetailsImpl userDetailsImpl);
+
 }

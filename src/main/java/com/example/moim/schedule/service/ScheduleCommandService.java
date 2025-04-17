@@ -7,7 +7,4 @@ public interface ScheduleCommandService {
     ScheduleOutput saveSchedule(ScheduleInput scheduleInput, User user);
     ScheduleOutput updateSchedule(ScheduleUpdateInput scheduleUpdateInput, Long id, User user);
     void deleteSchedule(Long id);
-    void closeSchedule(Long id, User user);
-    void saveComment(CommentInput commentInput, User user);
-
 }
