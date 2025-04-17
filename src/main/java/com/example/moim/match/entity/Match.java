@@ -12,6 +12,7 @@ import com.example.moim.match.exception.MatchRecordExpireException;
 import com.example.moim.global.entity.BaseEntity;
 import com.example.moim.match.dto.MatchInput;
 import com.example.moim.match.dto.MatchRegInput;
+import com.example.moim.schedule.entity.ScheduleCategory;
 import jakarta.persistence.*;
 import lombok.Getter;
 
@@ -143,7 +144,7 @@ public class Match extends BaseEntity {
                 getStartTime(),
                 getEndTime(),
                 getMinParticipants(),
-                "친선 매치",
+                ScheduleCategory.FRIENDLY_MATCH.getKoreanName(),
                 getNote());
     }
 
