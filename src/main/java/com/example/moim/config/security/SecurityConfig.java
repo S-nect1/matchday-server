@@ -71,6 +71,8 @@ public class SecurityConfig {
         httpSecurity.csrf(csrf -> csrf
                 .ignoringRequestMatchers("/club/**")
         );
+        httpSecurity.csrf(csrf -> csrf.ignoringRequestMatchers("/notice/**"));
+
         //From 로그인 방식 disable
         httpSecurity.formLogin(AbstractHttpConfigurer::disable);
         //http basic 인증 방식 disable

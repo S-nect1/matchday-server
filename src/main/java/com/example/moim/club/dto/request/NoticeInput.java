@@ -7,13 +7,11 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 public class NoticeInput {
-    private Long clubId;
     private String title;
     private String content;
 
     @Builder
-    public NoticeInput(Long clubId, String title, String content) {
-        this.clubId = clubId;
+    public NoticeInput(String title, String content) {
         this.title = title;
         this.content = content;
     }
