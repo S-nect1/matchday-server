@@ -36,11 +36,12 @@ public class ScheduleCommandServiceImpl implements ScheduleCommandService {
     private final MatchApplicationRepository matchApplicationRepository;
 
     public ScheduleOutput saveSchedule(ScheduleInput scheduleInput, User user) {
+        /**
+         * TODO: 친선 매치일 경우 상대방 팀에도 일정 생성되도록 처리해야 하나?
+         */
         Club club = getClub(scheduleInput.getClubId());
-        UserClub userClub = getUserClub(club, user);
-        if (!(userClub.getClubRole().equals(ClubRole.STAFF))) {
-            throw new ScheduleControllerAdvice(ResponseCode.CLUB_PERMISSION_DENIED);
-        }
+
+        validateClubStaff(getUserClub(club, user));
 
         Schedule schedule = scheduleRepository.save(Schedule.from(club, scheduleInput));
 
@@ -54,12 +55,12 @@ public class ScheduleCommandServiceImpl implements ScheduleCommandService {
 
     @Transactional
     public ScheduleOutput updateSchedule(ScheduleUpdateInput scheduleUpdateInput, Long id, User user) {
+        /**
+         * TODO: 친선 매치일 경우 상대방 팀에도 일정 수정 반영해야 하나?
+         */
         Club club = getClub(scheduleUpdateInput.getClubId());
-        UserClub userClub = getUserClub(club, user);
 
-        if (!(userClub.getClubRole().equals(ClubRole.STAFF))) {
-            throw new ScheduleControllerAdvice(ResponseCode.CLUB_PERMISSION_DENIED);
-        }
+        validateClubStaff(getUserClub(club, user));
 
         Schedule schedule = getSchedule(id);
 
@@ -74,12 +75,19 @@ public class ScheduleCommandServiceImpl implements ScheduleCommandService {
     }
 
     /**
-     * TODO: void -> 기본 응답
-     * FIXME: 운영진인지 아닌지 체크하는 로직 필요함(필터에서 걸러주면 필요 X)
+     * TODO: 친선 매치라면 같이 삭제해주는 로직 필요
      * @param id
      */
-    public void deleteSchedule(Long id) {
+    public String deleteSchedule(Long id, User user) {
+
+        Schedule schedule = getSchedule(id);
+
+        // 운영진인지 권한 확인
+        validateClubStaff(getUserClub(schedule.getClub(), user));
+
         scheduleRepository.deleteById(id);
+
+        return "스케줄을 정상적으로 취소하였습니다.";
     }
 
     private Club getClub(Long clubId) {
@@ -92,5 +100,11 @@ public class ScheduleCommandServiceImpl implements ScheduleCommandService {
 
     private Schedule getSchedule(Long scheduleId) {
         return scheduleRepository.findById(scheduleId).orElseThrow(() -> new ScheduleControllerAdvice(ResponseCode.SCHEDULE_NOT_FOUND));
+    }
+
+    private void validateClubStaff(UserClub userClub) {
+        if (!(userClub.getClubRole().equals(ClubRole.STAFF))) {
+            throw new ScheduleControllerAdvice(ResponseCode.CLUB_PERMISSION_DENIED);
+        }
     }
 }

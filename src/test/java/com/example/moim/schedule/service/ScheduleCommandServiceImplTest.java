@@ -155,13 +155,24 @@ class ScheduleCommandServiceImplTest {
     }
 
     @Test
-    @DisplayName("일정을 삭제할 수 있다")
+    @DisplayName("운영진은 일정을 삭제할 수 있다")
     void deleteSchedule() {
         //given
         Long id = 1L;
+        Club club = Club.from(clubInput, null);
+        Schedule schedule = Schedule.from(club, scheduleInput);
+        User user = User.createUser(signupInput);
+        UserClub userClub = UserClub.createLeaderUserClub(user, club);
+
         //when
-        scheduleCommandService.deleteSchedule(id);
+        when(scheduleRepository.findById(any(Long.class))).thenReturn(Optional.of(schedule));
+        when(userClubRepository.findByClubAndUser(any(Club.class), any(User.class))).thenReturn(Optional.of(userClub));
+        String result = scheduleCommandService.deleteSchedule(id, user);
+
         //then
+        assertThat(result).isEqualTo("스케줄을 정상적으로 취소하였습니다.");
+        verify(scheduleRepository, times(1)).deleteById(any(Long.class));
+        verify(userClubRepository, times(1)).findByClubAndUser(any(Club.class), any(User.class));
         verify(scheduleRepository, times(1)).deleteById(any(Long.class));
     }
 }

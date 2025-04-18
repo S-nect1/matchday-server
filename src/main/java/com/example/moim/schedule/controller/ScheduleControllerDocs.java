@@ -1,5 +1,6 @@
 package com.example.moim.schedule.controller;
 
+import com.example.moim.global.exception.BaseResponse;
 import com.example.moim.schedule.dto.ScheduleDetailOutput;
 import com.example.moim.schedule.dto.ScheduleInput;
 import com.example.moim.schedule.dto.ScheduleOutput;
@@ -18,23 +19,22 @@ import java.util.List;
 @Tag(name = "일정 api", description = "모임(club) 안에서 category에 따라 권한 부여. creator, admin / member, newmember")
 public interface ScheduleControllerDocs {
     @Operation(summary = "일정 생성", description = "startTime, endTime 형식은 yyyy-MM-dd HH:mm")
-    ScheduleOutput createSchedule(@RequestBody ScheduleInput scheduleInput, @AuthenticationPrincipal UserDetailsImpl userDetailsImpl);
+    BaseResponse<ScheduleOutput> createSchedule(@RequestBody ScheduleInput scheduleInput, @AuthenticationPrincipal UserDetailsImpl userDetailsImpl);
 
     @Operation(summary = "일정 수정", description = "startTime, endTime 형식은 yyyy-MM-dd HH:mm")
-    ScheduleOutput updateSchedule(@RequestBody ScheduleUpdateInput scheduleUpdateInput, @PathVariable Long scheduleId, @AuthenticationPrincipal UserDetailsImpl userDetailsImpl);
+    BaseResponse<ScheduleOutput> updateSchedule(@RequestBody ScheduleUpdateInput scheduleUpdateInput, @PathVariable Long scheduleId, @AuthenticationPrincipal UserDetailsImpl userDetailsImpl);
 
     @Operation(summary = "한달 일정 조회", description = "쿼리파라미터 예시: /schedule?date=202404&clubId=6&search=친선 경기&category=친선 경기")
-    List<ScheduleOutput> getScheduleList(@ModelAttribute ScheduleSearchInput scheduleSearchInput);
+    BaseResponse<List<ScheduleOutput>> getScheduleList(@ModelAttribute ScheduleSearchInput scheduleSearchInput);
 
     @Operation(summary = "하루 일정 조회", description = "쿼리파라미터 예시: /schedule/day?date=20240910&clubId=6&search=친선 경기&category=친선 경기")
-    List<ScheduleOutput> getScheduleListByDay(@ModelAttribute ScheduleSearchInput scheduleSearchInput);
+    BaseResponse<List<ScheduleOutput>> getScheduleListByDay(@ModelAttribute ScheduleSearchInput scheduleSearchInput);
 
     @Operation(summary = "일정 세부 조회", description = "참가면 attendance = attend, 참가 취소는 absent, 투표 안하면 notVote")
-    ScheduleDetailOutput getScheduleDetail(@PathVariable Long id);
+    BaseResponse<ScheduleDetailOutput> getScheduleDetail(@PathVariable Long id);
 
     @Operation(summary = "일정 삭제")
-    void deleteSchedule(@PathVariable Long id);
+    BaseResponse<String> deleteSchedule(@PathVariable Long id, @AuthenticationPrincipal UserDetailsImpl userDetailsImpl);
+//    BaseResponse<String> deleteSchedule(@PathVariable Long id);
 
-//    @Operation(summary = "일정 댓글", description = "id는 일정 id")
-//    void scheduleComment(@RequestBody CommentInput commentInput, @AuthenticationPrincipal UserDetailsImpl userDetailsImpl);
 }
