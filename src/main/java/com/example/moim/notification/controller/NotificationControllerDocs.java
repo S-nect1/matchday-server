@@ -14,11 +14,11 @@ import java.util.List;
 public interface NotificationControllerDocs {
 
     @Operation(summary = "새로운 알림 있는지 체크")
-    NotificationExistOutput noticeCheck(@AuthenticationPrincipal UserDetailsImpl userDetailsImpl);
+    NotificationExistOutput notificationUnreadCount(@AuthenticationPrincipal UserDetailsImpl userDetailsImpl);
 
     @Operation(summary = "알림 조회")
-    List<NotificationOutput> noticeFind(@AuthenticationPrincipal UserDetailsImpl userDetailsImpl);
+    List<NotificationOutput> notificationFind(@AuthenticationPrincipal UserDetailsImpl userDetailsImpl);
 
     @Operation(summary = "알림 삭제")
-    void noticeRemove(@AuthenticationPrincipal UserDetailsImpl userDetailsImpl, @PathVariable Long id);
+    void notificationRemove(@AuthenticationPrincipal UserDetailsImpl userDetailsImpl, @PathVariable Long id);
 }

@@ -58,6 +58,7 @@ dependencies {
     testCompileOnly 'org.projectlombok:lombok'
     testAnnotationProcessor 'org.projectlombok:lombok'
     testRuntimeOnly 'com.h2database:h2'
+    testImplementation 'org.awaitility:awaitility:4.2.0'
 }
 
 sourceSets {
@@ -70,4 +71,10 @@ sourceSets {
 
 tasks.named('test') {
     useJUnitPlatform()
+}
+
+test {
+    jvmArgs += [
+            '--add-opens=java.base/java.lang=ALL-UNNAMED'
+    ]
 }
