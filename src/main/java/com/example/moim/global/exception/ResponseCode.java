@@ -13,7 +13,7 @@ import java.util.function.Predicate;
 public enum ResponseCode {
 
     // 정상 code
-    OK(HttpStatus.OK,"2000", "Ok"),
+    OK(HttpStatus.OK,"2000", "OK"),
 
     // Common Error
     _INTERNAL_SERVER_ERROR(HttpStatus.INTERNAL_SERVER_ERROR, "COMMON000", "서버 에러, 관리자에게 문의 바랍니다."),

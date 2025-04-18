@@ -1,6 +1,6 @@
 package com.example.moim.schedule.vote.controller;
 
-import com.example.moim.schedule.dto.ScheduleVoteInput;
+import com.example.moim.schedule.vote.dto.ScheduleVoteInput;
 import com.example.moim.schedule.vote.service.ScheduleVoteService;
 import com.example.moim.user.dto.UserDetailsImpl;
 import lombok.RequiredArgsConstructor;

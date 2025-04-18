@@ -6,7 +6,7 @@ import com.example.moim.club.repository.UserClubRepository;
 import com.example.moim.global.enums.ClubRole;
 import com.example.moim.global.exception.ResponseCode;
 import com.example.moim.notification.dto.ScheduleEncourageEvent;
-import com.example.moim.schedule.dto.ScheduleVoteInput;
+import com.example.moim.schedule.vote.dto.ScheduleVoteInput;
 import com.example.moim.schedule.entity.Schedule;
 import com.example.moim.schedule.exception.advice.ScheduleControllerAdvice;
 import com.example.moim.schedule.repository.ScheduleRepository;

@@ -48,6 +48,11 @@ public class ScheduleQueryServiceImpl implements ScheduleQueryService {
                 .stream().map(ScheduleOutput::new).collect(Collectors.toList());
     }
 
+    /**
+     * FIXME: 세부 일정 페이지 보고 데이터 넘겨주기. 댓글도 포함되어야 함
+     * @param scheduleId
+     * @return
+     */
     public ScheduleDetailOutput findScheduleDetail(Long scheduleId) {
         Schedule schedule = getSchedule(scheduleId);
 

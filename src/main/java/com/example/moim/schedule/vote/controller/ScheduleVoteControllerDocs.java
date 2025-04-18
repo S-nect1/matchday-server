@@ -1,6 +1,6 @@
 package com.example.moim.schedule.vote.controller;
 
-import com.example.moim.schedule.dto.ScheduleVoteInput;
+import com.example.moim.schedule.vote.dto.ScheduleVoteInput;
 import com.example.moim.user.dto.UserDetailsImpl;
 import io.swagger.v3.oas.annotations.Operation;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;

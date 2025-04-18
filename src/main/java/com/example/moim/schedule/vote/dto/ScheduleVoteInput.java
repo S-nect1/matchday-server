@@ -1,4 +1,4 @@
-package com.example.moim.schedule.dto;
+package com.example.moim.schedule.vote.dto;
 
 import lombok.Builder;
 import lombok.Data;
