@@ -1,7 +1,9 @@
 package com.example.moim.schedule.service;
 
 import com.example.moim.club.entity.Club;
+import com.example.moim.club.entity.UserClub;
 import com.example.moim.club.repository.ClubRepository;
+import com.example.moim.club.repository.UserClubRepository;
 import com.example.moim.global.exception.ResponseCode;
 import com.example.moim.match.dto.MatchApplyClubOutput;
 import com.example.moim.match.repository.MatchApplicationRepository;
@@ -11,7 +13,9 @@ import com.example.moim.schedule.dto.ScheduleSearchInput;
 import com.example.moim.schedule.entity.Schedule;
 import com.example.moim.schedule.exception.advice.ScheduleControllerAdvice;
 import com.example.moim.schedule.repository.ScheduleRepository;
+import com.example.moim.user.entity.User;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -19,20 +23,36 @@ import java.time.Month;
 import java.util.List;
 import java.util.stream.Collectors;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class ScheduleQueryServiceImpl implements ScheduleQueryService {
 
     private final ScheduleRepository scheduleRepository;
     private final ClubRepository clubRepository;
+    private final UserClubRepository userClubRepository;
     private final MatchApplicationRepository matchApplicationRepository;
 
+    /**
+     * TODO: 기획에 맞게, 스케줄 조회 기준 바꾸기
+     * User 가 가진 스케줄로 조회해야하는거 아닌가..?
+     * 그럼 이거 구조 아예 다시 바꿔야 할 것 같은데...
+     * @param scheduleSearchInput
+     * @return
+     */
     public List<ScheduleOutput> findMonthlySchedulesWithFilter(ScheduleSearchInput scheduleSearchInput) {
         Club club = getClub(scheduleSearchInput.getClubId());
 
+        int year = scheduleSearchInput.getDate() / 100;
+        log.info("year : {}", year);
+        int month = scheduleSearchInput.getDate() % 100;
+        log.info("month : {}", month);
+
+        LocalDateTime startDate = LocalDateTime.of(year, month, 1, 0, 0, 0).minusDays(6);
+        LocalDateTime endDate = LocalDateTime.of(year, month, Month.of(month).minLength(), 23, 59, 59).plusDays(6);
+
         return scheduleRepository.findByClubAndTime(club,
-                        LocalDateTime.of(scheduleSearchInput.getDate() / 100, scheduleSearchInput.getDate() % 100, 1, 0, 0, 0).minusDays(6),
-                        LocalDateTime.of(scheduleSearchInput.getDate() / 100, scheduleSearchInput.getDate() % 100, Month.of(scheduleSearchInput.getDate() % 100).minLength(), 23, 59, 59).plusDays(6),
+                        startDate, endDate,
                         scheduleSearchInput.getSearch(),
                         scheduleSearchInput.getCategory())
                 .stream().map(ScheduleOutput::new).collect(Collectors.toList());
@@ -67,5 +87,9 @@ public class ScheduleQueryServiceImpl implements ScheduleQueryService {
 
     private Schedule getSchedule(Long scheduleId) {
         return scheduleRepository.findById(scheduleId).orElseThrow(() -> new ScheduleControllerAdvice(ResponseCode.SCHEDULE_NOT_FOUND));
+    }
+
+    private UserClub getUserClub(Club club, User user) {
+        return userClubRepository.findByClubAndUser(club, user).orElseThrow(() -> new ScheduleControllerAdvice(ResponseCode.CLUB_USER_NOT_FOUND));
     }
 }

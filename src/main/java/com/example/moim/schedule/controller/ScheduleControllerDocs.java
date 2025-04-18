@@ -24,8 +24,8 @@ public interface ScheduleControllerDocs {
     @Operation(summary = "일정 수정", description = "startTime, endTime 형식은 yyyy-MM-dd HH:mm")
     BaseResponse<ScheduleOutput> updateSchedule(@RequestBody ScheduleUpdateInput scheduleUpdateInput, @PathVariable Long scheduleId, @AuthenticationPrincipal UserDetailsImpl userDetailsImpl);
 
-    @Operation(summary = "한달 일정 조회", description = "쿼리파라미터 예시: /schedule?date=202404&clubId=6&search=친선 경기&category=친선 경기")
-    BaseResponse<List<ScheduleOutput>> getScheduleList(@ModelAttribute ScheduleSearchInput scheduleSearchInput);
+    @Operation(summary = "한달 일정 조회", description = "카테고리는 친선 매치/정기 운동/대회/기타 중에 하나여야 합니다(띄어쓰기까지 포함)")
+    BaseResponse<List<ScheduleOutput>> searchScheduleList(@ModelAttribute ScheduleSearchInput scheduleSearchInput);
 
     @Operation(summary = "하루 일정 조회", description = "쿼리파라미터 예시: /schedule/day?date=20240910&clubId=6&search=친선 경기&category=친선 경기")
     BaseResponse<List<ScheduleOutput>> getScheduleListByDay(@ModelAttribute ScheduleSearchInput scheduleSearchInput);

@@ -37,7 +37,7 @@ public class ScheduleController implements ScheduleControllerDocs {
     }
 
     @GetMapping(value = "/schedules", produces = MediaType.APPLICATION_JSON_VALUE)
-    public BaseResponse<List<ScheduleOutput>> getScheduleList(@ModelAttribute ScheduleSearchInput scheduleSearchInput) {
+    public BaseResponse<List<ScheduleOutput>> searchScheduleList(@ModelAttribute ScheduleSearchInput scheduleSearchInput) {
         List<ScheduleOutput> scheduleList = scheduleQueryService.findMonthlySchedulesWithFilter(scheduleSearchInput);
         return BaseResponse.onSuccess(scheduleList, ResponseCode.OK);
     }
