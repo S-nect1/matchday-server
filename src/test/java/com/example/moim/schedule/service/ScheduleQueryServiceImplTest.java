@@ -2,7 +2,9 @@ package com.example.moim.schedule.service;
 
 import com.example.moim.club.dto.request.ClubInput;
 import com.example.moim.club.entity.Club;
+import com.example.moim.club.entity.UserClub;
 import com.example.moim.club.repository.ClubRepository;
+import com.example.moim.club.repository.UserClubRepository;
 import com.example.moim.global.enums.*;
 import com.example.moim.match.entity.Match;
 import com.example.moim.match.entity.MatchApplication;
@@ -10,6 +12,8 @@ import com.example.moim.match.repository.MatchApplicationRepository;
 import com.example.moim.schedule.dto.*;
 import com.example.moim.schedule.entity.Schedule;
 import com.example.moim.schedule.repository.ScheduleRepository;
+import com.example.moim.user.dto.SignupInput;
+import com.example.moim.user.entity.User;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -36,6 +40,8 @@ public class ScheduleQueryServiceImplTest {
     @Mock
     private ScheduleRepository scheduleRepository;
     @Mock
+    private UserClubRepository userClubRepository;
+    @Mock
     private MatchApplicationRepository matchApplicationRepository;
     @InjectMocks
     private ScheduleQueryServiceImpl scheduleQueryService;
@@ -43,9 +49,13 @@ public class ScheduleQueryServiceImplTest {
     // 필요한 공동 객체
     private ScheduleInput scheduleInput;
     private ClubInput clubInput;
+    private SignupInput signupInput;
 
     @BeforeEach
     void init() {
+        this.signupInput = SignupInput.builder().email("email").password("password")
+                .name("name").birthday("birthday").gender(Gender.WOMAN.getKoreanName()).build();
+
         this.scheduleInput = ScheduleInput.builder().clubId(1L).title("title").location("location")
                 .startTime(LocalDateTime.of(2024, 12, 13, 12, 30, 0))
                 .endTime(LocalDateTime.of(2024, 12, 13, 17, 30, 0))
@@ -64,13 +74,16 @@ public class ScheduleQueryServiceImplTest {
     void findSchedule() {
         //given
         Club club = Club.from(clubInput, null);
+        User user = User.createUser(signupInput);
+        UserClub userClub = UserClub.createUserClub(user, club);
         Schedule schedule = Schedule.from(club, scheduleInput);
-        ScheduleSearchInput scheduleSearchInput = ScheduleSearchInput.builder().date(202412).clubId(1L).search("title").category("soccer").build();
+        ScheduleSearchMonthInput scheduleSearchMonthInput = ScheduleSearchMonthInput.builder().date(202412).clubId(1L).search("title").category("soccer").build();
 
         //when
         when(clubRepository.findById(any(Long.class))).thenReturn(Optional.of(club));
         when(scheduleRepository.findByClubAndTime(any(Club.class), any(LocalDateTime.class), any(LocalDateTime.class), any(String.class), any(String.class))).thenReturn(List.of(schedule));
-        List<ScheduleOutput> result = scheduleQueryService.findMonthlySchedulesWithFilter(scheduleSearchInput);
+        when(userClubRepository.findByClubAndUser(any(Club.class), any(User.class))).thenReturn(Optional.of(userClub));
+        List<ScheduleOutput> result = scheduleQueryService.findMonthlySchedulesWithFilter(scheduleSearchMonthInput, user);
 
         //then
         assertThat(result.size()).isEqualTo(1);
@@ -86,12 +99,15 @@ public class ScheduleQueryServiceImplTest {
     void findSchedule_zero_schedule() {
         //given
         Club club = Club.from(clubInput, null);
-        ScheduleSearchInput scheduleSearchInput = ScheduleSearchInput.builder().date(202412).clubId(1L).search("title").category("soccer").build();
+        User user = User.createUser(signupInput);
+        UserClub userClub = UserClub.createUserClub(user, club);
+        ScheduleSearchMonthInput scheduleSearchMonthInput = ScheduleSearchMonthInput.builder().date(202412).clubId(1L).search("title").category("soccer").build();
 
         //when
         when(clubRepository.findById(any(Long.class))).thenReturn(Optional.of(club));
         when(scheduleRepository.findByClubAndTime(any(Club.class), any(LocalDateTime.class), any(LocalDateTime.class), any(String.class), any(String.class))).thenReturn(List.of());
-        List<ScheduleOutput> result = scheduleQueryService.findMonthlySchedulesWithFilter(scheduleSearchInput);
+        when(userClubRepository.findByClubAndUser(any(Club.class), any(User.class))).thenReturn(Optional.of(userClub));
+        List<ScheduleOutput> result = scheduleQueryService.findMonthlySchedulesWithFilter(scheduleSearchMonthInput, user);
 
         //then
         assertThat(result.size()).isEqualTo(0);
@@ -104,13 +120,16 @@ public class ScheduleQueryServiceImplTest {
     void findDaySchedule() {
         //given
         Club club = Club.from(clubInput, null);
+        User user = User.createUser(signupInput);
+        UserClub userClub = UserClub.createUserClub(user, club);
         Schedule schedule = Schedule.from(club, scheduleInput);
-        ScheduleSearchInput scheduleSearchInput = ScheduleSearchInput.builder().date(20241211).clubId(1L).search("title").category("soccer").build();
+        ScheduleSearchMonthInput scheduleSearchMonthInput = ScheduleSearchMonthInput.builder().date(20241211).clubId(1L).search("title").category("soccer").build();
 
         //when
         when(clubRepository.findById(any(Long.class))).thenReturn(Optional.of(club));
         when(scheduleRepository.findByClubAndTime(any(Club.class), any(LocalDateTime.class), any(LocalDateTime.class), any(String.class), any(String.class))).thenReturn(List.of(schedule));
-        List<ScheduleOutput> result = scheduleQueryService.findScheduleByDay(scheduleSearchInput);
+        when(userClubRepository.findByClubAndUser(any(Club.class), any(User.class))).thenReturn(Optional.of(userClub));
+        List<ScheduleOutput> result = scheduleQueryService.findScheduleByDay(scheduleSearchMonthInput, user);
 
         //then
         assertThat(result.size()).isEqualTo(1);
@@ -126,14 +145,17 @@ public class ScheduleQueryServiceImplTest {
     void findScheduleDetail() {
         //given
         Club club = Club.from(clubInput, null);
+        User user = User.createUser(signupInput);
+        UserClub userClub = UserClub.createUserClub(user, club);
         MatchApplication matchApplication = MatchApplication.applyMatch(new Match(), club);
         Schedule schedule = Schedule.from(club, scheduleInput);
         schedule.setCreatedDate();
         schedule.setUpdatedDate();
         //when
         when(scheduleRepository.findById(any(Long.class))).thenReturn(Optional.of(schedule));
+        when(userClubRepository.findByClubAndUser(any(Club.class), any(User.class))).thenReturn(Optional.of(userClub));
         when(matchApplicationRepository.findBySchedule(any(Schedule.class))).thenReturn(List.of(matchApplication));
-        ScheduleDetailOutput result = scheduleQueryService.findScheduleDetail(1L);
+        ScheduleDetailOutput result = scheduleQueryService.findScheduleDetail(1L, user);
         //then
         assertThat(result.getMatchApplyClubList().size()).isEqualTo(1);
         assertThat(result.getTitle()).isEqualTo("title");

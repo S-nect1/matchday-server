@@ -6,7 +6,7 @@ import lombok.Builder;
 import lombok.Data;
 
 @Data
-public class ScheduleSearchInput {
+public class ScheduleSearchMonthInput {
 
     @Schema(description = "조회 기준 년월 (YYYYMM 형식, 예: 202404)", example = "202404")
     @Pattern(regexp = "^[0-9]{6}$", message = "날짜는 YYYYMM 형식이어야 합니다.")
@@ -16,7 +16,7 @@ public class ScheduleSearchInput {
     private final String category;
 
     @Builder
-    public ScheduleSearchInput(Integer date, Long clubId, String search, String category) {
+    public ScheduleSearchMonthInput(Integer date, Long clubId, String search, String category) {
         this.date = date;
         this.clubId = clubId;
         this.search = search;

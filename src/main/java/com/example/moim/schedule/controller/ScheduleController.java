@@ -6,7 +6,6 @@ import com.example.moim.schedule.dto.*;
 import com.example.moim.schedule.service.ScheduleCommandService;
 import com.example.moim.schedule.service.ScheduleQueryService;
 import com.example.moim.user.dto.UserDetailsImpl;
-import com.example.moim.user.entity.User;
 import com.example.moim.user.repository.UserRepository;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -37,20 +36,20 @@ public class ScheduleController implements ScheduleControllerDocs {
     }
 
     @GetMapping(value = "/schedules", produces = MediaType.APPLICATION_JSON_VALUE)
-    public BaseResponse<List<ScheduleOutput>> searchScheduleList(@ModelAttribute ScheduleSearchInput scheduleSearchInput) {
-        List<ScheduleOutput> scheduleList = scheduleQueryService.findMonthlySchedulesWithFilter(scheduleSearchInput);
+    public BaseResponse<List<ScheduleOutput>> searchScheduleListByMonth(@ModelAttribute ScheduleSearchMonthInput scheduleSearchMonthInput, @AuthenticationPrincipal UserDetailsImpl userDetailsImpl) {
+        List<ScheduleOutput> scheduleList = scheduleQueryService.findMonthlySchedulesWithFilter(scheduleSearchMonthInput, userDetailsImpl.getUser());
         return BaseResponse.onSuccess(scheduleList, ResponseCode.OK);
     }
 
     @GetMapping(value = "/schedules/day", produces = MediaType.APPLICATION_JSON_VALUE)
-    public BaseResponse<List<ScheduleOutput>> getScheduleListByDay(@ModelAttribute ScheduleSearchInput scheduleSearchInput) {
-        List<ScheduleOutput> scheduleList = scheduleQueryService.findScheduleByDay(scheduleSearchInput);
+    public BaseResponse<List<ScheduleOutput>> searchScheduleListByDay(@ModelAttribute ScheduleSearchMonthInput scheduleSearchMonthInput, @AuthenticationPrincipal UserDetailsImpl userDetailsImpl) {
+        List<ScheduleOutput> scheduleList = scheduleQueryService.findScheduleByDay(scheduleSearchMonthInput, userDetailsImpl.getUser());
         return BaseResponse.onSuccess(scheduleList, ResponseCode.OK);
     }
 
     @GetMapping("/schedules/{id}")
-    public BaseResponse<ScheduleDetailOutput> getScheduleDetail(@PathVariable Long id) {
-        ScheduleDetailOutput scheduleDetail = scheduleQueryService.findScheduleDetail(id);
+    public BaseResponse<ScheduleDetailOutput> getScheduleDetail(@PathVariable Long id, @AuthenticationPrincipal UserDetailsImpl userDetailsImpl) {
+        ScheduleDetailOutput scheduleDetail = scheduleQueryService.findScheduleDetail(id, userDetailsImpl.getUser());
         return BaseResponse.onSuccess(scheduleDetail, ResponseCode.OK);
     }
 

@@ -1,6 +1,6 @@
 package com.example.moim.main.service;
 
-import com.example.moim.schedule.dto.ScheduleSearchInput;
+import com.example.moim.schedule.dto.ScheduleSearchMonthInput;
 import com.example.moim.club.repository.ClubRepository;
 import com.example.moim.main.dto.MainOutput;
 import com.example.moim.main.dto.NoClubMainOutput;
@@ -25,9 +25,11 @@ public class MainService {
                 .stream().map(RecommendClubListOutput::new).toList(), null);
     }
 
-    public MainOutput mainPage(Long clubId) {
+    public MainOutput mainPage(Long clubId, User user) {
         return new MainOutput(clubRepository.findById(clubId).get(),
-                scheduleQueryService.findMonthlySchedulesWithFilter(new ScheduleSearchInput(Integer.parseInt(LocalDate.now().toString().replace("-", "")),
-                clubId, null, null)));
+                scheduleQueryService.findMonthlySchedulesWithFilter(
+                        new ScheduleSearchMonthInput(Integer.parseInt(LocalDate.now().toString().replace("-", "")),
+                        clubId, null, null), user)
+        );
     }
 }

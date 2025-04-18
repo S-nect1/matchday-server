@@ -4,7 +4,7 @@ import com.example.moim.global.exception.BaseResponse;
 import com.example.moim.schedule.dto.ScheduleDetailOutput;
 import com.example.moim.schedule.dto.ScheduleInput;
 import com.example.moim.schedule.dto.ScheduleOutput;
-import com.example.moim.schedule.dto.ScheduleSearchInput;
+import com.example.moim.schedule.dto.ScheduleSearchMonthInput;
 import com.example.moim.schedule.dto.ScheduleUpdateInput;
 import com.example.moim.user.dto.UserDetailsImpl;
 import io.swagger.v3.oas.annotations.Operation;
@@ -25,13 +25,13 @@ public interface ScheduleControllerDocs {
     BaseResponse<ScheduleOutput> updateSchedule(@RequestBody ScheduleUpdateInput scheduleUpdateInput, @PathVariable Long scheduleId, @AuthenticationPrincipal UserDetailsImpl userDetailsImpl);
 
     @Operation(summary = "한달 일정 조회", description = "카테고리는 친선 매치/정기 운동/대회/기타 중에 하나여야 합니다(띄어쓰기까지 포함)")
-    BaseResponse<List<ScheduleOutput>> searchScheduleList(@ModelAttribute ScheduleSearchInput scheduleSearchInput);
+    BaseResponse<List<ScheduleOutput>> searchScheduleListByMonth(@ModelAttribute ScheduleSearchMonthInput scheduleSearchMonthInput, @AuthenticationPrincipal UserDetailsImpl userDetailsImpl);
 
     @Operation(summary = "하루 일정 조회", description = "쿼리파라미터 예시: /schedule/day?date=20240910&clubId=6&search=친선 경기&category=친선 경기")
-    BaseResponse<List<ScheduleOutput>> getScheduleListByDay(@ModelAttribute ScheduleSearchInput scheduleSearchInput);
+    BaseResponse<List<ScheduleOutput>> searchScheduleListByDay(@ModelAttribute ScheduleSearchMonthInput scheduleSearchMonthInput, @AuthenticationPrincipal UserDetailsImpl userDetailsImpl);
 
     @Operation(summary = "일정 세부 조회", description = "참가면 attendance = attend, 참가 취소는 absent, 투표 안하면 notVote")
-    BaseResponse<ScheduleDetailOutput> getScheduleDetail(@PathVariable Long id);
+    BaseResponse<ScheduleDetailOutput> getScheduleDetail(@PathVariable Long id, @AuthenticationPrincipal UserDetailsImpl userDetailsImpl);
 
     @Operation(summary = "일정 삭제")
     BaseResponse<String> deleteSchedule(@PathVariable Long id, @AuthenticationPrincipal UserDetailsImpl userDetailsImpl);

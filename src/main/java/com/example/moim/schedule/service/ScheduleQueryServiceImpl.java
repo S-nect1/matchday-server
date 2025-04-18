@@ -4,12 +4,13 @@ import com.example.moim.club.entity.Club;
 import com.example.moim.club.entity.UserClub;
 import com.example.moim.club.repository.ClubRepository;
 import com.example.moim.club.repository.UserClubRepository;
+import com.example.moim.global.enums.ClubRole;
 import com.example.moim.global.exception.ResponseCode;
 import com.example.moim.match.dto.MatchApplyClubOutput;
 import com.example.moim.match.repository.MatchApplicationRepository;
 import com.example.moim.schedule.dto.ScheduleDetailOutput;
 import com.example.moim.schedule.dto.ScheduleOutput;
-import com.example.moim.schedule.dto.ScheduleSearchInput;
+import com.example.moim.schedule.dto.ScheduleSearchMonthInput;
 import com.example.moim.schedule.entity.Schedule;
 import com.example.moim.schedule.exception.advice.ScheduleControllerAdvice;
 import com.example.moim.schedule.repository.ScheduleRepository;
@@ -37,34 +38,38 @@ public class ScheduleQueryServiceImpl implements ScheduleQueryService {
      * TODO: 기획에 맞게, 스케줄 조회 기준 바꾸기
      * User 가 가진 스케줄로 조회해야하는거 아닌가..?
      * 그럼 이거 구조 아예 다시 바꿔야 할 것 같은데...
-     * @param scheduleSearchInput
+     * @param scheduleSearchMonthInput
      * @return
      */
-    public List<ScheduleOutput> findMonthlySchedulesWithFilter(ScheduleSearchInput scheduleSearchInput) {
-        Club club = getClub(scheduleSearchInput.getClubId());
+    public List<ScheduleOutput> findMonthlySchedulesWithFilter(ScheduleSearchMonthInput scheduleSearchMonthInput, User user) {
+        Club club = getClub(scheduleSearchMonthInput.getClubId());
 
-        int year = scheduleSearchInput.getDate() / 100;
-        log.info("year : {}", year);
-        int month = scheduleSearchInput.getDate() % 100;
-        log.info("month : {}", month);
+        getUserClub(club, user); // 권한 확인
+
+        int year = scheduleSearchMonthInput.getDate() / 100;
+        int month = scheduleSearchMonthInput.getDate() % 100;
 
         LocalDateTime startDate = LocalDateTime.of(year, month, 1, 0, 0, 0).minusDays(6);
         LocalDateTime endDate = LocalDateTime.of(year, month, Month.of(month).minLength(), 23, 59, 59).plusDays(6);
 
         return scheduleRepository.findByClubAndTime(club,
                         startDate, endDate,
-                        scheduleSearchInput.getSearch(),
-                        scheduleSearchInput.getCategory())
+                        scheduleSearchMonthInput.getSearch(),
+                        scheduleSearchMonthInput.getCategory())
                 .stream().map(ScheduleOutput::new).collect(Collectors.toList());
     }
 
-    public List<ScheduleOutput> findScheduleByDay(ScheduleSearchInput scheduleSearchInput) {
-        LocalDateTime searchDate = LocalDateTime.of(scheduleSearchInput.getDate() / 10000, (scheduleSearchInput.getDate() / 100) % 100, scheduleSearchInput.getDate() % 100,
-                0, 0, 0);
-        Club club = getClub(scheduleSearchInput.getClubId());
+    public List<ScheduleOutput> findScheduleByDay(ScheduleSearchMonthInput scheduleSearchMonthInput, User user) {
+        int year = scheduleSearchMonthInput.getDate() / 10000;
+        int month = (scheduleSearchMonthInput.getDate() / 100) % 100;
+        int day = scheduleSearchMonthInput.getDate() % 100;
 
-        return scheduleRepository.findByClubAndTime(club,
-                        searchDate, searchDate.plusDays(1), scheduleSearchInput.getSearch(), scheduleSearchInput.getCategory())
+        LocalDateTime searchDate = LocalDateTime.of(year, month, day, 0, 0, 0);
+        Club club = getClub(scheduleSearchMonthInput.getClubId());
+
+        getUserClub(club, user); // 권한 확인
+
+        return scheduleRepository.findByClubAndTime(club, searchDate, searchDate.plusDays(1), scheduleSearchMonthInput.getSearch(), scheduleSearchMonthInput.getCategory())
                 .stream().map(ScheduleOutput::new).collect(Collectors.toList());
     }
 
@@ -73,8 +78,10 @@ public class ScheduleQueryServiceImpl implements ScheduleQueryService {
      * @param scheduleId
      * @return
      */
-    public ScheduleDetailOutput findScheduleDetail(Long scheduleId) {
+    public ScheduleDetailOutput findScheduleDetail(Long scheduleId, User user) {
         Schedule schedule = getSchedule(scheduleId);
+
+        getUserClub(schedule.getClub(), user); // 권한 확인
 
         return new ScheduleDetailOutput(schedule,
 //                scheduleVoteRepository.findBySchedule(schedule).stream().map(ScheduleUserOutput::new).toList(),
