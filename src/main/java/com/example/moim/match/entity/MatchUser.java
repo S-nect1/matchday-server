@@ -34,7 +34,8 @@ public class MatchUser {
         MatchUser matchUser = new MatchUser();
         matchUser.match = match;
         matchUser.user = scheduleVote.getUser();
-        matchUser.club = findUserClubInMatch(match, scheduleVote.getUser());
+        matchUser.club = scheduleVote.getSchedule().getClub();
+//        matchUser.club = findUserClubInMatch(match, scheduleVote.getUser());
         matchUser.score = 0;
         matchUser.season = Statistic.getCurrentSeason();
 
@@ -45,9 +46,11 @@ public class MatchUser {
         this.score = matchRecordInput.getScore();
     }
 
+    // 이거 뭐지
     private static Club findUserClubInMatch(Match match, User user) {
         for (UserClub userClub : user.getUserClub()) {
             Club myClub = userClub.getClub();
+
             if (myClub.equals(match.getHomeClub()) || myClub.equals(match.getAwayClub())) {
                 return myClub;
             }
