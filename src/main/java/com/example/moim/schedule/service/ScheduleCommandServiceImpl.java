@@ -5,6 +5,7 @@ import com.example.moim.club.repository.*;
 import com.example.moim.global.enums.ClubRole;
 import com.example.moim.global.exception.ResponseCode;
 import com.example.moim.match.repository.MatchApplicationRepository;
+import com.example.moim.notification.dto.ScheduleDeleteEvent;
 import com.example.moim.notification.dto.ScheduleEncourageEvent;
 import com.example.moim.notification.dto.ScheduleSaveEvent;
 import com.example.moim.schedule.dto.*;
@@ -36,18 +37,13 @@ public class ScheduleCommandServiceImpl implements ScheduleCommandService {
     private final MatchApplicationRepository matchApplicationRepository;
 
     public ScheduleOutput saveSchedule(ScheduleInput scheduleInput, User user) {
-        /**
-         * TODO: 친선 매치일 경우 상대방 팀에도 일정 생성되도록 처리해야 하나?
-         */
+
         Club club = getClub(scheduleInput.getClubId());
 
         validateClubStaff(getUserClub(club, user));
 
         Schedule schedule = scheduleRepository.save(Schedule.from(club, scheduleInput));
 
-        /**
-         * TODO: 알림 리팩터링 버전으로 다시 적용해야 함
-         */
         eventPublisher.publishEvent(new ScheduleSaveEvent(schedule, user));
 
         return new ScheduleOutput(schedule);
@@ -55,9 +51,7 @@ public class ScheduleCommandServiceImpl implements ScheduleCommandService {
 
     @Transactional
     public ScheduleOutput updateSchedule(ScheduleUpdateInput scheduleUpdateInput, Long id, User user) {
-        /**
-         * TODO: 친선 매치일 경우 상대방 팀에도 일정 수정 반영해야 하나?
-         */
+
         Club club = getClub(scheduleUpdateInput.getClubId());
 
         validateClubStaff(getUserClub(club, user));
@@ -74,10 +68,6 @@ public class ScheduleCommandServiceImpl implements ScheduleCommandService {
         return new ScheduleOutput(schedule);
     }
 
-    /**
-     * TODO: 친선 매치라면 같이 삭제해주는 로직 필요
-     * @param id
-     */
     public String deleteSchedule(Long id, User user) {
 
         Schedule schedule = getSchedule(id);
@@ -86,6 +76,9 @@ public class ScheduleCommandServiceImpl implements ScheduleCommandService {
         validateClubStaff(getUserClub(schedule.getClub(), user));
 
         scheduleRepository.deleteById(id);
+
+        // 알림
+        eventPublisher.publishEvent(new ScheduleDeleteEvent(schedule, user));
 
         return "스케줄을 정상적으로 취소하였습니다.";
     }
