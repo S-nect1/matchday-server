@@ -4,9 +4,7 @@ import com.example.moim.club.entity.Club;
 import com.example.moim.club.entity.UserClub;
 import com.example.moim.club.repository.ClubRepository;
 import com.example.moim.club.repository.UserClubRepository;
-import com.example.moim.global.enums.ClubRole;
 import com.example.moim.global.exception.ResponseCode;
-import com.example.moim.match.dto.MatchApplyClubOutput;
 import com.example.moim.match.repository.MatchApplicationRepository;
 import com.example.moim.schedule.dto.ScheduleDetailOutput;
 import com.example.moim.schedule.dto.ScheduleOutput;
@@ -18,6 +16,7 @@ import com.example.moim.user.entity.User;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.time.Month;
@@ -78,13 +77,16 @@ public class ScheduleQueryServiceImpl implements ScheduleQueryService {
      * @param scheduleId
      * @return
      */
+    @Transactional
     public ScheduleDetailOutput findScheduleDetail(Long scheduleId, User user) {
         Schedule schedule = getSchedule(scheduleId);
 
+        // 조회 수 증가 반영
+        schedule.increaseViewCount();
+
         getUserClub(schedule.getClub(), user); // 권한 확인
 
-        return new ScheduleDetailOutput(schedule,
-                matchApplicationRepository.findBySchedule(schedule).stream().map(MatchApplyClubOutput::new).toList());
+        return new ScheduleDetailOutput(schedule);
     }
 
     private Club getClub(Long clubId) {

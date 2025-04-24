@@ -1,7 +1,6 @@
 package com.example.moim.schedule.dto;
 
 import com.example.moim.schedule.entity.Schedule;
-import com.example.moim.match.dto.MatchApplyClubOutput;
 import lombok.Data;
 
 import java.time.LocalDateTime;
@@ -13,18 +12,25 @@ public class ScheduleDetailOutput {
     private Long id;
     private String title;
     private String deadline;
-    private Boolean isClose; // 투표 마감
-    private String location;
-    private String period;
-    private int minPeople;
+    private int viewCount;
     private String category;
-    private String note;
+    private Boolean isClose; // 투표 마감
+    // 일정 정보
+    private String location; // 주소
+    private String period;
+    private String note; // 기타 참고 사항
+    // 참가 투표
+    private int minPeople;
     private int attend;
     private int nonAttend;
 //    List<ScheduleUserOutput> ScheduleUserList;
-    private List<MatchApplyClubOutput> MatchApplyClubList;
 
-    public ScheduleDetailOutput(Schedule schedule, List<MatchApplyClubOutput> MatchApplyClubOutputList) {
+    /**
+     * TODO: PM 답변에 따라서 상대 팀 정보 추가로 주는지 마는지 반영해서 구현 완료하기
+     */
+//    private List<ScheduleMatchApplyClubOutput> MatchApplyClubList;
+
+    public ScheduleDetailOutput(Schedule schedule) {
         this.id = schedule.getId();
         this.title = schedule.getTitle();
         this.deadline = schedule.getCreatedDate().plusDays(5).format(DateTimeFormatter.ofPattern("yyyy.MM.dd hh:mm"));
@@ -41,7 +47,7 @@ public class ScheduleDetailOutput {
         this.note = schedule.getNote();
         this.attend = schedule.getAttend();
         this.nonAttend = schedule.getNonAttend();
-        this.MatchApplyClubList = MatchApplyClubOutputList;
+        this.viewCount = schedule.getViewCount();
     }
 
 //    public ScheduleDetailOutput(Schedule schedule, List<ScheduleUserOutput> ScheduleUserOutputList, List<MatchApplyClubOutput> MatchApplyClubOutputList) {

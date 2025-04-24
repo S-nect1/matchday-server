@@ -36,6 +36,7 @@ public class Schedule extends BaseEntity {
     private int attend;
     private int nonAttend;
     private Boolean isClose;
+    private int viewCount;
 
     @OneToMany(mappedBy = "schedule", cascade = CascadeType.REMOVE)
     private List<Comment> comment = new ArrayList<>();
@@ -55,6 +56,7 @@ public class Schedule extends BaseEntity {
         schedule.attend = 0;
         schedule.nonAttend = 0;
         schedule.isClose = false;
+        schedule.viewCount = 0;
         return schedule;
     }
 
@@ -111,6 +113,10 @@ public class Schedule extends BaseEntity {
 
     public void close() {
         this.isClose = true;
+    }
+
+    public void increaseViewCount() {
+        this.viewCount += 1;
     }
 
     private AttendanceType getAttendanceType(String attendance) {

@@ -11,6 +11,7 @@ import com.example.moim.match.entity.MatchApplication;
 import com.example.moim.match.repository.MatchApplicationRepository;
 import com.example.moim.schedule.dto.*;
 import com.example.moim.schedule.entity.Schedule;
+import com.example.moim.schedule.exception.advice.ScheduleControllerAdvice;
 import com.example.moim.schedule.repository.ScheduleRepository;
 import com.example.moim.user.dto.SignupInput;
 import com.example.moim.user.entity.User;
@@ -28,6 +29,7 @@ import java.util.List;
 import java.util.Optional;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 import static org.mockito.Mockito.times;
@@ -147,20 +149,35 @@ public class ScheduleQueryServiceImplTest {
         Club club = Club.from(clubInput, null);
         User user = User.createUser(signupInput);
         UserClub userClub = UserClub.createUserClub(user, club);
-        MatchApplication matchApplication = MatchApplication.applyMatch(new Match(), club);
         Schedule schedule = Schedule.from(club, scheduleInput);
         schedule.setCreatedDate();
         schedule.setUpdatedDate();
         //when
         when(scheduleRepository.findById(any(Long.class))).thenReturn(Optional.of(schedule));
         when(userClubRepository.findByClubAndUser(any(Club.class), any(User.class))).thenReturn(Optional.of(userClub));
-        when(matchApplicationRepository.findBySchedule(any(Schedule.class))).thenReturn(List.of(matchApplication));
         ScheduleDetailOutput result = scheduleQueryService.findScheduleDetail(1L, user);
         //then
-        assertThat(result.getMatchApplyClubList().size()).isEqualTo(1);
         assertThat(result.getTitle()).isEqualTo("title");
         assertThat(result.getCategory()).isEqualTo("정기 운동");
         verify(scheduleRepository, times(1)).findById(any(Long.class));
-        verify(matchApplicationRepository, times(1)).findBySchedule(any(Schedule.class));
+    }
+
+    @Test
+    @DisplayName("스케줄은 해당 모임에 소속되지 않은 사람이 조회하면 예외가 발생한다.")
+    void findScheduleDetail_non_member() {
+        //given
+        Club club = Club.from(clubInput, null);
+        User user = User.createUser(signupInput);
+        Schedule schedule = Schedule.from(club, scheduleInput);
+        schedule.setCreatedDate();
+        schedule.setUpdatedDate();
+        //when
+        when(scheduleRepository.findById(any(Long.class))).thenReturn(Optional.of(schedule));
+        when(userClubRepository.findByClubAndUser(any(Club.class), any(User.class))).thenReturn(Optional.empty());
+        //then
+        Exception exception = assertThrows(ScheduleControllerAdvice.class, () -> {
+            scheduleQueryService.findScheduleDetail(1L, user);
+        });
+        assertThat(exception.getMessage()).isEqualTo("가입되지 않은 회원입니다.");
     }
 }

@@ -37,8 +37,7 @@ values (default, '2024-12-11', null, 1, 'title2', 'content2');
 INSERT INTO notice (id, created_date, updated_date, club_id, title, content)
 values (default, '2024-12-12', null, 1, 'title3', 'content4');
 
--- 스케줄 생성(3번 동아리)
-insert into `schedule` (id, club_id, title, loINSERT INTO club (id, created_date, updated_date, activity_area, age_range, club_category, club_password, explanation, gender, introduction, sports_type, main_uniform_color, match_count, member_count, profile_img_path, schedule_count, sub_uniform_color, title, university)
+INSERT INTO club (id, created_date, updated_date, activity_area, age_range, club_category, club_password, explanation, gender, introduction, sports_type, main_uniform_color, match_count, member_count, profile_img_path, schedule_count, sub_uniform_color, title, university)
 VALUES (default, null, null, 'SEOUL', 'TWENTIES', 'SCHOOL_GROUP', 'club_password', 'explanation', 'MAN', 'introduction', 'SOCCER', 'main_uniform_color', 2, 5, null, 2, 'sub_uniform_color', 'title nothing', '한양대학교');
 INSERT INTO club (id, created_date, updated_date, activity_area, age_range, club_category, club_password, explanation, gender, introduction, sports_type, main_uniform_color, match_count, member_count, profile_img_path, schedule_count, sub_uniform_color, title, university)
 VALUES (default, null, null, 'SEOUL', 'TWENTIES', 'SCHOOL_GROUP', 'club_password', 'explanation', 'WOMAN', 'introduction', 'SOCCER', 'main_uniform_color', 2, 5, null, 2, 'sub_uniform_color', 'titlenothing', '서울대학교');
@@ -70,22 +69,13 @@ INSERT INTO user_club (id, created_date, updated_date, club_role, join_date, mat
 VALUES (default, null, null, 'STAFF', '2024-12-11', 2, 2, 3, 4);
 
 -- 스케줄 생성(3번 동아리)
-insert into `schedule` (id, club_id, title, location, start_time, end_time, min_people, category, note, attend, non_attend, is_close)
-values (default, 3, '운동 매치 스케줄', '서울시 마포구', '2024-03-11 14:30:00', '2024-03-11 17:30:00', 10, 'REGULAR_TRAINING', 'note', 10, 12, 0);
-insert into `schedule` (id, club_id, title, location, start_time, end_time, min_people, category, note, attend, non_attend, is_close)
-values (default, 3, '운동 매치 스케줄2', '서울시 마포구', '2024-03-11 14:30:00', '2024-03-11 17:30:00', 10, 'REGULAR_TRAINING', 'note', 10, 12, 0);
-insert into `schedule` (id, club_id, title, location, start_time, end_time, min_people, category, note, attend, non_attend, is_close)
-values (default, 3, '운동 매치 스케줄3', '서울시 마포구', '2024-03-12 14:30:00', '2024-03-12 17:30:00', 10, 'REGULAR_TRAINING', 'note', 10, 12, 0);
-insert into `schedule` (id, club_id, title, location, start_time, end_time, min_people, category, note, attend, non_attend, is_close)
-values (default, 3, '운동 매치 스케줄4', '서울시 마포구', '2024-04-05 14:30:00', '2024-04-05 17:30:00', 10, 'REGULAR_TRAINING', 'note', 10, 12, 0);
-insert into `schedule` (id, club_id, title, location, start_time, end_time, min_people, category, note, attend, non_attend, is_close)
-values (default, 3, '운동 매치 스케줄5', '서울시 마포구', '2024-02-27 14:30:00', '2024-02-27 17:30:00', 10, 'REGULAR_TRAINING', 'note', 10, 12, 0);cation, start_time, end_time, min_people, category, note, attend, non_attend, is_close)
-values (default, 3, '운동 매치 스케줄', '서울시 마포구', '2024-03-11 14:30:00', '2024-03-11 17:30:00', 10, 'REGULAR_TRAINING', 'note', 10, 12, 0);
-insert into `schedule` (id, club_id, title, location, start_time, end_time, min_people, category, note, attend, non_attend, is_close)
-values (default, 3, '운동 매치 스케줄2', '서울시 마포구', '2024-03-11 14:30:00', '2024-03-11 17:30:00', 10, 'REGULAR_TRAINING', 'note', 10, 12, 0);
-insert into `schedule` (id, club_id, title, location, start_time, end_time, min_people, category, note, attend, non_attend, is_close)
-values (default, 3, '운동 매치 스케줄3', '서울시 마포구', '2024-03-12 14:30:00', '2024-03-12 17:30:00', 10, 'REGULAR_TRAINING', 'note', 10, 12, 0);
-insert into `schedule` (id, club_id, title, location, start_time, end_time, min_people, category, note, attend, non_attend, is_close)
-values (default, 3, '운동 매치 스케줄4', '서울시 마포구', '2024-04-05 14:30:00', '2024-04-05 17:30:00', 10, 'REGULAR_TRAINING', 'note', 10, 12, 0);
-insert into `schedule` (id, club_id, title, location, start_time, end_time, min_people, category, note, attend, non_attend, is_close)
-values (default, 3, '운동 매치 스케줄5', '서울시 마포구', '2024-02-27 14:30:00', '2024-02-27 17:30:00', 10, 'REGULAR_TRAINING', 'note', 10, 12, 0);
+insert into `schedule` (id, club_id, title, location, start_time, end_time, min_people, category, note, attend, non_attend, is_close, view_count)
+values (default, 3, '운동 매치 스케줄', '서울시 마포구', '2024-03-11 14:30:00', '2024-03-11 17:30:00', 10, 'REGULAR_TRAINING', 'note', 10, 12, 0, 0);
+insert into `schedule` (id, club_id, title, location, start_time, end_time, min_people, category, note, attend, non_attend, is_close, view_count)
+values (default, 3, '운동 매치 스케줄2', '서울시 마포구', '2024-03-11 14:30:00', '2024-03-11 17:30:00', 10, 'REGULAR_TRAINING', 'note', 10, 12, 0, 0);
+insert into `schedule` (id, club_id, title, location, start_time, end_time, min_people, category, note, attend, non_attend, is_close, view_count)
+values (default, 3, '운동 매치 스케줄3', '서울시 마포구', '2024-03-12 14:30:00', '2024-03-12 17:30:00', 10, 'REGULAR_TRAINING', 'note', 10, 12, 0, 1);
+insert into `schedule` (id, club_id, title, location, start_time, end_time, min_people, category, note, attend, non_attend, is_close, view_count)
+values (default, 3, '운동 매치 스케줄4', '서울시 마포구', '2024-04-05 14:30:00', '2024-04-05 17:30:00', 10, 'REGULAR_TRAINING', 'note', 10, 12, 0, 10);
+insert into `schedule` (id, club_id, title, location, start_time, end_time, min_people, category, note, attend, non_attend, is_close, view_count)
+values (default, 3, '운동 매치 스케줄5', '서울시 마포구', '2024-02-27 14:30:00', '2024-02-27 17:30:00', 10, 'REGULAR_TRAINING', 'note', 10, 12, 0, 5);
