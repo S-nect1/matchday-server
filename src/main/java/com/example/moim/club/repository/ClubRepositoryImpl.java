@@ -18,7 +18,7 @@ import static com.example.moim.club.entity.QClub.club;
 import static com.example.moim.club.entity.QClubSearch.clubSearch;
 import static org.springframework.util.StringUtils.hasText;
 
-public class ClubRepositoryImpl implements ClubRepositoryCustom{
+public class ClubRepositoryImpl implements ClubRepositoryCustom {
     private final JPAQueryFactory queryFactory;
 
     public ClubRepositoryImpl(EntityManager em) {

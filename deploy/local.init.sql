@@ -28,3 +28,11 @@ INSERT INTO user_club (id, created_date, updated_date, club_role, join_date, mat
 VALUES (default, null, null, 'STAFF', '2024-12-11', 2, 2, 3, 3);
 INSERT INTO user_club (id, created_date, updated_date, club_role, join_date, match_count, schedule_count, club_id, user_id)
 VALUES (default, null, null, 'STAFF', '2024-12-11', 2, 2, 3, 4);
+
+-- notice
+INSERT INTO notice (id, created_date, updated_date, club_id, title, content)
+values (default, '2024-12-10', null, 1, 'title', 'content');
+INSERT INTO notice (id, created_date, updated_date, club_id, title, content)
+values (default, '2024-12-11', null, 1, 'title2', 'content2');
+INSERT INTO notice (id, created_date, updated_date, club_id, title, content)
+values (default, '2024-12-12', null, 1, 'title3', 'content4');
