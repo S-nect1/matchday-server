@@ -83,6 +83,9 @@ public class ClubCommandServiceImpl implements ClubCommandService {
             }
             club.plusMemberCount();
             UserClub userClub = userClubRepository.save(UserClub.createUserClub(user, club));
+            /**
+             * TODO: 알림 보내는 것 새로운 방식에 맞춰서 다시 구현해야 함
+             */
             eventPublisher.publishEvent(new ClubJoinEvent(user, club));
             return new UserClubOutput(userClub);
         }

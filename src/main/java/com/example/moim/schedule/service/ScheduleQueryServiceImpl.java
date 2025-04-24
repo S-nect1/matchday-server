@@ -74,7 +74,7 @@ public class ScheduleQueryServiceImpl implements ScheduleQueryService {
     }
 
     /**
-     * FIXME: 세부 일정 페이지 보고 데이터 넘겨주기. 댓글도 포함되어야 함
+     * FIXME: 세부 일정 페이지 보고 데이터 넘겨주기. 댓글도 포함되어야 함?
      * @param scheduleId
      * @return
      */
@@ -84,7 +84,6 @@ public class ScheduleQueryServiceImpl implements ScheduleQueryService {
         getUserClub(schedule.getClub(), user); // 권한 확인
 
         return new ScheduleDetailOutput(schedule,
-//                scheduleVoteRepository.findBySchedule(schedule).stream().map(ScheduleUserOutput::new).toList(),
                 matchApplicationRepository.findBySchedule(schedule).stream().map(MatchApplyClubOutput::new).toList());
     }
 

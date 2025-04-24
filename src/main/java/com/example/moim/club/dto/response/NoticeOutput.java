@@ -1,4 +1,4 @@
-package com.example.moim.club.dto.request;
+package com.example.moim.club.dto.response;
 
 import com.example.moim.club.entity.Notice;
 import lombok.Data;

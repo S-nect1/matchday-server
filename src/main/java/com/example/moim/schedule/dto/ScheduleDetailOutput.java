@@ -13,7 +13,7 @@ public class ScheduleDetailOutput {
     private Long id;
     private String title;
     private String deadline;
-    private Boolean isClose;
+    private Boolean isClose; // 투표 마감
     private String location;
     private String period;
     private int minPeople;
@@ -22,7 +22,7 @@ public class ScheduleDetailOutput {
     private int attend;
     private int nonAttend;
 //    List<ScheduleUserOutput> ScheduleUserList;
-    List<MatchApplyClubOutput> MatchApplyClubList;
+    private List<MatchApplyClubOutput> MatchApplyClubList;
 
     public ScheduleDetailOutput(Schedule schedule, List<MatchApplyClubOutput> MatchApplyClubOutputList) {
         this.id = schedule.getId();
@@ -30,7 +30,7 @@ public class ScheduleDetailOutput {
         this.deadline = schedule.getCreatedDate().plusDays(5).format(DateTimeFormatter.ofPattern("yyyy.MM.dd hh:mm"));
         if (LocalDateTime.now().isBefore(schedule.getCreatedDate().plusDays(5))) {
             this.isClose = schedule.getIsClose();
-        } else {//마감일 전이면 마감 상태 응답, 지났으면 무조건 마감한것으로 응답
+        } else { //마감일 전이면 마감 상태 응답, 지났으면 무조건 마감한것으로 응답
             this.isClose = true;
         }
         this.location = schedule.getLocation();
