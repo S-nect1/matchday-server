@@ -81,10 +81,12 @@ class ScheduleVoteServiceImplTest {
         Schedule schedule = Schedule.from(club, scheduleInput);
         ScheduleVoteInput scheduleVoteInput = ScheduleVoteInput.builder().id(1L).attendance("불참").build();
         User user = User.createUser(signupInput);
+        UserClub userClub = UserClub.createUserClub(user, club);
         ScheduleVote scheduleVote = ScheduleVote.createScheduleVote(user, schedule, true);
         //when
         when(scheduleRepository.findById(any(Long.class))).thenReturn(Optional.of(schedule));
         when(scheduleVoteRepository.findByScheduleAndUser(any(Schedule.class), any(User.class))).thenReturn(Optional.of(scheduleVote));
+        when(userClubRepository.findByClubAndUser(any(Club.class), any(User.class))).thenReturn(Optional.of(userClub));
         scheduleVoteService.voteSchedule(scheduleVoteInput, user);
         //then
         assertThat(scheduleVote.getIsAttendance()).isFalse();
@@ -100,11 +102,13 @@ class ScheduleVoteServiceImplTest {
         Schedule schedule = Schedule.from(club, scheduleInput);
         ScheduleVoteInput scheduleVoteInput = ScheduleVoteInput.builder().id(1L).attendance("불참").build();
         User user = User.createUser(signupInput);
+        UserClub userClub = UserClub.createUserClub(user, club);
         ScheduleVote scheduleVote = ScheduleVote.createScheduleVote(user, schedule, false);
         //when
         when(scheduleRepository.findById(any(Long.class))).thenReturn(Optional.of(schedule));
         when(scheduleVoteRepository.findByScheduleAndUser(any(Schedule.class), any(User.class))).thenReturn(Optional.empty());
         when(scheduleVoteRepository.save(any(ScheduleVote.class))).thenReturn(scheduleVote);
+        when(userClubRepository.findByClubAndUser(any(Club.class), any(User.class))).thenReturn(Optional.of(userClub));
         scheduleVoteService.voteSchedule(scheduleVoteInput, user);
         //then
         assertThat(scheduleVote.getIsAttendance()).isFalse();
@@ -124,8 +128,9 @@ class ScheduleVoteServiceImplTest {
         UserClub userClub = UserClub.createLeaderUserClub(user, club);
         //when
         when(scheduleRepository.findWithClubById(any(Long.class))).thenReturn(schedule);
+        when(userClubRepository.findByClubAndUser(any(Club.class), any(User.class))).thenReturn(Optional.of(userClub));
         when(userClubRepository.findUserByClub(club)).thenReturn(List.of(userClub));
-        scheduleVoteService.voteEncourage(id);
+        scheduleVoteService.voteEncourage(id, user);
         //then
         verify(scheduleRepository, times(1)).findWithClubById(any(Long.class));
         verify(userClubRepository, times(1)).findUserByClub(any(Club.class));

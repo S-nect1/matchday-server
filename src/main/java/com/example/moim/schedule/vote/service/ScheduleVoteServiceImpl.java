@@ -39,6 +39,9 @@ public class ScheduleVoteServiceImpl implements ScheduleVoteService {
 
         boolean isAttendance = AttendanceType.fromKoreanName(scheduleVoteInput.getAttendance()).orElseThrow(() -> new ScheduleControllerAdvice(ResponseCode.INVALID_ATTENDANCE_TYPE)).getIsAttendance();
 
+        // 회원인지 확인
+        getUserClub(schedule.getClub(), user);
+
         //투표 처음이면
         if (originalScheduleVote.isEmpty()) {
             scheduleVoteRepository.save(ScheduleVote.createScheduleVote(user, schedule, isAttendance));
@@ -57,8 +60,12 @@ public class ScheduleVoteServiceImpl implements ScheduleVoteService {
         return schedule.getTitle() + "에 투표를 완료했습니다.";
     }
 
-    public String voteEncourage(Long id) {
+    public String voteEncourage(Long id, User user) {
         Schedule schedule = scheduleRepository.findWithClubById(id);
+
+        // 운영진인지 검증
+        validateClubStaff(getUserClub(schedule.getClub(), user));
+
         List<User> userList = userClubRepository.findUserByClub(schedule.getClub()).stream().map(UserClub::getUser).toList();
         eventPublisher.publishEvent(new ScheduleEncourageEvent(schedule, userList));
 
@@ -68,10 +75,9 @@ public class ScheduleVoteServiceImpl implements ScheduleVoteService {
     @Transactional
     public String closeScheduleVote(Long id, User user) {
         Schedule schedule = scheduleRepository.findWithClubById(id);
-        UserClub userClub = getUserClub(schedule.getClub(), user);
-        if (!(userClub.getClubRole().equals(ClubRole.STAFF))) {
-            throw new ScheduleControllerAdvice(ResponseCode.CLUB_PERMISSION_DENIED);
-        }
+
+        // 운영진인지 검증
+        validateClubStaff(getUserClub(schedule.getClub(), user));
 
         schedule.close();
 
@@ -84,5 +90,11 @@ public class ScheduleVoteServiceImpl implements ScheduleVoteService {
 
     private UserClub getUserClub(Club club, User user) {
         return userClubRepository.findByClubAndUser(club, user).orElseThrow(() -> new ScheduleControllerAdvice(ResponseCode.CLUB_USER_NOT_FOUND));
+    }
+
+    private void validateClubStaff(UserClub userClub) {
+        if (!(userClub.getClubRole().equals(ClubRole.STAFF))) {
+            throw new ScheduleControllerAdvice(ResponseCode.CLUB_PERMISSION_DENIED);
+        }
     }
 }

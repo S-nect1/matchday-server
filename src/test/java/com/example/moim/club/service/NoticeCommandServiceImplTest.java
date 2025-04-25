@@ -16,6 +16,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.test.util.ReflectionTestUtils;
 import org.springframework.web.multipart.MultipartFile;
@@ -36,6 +37,8 @@ class NoticeCommandServiceImplTest {
     private ClubRepository clubRepository;
     @Mock
     private UserClubRepository userClubRepository;
+    @Mock
+    private ApplicationEventPublisher eventPublisher;
     @InjectMocks
     private NoticeCommandServiceImpl noticeCommandServiceImpl;
 

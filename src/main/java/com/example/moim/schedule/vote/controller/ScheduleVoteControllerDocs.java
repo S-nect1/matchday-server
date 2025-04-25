@@ -13,7 +13,7 @@ public interface ScheduleVoteControllerDocs {
     BaseResponse<String> createScheduleVote(@RequestBody ScheduleVoteInput scheduleVoteInput, @AuthenticationPrincipal UserDetailsImpl userDetailsImpl);
 
     @Operation(summary = "일정 참가 투표 독려")
-    BaseResponse<String> encourageVote(@PathVariable Long id);
+    BaseResponse<String> encourageVote(@PathVariable Long id, @AuthenticationPrincipal UserDetailsImpl userDetailsImpl);
 
     @Operation(summary = "일정 참가 투표 마감")
     BaseResponse<String> closeScheduleVote(@PathVariable Long id, @AuthenticationPrincipal UserDetailsImpl userDetailsImpl);

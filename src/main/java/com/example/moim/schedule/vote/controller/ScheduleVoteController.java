@@ -23,8 +23,8 @@ public class ScheduleVoteController implements ScheduleVoteControllerDocs {
     }
 
     @PostMapping("/schedules/encourage/{id}")
-    public BaseResponse<String> encourageVote(@PathVariable Long id) {
-        String result = scheduleVoteService.voteEncourage(id);
+    public BaseResponse<String> encourageVote(@PathVariable Long id, @AuthenticationPrincipal UserDetailsImpl userDetailsImpl) {
+        String result = scheduleVoteService.voteEncourage(id, userDetailsImpl.getUser());
 
         return BaseResponse.onSuccess(result, ResponseCode.OK);
     }
