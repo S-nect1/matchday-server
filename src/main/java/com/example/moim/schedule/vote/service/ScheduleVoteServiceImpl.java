@@ -4,6 +4,7 @@ import com.example.moim.club.entity.Club;
 import com.example.moim.club.entity.UserClub;
 import com.example.moim.club.repository.UserClubRepository;
 import com.example.moim.global.enums.ClubRole;
+import com.example.moim.global.exception.BaseResponse;
 import com.example.moim.global.exception.ResponseCode;
 import com.example.moim.notification.dto.ScheduleEncourageEvent;
 import com.example.moim.schedule.vote.dto.ScheduleVoteInput;
@@ -31,13 +32,8 @@ public class ScheduleVoteServiceImpl implements ScheduleVoteService {
     private final UserClubRepository userClubRepository;
     private final ApplicationEventPublisher eventPublisher;
 
-    /**
-     * TODO: void -> 기본 응답
-     * @param scheduleVoteInput
-     * @param user
-     */
     @Transactional
-    public void voteSchedule(ScheduleVoteInput scheduleVoteInput, User user) {
+    public String voteSchedule(ScheduleVoteInput scheduleVoteInput, User user) {
         Schedule schedule = getSchedule(scheduleVoteInput.getId());
         Optional<ScheduleVote> originalScheduleVote = scheduleVoteRepository.findByScheduleAndUser(schedule, user);
 
@@ -57,25 +53,20 @@ public class ScheduleVoteServiceImpl implements ScheduleVoteService {
 //        if (scheduleVoteInput.getAttendance().equals("attend")) {
 //            eventPublisher.publishEvent(new ScheduleVoteEvent(schedule, user));
 //        }
+
+        return schedule.getTitle() + "에 투표를 완료했습니다.";
     }
 
-    /**
-     * TODO: void -> 기본 응답
-     * FIXME: 운영진인지 아닌지 체크하는 로직 필요함(필터에서 걸러주면 필요 X)
-     * @param id
-     */
-    public void voteEncourage(Long id) {
+    public String voteEncourage(Long id) {
         Schedule schedule = scheduleRepository.findWithClubById(id);
         List<User> userList = userClubRepository.findUserByClub(schedule.getClub()).stream().map(UserClub::getUser).toList();
         eventPublisher.publishEvent(new ScheduleEncourageEvent(schedule, userList));
+
+        return schedule.getTitle() + "의 투표 독려 알림을 보냈습니다.";
     }
 
-    /**
-     * TODO: void -> 기본 응답, 이름 명확하게 바꾸기 closeScheduleVote 등
-     * @param id
-     */
     @Transactional
-    public void closeScheduleVote(Long id, User user) {
+    public String closeScheduleVote(Long id, User user) {
         Schedule schedule = scheduleRepository.findWithClubById(id);
         UserClub userClub = getUserClub(schedule.getClub(), user);
         if (!(userClub.getClubRole().equals(ClubRole.STAFF))) {
@@ -83,6 +74,8 @@ public class ScheduleVoteServiceImpl implements ScheduleVoteService {
         }
 
         schedule.close();
+
+        return schedule.getTitle() + "의 투표를 마감했습니다.";
     }
 
     private Schedule getSchedule(Long scheduleId) {

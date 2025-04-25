@@ -1,5 +1,7 @@
 package com.example.moim.schedule.vote.controller;
 
+import com.example.moim.global.exception.BaseResponse;
+import com.example.moim.global.exception.ResponseCode;
 import com.example.moim.schedule.vote.dto.ScheduleVoteInput;
 import com.example.moim.schedule.vote.service.ScheduleVoteService;
 import com.example.moim.user.dto.UserDetailsImpl;
@@ -14,17 +16,23 @@ public class ScheduleVoteController implements ScheduleVoteControllerDocs {
     private final ScheduleVoteService scheduleVoteService;
 
     @PatchMapping("/schedules/vote")
-    public void createScheduleVote(@RequestBody ScheduleVoteInput scheduleVoteInput, @AuthenticationPrincipal UserDetailsImpl userDetailsImpl) {
-        scheduleVoteService.voteSchedule(scheduleVoteInput, userDetailsImpl.getUser());
+    public BaseResponse<String> createScheduleVote(@RequestBody ScheduleVoteInput scheduleVoteInput, @AuthenticationPrincipal UserDetailsImpl userDetailsImpl) {
+        String result = scheduleVoteService.voteSchedule(scheduleVoteInput, userDetailsImpl.getUser());
+
+        return BaseResponse.onSuccess(result, ResponseCode.OK);
     }
 
     @PostMapping("/schedules/encourage/{id}")
-    public void encourageVote(@PathVariable Long id) {
-        scheduleVoteService.voteEncourage(id);
+    public BaseResponse<String> encourageVote(@PathVariable Long id) {
+        String result = scheduleVoteService.voteEncourage(id);
+
+        return BaseResponse.onSuccess(result, ResponseCode.OK);
     }
 
     @PatchMapping("/schedules/close/{id}")
-    public void closeScheduleVote(@PathVariable Long id, @AuthenticationPrincipal UserDetailsImpl userDetailsImpl) {
-        scheduleVoteService.closeScheduleVote(id, userDetailsImpl.getUser());
+    public BaseResponse<String> closeScheduleVote(@PathVariable Long id, @AuthenticationPrincipal UserDetailsImpl userDetailsImpl) {
+        String result = scheduleVoteService.closeScheduleVote(id, userDetailsImpl.getUser());
+
+        return BaseResponse.onSuccess(result, ResponseCode.OK);
     }
 }
