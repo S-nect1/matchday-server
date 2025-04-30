@@ -28,14 +28,14 @@ public class ClubController implements ClubControllerDocs{
 
     private final UserRepository userRepository;
 
-    @PostMapping(value = "/club", consumes = MediaType.MULTIPART_FORM_DATA_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    @PostMapping(value = "/clubs", consumes = MediaType.MULTIPART_FORM_DATA_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     public BaseResponse<ClubSaveOutput> clubSave(@AuthenticationPrincipal UserDetailsImpl userDetailsImpl, @ModelAttribute @Valid ClubInput clubInput) throws IOException {
 //    public BaseResponse<ClubSaveOutput> clubSave(@ModelAttribute @Valid ClubInput clubInput) throws IOException {
 //        User user = userRepository.findById(1L).get();
         return BaseResponse.onSuccess(clubCommandService.saveClub(userDetailsImpl.getUser(), clubInput), ResponseCode.OK);
     }
 
-    @PatchMapping(value = "/club/{id}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    @PatchMapping(value = "/clubs/{id}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     public BaseResponse<ClubUpdateOutput> clubUpdate(@AuthenticationPrincipal UserDetailsImpl userDetailsImpl, @ModelAttribute ClubUpdateInput clubUpdateInput, @PathVariable("id") Long clubId) throws IOException {
 //    public BaseResponse<ClubUpdateOutput> clubUpdate(@ModelAttribute ClubUpdateInput clubUpdateInput, @PathVariable("id") Long clubId) throws IOException {
 //        User user = userRepository.findById(1L).get();
@@ -48,7 +48,7 @@ public class ClubController implements ClubControllerDocs{
         return BaseResponse.onSuccess(clubQueryService.searchClub(clubSearchCond), ResponseCode.OK);
     }
 
-    @PostMapping("/club/{id}/join")
+    @PostMapping("/clubs/{id}/join")
     public BaseResponse<UserClubOutput> clubUserSave(@AuthenticationPrincipal UserDetailsImpl userDetailsImpl, @RequestBody ClubUserSaveInput clubUserSaveInput, @PathVariable("id") Long clubId) {
 //    public BaseResponse<UserClubOutput> clubUserSave(@RequestBody ClubUserSaveInput clubUserSaveInput, @PathVariable("id") Long clubId) {
 //        User user = userRepository.findById(1L).get();
@@ -60,21 +60,26 @@ public class ClubController implements ClubControllerDocs{
 //        return clubService.inviteClubUser(userDetailsImpl.getUser(), clubInviteInput);
 //    }
 
-    @PatchMapping("/club/{id}/role")
+    @DeleteMapping("/clubs/{id}/users")
+    public BaseResponse<String> clubUserDelete(@AuthenticationPrincipal UserDetailsImpl userDetailsImpl, @PathVariable("id") Long clubId, @RequestBody ClubUserDeleteInput clubUserDeleteInput) {
+        return BaseResponse.onSuccess(clubCommandService.deleteClubUser(userDetailsImpl.getUser(), clubId, clubUserDeleteInput.getUserId()), ResponseCode.OK);
+    }
+
+    @PatchMapping("/clubs/{id}/role")
     public BaseResponse<UserClubOutput> clubUserUpdate(@AuthenticationPrincipal UserDetailsImpl userDetailsImpl, @RequestBody ClubUserUpdateInput clubInput, @PathVariable("id") Long clubId) {
 //    public BaseResponse<UserClubOutput> clubUserUpdate(@RequestBody ClubUserUpdateInput clubInput, @PathVariable("id") Long clubId) {
 //        User user = userRepository.findById(1L).get();
         return BaseResponse.onSuccess(clubCommandService.updateClubUser(userDetailsImpl.getUser(), clubInput, clubId), ResponseCode.OK);
     }
 
-    @GetMapping("/club/{id}")
+    @GetMapping("/clubs/{id}")
     public BaseResponse<ClubOutput> clubFind(@AuthenticationPrincipal UserDetailsImpl userDetailsImpl, @PathVariable("id") Long clubId) {
 //    public BaseResponse<ClubOutput> clubFind(@Parameter(description = "조회할 모임 ID", required = true, example = "1") @PathVariable("id") Long id) {
 //        User user = userRepository.findById(1L).get();
         return BaseResponse.onSuccess(clubQueryService.findClub(clubId, userDetailsImpl.getUser()), ResponseCode.OK);
     }
 
-    @PatchMapping(value = "/club/{id}/password", consumes = MediaType.APPLICATION_JSON_VALUE)
+    @PatchMapping(value = "/clubs/{id}/password", consumes = MediaType.APPLICATION_JSON_VALUE)
     public BaseResponse clubPasswordUpdate(@AuthenticationPrincipal UserDetailsImpl userDetailsImpl, @RequestBody @Valid ClubPswdUpdateInput clubPswdUpdateInput, @PathVariable("id") Long clubId) {
 //    public BaseResponse clubPasswordUpdate(@RequestBody @Valid ClubPswdUpdateInput clubPswdUpdateInput, @PathVariable("id") Long clubId) {
 //        User user = userRepository.findById(1L).get();

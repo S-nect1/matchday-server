@@ -11,6 +11,7 @@ public interface ClubCommandService {
     ClubSaveOutput saveClub(User user, ClubInput clubInput) throws IOException;
     ClubUpdateOutput updateClub(User user, ClubUpdateInput clubUpdateInput, Long clubId) throws IOException;
     UserClubOutput saveClubUser(User user, ClubUserSaveInput clubUserSaveInput, Long clubId);
+    String deleteClubUser(User user, Long clubId, Long userId);
     UserClubOutput updateClubUser(User user, ClubUserUpdateInput clubInput, Long clubId);
     void clubPasswordUpdate(User user, ClubPswdUpdateInput clubPswdUpdateInput, Long clubId);
 

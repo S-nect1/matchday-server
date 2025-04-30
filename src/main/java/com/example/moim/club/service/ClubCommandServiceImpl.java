@@ -92,6 +92,20 @@ public class ClubCommandServiceImpl implements ClubCommandService {
         throw new ClubControllerAdvice(ResponseCode.CLUB_PASSWORD_INCORRECT);
     }
 
+    @Transactional
+    public String deleteClubUser(User user, Long clubId, Long userId) {
+
+        User targetUser = getUser(userId);
+
+        // 관리자 권한 확인
+        validateIsStaff(getUserClub(getClub(clubId), user));
+
+        userClubRepository.deleteByClubIdAndUserId(clubId, userId);
+
+        return targetUser.getName() + "님이 가입에서 내보내졌습니다.";
+
+    }
+
 //    public UserClubOutput inviteClubUser(User user, ClubInviteInput clubInviteInput) {
 //        userRepository.findById(clubInviteInput.getUser().)
 //    }
@@ -130,8 +144,22 @@ public class ClubCommandServiceImpl implements ClubCommandService {
         club.updateClubPassword(clubPswdUpdateInput.getNewPassword());
     }
 
+    private UserClub getUserClub(Club club, User user) {
+        return userClubRepository.findByClubAndUser(club, user).orElseThrow(() -> new ClubControllerAdvice(ResponseCode.CLUB_USER_NOT_FOUND));
+    }
+
     private Club getClub(Long clubId) {
         return clubRepository.findById(clubId).orElseThrow(() -> new ClubControllerAdvice(ResponseCode.CLUB_NOT_FOUND));
+    }
+
+    private User getUser(Long userId) {
+        return userRepository.findById(userId).orElseThrow(() -> new ClubControllerAdvice(ResponseCode.MEMBER_NOT_FOUND));
+    }
+
+    private void validateIsStaff(UserClub userClub) {
+        if (!userClub.getClubRole().equals(ClubRole.STAFF)) {
+            throw new ClubControllerAdvice(ResponseCode.CLUB_PERMISSION_DENIED);
+        }
     }
 
     private void saveClubSearch(Club club) {
