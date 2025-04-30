@@ -126,7 +126,7 @@ public class ClubCommandServiceImpl implements ClubCommandService {
     }
 
     @Transactional
-    public void clubPasswordUpdate(User user, ClubPswdUpdateInput clubPswdUpdateInput, Long clubId) {
+    public String clubPasswordUpdate(User user, ClubPswdUpdateInput clubPswdUpdateInput, Long clubId) {
         Club club = getClub(clubId);
 //        Club club = clubRepository.findById(clubPswdUpdateInput.getId()).orElseThrow(() -> new ClubControllerAdvice(ResponseCode.CLUB_NOT_FOUND));
         UserClub userClub = userClubRepository.findByClubAndUser(club, user).orElseThrow(() -> new ClubControllerAdvice(ResponseCode.CLUB_USER_NOT_FOUND));
@@ -141,7 +141,10 @@ public class ClubCommandServiceImpl implements ClubCommandService {
         if (!clubPswdUpdateInput.getNewPassword().equals(clubPswdUpdateInput.getRePassword())) {
             throw new ClubControllerAdvice(ResponseCode.CLUB_CHECK_PASSWORD_INCORRECT);
         }
+
         club.updateClubPassword(clubPswdUpdateInput.getNewPassword());
+
+        return club.getTitle() + "의 비밀번호를 변경하였습니다.";
     }
 
     private UserClub getUserClub(Club club, User user) {

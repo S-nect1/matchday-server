@@ -48,7 +48,7 @@ public interface ClubControllerDocs {
 //    BaseResponse<ClubOutput> clubFind(@PathVariable("id") Long clubId);
 
     @Operation(summary = "모임 비밀번호 변경")
-    BaseResponse clubPasswordUpdate(@AuthenticationPrincipal UserDetailsImpl userDetailsImpl, @RequestBody ClubPswdUpdateInput clubPswdUpdateInput, @PathVariable("id") Long clubId);
+    BaseResponse<String> clubPasswordUpdate(@AuthenticationPrincipal UserDetailsImpl userDetailsImpl, @RequestBody ClubPswdUpdateInput clubPswdUpdateInput, @PathVariable("id") Long clubId);
 //    BaseResponse clubPasswordUpdate(@RequestBody ClubPswdUpdateInput clubPswdUpdateInput, @PathVariable Long clubId);
 
 //    @Operation(summary = "모임 사진 변경")
