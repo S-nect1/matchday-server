@@ -50,12 +50,6 @@ public class ScheduleVoteServiceImpl implements ScheduleVoteService {
             schedule.reVote(originalScheduleVote.get().getIsAttendance(), isAttendance);
             originalScheduleVote.get().changeAttendance(isAttendance);
         }
-        /**
-         * TODO: 왜 알림 보내려고 했는지 확인하고 로직 추가하기
-         */
-//        if (scheduleVoteInput.getAttendance().equals("attend")) {
-//            eventPublisher.publishEvent(new ScheduleVoteEvent(schedule, user));
-//        }
 
         return schedule.getTitle() + "에 투표를 완료했습니다.";
     }
