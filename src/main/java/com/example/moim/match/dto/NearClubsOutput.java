@@ -14,9 +14,9 @@ public class NearClubsOutput {
 
     public NearClubsOutput(Club club) {
         this.title = club.getTitle();
-        if (club.getProfileImgPath() != null) {
+        if (club.getImageUrl() != null) {
             try {
-                this.image = Base64.getEncoder().encodeToString(new FileUrlResource(club.getProfileImgPath()).getContentAsByteArray());
+                this.image = Base64.getEncoder().encodeToString(new FileUrlResource(club.getImageUrl()).getContentAsByteArray());
             } catch (IOException e) {
                 throw new RuntimeException(e);
             }

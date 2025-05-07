@@ -6,6 +6,7 @@ import com.example.moim.global.enums.ActivityArea;
 import com.example.moim.global.enums.Gender;
 import com.example.moim.global.enums.Position;
 import com.example.moim.global.exception.ResponseCode;
+import com.example.moim.global.util.file.model.FileInfo;
 import com.example.moim.notification.entity.NotificationEntity;
 import com.example.moim.user.dto.GoogleUserSignup;
 import com.example.moim.user.dto.KakaoUserSignup;
@@ -49,6 +50,8 @@ public class User extends BaseEntity {
     private Gender gender;
     private String phone;
     private String imgPath;
+    private String originalImgName;
+    private String storedImgName;
     @Enumerated(EnumType.STRING)
     private Role role;
     @Enumerated(EnumType.STRING)
@@ -71,7 +74,7 @@ public class User extends BaseEntity {
 
     @Builder
     public User(String email, String password, String name, String birthday, Gender gender, String phone,
-                String imgPath,
+                FileInfo fileInfo,
                 Role role, ActivityArea activityArea, int height, int weight, String mainFoot, Position mainPosition,
                 Position subPosition, String refreshToken, String fcmToken, List<UserClub> userClub,
                 List<NotificationEntity> notifications) {
@@ -81,7 +84,15 @@ public class User extends BaseEntity {
         this.birthday = birthday;
         this.gender = gender;
         this.phone = phone;
-        this.imgPath = imgPath;
+        /**
+         * CHECK: 여기 파일 서비스 구조 고쳐지면서, 변경된 코드입니다!
+         */
+        if (fileInfo != null) {
+            this.imgPath = fileInfo.getFileUrl();
+            this.originalImgName = fileInfo.getOriginalFileName();
+            this.storedImgName = fileInfo.getStoredFileName();
+        }
+
         this.role = role;
         this.activityArea = activityArea;
         this.height = height;
@@ -141,11 +152,14 @@ public class User extends BaseEntity {
         return user;
     }
 
-    public void fillUserInfo(SocialSignupInput socialSignupInput, String imgPath) {
+    public void fillUserInfo(SocialSignupInput socialSignupInput, FileInfo fileInfo) {
         this.name = socialSignupInput.getName();
         this.birthday = socialSignupInput.getBirthday();
         this.phone = socialSignupInput.getPhone();
-        this.imgPath = imgPath;
+        /**
+         * CHECK: 여기 파일 서비스 구조 고쳐지면서, 변경된 코드입니다!
+         */
+        this.imgPath = fileInfo.getFileUrl();
 //        this.gender = Gender.from(socialSignupInput.getGender());
         this.gender = Gender.fromKoreanName(socialSignupInput.getGender())
                 .orElseThrow(() -> new UserControllerAdvice(ResponseCode.INVALID_GENDER));
@@ -160,7 +174,7 @@ public class User extends BaseEntity {
         }
     }
 
-    public void updateUserInfo(UserUpdateInput userUpdateInput, String imgPath) {
+    public void updateUserInfo(UserUpdateInput userUpdateInput, FileInfo fileInfo) {
         if (userUpdateInput.getName() != null && !userUpdateInput.getName().isBlank()) {
             this.name = userUpdateInput.getName();
         }
@@ -170,11 +184,13 @@ public class User extends BaseEntity {
         if (userUpdateInput.getPhone() != null && !userUpdateInput.getPhone().isBlank()) {
             this.phone = userUpdateInput.getPhone();
         }
-        if (imgPath != null) {
-            if (this.imgPath != null) {
-                new File(this.imgPath).delete();
-            }
-            this.imgPath = imgPath;
+        /**
+         * CHECK: 여기 파일 서비스 구조 고쳐지면서, 변경된 코드입니다!
+         */
+        if (fileInfo != null) {
+            this.imgPath = fileInfo.getFileUrl();
+            this.storedImgName = fileInfo.getStoredFileName();
+            this.originalImgName = fileInfo.getOriginalFileName();
         }
         if (userUpdateInput.getGender() != null && !userUpdateInput.getGender().isBlank()) {
             this.gender = Gender.fromKoreanName(userUpdateInput.getGender())

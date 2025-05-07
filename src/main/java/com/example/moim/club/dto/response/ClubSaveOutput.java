@@ -31,7 +31,7 @@ public class ClubSaveOutput {
         this.title = club.getTitle();
         this.explanation = club.getExplanation();
         this.introduction = club.getIntroduction();
-        this.profileImg = club.getProfileImgPath();
+        this.profileImg = club.getImageUrl();
         this.clubCategory = club.getClubCategory().getKoreanName();
         this.university = club.getUniversity();
         this.gender = club.getGender().getKoreanName();

@@ -5,6 +5,7 @@ import com.example.moim.club.dto.request.ClubSearchCond;
 import com.example.moim.club.entity.*;
 import com.example.moim.global.enums.*;
 import com.example.moim.global.util.TextUtils;
+import com.example.moim.global.util.file.model.FileInfo;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -55,8 +56,14 @@ class ClubRepositoryImplTest {
                 .university(university).gender(gender.getKoreanName()).activityArea(activityArea.getKoreanName()).ageRange(ageRange.getKoreanName()).sportsType(sportsType.getKoreanName())
                 .clubPassword(clubPassword).profileImg(profileImg).mainUniformColor(mainUniformColor).subUniformColor(subUniformColor).build();
 
-        Club savedClub = clubRepository.save(Club.createClub(clubInput, "/club"));
-        Club savedClub2 = clubRepository.save(Club.createClub(clubInput2, "/club"));
+        FileInfo fileInfo = FileInfo.builder()
+                .fileUrl("fileUrl")
+                .originalFileName("originalFileName.jpg")
+                .storedFileName("test/aaaa-aaaa-aaaa.jpg")
+                .build();
+
+        Club savedClub = clubRepository.save(Club.createClub(clubInput, fileInfo));
+        Club savedClub2 = clubRepository.save(Club.createClub(clubInput2, fileInfo));
 
         ClubSearch clubSearch = ClubSearch.builder()
                 .club(savedClub)

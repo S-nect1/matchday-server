@@ -48,8 +48,8 @@ public class ClubOutput {
         this.mainUniformColor = club.getMainUniformColor();
         this.subUniformColor = club.getSubUniformColor();
         try {
-            if (club.getProfileImgPath() != null) {
-                this.profileImg = Base64.getEncoder().encodeToString(new FileUrlResource(club.getProfileImgPath()).getContentAsByteArray());
+            if (club.getImageUrl() != null) {
+                this.profileImg = Base64.getEncoder().encodeToString(new FileUrlResource(club.getImageUrl()).getContentAsByteArray());
             }
         } catch (IOException e) {
             throw new RuntimeException(e);
