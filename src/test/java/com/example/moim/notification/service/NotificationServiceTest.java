@@ -160,6 +160,8 @@ class NotificationServiceTest {
                         .activityArea("서울")
                         .sportsType("축구")
                         .ageRange("20대")
+                        .clubPassword("password")
+                        .clubCheckPassword("password")
                         .build()
                 , "path/to/image"
         );

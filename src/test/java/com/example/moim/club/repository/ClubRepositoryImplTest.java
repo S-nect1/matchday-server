@@ -50,10 +50,10 @@ class ClubRepositoryImplTest {
 
         ClubInput clubInput = ClubInput.builder().title(title).explanation(explanation).introduction(introduction).clubCategory(clubCategory.getKoreanName())
                 .university(university).gender(gender.getKoreanName()).activityArea(activityArea.getKoreanName()).ageRange(ageRange.getKoreanName()).sportsType(sportsType.getKoreanName())
-                .clubPassword(clubPassword).profileImg(profileImg).mainUniformColor(mainUniformColor).subUniformColor(subUniformColor).build();
+                .clubPassword(clubPassword).clubCheckPassword(clubPassword).profileImg(profileImg).mainUniformColor(mainUniformColor).subUniformColor(subUniformColor).build();
         ClubInput clubInput2 = ClubInput.builder().title(title2).explanation(explanation).introduction(introduction).clubCategory(clubCategory2.getKoreanName())
                 .university(university).gender(gender.getKoreanName()).activityArea(activityArea.getKoreanName()).ageRange(ageRange.getKoreanName()).sportsType(sportsType.getKoreanName())
-                .clubPassword(clubPassword).profileImg(profileImg).mainUniformColor(mainUniformColor).subUniformColor(subUniformColor).build();
+                .clubPassword(clubPassword).clubCheckPassword(clubPassword).profileImg(profileImg).mainUniformColor(mainUniformColor).subUniformColor(subUniformColor).build();
 
         Club savedClub = clubRepository.save(Club.createClub(clubInput, "/club"));
         Club savedClub2 = clubRepository.save(Club.createClub(clubInput2, "/club"));
