@@ -39,7 +39,7 @@ public class Schedule extends BaseEntity {
     private int viewCount;
 
     @OneToMany(mappedBy = "schedule", cascade = CascadeType.REMOVE)
-    private List<Comment> comment = new ArrayList<>();
+    private List<Comment> comments = new ArrayList<>();
 
     public static Schedule from(Club club, ScheduleInput scheduleInput) {
         Schedule schedule = new Schedule();

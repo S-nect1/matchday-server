@@ -82,6 +82,6 @@ class ScheduleRepositoryImplTest {
         Schedule result = scheduleRepository.findWithClubById(scheduleId);
         //then
         assertThat(result.getTitle()).isEqualTo("운동 매치 스케줄");
-        assertThat(result.getComment().get(0).getContents()).isEqualTo("회사 면접이 잡혀있어서 못 갑니다");
+        assertThat(result.getComments().get(0).getContents()).isEqualTo("회사 면접이 잡혀있어서 못 갑니다");
     }
 }

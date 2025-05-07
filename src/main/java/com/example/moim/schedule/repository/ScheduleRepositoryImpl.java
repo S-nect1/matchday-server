@@ -11,6 +11,7 @@ import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
+import static com.example.moim.schedule.comment.entity.QComment.comment;
 import static com.example.moim.schedule.entity.QSchedule.schedule;
 import static org.springframework.util.StringUtils.hasText;
 
@@ -54,6 +55,15 @@ public class ScheduleRepositoryImpl implements ScheduleRepositoryCustom {
         return queryFactory
                 .selectFrom(schedule)
                 .join(schedule.club, club).fetchJoin()
+                .where(schedule.id.eq(id))
+                .fetchOne();
+    }
+
+    @Override
+    public Schedule findByIdWithComment(Long id) {
+        return queryFactory
+                .selectFrom(schedule)
+                .join(schedule.comments, comment).fetchJoin()
                 .where(schedule.id.eq(id))
                 .fetchOne();
     }

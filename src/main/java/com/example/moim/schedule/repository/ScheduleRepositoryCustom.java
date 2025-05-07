@@ -10,4 +10,6 @@ public interface ScheduleRepositoryCustom {
     List<Schedule> findByClubAndTime(Club club, LocalDateTime startTime, LocalDateTime endTime, String search, String category);
 
     Schedule findWithClubById(Long id);
+
+    Schedule findByIdWithComment(Long id);
 }

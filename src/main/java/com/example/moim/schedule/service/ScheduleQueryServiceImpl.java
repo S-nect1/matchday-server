@@ -6,10 +6,12 @@ import com.example.moim.club.repository.ClubRepository;
 import com.example.moim.club.repository.UserClubRepository;
 import com.example.moim.global.exception.ResponseCode;
 import com.example.moim.match.repository.MatchApplicationRepository;
+import com.example.moim.schedule.comment.dto.CommentOutput;
 import com.example.moim.schedule.dto.ScheduleDetailOutput;
 import com.example.moim.schedule.dto.ScheduleOutput;
 import com.example.moim.schedule.dto.ScheduleSearchMonthInput;
 import com.example.moim.schedule.entity.Schedule;
+import com.example.moim.schedule.entity.ScheduleCategory;
 import com.example.moim.schedule.exception.advice.ScheduleControllerAdvice;
 import com.example.moim.schedule.repository.ScheduleRepository;
 import com.example.moim.user.entity.User;
@@ -33,13 +35,6 @@ public class ScheduleQueryServiceImpl implements ScheduleQueryService {
     private final UserClubRepository userClubRepository;
     private final MatchApplicationRepository matchApplicationRepository;
 
-    /**
-     * TODO: 기획에 맞게, 스케줄 조회 기준 바꾸기
-     * User 가 가진 스케줄로 조회해야하는거 아닌가..?
-     * 그럼 이거 구조 아예 다시 바꿔야 할 것 같은데...
-     * @param scheduleSearchMonthInput
-     * @return
-     */
     public List<ScheduleOutput> findMonthlySchedulesWithFilter(ScheduleSearchMonthInput scheduleSearchMonthInput, User user) {
         Club club = getClub(scheduleSearchMonthInput.getClubId());
 
@@ -79,14 +74,21 @@ public class ScheduleQueryServiceImpl implements ScheduleQueryService {
      */
     @Transactional
     public ScheduleDetailOutput findScheduleDetail(Long scheduleId, User user) {
-        Schedule schedule = getSchedule(scheduleId);
+        Schedule schedule = scheduleRepository.findByIdWithComment(scheduleId);
 
         // 조회 수 증가 반영
         schedule.increaseViewCount();
 
         getUserClub(schedule.getClub(), user); // 권한 확인
 
-        return new ScheduleDetailOutput(schedule);
+        // 댓글 정보도 함께 포함
+        List<CommentOutput> comments = schedule.getComments().stream().map(CommentOutput::new).toList();
+
+        if (schedule.getCategory().equals(ScheduleCategory.TOURNAMENT) || schedule.getCategory().equals(ScheduleCategory.FRIENDLY_MATCH)) {
+            // 상대팀 정보 받아오는 로직 추가
+        }
+
+        return new ScheduleDetailOutput(schedule, comments);
     }
 
     private Club getClub(Long clubId) {
