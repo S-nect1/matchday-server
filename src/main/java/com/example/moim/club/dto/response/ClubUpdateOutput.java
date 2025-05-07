@@ -29,7 +29,7 @@ public class ClubUpdateOutput {
         this.title = club.getTitle();
         this.explanation = club.getExplanation();
         this.introduction = club.getIntroduction();
-        this.profileImg = club.getImageUrl();
+        this.profileImg = club.getImgUrl();
         this.clubCategory = club.getClubCategory().getKoreanName();
         this.university = club.getUniversity();
         this.gender = club.getGender().getKoreanName();

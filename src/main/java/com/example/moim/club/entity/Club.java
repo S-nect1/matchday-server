@@ -13,7 +13,6 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.springframework.util.StringUtils;
 
-import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -39,9 +38,9 @@ public class Club extends BaseEntity {
     @Enumerated(value = EnumType.STRING)
     private AgeRange ageRange;
     private String clubPassword;
-    private String imageUrl; // 프론트에 제공할 URL
-    private String storedImageName; // UUID 로 저장된 이름
-    private String originalImageName; // 파일 업로할 때 이름
+    private String imgUrl; // 프론트에 제공할 URL
+    private String storedImgName; // UUID 로 저장된 이름
+    private String originalImgName; // 파일 업로할 때 이름
     private String mainUniformColor;
     private String subUniformColor;
     @OneToOne(mappedBy = "club")  // 검색을 위한 테이블 매핑
@@ -79,9 +78,9 @@ public class Club extends BaseEntity {
         club.ageRange = AgeRange.fromKoreanName(clubInput.getAgeRange()).get();
         club.clubPassword = clubInput.getClubPassword();
         if (fileInfo != null) {
-            club.imageUrl = fileInfo.getFileUrl();
-            club.originalImageName = fileInfo.getOriginalFileName();
-            club.storedImageName = fileInfo.getStoredFileName();
+            club.imgUrl = fileInfo.getFileUrl();
+            club.originalImgName = fileInfo.getOriginalFileName();
+            club.storedImgName = fileInfo.getStoredFileName();
         }
         club.mainUniformColor = clubInput.getMainUniformColor();
         club.subUniformColor = clubInput.getSubUniformColor();
@@ -95,7 +94,7 @@ public class Club extends BaseEntity {
     }
 
     public void changeProfileImg(String newImgPath) {
-        this.imageUrl = newImgPath;
+        this.imgUrl = newImgPath;
     }
 
     public void plusMemberCount() {
@@ -131,9 +130,9 @@ public class Club extends BaseEntity {
             this.sportsType = SportsType.fromKoreanName(clubUpdateInput.getSportsType()).orElseThrow(() -> new ClubControllerAdvice(ResponseCode.INVALID_SPORTS_TYPE));
         }
         if (fileInfo != null) {
-            this.imageUrl = fileInfo.getFileUrl();
-            this.originalImageName = fileInfo.getOriginalFileName();
-            this.storedImageName = fileInfo.getStoredFileName();
+            this.imgUrl = fileInfo.getFileUrl();
+            this.originalImgName = fileInfo.getOriginalFileName();
+            this.storedImgName = fileInfo.getStoredFileName();
         }
     }
 

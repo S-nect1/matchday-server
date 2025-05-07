@@ -1,6 +1,5 @@
 package com.example.moim.user.dto;
 
-import com.example.moim.global.enums.Gender;
 import com.example.moim.user.entity.User;
 import lombok.Data;
 import org.springframework.core.io.FileUrlResource;
@@ -31,9 +30,9 @@ public class UserOutput {
         this.gender = user.getGender().getKoreanName();
         this.phone = user.getPhone();
         this.hasClub = hasClub;
-        if (user.getImgPath() != null) {
+        if (user.getImgUrl() != null) {
             try {
-                this.img = Base64.getEncoder().encodeToString(new FileUrlResource(user.getImgPath()).getContentAsByteArray());
+                this.img = Base64.getEncoder().encodeToString(new FileUrlResource(user.getImgUrl()).getContentAsByteArray());
             } catch (IOException e) {
                 throw new RuntimeException(e);
             }

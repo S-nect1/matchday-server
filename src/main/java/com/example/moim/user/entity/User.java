@@ -25,10 +25,10 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
-import java.io.File;
+
 import java.util.ArrayList;
 import java.util.List;
-import lombok.AllArgsConstructor;
+
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -49,7 +49,7 @@ public class User extends BaseEntity {
     @Enumerated(EnumType.STRING)
     private Gender gender;
     private String phone;
-    private String imgPath;
+    private String imgUrl;
     private String originalImgName;
     private String storedImgName;
     @Enumerated(EnumType.STRING)
@@ -88,7 +88,7 @@ public class User extends BaseEntity {
          * CHECK: 여기 파일 서비스 구조 고쳐지면서, 변경된 코드입니다!
          */
         if (fileInfo != null) {
-            this.imgPath = fileInfo.getFileUrl();
+            this.imgUrl = fileInfo.getFileUrl();
             this.originalImgName = fileInfo.getOriginalFileName();
             this.storedImgName = fileInfo.getStoredFileName();
         }
@@ -159,7 +159,7 @@ public class User extends BaseEntity {
         /**
          * CHECK: 여기 파일 서비스 구조 고쳐지면서, 변경된 코드입니다!
          */
-        this.imgPath = fileInfo.getFileUrl();
+        this.imgUrl = fileInfo.getFileUrl();
 //        this.gender = Gender.from(socialSignupInput.getGender());
         this.gender = Gender.fromKoreanName(socialSignupInput.getGender())
                 .orElseThrow(() -> new UserControllerAdvice(ResponseCode.INVALID_GENDER));
@@ -188,7 +188,7 @@ public class User extends BaseEntity {
          * CHECK: 여기 파일 서비스 구조 고쳐지면서, 변경된 코드입니다!
          */
         if (fileInfo != null) {
-            this.imgPath = fileInfo.getFileUrl();
+            this.imgUrl = fileInfo.getFileUrl();
             this.storedImgName = fileInfo.getStoredFileName();
             this.originalImgName = fileInfo.getOriginalFileName();
         }

@@ -65,7 +65,7 @@ public class ClubCommandServiceImpl implements ClubCommandService {
         }
 
         if (clubUpdateInput.getProfileImg() != null) {
-            fileService.remove(club.getStoredImageName());
+            fileService.remove(club.getStoredImgName());
         }
 
         club.updateClub(clubUpdateInput, fileService.upload(clubUpdateInput.getProfileImg(), "/club-profile"));

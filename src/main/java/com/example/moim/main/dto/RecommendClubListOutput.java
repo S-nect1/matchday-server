@@ -20,9 +20,9 @@ public class RecommendClubListOutput {
         this.title = club.getTitle();
         this.explanation = club.getExplanation();
         this.memberCount = club.getMemberCount();
-        if (club.getImageUrl() != null) {
+        if (club.getImgUrl() != null) {
             try {
-                this.profileImg = Base64.getEncoder().encodeToString(new FileUrlResource(club.getImageUrl()).getContentAsByteArray());
+                this.profileImg = Base64.getEncoder().encodeToString(new FileUrlResource(club.getImgUrl()).getContentAsByteArray());
             } catch (IOException e) {
                 throw new RuntimeException(e);
             }
