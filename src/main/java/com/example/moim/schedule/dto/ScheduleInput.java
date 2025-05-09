@@ -8,6 +8,7 @@ import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
+import lombok.Getter;
 
 import java.time.LocalDateTime;
 
@@ -32,6 +33,23 @@ public class ScheduleInput {
     @NotBlank(message = "일정 카테고리를 입력해 주세요.")
     private String category;
     private String note;
+    // 팀 정보
+    private String opponentTeamName;
+    private String opponentTeamAgeRange;
+
+    @Builder
+    public ScheduleInput(Long clubId, String title, String location, LocalDateTime startTime, LocalDateTime endTime, int minPeople, String category, String note, String opponentTeamName, String opponentTeamAgeRange) {
+        this.clubId = clubId;
+        this.title = title;
+        this.location = location;
+        this.startTime = startTime;
+        this.endTime = endTime;
+        this.minPeople = minPeople;
+        this.category = category;
+        this.note = note;
+        this.opponentTeamName = opponentTeamName;
+        this.opponentTeamAgeRange = opponentTeamAgeRange;
+    }
 
     @Builder
     public ScheduleInput(Long clubId, String title, String location, LocalDateTime startTime, LocalDateTime endTime, int minPeople, String category, String note) {
@@ -44,4 +62,6 @@ public class ScheduleInput {
         this.category = category;
         this.note = note;
     }
+
+
 }

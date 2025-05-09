@@ -2,8 +2,11 @@ package com.example.moim.schedule.dto;
 
 import com.example.moim.schedule.comment.dto.CommentOutput;
 import com.example.moim.schedule.comment.entity.Comment;
+import com.example.moim.schedule.entity.OpponentTeamInfo;
 import com.example.moim.schedule.entity.Schedule;
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.Getter;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
@@ -29,7 +32,7 @@ public class ScheduleDetailOutput {
     // 댓글 정보
     private List<CommentOutput> comments;
     // 상대 팀 정보
-    private Object otherClub;
+    private OpponentTeamInfoOutput opponentTeamInfoOutput;
 
     // 정기 운동, 기타
     public ScheduleDetailOutput(Schedule schedule, List<CommentOutput> comments) {
@@ -54,7 +57,7 @@ public class ScheduleDetailOutput {
     }
 
     // 친선 매치, 리그/대회
-    public ScheduleDetailOutput(Schedule schedule, List<CommentOutput> comments, Object clubInfo) {
+    public ScheduleDetailOutput(Schedule schedule, List<CommentOutput> comments, OpponentTeamInfoOutput opponentTeamInfoOutput) {
         this.id = schedule.getId();
         this.title = schedule.getTitle();
         this.deadline = schedule.getCreatedDate().plusDays(5).format(DateTimeFormatter.ofPattern("yyyy.MM.dd hh:mm"));
@@ -73,7 +76,18 @@ public class ScheduleDetailOutput {
         this.nonAttend = schedule.getNonAttend();
         this.viewCount = schedule.getViewCount();
         this.comments = comments;
-        this.otherClub = clubInfo;
+        this.opponentTeamInfoOutput = opponentTeamInfoOutput;
+    }
+
+    @Getter
+    public static class OpponentTeamInfoOutput {
+        private String teamName;
+        private String ageRange;
+
+        public OpponentTeamInfoOutput(OpponentTeamInfo opponentTeamInfo) {
+            this.teamName = opponentTeamInfo.getName();
+            this.ageRange = opponentTeamInfo.getAgeRange().getKoreanName();
+        }
     }
 
 //    public ScheduleDetailOutput(Schedule schedule, List<ScheduleUserOutput> ScheduleUserOutputList, List<MatchApplyClubOutput> MatchApplyClubOutputList) {

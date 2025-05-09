@@ -6,8 +6,9 @@ import java.util.Optional;
 public enum ScheduleCategory {
     REGULAR_TRAINING("정기 운동"),
     TOURNAMENT("대회"),
-    FRIENDLY_MATCH("친선 매치"),
-    ETC("기타");
+    FRIENDLY_MATCH("친선 매치"), // 외부 사용자와 매치
+    ETC("기타"),
+    OFFICIAL_MATCH("정식 매치"); // Match 등록에서 하는 매치
 
     private final String koreanName;
 

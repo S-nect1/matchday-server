@@ -1,6 +1,7 @@
 package com.example.moim.schedule.entity;
 
 import com.example.moim.club.entity.Club;
+import com.example.moim.global.enums.AgeRange;
 import com.example.moim.global.exception.ResponseCode;
 import com.example.moim.schedule.comment.entity.Comment;
 import com.example.moim.schedule.dto.ScheduleInput;
@@ -11,6 +12,7 @@ import com.example.moim.schedule.vote.entity.AttendanceType;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.springframework.security.core.parameters.P;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -37,6 +39,8 @@ public class Schedule extends BaseEntity {
     private int nonAttend;
     private Boolean isClose;
     private int viewCount;
+    @Embedded
+    private OpponentTeamInfo opponentTeamInfo;
 
     @OneToMany(mappedBy = "schedule", cascade = CascadeType.REMOVE)
     private List<Comment> comments = new ArrayList<>();
@@ -53,11 +57,23 @@ public class Schedule extends BaseEntity {
         if (scheduleInput.getNote() != null) {
             schedule.note = scheduleInput.getNote();
         }
+        if (isMatchType(schedule.category) && notNullOpponentTeamObject(scheduleInput.getOpponentTeamName(), scheduleInput.getOpponentTeamAgeRange())) {
+            AgeRange ageRange = AgeRange.fromKoreanName(scheduleInput.getOpponentTeamAgeRange()).orElseThrow(() -> new ScheduleControllerAdvice(ResponseCode.INVALID_AGE_RANGE));
+            schedule.opponentTeamInfo = new OpponentTeamInfo(scheduleInput.getOpponentTeamName(), ageRange);
+        }
         schedule.attend = 0;
         schedule.nonAttend = 0;
         schedule.isClose = false;
         schedule.viewCount = 0;
         return schedule;
+    }
+
+    private static boolean isMatchType(ScheduleCategory scheduleCategory) {
+        return scheduleCategory.equals(ScheduleCategory.TOURNAMENT) || scheduleCategory.equals(ScheduleCategory.FRIENDLY_MATCH);
+    }
+
+    private static boolean notNullOpponentTeamObject(String teamName, String teamAgeRange) {
+        return teamName != null && teamAgeRange != null;
     }
 
     /**
@@ -108,6 +124,14 @@ public class Schedule extends BaseEntity {
         }
         if (scheduleUpdateInput.getNote() != null) {
             this.note = scheduleUpdateInput.getNote();
+        }
+        if (scheduleUpdateInput.getOpponentTeamName() != null) {
+            this.opponentTeamInfo.setName(scheduleUpdateInput.getOpponentTeamName());
+        }
+        if (scheduleUpdateInput.getOpponentTeamAgeRange() != null) {
+            this.opponentTeamInfo.setAgeRange(
+                    AgeRange.fromKoreanName(scheduleUpdateInput.getOpponentTeamAgeRange()).orElseThrow(() -> new ScheduleControllerAdvice(ResponseCode.INVALID_AGE_RANGE))
+            );
         }
     }
 

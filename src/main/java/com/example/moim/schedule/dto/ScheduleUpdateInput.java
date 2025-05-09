@@ -23,9 +23,12 @@ public class ScheduleUpdateInput {
     private Integer minPeople;
     private String category;
     private String note;
+    // 팀 정보
+    private String opponentTeamName;
+    private String opponentTeamAgeRange;
 
     @Builder
-    public ScheduleUpdateInput(Long clubId, String title, String location, LocalDateTime startTime, LocalDateTime endTime, @NotNull(message = "참여 인원을 입력해주세요.") int minPeople, String category, String note) {
+    public ScheduleUpdateInput(Long clubId, String title, String location, LocalDateTime startTime, LocalDateTime endTime, @NotNull(message = "참여 인원을 입력해주세요.") int minPeople, String category, String note, String opponentTeamName, String opponentTeamAgeRange) {
         this.clubId = clubId;
         this.title = title;
         this.location = location;
@@ -34,5 +37,7 @@ public class ScheduleUpdateInput {
         this.minPeople = minPeople;
         this.category = category;
         this.note = note;
+        this.opponentTeamName = opponentTeamName;
+        this.opponentTeamAgeRange = opponentTeamAgeRange;
     }
 }

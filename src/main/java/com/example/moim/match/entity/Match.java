@@ -144,7 +144,7 @@ public class Match extends BaseEntity {
                 getStartTime(),
                 getEndTime(),
                 getMinParticipants(),
-                ScheduleCategory.FRIENDLY_MATCH.getKoreanName(),
+                ScheduleCategory.OFFICIAL_MATCH.getKoreanName(),
                 getNote());
     }
 

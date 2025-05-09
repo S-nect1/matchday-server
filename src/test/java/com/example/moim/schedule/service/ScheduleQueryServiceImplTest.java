@@ -153,13 +153,13 @@ public class ScheduleQueryServiceImplTest {
         schedule.setCreatedDate();
         schedule.setUpdatedDate();
         //when
-        when(scheduleRepository.findById(any(Long.class))).thenReturn(Optional.of(schedule));
+        when(scheduleRepository.findByIdWithComment(any(Long.class))).thenReturn(schedule);
         when(userClubRepository.findByClubAndUser(any(Club.class), any(User.class))).thenReturn(Optional.of(userClub));
         ScheduleDetailOutput result = scheduleQueryService.findScheduleDetail(1L, user);
         //then
         assertThat(result.getTitle()).isEqualTo("title");
         assertThat(result.getCategory()).isEqualTo("정기 운동");
-        verify(scheduleRepository, times(1)).findById(any(Long.class));
+        verify(scheduleRepository, times(1)).findByIdWithComment(any(Long.class));
     }
 
     @Test
@@ -172,7 +172,7 @@ public class ScheduleQueryServiceImplTest {
         schedule.setCreatedDate();
         schedule.setUpdatedDate();
         //when
-        when(scheduleRepository.findById(any(Long.class))).thenReturn(Optional.of(schedule));
+        when(scheduleRepository.findByIdWithComment(any(Long.class))).thenReturn(schedule);
         when(userClubRepository.findByClubAndUser(any(Club.class), any(User.class))).thenReturn(Optional.empty());
         //then
         Exception exception = assertThrows(ScheduleControllerAdvice.class, () -> {

@@ -5,11 +5,14 @@ import com.example.moim.club.entity.UserClub;
 import com.example.moim.club.repository.ClubRepository;
 import com.example.moim.club.repository.UserClubRepository;
 import com.example.moim.global.exception.ResponseCode;
+import com.example.moim.match.entity.Match;
 import com.example.moim.match.repository.MatchApplicationRepository;
+import com.example.moim.match.repository.MatchRepository;
 import com.example.moim.schedule.comment.dto.CommentOutput;
 import com.example.moim.schedule.dto.ScheduleDetailOutput;
 import com.example.moim.schedule.dto.ScheduleOutput;
 import com.example.moim.schedule.dto.ScheduleSearchMonthInput;
+import com.example.moim.schedule.entity.OpponentTeamInfo;
 import com.example.moim.schedule.entity.Schedule;
 import com.example.moim.schedule.entity.ScheduleCategory;
 import com.example.moim.schedule.exception.advice.ScheduleControllerAdvice;
@@ -33,7 +36,7 @@ public class ScheduleQueryServiceImpl implements ScheduleQueryService {
     private final ScheduleRepository scheduleRepository;
     private final ClubRepository clubRepository;
     private final UserClubRepository userClubRepository;
-    private final MatchApplicationRepository matchApplicationRepository;
+    private final MatchRepository matchRepository;
 
     public List<ScheduleOutput> findMonthlySchedulesWithFilter(ScheduleSearchMonthInput scheduleSearchMonthInput, User user) {
         Club club = getClub(scheduleSearchMonthInput.getClubId());
@@ -67,27 +70,31 @@ public class ScheduleQueryServiceImpl implements ScheduleQueryService {
                 .stream().map(ScheduleOutput::new).collect(Collectors.toList());
     }
 
-    /**
-     * FIXME: 세부 일정 페이지 보고 데이터 넘겨주기. 댓글도 포함되어야 함?
-     * @param scheduleId
-     * @return
-     */
     @Transactional
     public ScheduleDetailOutput findScheduleDetail(Long scheduleId, User user) {
         Schedule schedule = scheduleRepository.findByIdWithComment(scheduleId);
 
+        getUserClub(schedule.getClub(), user); // 권한 확인
+
         // 조회 수 증가 반영
         schedule.increaseViewCount();
-
-        getUserClub(schedule.getClub(), user); // 권한 확인
 
         // 댓글 정보도 함께 포함
         List<CommentOutput> comments = schedule.getComments().stream().map(CommentOutput::new).toList();
 
+        // 친선 매치이거나 대회일 때(외부 사용자)
         if (schedule.getCategory().equals(ScheduleCategory.TOURNAMENT) || schedule.getCategory().equals(ScheduleCategory.FRIENDLY_MATCH)) {
-            // 상대팀 정보 받아오는 로직 추가
+            return new ScheduleDetailOutput(schedule, comments, new ScheduleDetailOutput.OpponentTeamInfoOutput(schedule.getOpponentTeamInfo()));
+        }
+        /**
+         * TODO: 정식 매치일 때, 전적 부분 공부해서 데이터 담기
+         */
+        else if (schedule.getCategory().equals(ScheduleCategory.OFFICIAL_MATCH)) {
+            // 이 경우는 조금 더 고민해보기
+            // 리다이렉트나,, 아니면 내가 데이터를 넘겨주는게 맞을듯
         }
 
+        // 정기 운동, 기타 일정일 때
         return new ScheduleDetailOutput(schedule, comments);
     }
 

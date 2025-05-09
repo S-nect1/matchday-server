@@ -37,6 +37,7 @@ public enum ResponseCode {
     MATCH_APPLICATION_NOT_FOUND(HttpStatus.BAD_REQUEST, "MATCH4006", "올바른 매치가 아닙니다."),
     MATCH_TIME_OUT(HttpStatus.BAD_REQUEST, "MATCH4007", "매치가 종료된 후 48시간이 지났습니다."),
     MATCH_NOT_CONFIRMED(HttpStatus.BAD_REQUEST, "MATCH4008", "확정된 매치가 아닙니다."),
+    MATCH_SCHEDULE_NOT_FOUND(HttpStatus.BAD_REQUEST, "MATCH4009", "매치 일정이 확정되지 않았거나, 존재하지 않습니다."),
 
     // MatchUser Error
     MATCH_USER_NOT_FOUND(HttpStatus.BAD_REQUEST, "MATCH4005", "가입된 모임이 없습니다."),
