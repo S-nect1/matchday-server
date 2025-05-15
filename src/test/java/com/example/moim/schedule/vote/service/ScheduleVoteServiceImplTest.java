@@ -79,7 +79,7 @@ class ScheduleVoteServiceImplTest {
         //given
         Club club = Club.from(clubInput, null);
         Schedule schedule = Schedule.from(club, scheduleInput);
-        ScheduleVoteInput scheduleVoteInput = ScheduleVoteInput.builder().id(1L).attendance("불참").build();
+        ScheduleVoteInput scheduleVoteInput = ScheduleVoteInput.builder().attendance("불참").build();
         User user = User.createUser(signupInput);
         UserClub userClub = UserClub.createUserClub(user, club);
         ScheduleVote scheduleVote = ScheduleVote.createScheduleVote(user, schedule, true);
@@ -87,7 +87,7 @@ class ScheduleVoteServiceImplTest {
         when(scheduleRepository.findById(any(Long.class))).thenReturn(Optional.of(schedule));
         when(scheduleVoteRepository.findByScheduleAndUser(any(Schedule.class), any(User.class))).thenReturn(Optional.of(scheduleVote));
         when(userClubRepository.findByClubAndUser(any(Club.class), any(User.class))).thenReturn(Optional.of(userClub));
-        scheduleVoteService.voteSchedule(scheduleVoteInput, user);
+        scheduleVoteService.voteSchedule(scheduleVoteInput, 1L, user);
         //then
         assertThat(scheduleVote.getIsAttendance()).isFalse();
         verify(scheduleRepository, times(1)).findById(any(Long.class));
@@ -100,7 +100,7 @@ class ScheduleVoteServiceImplTest {
         //given
         Club club = Club.from(clubInput, null);
         Schedule schedule = Schedule.from(club, scheduleInput);
-        ScheduleVoteInput scheduleVoteInput = ScheduleVoteInput.builder().id(1L).attendance("불참").build();
+        ScheduleVoteInput scheduleVoteInput = ScheduleVoteInput.builder().attendance("불참").build();
         User user = User.createUser(signupInput);
         UserClub userClub = UserClub.createUserClub(user, club);
         ScheduleVote scheduleVote = ScheduleVote.createScheduleVote(user, schedule, false);
@@ -109,7 +109,7 @@ class ScheduleVoteServiceImplTest {
         when(scheduleVoteRepository.findByScheduleAndUser(any(Schedule.class), any(User.class))).thenReturn(Optional.empty());
         when(scheduleVoteRepository.save(any(ScheduleVote.class))).thenReturn(scheduleVote);
         when(userClubRepository.findByClubAndUser(any(Club.class), any(User.class))).thenReturn(Optional.of(userClub));
-        scheduleVoteService.voteSchedule(scheduleVoteInput, user);
+        scheduleVoteService.voteSchedule(scheduleVoteInput, 1L, user);
         //then
         assertThat(scheduleVote.getIsAttendance()).isFalse();
         verify(scheduleRepository, times(1)).findById(any(Long.class));
