@@ -63,7 +63,7 @@ public class ScheduleRepositoryImpl implements ScheduleRepositoryCustom {
     public Schedule findByIdWithComment(Long id) {
         return queryFactory
                 .selectFrom(schedule)
-                .join(schedule.comments, comment).fetchJoin()
+                .leftJoin(schedule.comments, comment).fetchJoin()
                 .where(schedule.id.eq(id))
                 .fetchOne();
     }
