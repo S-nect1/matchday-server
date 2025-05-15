@@ -81,12 +81,12 @@ public class ScheduleDetailOutput {
 
     @Getter
     public static class OpponentTeamInfoOutput {
-        private String teamName;
-        private String ageRange;
+        private final String teamName;
+        private final String ageRange;
 
         public OpponentTeamInfoOutput(OpponentTeamInfo opponentTeamInfo) {
-            this.teamName = opponentTeamInfo.getName();
-            this.ageRange = opponentTeamInfo.getAgeRange().getKoreanName();
+            this.teamName = opponentTeamInfo.getOpponentTeamName();
+            this.ageRange = opponentTeamInfo.getOpponentTeamAgeRange().getKoreanName();
         }
     }
 
