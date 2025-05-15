@@ -125,11 +125,21 @@ public class Schedule extends BaseEntity {
         if (scheduleUpdateInput.getNote() != null) {
             this.note = scheduleUpdateInput.getNote();
         }
-        if (scheduleUpdateInput.getOpponentTeamName() != null) {
-            this.opponentTeamInfo.setName(scheduleUpdateInput.getOpponentTeamName());
+        // 이전에 팀 정보가 있었으면
+        if (this.opponentTeamInfo != null) {
+            if (scheduleUpdateInput.getOpponentTeamName() != null) {
+                this.opponentTeamInfo.setOpponentTeamName(scheduleUpdateInput.getOpponentTeamName());
+            }
+            if (scheduleUpdateInput.getOpponentTeamAgeRange() != null) {
+                this.opponentTeamInfo.setOpponentTeamAgeRange(
+                        AgeRange.fromKoreanName(scheduleUpdateInput.getOpponentTeamAgeRange()).orElseThrow(() -> new ScheduleControllerAdvice(ResponseCode.INVALID_AGE_RANGE))
+                );
+            }
         }
-        if (scheduleUpdateInput.getOpponentTeamAgeRange() != null) {
-            this.opponentTeamInfo.setAgeRange(
+        // 이전에 팀 정보가 없었으면
+        if (scheduleUpdateInput.getOpponentTeamName() != null && scheduleUpdateInput.getOpponentTeamAgeRange() != null) {
+            this.opponentTeamInfo = new OpponentTeamInfo(
+                    scheduleUpdateInput.getOpponentTeamName(),
                     AgeRange.fromKoreanName(scheduleUpdateInput.getOpponentTeamAgeRange()).orElseThrow(() -> new ScheduleControllerAdvice(ResponseCode.INVALID_AGE_RANGE))
             );
         }
