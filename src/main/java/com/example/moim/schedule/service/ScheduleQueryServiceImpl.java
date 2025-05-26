@@ -87,11 +87,10 @@ public class ScheduleQueryServiceImpl implements ScheduleQueryService {
             return new ScheduleDetailOutput(schedule, comments, new ScheduleDetailOutput.OpponentTeamInfoOutput(schedule.getOpponentTeamInfo()));
         }
         /**
-         * TODO: 정식 매치일 때, 전적 부분 공부해서 데이터 담기
+         * 전적 생기면 구현 예정
          */
         else if (schedule.getCategory().equals(ScheduleCategory.OFFICIAL_MATCH)) {
-            // 이 경우는 조금 더 고민해보기
-            // 리다이렉트나,, 아니면 내가 데이터를 넘겨주는게 맞을듯
+
         }
 
         // 정기 운동, 기타 일정일 때

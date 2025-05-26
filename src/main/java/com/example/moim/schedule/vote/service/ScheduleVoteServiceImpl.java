@@ -61,7 +61,7 @@ public class ScheduleVoteServiceImpl implements ScheduleVoteService {
         validateClubStaff(getUserClub(schedule.getClub(), user));
 
         List<User> userList = userClubRepository.findUserByClub(schedule.getClub()).stream().map(UserClub::getUser).toList();
-//        eventPublisher.publishEvent(new ScheduleEncourageEvent(schedule, userList));
+        eventPublisher.publishEvent(new ScheduleEncourageEvent(schedule, userList));
 
         return schedule.getTitle() + "의 투표 독려 알림을 보냈습니다.";
     }
