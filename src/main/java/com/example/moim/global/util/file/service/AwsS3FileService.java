@@ -18,8 +18,8 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.IOException;
 
 @Slf4j
-//@Service
-//@Profile("!test")
+@Service
+@Profile("!test")
 @RequiredArgsConstructor
 public class AwsS3FileService implements FileService {
 

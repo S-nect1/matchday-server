@@ -16,7 +16,7 @@ import java.io.IOException;
 
 @Service
 @Slf4j
-//@Profile("test")
+@Profile("test")
 @RequiredArgsConstructor
 public class LocalFileService implements FileService {
 
