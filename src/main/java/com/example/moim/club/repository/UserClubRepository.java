@@ -47,4 +47,6 @@ public interface UserClubRepository extends JpaRepository<UserClub, Long> {
             " where uc.club = :club" +
             " and (uc.clubRole = 'STAFF')")
     List<UserClub> findAdminByClub(@Param("club") Club Club);
+
+    void deleteByClubIdAndUserId(Long clubId, Long userId);
 }

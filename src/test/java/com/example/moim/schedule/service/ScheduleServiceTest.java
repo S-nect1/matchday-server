@@ -76,7 +76,7 @@ class ScheduleServiceTest {
         this.clubInput = ClubInput.builder().title("title").explanation("explanation").introduction("introduction")
                 .clubCategory(ClubCategory.SMALL_GROUP.getKoreanName()).university("university").gender(Gender.UNISEX.getKoreanName())
                 .activityArea(ActivityArea.SEOUL.getKoreanName()).ageRange(AgeRange.TWENTIES.getKoreanName()).sportsType(SportsType.SOCCER.getKoreanName())
-                .clubPassword("clubPassword").profileImg(new MockMultipartFile("file", "file".getBytes()))
+                .clubPassword("clubPassword").clubCheckPassword("clubPassword").profileImg(new MockMultipartFile("file", "file".getBytes()))
                 .mainUniformColor("mainUniformColor").subUniformColor("subUniformColor").build();
         this.scheduleUpdateInput = ScheduleUpdateInput.builder().clubId(1L).id(1L).title("update title").location("update location")
                 .startTime(LocalDateTime.of(2024, 12, 13, 12, 30, 0))

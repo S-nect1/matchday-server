@@ -76,6 +76,9 @@ public class Club extends BaseEntity {
         club.activityArea = ActivityArea.fromKoreanName(clubInput.getActivityArea()).get();
         club.sportsType = SportsType.fromKoreanName(clubInput.getSportsType()).get();
         club.ageRange = AgeRange.fromKoreanName(clubInput.getAgeRange()).get();
+        if (!clubInput.getClubPassword().equals(clubInput.getClubCheckPassword())) {
+            throw new ClubControllerAdvice(ResponseCode.CLUB_CHECK_PASSWORD_INCORRECT);
+        }
         club.clubPassword = clubInput.getClubPassword();
         if (fileInfo != null) {
             club.imgUrl = fileInfo.getFileUrl();
