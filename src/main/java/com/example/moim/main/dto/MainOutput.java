@@ -22,8 +22,8 @@ public class MainOutput {
         this.title = club.getTitle();
         this.explanation = club.getExplanation();
         try {
-            if (club.getProfileImgPath() != null) {
-                this.profileImg = Base64.getEncoder().encodeToString(new FileUrlResource(club.getProfileImgPath()).getContentAsByteArray());
+            if (club.getImgUrl() != null) {
+                this.profileImg = Base64.getEncoder().encodeToString(new FileUrlResource(club.getImgUrl()).getContentAsByteArray());
             }
         } catch (IOException e) {
             throw new RuntimeException(e);

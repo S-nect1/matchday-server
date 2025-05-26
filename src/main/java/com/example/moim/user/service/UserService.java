@@ -66,6 +66,9 @@ public class UserService {
     @Transactional
     public void updateUserInfo(User loginUser, UserUpdateInput userUpdateInput) throws IOException {
         User user = userRepository.findById(loginUser.getId()).get();
+        if (userUpdateInput.getImg() != null) {
+            fileService.remove(user.getStoredImgName());
+        }
         user.updateUserInfo(userUpdateInput, fileService.upload(userUpdateInput.getImg(), "/user_profile"));
     }
 

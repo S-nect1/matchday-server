@@ -64,6 +64,10 @@ public class ClubCommandServiceImpl implements ClubCommandService {
             throw new ClubControllerAdvice(ResponseCode.CLUB_PASSWORD_INCORRECT);
         }
 
+        if (clubUpdateInput.getProfileImg() != null) {
+            fileService.remove(club.getStoredImgName());
+        }
+
         club.updateClub(clubUpdateInput, fileService.upload(clubUpdateInput.getProfileImg(), "/club-profile"));
         // 검색 정보 동기화를 위한 처리
         club.getClubSearch().updateFrom(club);

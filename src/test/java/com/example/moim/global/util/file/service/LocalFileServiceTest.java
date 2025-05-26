@@ -1,6 +1,8 @@
 package com.example.moim.global.util.file.service;
 
+import com.example.moim.global.util.file.model.FileInfo;
 import com.example.moim.global.util.uuid.UuidHolder;
+import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -16,6 +18,7 @@ import java.io.IOException;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.mockito.Mockito.when;
 
+@Slf4j
 @ExtendWith(MockitoExtension.class)
 class LocalFileServiceTest {
 
@@ -32,20 +35,24 @@ class LocalFileServiceTest {
     @Test
     void upload() throws IOException {
         //given
-        MockMultipartFile mockMultipartFile = new MockMultipartFile("name", "originalName", "image/png", "ddd".getBytes());
+        MockMultipartFile mockMultipartFile = new MockMultipartFile("name", "originalName.jpg", "image/png", "ddd".getBytes());
 
         //when
         when(testUuidHolder.randomUuid()).thenReturn("aaaa-aaaa-aaaa");
 
         //then
-        String filePath = localFileService.upload(mockMultipartFile, "/test");
+        FileInfo fileInfo = localFileService.upload(mockMultipartFile, "/test");
 
-        assertThat(filePath).contains("/test");
-        assertThat(filePath).contains("aaaa-aaaa-aaaa");
-        assertThat(filePath).contains("originalName");
-        assertThat(new File(filePath).exists()).isTrue();
+        log.info("fileUrl : {}", fileInfo.getFileUrl());
+        log.info("originalName : {}", fileInfo.getOriginalFileName());
+        log.info("storedName : {}", fileInfo.getStoredFileName());
 
-        localFileService.remove(filePath);
+        assertThat(fileInfo.getFileUrl()).contains("/test");
+        assertThat(fileInfo.getStoredFileName()).contains("aaaa-aaaa-aaaa");
+        assertThat(fileInfo.getOriginalFileName()).contains("originalName.jpg");
+        assertThat(new File(fileInfo.getFileUrl()).exists()).isTrue();
+
+        localFileService.remove(fileInfo.getStoredFileName());
     }
 
     @Test
@@ -53,12 +60,12 @@ class LocalFileServiceTest {
         //given
         MockMultipartFile mockMultipartFile = new MockMultipartFile("delete file", "delete originalName", "image/png", "delete".getBytes());
         when(testUuidHolder.randomUuid()).thenReturn("aaaa-aaaa-aaaa");
-        String filePath = localFileService.upload(mockMultipartFile, "/test");
+        FileInfo fileInfo = localFileService.upload(mockMultipartFile, "/test");
 
         //when
-        localFileService.remove(filePath);
+        localFileService.remove(fileInfo.getStoredFileName());
 
         //then
-        assertThat(new File(filePath).exists()).isFalse();
+        assertThat(new File(fileInfo.getStoredFileName()).exists()).isFalse();
     }
 }

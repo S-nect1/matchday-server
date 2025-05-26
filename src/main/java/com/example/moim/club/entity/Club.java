@@ -6,14 +6,13 @@ import com.example.moim.club.exception.advice.ClubControllerAdvice;
 import com.example.moim.global.entity.BaseEntity;
 import com.example.moim.global.enums.*;
 import com.example.moim.global.exception.ResponseCode;
-import com.example.moim.global.util.TextUtils;
+import com.example.moim.global.util.file.model.FileInfo;
 import com.example.moim.match.entity.Match;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.springframework.util.StringUtils;
 
-import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -39,7 +38,9 @@ public class Club extends BaseEntity {
     @Enumerated(value = EnumType.STRING)
     private AgeRange ageRange;
     private String clubPassword;
-    private String profileImgPath = "기본 이미지 링크";
+    private String imgUrl; // 프론트에 제공할 URL
+    private String storedImgName; // UUID 로 저장된 이름
+    private String originalImgName; // 파일 업로할 때 이름
     private String mainUniformColor;
     private String subUniformColor;
     @OneToOne(mappedBy = "club")  // 검색을 위한 테이블 매핑
@@ -64,7 +65,7 @@ public class Club extends BaseEntity {
     /**
      * TODO : university 는 없을 수도 있으므로, null 일 경우를 처리해주기
      */
-    public static Club createClub(ClubInput clubInput, String profileImgPath) {
+    public static Club createClub(ClubInput clubInput, FileInfo fileInfo) {
         Club club = new Club();
         club.title = clubInput.getTitle();
         club.explanation = clubInput.getExplanation();
@@ -79,7 +80,11 @@ public class Club extends BaseEntity {
             throw new ClubControllerAdvice(ResponseCode.CLUB_CHECK_PASSWORD_INCORRECT);
         }
         club.clubPassword = clubInput.getClubPassword();
-        club.profileImgPath = profileImgPath;
+        if (fileInfo != null) {
+            club.imgUrl = fileInfo.getFileUrl();
+            club.originalImgName = fileInfo.getOriginalFileName();
+            club.storedImgName = fileInfo.getStoredFileName();
+        }
         club.mainUniformColor = clubInput.getMainUniformColor();
         club.subUniformColor = clubInput.getSubUniformColor();
         club.memberCount = 1;
@@ -92,14 +97,14 @@ public class Club extends BaseEntity {
     }
 
     public void changeProfileImg(String newImgPath) {
-        this.profileImgPath = newImgPath;
+        this.imgUrl = newImgPath;
     }
 
     public void plusMemberCount() {
         memberCount++;
     }
 
-    public void updateClub(ClubUpdateInput clubUpdateInput, String profileImgPath) {
+    public void updateClub(ClubUpdateInput clubUpdateInput, FileInfo fileInfo) {
         if (StringUtils.hasText(clubUpdateInput.getTitle())) {
             this.title = clubUpdateInput.getTitle();
         }
@@ -127,11 +132,10 @@ public class Club extends BaseEntity {
         if (StringUtils.hasText(clubUpdateInput.getSportsType())) {
             this.sportsType = SportsType.fromKoreanName(clubUpdateInput.getSportsType()).orElseThrow(() -> new ClubControllerAdvice(ResponseCode.INVALID_SPORTS_TYPE));
         }
-        if (StringUtils.hasText(profileImgPath)) {
-            if (StringUtils.hasText(this.profileImgPath)) {
-                new File(this.profileImgPath).delete();
-            }
-            this.profileImgPath = profileImgPath;
+        if (fileInfo != null) {
+            this.imgUrl = fileInfo.getFileUrl();
+            this.originalImgName = fileInfo.getOriginalFileName();
+            this.storedImgName = fileInfo.getStoredFileName();
         }
     }
 

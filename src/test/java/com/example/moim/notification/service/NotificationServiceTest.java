@@ -10,6 +10,7 @@ import static org.mockito.Mockito.when;
 
 import com.example.moim.club.dto.request.ClubInput;
 import com.example.moim.club.entity.Club;
+import com.example.moim.global.util.file.model.FileInfo;
 import com.example.moim.notification.dto.ClubJoinEvent;
 import com.example.moim.notification.dto.NotificationExistOutput;
 import com.example.moim.notification.dto.NotificationOutput;
@@ -141,6 +142,12 @@ class NotificationServiceTest {
     @DisplayName("알림을 저장하고 전송한다")
     void shouldSaveAndSendNotifications() {
         // given
+        FileInfo fileInfo = FileInfo.builder()
+                .fileUrl("fileUrl")
+                .originalFileName("originalFileName.jpg")
+                .storedFileName("test/aaaa-aaaa-aaaa.jpg")
+                .build();
+
         User targetUser = User.createUser(
                 SignupInput.builder()
                         .phone("010-1234-5678")
@@ -163,7 +170,7 @@ class NotificationServiceTest {
                         .clubPassword("password")
                         .clubCheckPassword("password")
                         .build()
-                , "path/to/image"
+                , fileInfo
         );
 
         NotificationEntity n1 = NotificationEntity.create(targetUser
