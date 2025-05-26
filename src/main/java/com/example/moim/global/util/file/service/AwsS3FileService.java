@@ -18,7 +18,7 @@ import java.io.IOException;
 
 @Slf4j
 @Service
-//@Profile("!test")
+@Profile("!test")
 @RequiredArgsConstructor
 public class AwsS3FileService implements FileService {
 
