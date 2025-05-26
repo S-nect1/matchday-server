@@ -1,5 +1,7 @@
 package com.example.moim.club.dto.request;
 
+import com.example.moim.club.exception.advice.ClubControllerAdvice;
+import com.example.moim.global.exception.ResponseCode;
 import jakarta.validation.constraints.NotBlank;
 import lombok.Builder;
 import lombok.Data;
@@ -14,9 +16,9 @@ public class ClubInput {
     private String title;
     @NotBlank(message = "모임 설명을 적어야합니다!")
     private String explanation;
-    @NotBlank(message = "모임 소개를 적어야합니다!")
+    @NotBlank(message = "모임 한줄 소개를 적어야합니다!")
     private String introduction;
-    @NotBlank(message = "클럽 카테고리를 지정해야합니다!")
+    @NotBlank(message = "모임 종류를 지정해야합니다!")
     private String clubCategory;
     private String university;
     @NotBlank(message = "성별을 지정해야합니다!")
@@ -29,6 +31,8 @@ public class ClubInput {
     private String sportsType;
     @NotBlank(message = "모임 비밀번호를 적어야합니다!")
     private String clubPassword;
+    @NotBlank(message = "모임 확인 비밀번호를 적어야합니다!")
+    private String clubCheckPassword;
     private MultipartFile profileImg;
     @NotBlank(message = "메인 유니폼 색을 지정해야합니다!")
     private String mainUniformColor;
@@ -36,7 +40,7 @@ public class ClubInput {
     private String subUniformColor;
 
     @Builder
-    public ClubInput(String title, String explanation, String introduction, String clubCategory, String university, String gender, String activityArea, String ageRange, String sportsType, String clubPassword, MultipartFile profileImg, String mainUniformColor, String subUniformColor) {
+    public ClubInput(String title, String explanation, String introduction, String clubCategory, String university, String gender, String activityArea, String ageRange, String sportsType, String clubPassword, String clubCheckPassword,MultipartFile profileImg, String mainUniformColor, String subUniformColor) {
         this.title = title;
         this.explanation = explanation;
         this.introduction = introduction;
@@ -46,6 +50,7 @@ public class ClubInput {
         this.activityArea = activityArea;
         this.ageRange = ageRange;
         this.sportsType = sportsType;
+        this.clubCheckPassword = clubCheckPassword;
         this.clubPassword = clubPassword;
         this.profileImg = profileImg;
         this.mainUniformColor = mainUniformColor;
