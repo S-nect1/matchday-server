@@ -11,7 +11,7 @@ public class FileInfo {
     private String fileUrl;
 
     @Builder
-    public FileInfo(String originalFileName, String storedFileName, String fileUrl, String contentType, long size) {
+    public FileInfo(String originalFileName, String storedFileName, String fileUrl) {
         this.originalFileName = originalFileName;
         this.storedFileName = storedFileName;
         this.fileUrl = fileUrl;

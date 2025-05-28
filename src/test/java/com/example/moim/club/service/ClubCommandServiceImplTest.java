@@ -250,7 +250,7 @@ class ClubCommandServiceImplTest {
     @DisplayName("운영진은 사용자를 모임에서 내보낼 수 있다")
     void deleteClubUser() {
         //given
-        Club club = Club.createClub(clubInput, null);
+        Club club = Club.from(clubInput, null);
 
         //when
         when(clubRepository.findById(any(Long.class))).thenReturn(Optional.of(club));
@@ -271,7 +271,7 @@ class ClubCommandServiceImplTest {
     @DisplayName("운영진이 아니면 모임에 속한 사용자를 내보내려 할 때 예외가 발생한다")
     void delete_ClubUser_exception_wrong_permission() {
         //given
-        Club club = Club.createClub(clubInput, null);
+        Club club = Club.from(clubInput, null);
 
         //when
         //then

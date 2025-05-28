@@ -70,15 +70,12 @@ public class Club extends BaseEntity {
         club.title = clubInput.getTitle();
         club.explanation = clubInput.getExplanation();
         club.introduction = clubInput.getIntroduction();
-        club.clubCategory = ClubCategory.fromKoreanName(clubInput.getClubCategory()).get();
+        club.clubCategory = ClubCategory.fromKoreanName(clubInput.getClubCategory()).orElseThrow(() -> new ClubControllerAdvice(ResponseCode.INVALID_CLUB_CATEGORY));
         club.university = clubInput.getUniversity();
-        club.gender = Gender.fromKoreanName(clubInput.getGender()).get();
-        club.activityArea = ActivityArea.fromKoreanName(clubInput.getActivityArea()).get();
-        club.sportsType = SportsType.fromKoreanName(clubInput.getSportsType()).get();
-        club.ageRange = AgeRange.fromKoreanName(clubInput.getAgeRange()).get();
-        if (!clubInput.getClubPassword().equals(clubInput.getClubCheckPassword())) {
-            throw new ClubControllerAdvice(ResponseCode.CLUB_CHECK_PASSWORD_INCORRECT);
-        }
+        club.gender = Gender.fromKoreanName(clubInput.getGender()).orElseThrow(() -> new ClubControllerAdvice(ResponseCode.INVALID_GENDER));
+        club.activityArea = ActivityArea.fromKoreanName(clubInput.getActivityArea()).orElseThrow(() -> new ClubControllerAdvice(ResponseCode.INVALID_ACTIVITY_AREA));
+        club.sportsType = SportsType.fromKoreanName(clubInput.getSportsType()).orElseThrow(() -> new ClubControllerAdvice(ResponseCode.INVALID_SPORTS_TYPE));
+        club.ageRange = AgeRange.fromKoreanName(clubInput.getAgeRange()).orElseThrow(() -> new ClubControllerAdvice(ResponseCode.INVALID_AGE_RANGE));
         club.clubPassword = clubInput.getClubPassword();
         if (fileInfo != null) {
             club.imgUrl = fileInfo.getFileUrl();

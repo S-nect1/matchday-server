@@ -5,6 +5,7 @@ import com.example.moim.club.entity.Club;
 import com.example.moim.club.entity.UserClub;
 import com.example.moim.club.repository.UserClubRepository;
 import com.example.moim.global.enums.*;
+import com.example.moim.global.util.file.model.FileInfo;
 import com.example.moim.schedule.comment.entity.Comment;
 import com.example.moim.schedule.comment.repository.CommentRepository;
 import com.example.moim.schedule.comment.dto.CommentInput;
@@ -49,6 +50,7 @@ class ScheduleCommentCommandServiceImplTest {
     private SignupInput signupInput;
     private ClubInput clubInput;
     private CommentInput commentInput;
+    private FileInfo fileInfo;
 
     @BeforeEach
     void init() {
@@ -69,13 +71,16 @@ class ScheduleCommentCommandServiceImplTest {
 
         // commentInput 생성
         this.commentInput = CommentInput.builder().contents("일정이 있어 참가 못합니다").build();
+
+        // fileInfo 생성
+        this.fileInfo = FileInfo.builder().fileUrl("fileUrl").storedFileName("storedFileName").originalFileName("originalFileName").build();
     }
 
     @Test
     @DisplayName("회원은 일정에 댓글을 달 수 있다.")
     void saveComment() {
         // given
-        Club club = Club.from(clubInput, "/image");
+        Club club = Club.from(clubInput, fileInfo);
         User user = User.createUser(signupInput);
         UserClub userClub = UserClub.createLeaderUserClub(user, club);
         Schedule schedule = Schedule.from(club, scheduleInput);
@@ -99,7 +104,7 @@ class ScheduleCommentCommandServiceImplTest {
     @DisplayName("비회원은 일정에 댓글을 달 수 없다.")
     void saveComment_non_member() {
         // given
-        Club club = Club.from(clubInput, "/image");
+        Club club = Club.from(clubInput, fileInfo);
         User user = User.createUser(signupInput);
         Schedule schedule = Schedule.from(club, scheduleInput);
         Comment comment = Comment.createComment(user, schedule, commentInput.getContents());
