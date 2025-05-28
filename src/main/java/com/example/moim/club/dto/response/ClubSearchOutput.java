@@ -22,9 +22,9 @@ public class ClubSearchOutput {
         this.title = club.getTitle();
         this.explanation = club.getExplanation();
         this.memberCount = club.getMemberCount();
-        if (club.getProfileImgPath() != null) {
+        if (club.getImgUrl() != null) {
             try {
-                this.profileImg = Base64.getEncoder().encodeToString(new FileUrlResource(club.getProfileImgPath()).getContentAsByteArray());
+                this.profileImg = Base64.getEncoder().encodeToString(new FileUrlResource(club.getImgUrl()).getContentAsByteArray());
             } catch (IOException e) {
                 throw new RuntimeException(e);
             }

@@ -11,12 +11,14 @@ import com.example.moim.club.repository.NoticeRepository;
 import com.example.moim.club.repository.UserClubRepository;
 import com.example.moim.global.enums.ClubRole;
 import com.example.moim.global.exception.ResponseCode;
+import com.example.moim.user.entity.User;
 import com.example.moim.notification.dto.NoticeSaveEvent;
 import com.example.moim.user.entity.User;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
+
 import org.springframework.transaction.annotation.Transactional;
 
 @Slf4j

@@ -73,7 +73,7 @@ class ClubCommandServiceImplTest {
 
         this.clubInput = ClubInput.builder().title(title).explanation(explanation).introduction(introduction).clubCategory(clubCategory.getKoreanName())
                 .university(organization).gender(gender.getKoreanName()).activityArea(activityArea.getKoreanName()).ageRange(ageRange.getKoreanName()).sportsType(sportsType.getKoreanName())
-                .clubPassword(clubPassword).profileImg(profileImg).mainUniformColor(mainUniformColor).subUniformColor(subUniformColor).build();
+                .clubPassword(clubPassword).clubCheckPassword(clubPassword).profileImg(profileImg).mainUniformColor(mainUniformColor).subUniformColor(subUniformColor).build();
 
         String updateTitle = "update title";
         String updateExplanation = "update explanation";
@@ -242,6 +242,49 @@ class ClubCommandServiceImplTest {
             clubCommandService.updateClubUser(new User(), clubUserUpdateInput, 1L);
         });
         assertThat(exception.getMessage()).isEqualTo(ResponseCode.CLUB_PERMISSION_DENIED.getMessage());
+        verify(clubRepository, times(1)).findById(any(Long.class));
+        verify(userClubRepository, times(1)).findByClubAndUser(any(Club.class), any(User.class));
+    }
+
+    @Test
+    @DisplayName("운영진은 사용자를 모임에서 내보낼 수 있다")
+    void deleteClubUser() {
+        //given
+        Club club = Club.createClub(clubInput, null);
+
+        //when
+        when(clubRepository.findById(any(Long.class))).thenReturn(Optional.of(club));
+        when(userClubRepository.findByClubAndUser(any(Club.class), any(User.class)))
+                .thenReturn(Optional.of(UserClub.createLeaderUserClub(new User(), club)))
+                .thenReturn(Optional.of(UserClub.createUserClub(new User(), club)));
+        when(userRepository.findById(any(Long.class))).thenReturn(Optional.of(new User()));
+        String result = clubCommandService.deleteClubUser(new User(), 1L, 1L);
+
+        //then
+        assertThat(result).contains("님이 가입에서 내보내졌습니다.");
+        verify(clubRepository, times(1)).findById(any(Long.class));
+        verify(userClubRepository, times(1)).findByClubAndUser(any(Club.class), any(User.class));
+        verify(userClubRepository, times(1)).deleteByClubIdAndUserId(any(Long.class), any(Long.class));
+    }
+
+    @Test
+    @DisplayName("운영진이 아니면 모임에 속한 사용자를 내보내려 할 때 예외가 발생한다")
+    void delete_ClubUser_exception_wrong_permission() {
+        //given
+        Club club = Club.createClub(clubInput, null);
+
+        //when
+        //then
+        when(clubRepository.findById(any(Long.class))).thenReturn(Optional.of(club));
+        when(userClubRepository.findByClubAndUser(any(Club.class), any(User.class)))
+                .thenReturn(Optional.of(UserClub.createUserClub(new User(), club)));
+        when(userRepository.findById(any(Long.class))).thenReturn(Optional.of(new User()));
+
+        Exception exception = assertThrows(ClubControllerAdvice.class, () -> {
+            clubCommandService.deleteClubUser(new User(), 1L, 1L);
+        });
+        assertThat(exception.getMessage()).isEqualTo(ResponseCode.CLUB_PERMISSION_DENIED.getMessage());
+        verify(userRepository, times(1)).findById(any(Long.class));
         verify(clubRepository, times(1)).findById(any(Long.class));
         verify(userClubRepository, times(1)).findByClubAndUser(any(Club.class), any(User.class));
     }

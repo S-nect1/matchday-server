@@ -28,7 +28,7 @@ public class LoginOutput {
         this.gender = user.getGender().getKoreanName();
         this.phone = user.getPhone();
         this.activityArea = user.getActivityArea().getKoreanName();
-        this.img = user.getImgPath();//base64인코딩 해야함
+        this.img = user.getImgUrl();//base64인코딩 해야함
         this.accessToken = accessToken;
         this.refreshToken = user.getRefreshToken();
     }
@@ -42,7 +42,7 @@ public class LoginOutput {
         }
         this.phone = user.getPhone();
         this.activityArea = user.getActivityArea().getKoreanName();
-        this.img = user.getImgPath();//base64인코딩 해야함
+        this.img = user.getImgUrl();//base64인코딩 해야함
         this.height = user.getHeight();
         this.weight = user.getWeight();
         this.mainFoot = user.getMainFoot();

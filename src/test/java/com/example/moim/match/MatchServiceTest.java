@@ -80,6 +80,7 @@ class MatchServiceTest {
         clubInput.setAgeRange(AgeRange.TWENTIES.getKoreanName());
         clubInput.setSportsType(SportsType.SOCCER.getKoreanName());
         clubInput.setClubPassword("password");
+        clubInput.setClubCheckPassword("password");
         clubInput.setMainUniformColor("흰색");
         clubInput.setSubUniformColor("검은색");
 

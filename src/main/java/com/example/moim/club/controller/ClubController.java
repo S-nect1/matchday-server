@@ -60,6 +60,11 @@ public class ClubController implements ClubControllerDocs{
 //        return clubService.inviteClubUser(userDetailsImpl.getUser(), clubInviteInput);
 //    }
 
+    @DeleteMapping("/clubs/{id}/users")
+    public BaseResponse<String> clubUserDelete(@AuthenticationPrincipal UserDetailsImpl userDetailsImpl, @PathVariable("id") Long clubId, @RequestBody ClubUserDeleteInput clubUserDeleteInput) {
+        return BaseResponse.onSuccess(clubCommandService.deleteClubUser(userDetailsImpl.getUser(), clubId, clubUserDeleteInput.getUserId()), ResponseCode.OK);
+    }
+
     @PatchMapping("/clubs/{id}/role")
     public BaseResponse<UserClubOutput> clubUserUpdate(@AuthenticationPrincipal UserDetailsImpl userDetailsImpl, @RequestBody ClubUserUpdateInput clubInput, @PathVariable("id") Long clubId) {
 //    public BaseResponse<UserClubOutput> clubUserUpdate(@RequestBody ClubUserUpdateInput clubInput, @PathVariable("id") Long clubId) {
@@ -75,11 +80,10 @@ public class ClubController implements ClubControllerDocs{
     }
 
     @PatchMapping(value = "/clubs/{id}/password", consumes = MediaType.APPLICATION_JSON_VALUE)
-    public BaseResponse clubPasswordUpdate(@AuthenticationPrincipal UserDetailsImpl userDetailsImpl, @RequestBody @Valid ClubPswdUpdateInput clubPswdUpdateInput, @PathVariable("id") Long clubId) {
+    public BaseResponse<String> clubPasswordUpdate(@AuthenticationPrincipal UserDetailsImpl userDetailsImpl, @RequestBody @Valid ClubPswdUpdateInput clubPswdUpdateInput, @PathVariable("id") Long clubId) {
 //    public BaseResponse clubPasswordUpdate(@RequestBody @Valid ClubPswdUpdateInput clubPswdUpdateInput, @PathVariable("id") Long clubId) {
 //        User user = userRepository.findById(1L).get();
-        clubCommandService.clubPasswordUpdate(userDetailsImpl.getUser(), clubPswdUpdateInput, clubId);
-        return BaseResponse.onSuccess(null, ResponseCode.OK);
+        return BaseResponse.onSuccess(clubCommandService.clubPasswordUpdate(userDetailsImpl.getUser(), clubPswdUpdateInput, clubId), ResponseCode.OK);
     }
 
 //    @PatchMapping(value = "/club/profile", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)

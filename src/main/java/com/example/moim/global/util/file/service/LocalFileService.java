@@ -2,6 +2,7 @@ package com.example.moim.global.util.file.service;
 
 import com.example.moim.global.exception.ResponseCode;
 import com.example.moim.global.util.file.exception.advice.LocalFileControllerAdvice;
+import com.example.moim.global.util.file.model.FileInfo;
 import com.example.moim.global.util.uuid.UuidHolder;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -16,7 +17,7 @@ import java.io.IOException;
 
 @Service
 @Slf4j
-//@Profile("test")
+@Profile("test")
 @RequiredArgsConstructor
 public class LocalFileService implements FileService {
 
@@ -27,7 +28,7 @@ public class LocalFileService implements FileService {
     private final UuidHolder uuidHolder;
 
     @Override
-    public String upload(MultipartFile multipartFile, String directoryName) throws IOException {
+    public FileInfo upload(MultipartFile multipartFile, String directoryName) throws IOException {
         String originalFileName = multipartFile.getOriginalFilename();
         String mimeType = multipartFile.getContentType();
 
@@ -61,7 +62,11 @@ public class LocalFileService implements FileService {
             }
         }
 
-        return file.getPath();
+        return FileInfo.builder()
+                .fileUrl(file.getPath())
+                .originalFileName(originalFileName)
+                .storedFileName(randomFileName)
+                .build();
     }
 
     private boolean fileTypeCheck(String mimeType) {
@@ -70,7 +75,7 @@ public class LocalFileService implements FileService {
 
     @Override
     public void remove(String path) {
-        File file = new File(path);
+        File file = new File(fileUploadDir + path);
         file.delete();
     }
 

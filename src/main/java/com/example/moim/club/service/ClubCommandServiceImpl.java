@@ -64,7 +64,11 @@ public class ClubCommandServiceImpl implements ClubCommandService {
             throw new ClubControllerAdvice(ResponseCode.CLUB_PASSWORD_INCORRECT);
         }
 
+        if (clubUpdateInput.getProfileImg() != null) {
+            fileService.remove(club.getStoredImgName());
+        }
         club.update(clubUpdateInput, fileService.upload(clubUpdateInput.getProfileImg(), "/club-profile"));
+
         // 검색 정보 동기화를 위한 처리
         club.getClubSearch().updateFrom(club);
         List<UserClubOutput> userList = userClubRepository.findAllByClub(club).stream().map(UserClubOutput::new).toList();
@@ -90,6 +94,20 @@ public class ClubCommandServiceImpl implements ClubCommandService {
         throw new ClubControllerAdvice(ResponseCode.CLUB_PASSWORD_INCORRECT);
     }
 
+    @Transactional
+    public String deleteClubUser(User user, Long clubId, Long userId) {
+
+        User targetUser = getUser(userId);
+
+        // 관리자 권한 확인
+        validateIsStaff(getUserClub(getClub(clubId), user));
+
+        userClubRepository.deleteByClubIdAndUserId(clubId, userId);
+
+        return targetUser.getName() + "님이 가입에서 내보내졌습니다.";
+
+    }
+
 //    public UserClubOutput inviteClubUser(User user, ClubInviteInput clubInviteInput) {
 //        userRepository.findById(clubInviteInput.getUser().)
 //    }
@@ -110,7 +128,7 @@ public class ClubCommandServiceImpl implements ClubCommandService {
     }
 
     @Transactional
-    public void clubPasswordUpdate(User user, ClubPswdUpdateInput clubPswdUpdateInput, Long clubId) {
+    public String clubPasswordUpdate(User user, ClubPswdUpdateInput clubPswdUpdateInput, Long clubId) {
         Club club = getClub(clubId);
 //        Club club = clubRepository.findById(clubPswdUpdateInput.getId()).orElseThrow(() -> new ClubControllerAdvice(ResponseCode.CLUB_NOT_FOUND));
         UserClub userClub = userClubRepository.findByClubAndUser(club, user).orElseThrow(() -> new ClubControllerAdvice(ResponseCode.CLUB_USER_NOT_FOUND));
@@ -125,11 +143,28 @@ public class ClubCommandServiceImpl implements ClubCommandService {
         if (!clubPswdUpdateInput.getNewPassword().equals(clubPswdUpdateInput.getRePassword())) {
             throw new ClubControllerAdvice(ResponseCode.CLUB_CHECK_PASSWORD_INCORRECT);
         }
+
         club.updatePassword(clubPswdUpdateInput.getNewPassword());
+
+        return club.getTitle() + "의 비밀번호를 변경하였습니다.";
+    }
+
+    private UserClub getUserClub(Club club, User user) {
+        return userClubRepository.findByClubAndUser(club, user).orElseThrow(() -> new ClubControllerAdvice(ResponseCode.CLUB_USER_NOT_FOUND));
     }
 
     private Club getClub(Long clubId) {
         return clubRepository.findById(clubId).orElseThrow(() -> new ClubControllerAdvice(ResponseCode.CLUB_NOT_FOUND));
+    }
+
+    private User getUser(Long userId) {
+        return userRepository.findById(userId).orElseThrow(() -> new ClubControllerAdvice(ResponseCode.MEMBER_NOT_FOUND));
+    }
+
+    private void validateIsStaff(UserClub userClub) {
+        if (!userClub.getClubRole().equals(ClubRole.STAFF)) {
+            throw new ClubControllerAdvice(ResponseCode.CLUB_PERMISSION_DENIED);
+        }
     }
 
     private void saveClubSearch(Club club) {

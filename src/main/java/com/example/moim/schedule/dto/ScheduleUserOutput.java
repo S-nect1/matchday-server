@@ -15,9 +15,9 @@ public class ScheduleUserOutput {
 
     public ScheduleUserOutput(ScheduleVote scheduleVote) {
         this.name = scheduleVote.getUser().getName();
-        if (scheduleVote.getUser().getImgPath() != null) {
+        if (scheduleVote.getUser().getImgUrl() != null) {
             try {
-                this.img = Base64.getEncoder().encodeToString(new FileUrlResource(scheduleVote.getUser().getImgPath()).getContentAsByteArray());
+                this.img = Base64.getEncoder().encodeToString(new FileUrlResource(scheduleVote.getUser().getImgUrl()).getContentAsByteArray());
             } catch (IOException e) {
                 throw new RuntimeException(e);
             }
