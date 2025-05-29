@@ -3,6 +3,7 @@ package com.example.moim.statistic.entity;
 import com.example.moim.club.entity.Club;
 import com.example.moim.club.entity.UserClub;
 import com.example.moim.global.entity.BaseEntity;
+import com.example.moim.global.enums.SportsType;
 import jakarta.persistence.*;
 import lombok.Getter;
 
@@ -20,6 +21,7 @@ public class Statistic extends BaseEntity {
     @JoinColumn(name = "club_id")
     private Club club;
 
+    private SportsType sportsType;
     private String season;      // -년 전반기 / 후반기
     private Tier tier;
     private int point;
@@ -45,10 +47,11 @@ public class Statistic extends BaseEntity {
     }
 
     // 모임 만들때 기본적으로 하나 생성, 반기별로 하나씩 생성
-    public static Statistic createStatistic(Club club) {
+    public static Statistic createStatistic(Club club, SportsType sportsType) {
         Statistic statistic = new Statistic();
 
         statistic.club = club;
+        statistic.sportsType = sportsType;
         statistic.season = Statistic.getCurrentSeason();
         statistic.tier = ROOKIE;
         statistic.point = 305;

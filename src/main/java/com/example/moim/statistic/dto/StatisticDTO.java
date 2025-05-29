@@ -9,6 +9,7 @@ public class StatisticDTO {
     @AllArgsConstructor
     public static class StatisticRequest {
         private String targetSeason;
+        private String targetType;
     }
 
     @Data

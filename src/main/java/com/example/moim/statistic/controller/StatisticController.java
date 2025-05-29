@@ -12,10 +12,10 @@ import org.springframework.web.bind.annotation.*;
 public class StatisticController {
     private StatisticService statisticService;
 
-    // 전적 조회
+    // 전적 조회(전적 메인)
     @GetMapping("/statistic/{clubId}")
     public BaseResponse<StatisticDTO.StatisticResponse> getStatistic(@PathVariable Long clubId,
                                                                      @RequestBody StatisticDTO.StatisticRequest request) {
-        return BaseResponse.onSuccess(statisticService.getStatistic(clubId, request.getTargetSeason()), ResponseCode.OK);
+        return BaseResponse.onSuccess(statisticService.getStatistic(clubId, request.getTargetSeason(), request.getTargetType()), ResponseCode.OK);
     }
 }

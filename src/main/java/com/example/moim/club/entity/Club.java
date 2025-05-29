@@ -82,7 +82,9 @@ public class Club extends BaseEntity {
         club.subUniformColor = clubInput.getSubUniformColor();
         club.memberCount = 1;
 
-        Statistic.createStatistic(club);
+        Statistic.createStatistic(club, SportsType.OVERALL);
+        Statistic.createStatistic(club, SportsType.FUTSAL);
+        Statistic.createStatistic(club, SportsType.SOCCER);
         return club;
     }
 

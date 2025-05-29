@@ -3,6 +3,7 @@ package com.example.moim.statistic.service;
 import com.example.moim.club.entity.Club;
 import com.example.moim.club.exception.advice.ClubControllerAdvice;
 import com.example.moim.club.repository.ClubRepository;
+import com.example.moim.global.enums.SportsType;
 import com.example.moim.global.exception.ResponseCode;
 import com.example.moim.match.entity.Match;
 import com.example.moim.statistic.dto.StatisticDTO;
@@ -34,11 +35,15 @@ public class StatisticService {
         List<Club> clubs = clubRepository.findAll();
 
         for (Club club : clubs) {
-            // 현재 시즌에 해당하는 Statistic이 존재하는지 확인하는 로직
-            Optional<Statistic> existing = statisticRepository.findByClubAndSeason(club, currentSeason);
+            // 현재 시즌에 해당하는 Statistic이 존재하는지 확인하는 로직(통합, 풋살, 축구)
+            Optional<Statistic> existing = statisticRepository.findByClubAndSeasonAndSportsType(club, currentSeason, SportsType.OVERALL);
             if (existing.isEmpty()) {
-                Statistic newStatistic = Statistic.createStatistic(club);
+                Statistic newStatistic = Statistic.createStatistic(club, SportsType.OVERALL);
+                Statistic newFulsalStatistic = Statistic.createStatistic(club, SportsType.FUTSAL);
+                Statistic newSoccerStatistic = Statistic.createStatistic(club, SportsType.SOCCER);
                 statisticRepository.save(newStatistic);
+                statisticRepository.save(newFulsalStatistic);
+                statisticRepository.save(newSoccerStatistic);
             }
         }
     }
@@ -46,27 +51,59 @@ public class StatisticService {
     // 전적 업데이트 로직
     public void updateStatistic(Match match) {
         String currentSeason = Statistic.getCurrentSeason();
-        Statistic homeStatistic = statisticRepository.findByClubAndSeason(match.getHomeClub(), currentSeason)
+
+        // 통합
+        Statistic homeStatistic = statisticRepository.findByClubAndSeasonAndSportsType(match.getHomeClub(), currentSeason, SportsType.OVERALL)
                 .orElseThrow();
-        Statistic awayStatistic = statisticRepository.findByClubAndSeason(match.getAwayClub(), currentSeason)
+        Statistic awayStatistic = statisticRepository.findByClubAndSeasonAndSportsType(match.getAwayClub(), currentSeason, SportsType.OVERALL)
                 .orElseThrow();
         int homeRankLevel = homeStatistic.getTier().getLevel();
         int awayRankLevel = awayStatistic.getTier().getLevel();
 
-        // 1명만 가져오게 페이징
-        StatisticDTO.mvpDTO homeMVPResult = statisticRepository.findTopScorerByClub(match.getHomeClub(), currentSeason).getFirst();
-        StatisticDTO.mvpDTO awayMVPResult = statisticRepository.findTopScorerByClub(match.getHomeClub(), currentSeason).getFirst();
+        StatisticDTO.mvpDTO homeMVPResult = statisticRepository.findTopScorerByClubAndSportsType(match.getHomeClub(), currentSeason, SportsType.OVERALL).getFirst();
+        StatisticDTO.mvpDTO awayMVPResult = statisticRepository.findTopScorerByClubAndSportsType(match.getHomeClub(), currentSeason, SportsType.OVERALL).getFirst();
 
-        homeStatistic.updateStatistic(match.getHomeScore(), match.getAwayScore(), awayRankLevel, homeMVPResult.getName(), homeMVPResult.getGoalCount().intValue());
-        awayStatistic.updateStatistic(match.getAwayScore(), match.getHomeScore(), homeRankLevel, awayMVPResult.getName(), awayMVPResult.getGoalCount().intValue());
+        homeStatistic.updateStatistic(match.getHomeScore(), match.getHomeScore(), homeRankLevel, homeMVPResult.getName(), homeMVPResult.getGoalCount().intValue());
+        awayStatistic.updateStatistic(match.getAwayScore(), match.getAwayScore(), awayRankLevel, awayMVPResult.getName(), awayMVPResult.getGoalCount().intValue());
+
+        if (match.getEvent() == SportsType.FUTSAL) {
+            // 풋살
+            Statistic homeFutsalStatistic = statisticRepository.findByClubAndSeasonAndSportsType(match.getHomeClub(), currentSeason, SportsType.FUTSAL)
+                    .orElseThrow();
+            Statistic awayFutsalStatistic = statisticRepository.findByClubAndSeasonAndSportsType(match.getAwayClub(), currentSeason, SportsType.FUTSAL)
+                    .orElseThrow();
+            int homeFutsalRankLevel = homeFutsalStatistic.getTier().getLevel();
+            int awayFutsalRankLevel = awayFutsalStatistic.getTier().getLevel();
+
+            StatisticDTO.mvpDTO homeFutsalMVPResult = statisticRepository.findTopScorerByClubAndSportsType(match.getHomeClub(), currentSeason, SportsType.OVERALL).getFirst();
+            StatisticDTO.mvpDTO awayFutsalMVPResult = statisticRepository.findTopScorerByClubAndSportsType(match.getHomeClub(), currentSeason, SportsType.OVERALL).getFirst();
+
+            homeFutsalStatistic.updateStatistic(match.getHomeScore(), match.getHomeScore(), homeFutsalRankLevel, homeMVPResult.getName(), homeFutsalMVPResult.getGoalCount().intValue());
+            awayFutsalStatistic.updateStatistic(match.getAwayScore(), match.getAwayScore(), awayFutsalRankLevel, awayMVPResult.getName(), awayFutsalMVPResult.getGoalCount().intValue());
+        } else if (match.getEvent() == SportsType.SOCCER) {
+            // 축구
+            Statistic homeSoccerStatistic = statisticRepository.findByClubAndSeasonAndSportsType(match.getHomeClub(), currentSeason, SportsType.SOCCER)
+                    .orElseThrow();
+            Statistic awaySoccerStatistic = statisticRepository.findByClubAndSeasonAndSportsType(match.getAwayClub(), currentSeason, SportsType.SOCCER)
+                    .orElseThrow();
+            int homeSoccerRankLevel = homeSoccerStatistic.getTier().getLevel();
+            int awaySoccerRankLevel = awaySoccerStatistic.getTier().getLevel();
+
+            StatisticDTO.mvpDTO homeSoccerMVPResult = statisticRepository.findTopScorerByClubAndSportsType(match.getHomeClub(), currentSeason, SportsType.OVERALL).getFirst();
+            StatisticDTO.mvpDTO awaySoccerMVPResult = statisticRepository.findTopScorerByClubAndSportsType(match.getHomeClub(), currentSeason, SportsType.OVERALL).getFirst();
+
+            homeSoccerStatistic.updateStatistic(match.getHomeScore(), match.getAwayScore(), homeSoccerRankLevel, homeSoccerMVPResult.getName(), homeMVPResult.getGoalCount().intValue());
+            awaySoccerStatistic.updateStatistic(match.getAwayScore(), match.getHomeScore(), awaySoccerRankLevel, awaySoccerMVPResult.getName(), awayMVPResult.getGoalCount().intValue());
+        }
     }
 
     // 전적 조회
-    public StatisticDTO.StatisticResponse getStatistic(Long clubId, String targetSeason) {
+    public StatisticDTO.StatisticResponse getStatistic(Long clubId, String targetSeason, String sportsType) {
 //        String currentSeason = Statistic.getCurrentSeason();
+        SportsType targetSportsType = SportsType.valueOf(sportsType);
         Club club = clubRepository.findById(clubId)
                 .orElseThrow(() -> new ClubControllerAdvice(ResponseCode.CLUB_NOT_FOUND));
-        Statistic statistic = statisticRepository.findByClubAndSeason(club, targetSeason)
+        Statistic statistic = statisticRepository.findByClubAndSeasonAndSportsType(club, targetSeason, targetSportsType)
                 .orElseThrow(() -> new StatisticControllerAdvice(ResponseCode.STATISTIC_NOT_FOUND));
 
         return new StatisticDTO.StatisticResponse(statistic);
