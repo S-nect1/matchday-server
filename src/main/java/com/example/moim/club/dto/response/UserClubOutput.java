@@ -28,9 +28,9 @@ public class UserClubOutput {
         this.clubRole = userClub.getClubRole().getKoreanName();
         this.joinDate = userClub.getJoinDate();
         this.birthday = userClub.getUser().getBirthday();
-        if (StringUtils.hasText(userClub.getUser().getImgPath())) {
+        if (StringUtils.hasText(userClub.getUser().getImgUrl())) {
             try {
-                this.img = Base64.getEncoder().encodeToString(new FileUrlResource(userClub.getUser().getImgPath()).getContentAsByteArray());
+                this.img = Base64.getEncoder().encodeToString(new FileUrlResource(userClub.getUser().getImgUrl()).getContentAsByteArray());
             } catch (IOException e) {
                 throw new RuntimeException(e);
             }

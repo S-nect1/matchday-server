@@ -33,6 +33,9 @@ public interface ClubControllerDocs {
     BaseResponse<UserClubOutput> clubUserSave(@AuthenticationPrincipal UserDetailsImpl userDetailsImpl, @RequestBody ClubUserSaveInput clubInput, @PathVariable("id") Long clubId);
 //    BaseResponse<UserClubOutput> clubUserSave(@RequestBody ClubUserSaveInput clubInput, @PathVariable Long clubId);
 
+    @Operation(summary = "모임에서 내보내기")
+    BaseResponse<String> clubUserDelete(@AuthenticationPrincipal UserDetailsImpl userDetailsImpl, @PathVariable("id") Long clubId, @RequestBody ClubUserDeleteInput clubUserDeleteInput);
+
 //    @Operation(summary = "모임에 초대")
 //    UserClubOutput clubUserInvite(@AuthenticationPrincipal userDetailsImpl userDetailsImpl, @RequestBody ClubUserSaveInput clubInput);
 
@@ -45,7 +48,7 @@ public interface ClubControllerDocs {
 //    BaseResponse<ClubOutput> clubFind(@PathVariable("id") Long clubId);
 
     @Operation(summary = "모임 비밀번호 변경")
-    BaseResponse clubPasswordUpdate(@AuthenticationPrincipal UserDetailsImpl userDetailsImpl, @RequestBody ClubPswdUpdateInput clubPswdUpdateInput, @PathVariable("id") Long clubId);
+    BaseResponse<String> clubPasswordUpdate(@AuthenticationPrincipal UserDetailsImpl userDetailsImpl, @RequestBody ClubPswdUpdateInput clubPswdUpdateInput, @PathVariable("id") Long clubId);
 //    BaseResponse clubPasswordUpdate(@RequestBody ClubPswdUpdateInput clubPswdUpdateInput, @PathVariable Long clubId);
 
 //    @Operation(summary = "모임 사진 변경")

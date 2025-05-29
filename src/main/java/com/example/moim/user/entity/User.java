@@ -6,16 +6,32 @@ import com.example.moim.global.enums.ActivityArea;
 import com.example.moim.global.enums.Gender;
 import com.example.moim.global.enums.Position;
 import com.example.moim.global.exception.ResponseCode;
-import com.example.moim.notification.entity.Notifications;
-import com.example.moim.user.dto.*;
+import com.example.moim.global.util.file.model.FileInfo;
+import com.example.moim.notification.entity.NotificationEntity;
+import com.example.moim.user.dto.GoogleUserSignup;
+import com.example.moim.user.dto.KakaoUserSignup;
+import com.example.moim.user.dto.NaverUserSignup;
+import com.example.moim.user.dto.SignupInput;
+import com.example.moim.user.dto.SocialSignupInput;
+import com.example.moim.user.dto.UserUpdateInput;
 import com.example.moim.user.exceptions.advice.UserControllerAdvice;
-import jakarta.persistence.*;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import jakarta.persistence.CascadeType;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.OneToMany;
+import jakarta.persistence.Table;
 
-import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
+
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 @Entity
 @Table(name = "users")
@@ -33,7 +49,9 @@ public class User extends BaseEntity {
     @Enumerated(EnumType.STRING)
     private Gender gender;
     private String phone;
-    private String imgPath;
+    private String imgUrl;
+    private String originalImgName;
+    private String storedImgName;
     @Enumerated(EnumType.STRING)
     private Role role;
     @Enumerated(EnumType.STRING)
@@ -52,7 +70,41 @@ public class User extends BaseEntity {
     @OneToMany(mappedBy = "user", cascade = CascadeType.REMOVE)
     private List<UserClub> userClub = new ArrayList<>();
     @OneToMany(mappedBy = "targetUser", cascade = CascadeType.REMOVE)
-    private List<Notifications> notifications = new ArrayList<>();
+    private List<NotificationEntity> notifications = new ArrayList<>();
+
+    @Builder
+    public User(String email, String password, String name, String birthday, Gender gender, String phone,
+                FileInfo fileInfo,
+                Role role, ActivityArea activityArea, int height, int weight, String mainFoot, Position mainPosition,
+                Position subPosition, String refreshToken, String fcmToken, List<UserClub> userClub,
+                List<NotificationEntity> notifications) {
+        this.email = email;
+        this.password = password;
+        this.name = name;
+        this.birthday = birthday;
+        this.gender = gender;
+        this.phone = phone;
+        /**
+         * CHECK: 여기 파일 서비스 구조 고쳐지면서, 변경된 코드입니다!
+         */
+        if (fileInfo != null) {
+            this.imgUrl = fileInfo.getFileUrl();
+            this.originalImgName = fileInfo.getOriginalFileName();
+            this.storedImgName = fileInfo.getStoredFileName();
+        }
+
+        this.role = role;
+        this.activityArea = activityArea;
+        this.height = height;
+        this.weight = weight;
+        this.mainFoot = mainFoot;
+        this.mainPosition = mainPosition;
+        this.subPosition = subPosition;
+        this.refreshToken = refreshToken;
+        this.fcmToken = fcmToken;
+        this.userClub = userClub;
+        this.notifications = notifications;
+    }
 
     public static User createUser(SignupInput signupInput) {
         User user = new User();
@@ -60,7 +112,8 @@ public class User extends BaseEntity {
         user.password = signupInput.getPassword();
         user.name = signupInput.getName();
         user.birthday = signupInput.getBirthday();
-        user.gender = Gender.fromKoreanName(signupInput.getGender()).orElseThrow(() -> new UserControllerAdvice(ResponseCode.INVALID_GENDER));
+        user.gender = Gender.fromKoreanName(signupInput.getGender())
+                .orElseThrow(() -> new UserControllerAdvice(ResponseCode.INVALID_GENDER));
         user.phone = signupInput.getPhone();
         user.role = Role.USER;
         return user;
@@ -93,18 +146,23 @@ public class User extends BaseEntity {
     public static User createNaverUser(NaverUserSignup naverUserSignup) {
         User user = new User();
         user.email = naverUserSignup.getEmail();
-        user.gender = Gender.fromKoreanName(naverUserSignup.getGender()).orElseThrow(() -> new UserControllerAdvice(ResponseCode.INVALID_GENDER));
+        user.gender = Gender.fromKoreanName(naverUserSignup.getGender())
+                .orElseThrow(() -> new UserControllerAdvice(ResponseCode.INVALID_GENDER));
         user.role = Role.USER;
         return user;
     }
 
-    public void fillUserInfo(SocialSignupInput socialSignupInput, String imgPath) {
+    public void fillUserInfo(SocialSignupInput socialSignupInput, FileInfo fileInfo) {
         this.name = socialSignupInput.getName();
         this.birthday = socialSignupInput.getBirthday();
         this.phone = socialSignupInput.getPhone();
-        this.imgPath = imgPath;
+        /**
+         * CHECK: 여기 파일 서비스 구조 고쳐지면서, 변경된 코드입니다!
+         */
+        this.imgUrl = fileInfo.getFileUrl();
 //        this.gender = Gender.from(socialSignupInput.getGender());
-        this.gender = Gender.fromKoreanName(socialSignupInput.getGender()).orElseThrow(() -> new UserControllerAdvice(ResponseCode.INVALID_GENDER));
+        this.gender = Gender.fromKoreanName(socialSignupInput.getGender())
+                .orElseThrow(() -> new UserControllerAdvice(ResponseCode.INVALID_GENDER));
         this.activityArea = socialSignupInput.getActivityArea();
         this.height = socialSignupInput.getHeight();
         this.weight = socialSignupInput.getWeight();
@@ -116,7 +174,7 @@ public class User extends BaseEntity {
         }
     }
 
-    public void updateUserInfo(UserUpdateInput userUpdateInput, String imgPath) {
+    public void updateUserInfo(UserUpdateInput userUpdateInput, FileInfo fileInfo) {
         if (userUpdateInput.getName() != null && !userUpdateInput.getName().isBlank()) {
             this.name = userUpdateInput.getName();
         }
@@ -126,14 +184,17 @@ public class User extends BaseEntity {
         if (userUpdateInput.getPhone() != null && !userUpdateInput.getPhone().isBlank()) {
             this.phone = userUpdateInput.getPhone();
         }
-        if (imgPath != null) {
-            if (this.imgPath != null) {
-                new File(this.imgPath).delete();
-            }
-            this.imgPath = imgPath;
+        /**
+         * CHECK: 여기 파일 서비스 구조 고쳐지면서, 변경된 코드입니다!
+         */
+        if (fileInfo != null) {
+            this.imgUrl = fileInfo.getFileUrl();
+            this.storedImgName = fileInfo.getStoredFileName();
+            this.originalImgName = fileInfo.getOriginalFileName();
         }
         if (userUpdateInput.getGender() != null && !userUpdateInput.getGender().isBlank()) {
-            this.gender = Gender.fromKoreanName(userUpdateInput.getGender()).orElseThrow(() -> new UserControllerAdvice(ResponseCode.INVALID_GENDER));
+            this.gender = Gender.fromKoreanName(userUpdateInput.getGender())
+                    .orElseThrow(() -> new UserControllerAdvice(ResponseCode.INVALID_GENDER));
         }
         if (userUpdateInput.getActivityArea() != null && !userUpdateInput.getActivityArea().name().isBlank()) {
             this.activityArea = userUpdateInput.getActivityArea();

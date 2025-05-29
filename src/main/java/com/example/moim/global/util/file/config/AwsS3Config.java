@@ -8,10 +8,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.Profile;
 
 @Slf4j
-@Profile("!test")
 @Configuration
 public class AwsS3Config {
 
