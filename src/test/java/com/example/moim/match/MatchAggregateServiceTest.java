@@ -6,6 +6,7 @@ import com.example.moim.match.entity.MatchUser;
 import com.example.moim.match.repository.MatchRepository;
 import com.example.moim.match.repository.MatchUserRepository;
 import com.example.moim.match.service.MatchAggregateService;
+import com.example.moim.statistic.service.StatisticService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
@@ -30,6 +31,8 @@ class MatchAggregateServiceTest {
     private MatchRepository matchRepository;
     @Mock
     private MatchUserRepository matchUserRepository;
+    @Mock
+    private StatisticService statisticService;
 
     @InjectMocks
     private MatchAggregateService matchAggregateService;

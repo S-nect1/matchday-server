@@ -60,8 +60,8 @@ public class StatisticService {
         int homeRankLevel = homeStatistic.getTier().getLevel();
         int awayRankLevel = awayStatistic.getTier().getLevel();
 
-        StatisticDTO.mvpDTO homeMVPResult = statisticRepository.findTopScorerByClubAndSportsType(match.getHomeClub(), currentSeason, SportsType.OVERALL).getFirst();
-        StatisticDTO.mvpDTO awayMVPResult = statisticRepository.findTopScorerByClubAndSportsType(match.getHomeClub(), currentSeason, SportsType.OVERALL).getFirst();
+        StatisticDTO.mvpDTO homeMVPResult = statisticRepository.findTopScorerByClubAndSportsType(match.getHomeClub(), currentSeason, SportsType.OVERALL).get(0);
+        StatisticDTO.mvpDTO awayMVPResult = statisticRepository.findTopScorerByClubAndSportsType(match.getHomeClub(), currentSeason, SportsType.OVERALL).get(0);
 
         homeStatistic.updateStatistic(match.getHomeScore(), match.getHomeScore(), homeRankLevel, homeMVPResult.getName(), homeMVPResult.getGoalCount().intValue());
         awayStatistic.updateStatistic(match.getAwayScore(), match.getAwayScore(), awayRankLevel, awayMVPResult.getName(), awayMVPResult.getGoalCount().intValue());
@@ -75,8 +75,8 @@ public class StatisticService {
             int homeFutsalRankLevel = homeFutsalStatistic.getTier().getLevel();
             int awayFutsalRankLevel = awayFutsalStatistic.getTier().getLevel();
 
-            StatisticDTO.mvpDTO homeFutsalMVPResult = statisticRepository.findTopScorerByClubAndSportsType(match.getHomeClub(), currentSeason, SportsType.OVERALL).getFirst();
-            StatisticDTO.mvpDTO awayFutsalMVPResult = statisticRepository.findTopScorerByClubAndSportsType(match.getHomeClub(), currentSeason, SportsType.OVERALL).getFirst();
+            StatisticDTO.mvpDTO homeFutsalMVPResult = statisticRepository.findTopScorerByClubAndSportsType(match.getHomeClub(), currentSeason, SportsType.OVERALL).get(0);
+            StatisticDTO.mvpDTO awayFutsalMVPResult = statisticRepository.findTopScorerByClubAndSportsType(match.getHomeClub(), currentSeason, SportsType.OVERALL).get(0);
 
             homeFutsalStatistic.updateStatistic(match.getHomeScore(), match.getHomeScore(), homeFutsalRankLevel, homeMVPResult.getName(), homeFutsalMVPResult.getGoalCount().intValue());
             awayFutsalStatistic.updateStatistic(match.getAwayScore(), match.getAwayScore(), awayFutsalRankLevel, awayMVPResult.getName(), awayFutsalMVPResult.getGoalCount().intValue());
@@ -89,8 +89,8 @@ public class StatisticService {
             int homeSoccerRankLevel = homeSoccerStatistic.getTier().getLevel();
             int awaySoccerRankLevel = awaySoccerStatistic.getTier().getLevel();
 
-            StatisticDTO.mvpDTO homeSoccerMVPResult = statisticRepository.findTopScorerByClubAndSportsType(match.getHomeClub(), currentSeason, SportsType.OVERALL).getFirst();
-            StatisticDTO.mvpDTO awaySoccerMVPResult = statisticRepository.findTopScorerByClubAndSportsType(match.getHomeClub(), currentSeason, SportsType.OVERALL).getFirst();
+            StatisticDTO.mvpDTO homeSoccerMVPResult = statisticRepository.findTopScorerByClubAndSportsType(match.getHomeClub(), currentSeason, SportsType.OVERALL).get(0);
+            StatisticDTO.mvpDTO awaySoccerMVPResult = statisticRepository.findTopScorerByClubAndSportsType(match.getHomeClub(), currentSeason, SportsType.OVERALL).get(0);
 
             homeSoccerStatistic.updateStatistic(match.getHomeScore(), match.getAwayScore(), homeSoccerRankLevel, homeSoccerMVPResult.getName(), homeMVPResult.getGoalCount().intValue());
             awaySoccerStatistic.updateStatistic(match.getAwayScore(), match.getHomeScore(), awaySoccerRankLevel, awaySoccerMVPResult.getName(), awayMVPResult.getGoalCount().intValue());
