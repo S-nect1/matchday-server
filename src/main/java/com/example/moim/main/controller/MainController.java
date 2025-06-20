@@ -22,6 +22,6 @@ public class MainController implements MainControllerDocs{
 
     @GetMapping("/main/{clubId}")
     public MainOutput mainPage (@AuthenticationPrincipal UserDetailsImpl userDetailsImpl, @PathVariable Long clubId) {
-        return mainService.mainPage(clubId);
+        return mainService.mainPage(clubId, userDetailsImpl.getUser());
     }
 }

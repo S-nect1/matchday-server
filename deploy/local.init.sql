@@ -36,3 +36,15 @@ INSERT INTO notice (id, created_date, updated_date, club_id, title, content)
 values (default, '2024-12-11', null, 1, 'title2', 'content2');
 INSERT INTO notice (id, created_date, updated_date, club_id, title, content)
 values (default, '2024-12-12', null, 1, 'title3', 'content4');
+
+-- 스케줄 생성(3번 동아리)
+insert into `schedule` (id, club_id, created_date, updated_date, title, location, start_time, end_time, min_people, category, note, attend, non_attend, is_close, view_count)
+values (default, 3, '2024-03-06 14:30:00', null, '운동 매치 스케줄', '서울시 마포구', '2024-03-11 14:30:00', '2024-03-11 17:30:00', 10, 'REGULAR_TRAINING', 'note', 10, 12, 0, 0);
+insert into `schedule` (id, club_id, created_date, updated_date, title, location, start_time, end_time, min_people, category, note, attend, non_attend, is_close, view_count)
+values (default, 3, '2024-03-06 14:30:00', null, '운동 매치 스케줄2', '서울시 마포구', '2024-03-11 14:30:00', '2024-03-11 17:30:00', 10, 'REGULAR_TRAINING', 'note', 10, 12, 0, 0);
+insert into `schedule` (id, club_id, created_date, updated_date, title, location, start_time, end_time, min_people, category, note, attend, non_attend, is_close, view_count)
+values (default, 3, '2024-03-05 14:30:00', null,  '운동 매치 스케줄3', '서울시 마포구', '2024-03-12 14:30:00', '2024-03-12 17:30:00', 10, 'REGULAR_TRAINING', 'note', 10, 12, 0, 1);
+insert into `schedule` (id, club_id, created_date, updated_date, title, location, start_time, end_time, min_people, category, note, attend, non_attend, is_close, view_count, opponent_team_name, opponent_team_age_range)
+values (default, 3, '2024-04-01 14:30:00', null,  '운동 매치 스케줄4', '서울시 마포구', '2024-04-05 14:30:00', '2024-04-05 17:30:00', 10, 'FRIENDLY_MATCH', 'note', 10, 12, 0, 10, 'opponent_team_name', 'TWENTIES');
+insert into `schedule` (id, club_id, created_date, updated_date, title, location, start_time, end_time, min_people, category, note, attend, non_attend, is_close, view_count, opponent_team_name, opponent_team_age_range)
+values (default, 3, '2024-02-22 14:30:00', null,  '운동 매치 스케줄5', '서울시 마포구', '2024-02-27 14:30:00', '2024-02-27 17:30:00', 10, 'FRIENDLY_MATCH', 'note', 10, 12, 0, 5, 'opponent_team_name', 'THIRTIES');

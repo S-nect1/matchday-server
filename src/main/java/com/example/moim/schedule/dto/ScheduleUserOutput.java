@@ -1,6 +1,6 @@
 package com.example.moim.schedule.dto;
 
-import com.example.moim.schedule.entity.ScheduleVote;
+import com.example.moim.schedule.vote.entity.ScheduleVote;
 import lombok.Data;
 import org.springframework.core.io.FileUrlResource;
 
@@ -22,8 +22,8 @@ public class ScheduleUserOutput {
                 throw new RuntimeException(e);
             }
         }
-        if (scheduleVote.getAttendance() != null) {
-            this.attendance = scheduleVote.getAttendance();
+        if (scheduleVote.getIsAttendance() != null) {
+            this.attendance = scheduleVote.getIsAttendance()? "참가" : "불참";
         } else {
             this.attendance = "notVote";
         }

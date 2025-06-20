@@ -8,8 +8,6 @@ import com.example.moim.global.enums.*;
 import com.example.moim.global.exception.ResponseCode;
 import com.example.moim.match.dto.*;
 import com.example.moim.match.entity.*;
-import com.example.moim.match.exception.MatchPermissionException;
-import com.example.moim.match.exception.MatchRecordExpireException;
 import com.example.moim.match.exception.advice.MatchControllerAdvice;
 import com.example.moim.match.repository.MatchApplicationRepository;
 import com.example.moim.match.repository.MatchRepository;
@@ -19,7 +17,7 @@ import com.example.moim.notification.dto.MatchInviteEvent;
 import com.example.moim.notification.dto.MatchRequestEvent;
 import com.example.moim.schedule.entity.Schedule;
 import com.example.moim.schedule.repository.ScheduleRepository;
-import com.example.moim.schedule.repository.ScheduleVoteRepository;
+import com.example.moim.schedule.vote.repository.ScheduleVoteRepository;
 import com.example.moim.user.entity.User;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -86,7 +84,7 @@ class MatchServiceTest {
         clubInput.setMainUniformColor("흰색");
         clubInput.setSubUniformColor("검은색");
 
-        club = Club.createClub(clubInput, null);
+        club = Club.from(clubInput, null);
         ReflectionTestUtils.setField(club, "id", 1L);
 
         user = new User();

@@ -1,12 +1,18 @@
 package com.example.moim.schedule.entity;
 
 import com.example.moim.club.entity.Club;
+import com.example.moim.global.enums.AgeRange;
+import com.example.moim.global.exception.ResponseCode;
+import com.example.moim.schedule.comment.entity.Comment;
 import com.example.moim.schedule.dto.ScheduleInput;
 import com.example.moim.schedule.dto.ScheduleUpdateInput;
 import com.example.moim.global.entity.BaseEntity;
+import com.example.moim.schedule.exception.advice.ScheduleControllerAdvice;
+import com.example.moim.schedule.vote.entity.AttendanceType;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.springframework.security.core.parameters.P;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -26,16 +32,20 @@ public class Schedule extends BaseEntity {
     private LocalDateTime startTime;
     private LocalDateTime endTime;
     private int minPeople;
-    private String category;
+    @Enumerated(value = EnumType.STRING)
+    private ScheduleCategory category;
     private String note;
     private int attend;
     private int nonAttend;
     private Boolean isClose;
+    private int viewCount;
+    @Embedded
+    private OpponentTeamInfo opponentTeamInfo;
 
     @OneToMany(mappedBy = "schedule", cascade = CascadeType.REMOVE)
-    private List<Comment> comment = new ArrayList<>();
+    private List<Comment> comments = new ArrayList<>();
 
-    public static Schedule createSchedule(Club club, ScheduleInput scheduleInput) {
+    public static Schedule from(Club club, ScheduleInput scheduleInput) {
         Schedule schedule = new Schedule();
         schedule.club = club;
         schedule.title = scheduleInput.getTitle();
@@ -43,51 +53,108 @@ public class Schedule extends BaseEntity {
         schedule.startTime = scheduleInput.getStartTime();
         schedule.endTime = scheduleInput.getEndTime();
         schedule.minPeople = scheduleInput.getMinPeople();
-        schedule.category = scheduleInput.getCategory();
+        schedule.category = ScheduleCategory.fromKoreanName(scheduleInput.getCategory()).orElseThrow(() -> new ScheduleControllerAdvice(ResponseCode.INVALID_SCHEDULE_CATEGORY));
         if (scheduleInput.getNote() != null) {
             schedule.note = scheduleInput.getNote();
+        }
+        if (isMatchType(schedule.category) && notNullOpponentTeamObject(scheduleInput.getOpponentTeamName(), scheduleInput.getOpponentTeamAgeRange())) {
+            AgeRange ageRange = AgeRange.fromKoreanName(scheduleInput.getOpponentTeamAgeRange()).orElseThrow(() -> new ScheduleControllerAdvice(ResponseCode.INVALID_AGE_RANGE));
+            schedule.opponentTeamInfo = new OpponentTeamInfo(scheduleInput.getOpponentTeamName(), ageRange);
         }
         schedule.attend = 0;
         schedule.nonAttend = 0;
         schedule.isClose = false;
+        schedule.viewCount = 0;
         return schedule;
     }
 
+    private static boolean isMatchType(ScheduleCategory scheduleCategory) {
+        return scheduleCategory.equals(ScheduleCategory.TOURNAMENT) || scheduleCategory.equals(ScheduleCategory.FRIENDLY_MATCH);
+    }
+
+    private static boolean notNullOpponentTeamObject(String teamName, String teamAgeRange) {
+        return teamName != null && teamAgeRange != null;
+    }
+
+    /**
+     * FIXME: 뭔가 지금 이 구조가 이상함. ScheduleVote 에서의 역할이 자꾸 여기서 처리되는듯. 이걸 ScheduleVoteService 에서 Boolean 값으로 넘겨주는게 맞는 듯
+     * @param attendance
+     */
     public void vote(String attendance) {
-        if (attendance.equals("attend")) {
+        if (getAttendanceType(attendance).equals(AttendanceType.ATTEND)) {
             this.attend += 1;
-        } else if (attendance.equals("absent")) {
+        } else {
             this.nonAttend += 1;
         }
     }
 
-    public void reVote(String originalAttendance, String attendance) {
-        if (originalAttendance.equals("attend")) {
+    public void reVote(boolean originalAttendance, boolean isAttendance) {
+        // true - 참석 / false - 불참
+        if (originalAttendance) {
             this.attend -= 1;
-        } else if (originalAttendance.equals("absent")) {
+        } else  {
             this.nonAttend -= 1;
         }
-        if (attendance.equals("attend")) {
+
+        if (isAttendance) {
             this.attend += 1;
-        } else if (attendance.equals("absent")) {
+        } else {
             this.nonAttend += 1;
         }
     }
 
-    public void updateSchedule(ScheduleUpdateInput scheduleUpdateInput) {
-        this.title = scheduleUpdateInput.getTitle();
-        this.location = scheduleUpdateInput.getLocation();
-        this.startTime = scheduleUpdateInput.getStartTime();
-        this.endTime = scheduleUpdateInput.getEndTime();
-        this.minPeople = scheduleUpdateInput.getMinPeople();
-        this.category = scheduleUpdateInput.getCategory();
+    public void update(ScheduleUpdateInput scheduleUpdateInput) {
+        if (scheduleUpdateInput.getTitle() != null) {
+            this.title = scheduleUpdateInput.getTitle();
+        }
+        if (scheduleUpdateInput.getLocation() != null) {
+            this.location = scheduleUpdateInput.getLocation();
+        }
+        if (scheduleUpdateInput.getStartTime() != null) {
+            this.startTime = scheduleUpdateInput.getStartTime();
+        }
+        if (scheduleUpdateInput.getEndTime() != null) {
+            this.endTime = scheduleUpdateInput.getEndTime();
+        }
+        if (scheduleUpdateInput.getMinPeople() != null) {
+            this.minPeople = scheduleUpdateInput.getMinPeople();
+        }
+        if (scheduleUpdateInput.getCategory() != null) {
+            this.category = ScheduleCategory.fromKoreanName(scheduleUpdateInput.getCategory()).orElseThrow(() -> new ScheduleControllerAdvice(ResponseCode.INVALID_SCHEDULE_CATEGORY));
+        }
         if (scheduleUpdateInput.getNote() != null) {
             this.note = scheduleUpdateInput.getNote();
         }
+        // 이전에 팀 정보가 있었으면
+        if (this.opponentTeamInfo != null) {
+            if (scheduleUpdateInput.getOpponentTeamName() != null) {
+                this.opponentTeamInfo.setOpponentTeamName(scheduleUpdateInput.getOpponentTeamName());
+            }
+            if (scheduleUpdateInput.getOpponentTeamAgeRange() != null) {
+                this.opponentTeamInfo.setOpponentTeamAgeRange(
+                        AgeRange.fromKoreanName(scheduleUpdateInput.getOpponentTeamAgeRange()).orElseThrow(() -> new ScheduleControllerAdvice(ResponseCode.INVALID_AGE_RANGE))
+                );
+            }
+        }
+        // 이전에 팀 정보가 없었으면
+        if (scheduleUpdateInput.getOpponentTeamName() != null && scheduleUpdateInput.getOpponentTeamAgeRange() != null) {
+            this.opponentTeamInfo = new OpponentTeamInfo(
+                    scheduleUpdateInput.getOpponentTeamName(),
+                    AgeRange.fromKoreanName(scheduleUpdateInput.getOpponentTeamAgeRange()).orElseThrow(() -> new ScheduleControllerAdvice(ResponseCode.INVALID_AGE_RANGE))
+            );
+        }
     }
 
-    public void closeSchedule() {
+    public void close() {
         this.isClose = true;
+    }
+
+    public void increaseViewCount() {
+        this.viewCount += 1;
+    }
+
+    private AttendanceType getAttendanceType(String attendance) {
+        return AttendanceType.fromKoreanName(attendance).orElseThrow(() -> new ScheduleControllerAdvice(ResponseCode.INVALID_ATTENDANCE_TYPE));
     }
 
 }

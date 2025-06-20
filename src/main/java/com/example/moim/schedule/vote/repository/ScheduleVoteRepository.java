@@ -1,7 +1,7 @@
-package com.example.moim.schedule.repository;
+package com.example.moim.schedule.vote.repository;
 
 import com.example.moim.schedule.entity.Schedule;
-import com.example.moim.schedule.entity.ScheduleVote;
+import com.example.moim.schedule.vote.entity.ScheduleVote;
 import com.example.moim.user.entity.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;

@@ -13,29 +13,23 @@ import java.time.LocalDateTime;
 @Data
 public class ScheduleUpdateInput {
     private Long clubId;
-    private Long id;
-    @NotBlank(message = "일정 제목을 입력해주세요.")
     private String title;
-    @NotBlank(message = "일정 장소를 입력해주세요.")
     private String location;
-    @Schema(pattern = "yyyy-MM-dd HH:mm")
-    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm", timezone = "Asia/Seoul")
-    @NotNull(message = "일정 시작 시간을 입력해주세요.")
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm", timezone = "Asia/Seoul")
     private LocalDateTime startTime;
-    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm", timezone = "Asia/Seoul")
-    @NotNull(message = "일정 종료 시간을 입력해주세요.")
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm", timezone = "Asia/Seoul")
     private LocalDateTime endTime;
     @Min(value = 1, message = "참여 인원은 1명 이상이어야 합니다")
-    @NotNull(message = "참여 인원을 입력해주세요.")
-    private int minPeople;//참여인원수
-    @NotBlank(message = "일정 카테고리를 입력해 주세요.")
+    private Integer minPeople;
     private String category;
     private String note;
+    // 팀 정보
+    private String opponentTeamName;
+    private String opponentTeamAgeRange;
 
     @Builder
-    public ScheduleUpdateInput(Long clubId, Long id, String title, String location, @NotNull(message = "일정 시작 시간을 입력해주세요.") LocalDateTime startTime, @NotNull(message = "일정 종료 시간을 입력해주세요.") LocalDateTime endTime, @NotNull(message = "참여 인원을 입력해주세요.") int minPeople, String category, String note) {
+    public ScheduleUpdateInput(Long clubId, String title, String location, LocalDateTime startTime, LocalDateTime endTime, @NotNull(message = "참여 인원을 입력해주세요.") int minPeople, String category, String note, String opponentTeamName, String opponentTeamAgeRange) {
         this.clubId = clubId;
-        this.id = id;
         this.title = title;
         this.location = location;
         this.startTime = startTime;
@@ -43,5 +37,7 @@ public class ScheduleUpdateInput {
         this.minPeople = minPeople;
         this.category = category;
         this.note = note;
+        this.opponentTeamName = opponentTeamName;
+        this.opponentTeamAgeRange = opponentTeamAgeRange;
     }
 }

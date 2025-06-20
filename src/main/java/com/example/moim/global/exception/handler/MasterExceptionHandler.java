@@ -3,11 +3,14 @@ package com.example.moim.global.exception.handler;
 import com.example.moim.global.exception.BaseResponse;
 import com.example.moim.global.exception.GeneralException;
 import com.example.moim.global.exception.ResponseCode;
+import com.fasterxml.jackson.databind.exc.InvalidFormatException;
+import com.fasterxml.jackson.databind.exc.MismatchedInputException;
 import lombok.extern.slf4j.Slf4j;
 import org.hibernate.exception.ConstraintViolationException;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
@@ -16,6 +19,7 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.context.request.WebRequest;
 
+import java.time.format.DateTimeParseException;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -31,6 +35,18 @@ public class MasterExceptionHandler {
     @ExceptionHandler(GeneralException.class)
     public ResponseEntity<Object> general(GeneralException e, WebRequest request) {
         return handleExceptionInternal(e, e.getErrorCode(), request);
+    }
+
+    @ExceptionHandler(HttpMessageNotReadableException.class)
+    public ResponseEntity<Object> formatException(HttpMessageNotReadableException e, WebRequest request) {
+        Throwable root = getRootCause(e);
+        if (root instanceof DateTimeParseException) {
+            return handleExceptionInternal(e, ResponseCode._INVALID_FORMAT, request);
+        } else if (root instanceof MismatchedInputException) {
+            return handleExceptionInternal(e, ResponseCode._MISMATCHED_INPUT, request);
+
+        }
+        return handleExceptionInternal(e, ResponseCode._BAD_REQUEST, request);
     }
 
     @ExceptionHandler(Exception.class)
@@ -85,6 +101,14 @@ public class MasterExceptionHandler {
         BaseResponse<Object> body = BaseResponse.onFailure(null, errorCode);
         return ResponseEntity.status(errorCode.getHttpStatus())
                 .body(body);
+    }
+
+    private Throwable getRootCause(Throwable ex) {
+        Throwable result = ex;
+        while (result.getCause() != null) {
+            result = result.getCause();
+        }
+        return result;
     }
 
 }

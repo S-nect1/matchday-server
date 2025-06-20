@@ -12,9 +12,14 @@ import com.example.moim.club.repository.UserClubRepository;
 import com.example.moim.global.enums.ClubRole;
 import com.example.moim.global.exception.ResponseCode;
 import com.example.moim.user.entity.User;
+import com.example.moim.notification.dto.NoticeSaveEvent;
+import com.example.moim.user.entity.User;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
+
+import org.springframework.transaction.annotation.Transactional;
 
 @Slf4j
 @Service
@@ -23,7 +28,9 @@ public class NoticeCommandServiceImpl implements NoticeCommandService {
     private final NoticeRepository noticeRepository;
     private final ClubRepository clubRepository;
     private final UserClubRepository userClubRepository;
+    private final ApplicationEventPublisher eventPublisher;
 
+    @Transactional
     public NoticeOutput saveNotice(User user, NoticeInput noticeInput, Long clubId) {
         log.debug("saveNotice 진입");
         Club club = clubRepository.findById(clubId).orElseThrow(() -> new ClubControllerAdvice(ResponseCode.CLUB_NOT_FOUND));
@@ -36,9 +43,7 @@ public class NoticeCommandServiceImpl implements NoticeCommandService {
 
         Notice notice = noticeRepository.save(Notice.createNotice(club, noticeInput.getTitle(), noticeInput.getContent()));
 
-        /**
-         * TODO: 알림 보내는 부분 구현해야함
-         */
+        eventPublisher.publishEvent(new NoticeSaveEvent(user, club));
 
         return new NoticeOutput(notice);
     }

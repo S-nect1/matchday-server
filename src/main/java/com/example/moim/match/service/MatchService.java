@@ -1,20 +1,19 @@
 package com.example.moim.match.service;
 
 import com.example.moim.club.entity.Club;
-import com.example.moim.global.enums.ClubRole;
 import com.example.moim.global.exception.ResponseCode;
 import com.example.moim.match.entity.*;
 import com.example.moim.match.exception.advice.MatchControllerAdvice;
 import com.example.moim.notification.dto.MatchCancelClubEvent;
 import com.example.moim.notification.dto.MatchCancelUserEvent;
 import com.example.moim.schedule.entity.Schedule;
-import com.example.moim.schedule.entity.ScheduleVote;
+import com.example.moim.schedule.vote.entity.ScheduleVote;
 import com.example.moim.club.entity.UserClub;
 import com.example.moim.club.repository.ClubRepository;
 import com.example.moim.schedule.repository.ScheduleRepository;
-import com.example.moim.schedule.repository.ScheduleVoteRepository;
+import com.example.moim.schedule.vote.repository.ScheduleVoteRepository;
 import com.example.moim.club.repository.UserClubRepository;
-import com.example.moim.schedule.service.ScheduleService;
+import com.example.moim.schedule.service.ScheduleCommandServiceImpl;
 import com.example.moim.match.dto.*;
 import com.example.moim.match.repository.MatchApplicationRepository;
 import com.example.moim.match.repository.MatchRepository;
@@ -46,7 +45,7 @@ public class MatchService {
     private final MatchRepository matchRepository;
     private final UserClubRepository userClubRepository;
     private final ClubRepository clubRepository;
-    private final ScheduleService scheduleService;
+    private final ScheduleCommandServiceImpl scheduleCommandServiceImpl;
     private final ScheduleRepository scheduleRepository;
     private final MatchApplicationRepository matchApplicationRepository;
     private final ApplicationEventPublisher eventPublisher;
@@ -90,7 +89,7 @@ public class MatchService {
                 .orElseThrow(() -> new MatchControllerAdvice(ResponseCode.CLUB_NOT_FOUND)), matchInput));
 
         //일정에 매치 등록
-        Schedule schedule = scheduleRepository.save(Schedule.createSchedule(clubRepository.findById(matchInput.getClubId())
+        Schedule schedule = scheduleRepository.save(Schedule.from(clubRepository.findById(matchInput.getClubId())
                 .orElseThrow(() -> new MatchControllerAdvice(ResponseCode.CLUB_NOT_FOUND)), match.createScheduleFromMatch()));
         match.setSchedule(schedule);
         matchRepository.save(match);
@@ -135,7 +134,7 @@ public class MatchService {
         if(match.getMatchStatus() == MatchStatus.PENDING) {     // 생성 대기 상태 취소
             List<ScheduleVote> votes = scheduleVoteRepository.findBySchedule(match.getSchedule());
             for(ScheduleVote vote : votes) {
-                if("attend".equals(vote.getAttendance())) {
+                if("attend".equals(vote.getIsAttendance())) {
                     // 홈 팀 알림 발송
                     eventPublisher.publishEvent(new MatchCancelUserEvent(match, vote.getUser()));
                 }
@@ -152,7 +151,7 @@ public class MatchService {
 
             List<ScheduleVote> votes = scheduleVoteRepository.findBySchedule(match.getSchedule());
             for(ScheduleVote vote : votes) {
-                if("attend".equals(vote.getAttendance())) {
+                if("attend".equals(vote.getIsAttendance())) {
                     // 홈 팀 알림 발송
                     eventPublisher.publishEvent(new MatchCancelUserEvent(match, vote.getUser()));
                 }
@@ -186,7 +185,7 @@ public class MatchService {
         matchRepository.findMatchByClub(club).forEach(m -> m.timeDuplicationCheck(match.getStartTime(), match.getEndTime()));
 
         MatchApplication matchApplication = matchApplicationRepository.save(MatchApplication.applyMatch(match, club));
-        Schedule schedule = scheduleRepository.save(Schedule.createSchedule(matchApplication.getClub(), matchApplication.getMatch().createScheduleFromMatch()));
+        Schedule schedule = scheduleRepository.save(Schedule.from(matchApplication.getClub(), matchApplication.getMatch().createScheduleFromMatch()));
 
         matchApplication.setSchedule(schedule);
         matchApplicationRepository.save(matchApplication);
@@ -304,7 +303,7 @@ public class MatchService {
     //유저가 친선 매치 일정에 참여 투표 시 매치 유저 저장, 수정 필요 -> 문제 있나?
     private void saveMatchUserByAttendance(Match match, Schedule schedule) {
         for (ScheduleVote scheduleVote : scheduleVoteRepository.findBySchedule(schedule)) {
-            if (scheduleVote.getAttendance().equals("attend")) {
+            if (scheduleVote.getIsAttendance().equals("attend")) {
                 log.info("userid:{}", scheduleVote.getUser().getId());
                 MatchUser matchUser = MatchUser.createMatchUser(match, scheduleVote);
                 matchUserRepository.save(matchUser);

@@ -9,6 +9,8 @@ import lombok.RequiredArgsConstructor;
 public enum NotificationType {
     CLUB_JOIN("클럽 가입", "%s님이 %s에 가입했습니다."),
     SCHEDULE_SAVE("일정 등록", "%s 일정이 등록되었습니다. \n 참가 여부를 투표해주세요!!"),
+    SCHEDULE_UPDATE("일정 변경", "%s 일정이 변경되었습니다. \n 확인해주세요!!"),
+    SCHEDULE_DELETE("일정 취소", "%s 일정이 취소되었습니다. \n 확인해주세요!!"),
     SCHEDULE_REMINDER("일정 하루 전", "내일 %s 일정이 있습니다."),
     SCHEDULE_ENCOURAGE("투표 독려", "%s 일정이 참가투표가 곧 마감됩니다.\n 참가 여부를 투표해주세요!!"),
     SCHEDULE_JOIN("일정 참여", "%s 일정에 참여했습니다."),
@@ -22,6 +24,7 @@ public enum NotificationType {
     MATCH_FAILED_UNSELECTED("매치 실패", "<%s> 매치 등록 클럽이 다른 클럽을 선택했어요\uD83E\uDEE3\n 다음에 다시 신청해주세요!"),
     MATCH_CANCEL_USER("매치 취소", "<%s> 매치가 취소되었습니다.\n 다음에 다시 신청해주세요!"),
     MATCH_CANCEL_CLUB("매치 취소", "<%s> 매치가 취소되었습니다.\n 다음에 다시 신청해주세요!"),
+    NOTICE_SAVE("공지 등록", "%s 공지가 등록되었습니다. \n 공지를 확인해주세요!!"),
     ;
 
     private final String title;

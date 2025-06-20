@@ -62,8 +62,8 @@ class ClubRepositoryImplTest {
                 .storedFileName("test/aaaa-aaaa-aaaa.jpg")
                 .build();
 
-        Club savedClub = clubRepository.save(Club.createClub(clubInput, fileInfo));
-        Club savedClub2 = clubRepository.save(Club.createClub(clubInput2, fileInfo));
+        Club savedClub = clubRepository.save(Club.from(clubInput, fileInfo));
+        Club savedClub2 = clubRepository.save(Club.from(clubInput2, fileInfo));
 
         ClubSearch clubSearch = ClubSearch.builder()
                 .club(savedClub)

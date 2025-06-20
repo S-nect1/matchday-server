@@ -16,6 +16,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.test.util.ReflectionTestUtils;
 import org.springframework.web.multipart.MultipartFile;
@@ -36,6 +37,8 @@ class NoticeCommandServiceImplTest {
     private ClubRepository clubRepository;
     @Mock
     private UserClubRepository userClubRepository;
+    @Mock
+    private ApplicationEventPublisher eventPublisher;
     @InjectMocks
     private NoticeCommandServiceImpl noticeCommandServiceImpl;
 
@@ -81,7 +84,7 @@ class NoticeCommandServiceImplTest {
     @DisplayName("공지를 저장할 수 있다")
     void saveNotice() {
         //given
-        Club club = Club.createClub(clubInput, null);
+        Club club = Club.from(clubInput, null);
         Notice notice = Notice.createNotice(club, noticeInput.getTitle(), noticeInput.getContent());
         // notice - createAt 강제로 주입하기
         ReflectionTestUtils.setField(notice, "createdDate", LocalDateTime.now());
