@@ -3,7 +3,6 @@ package com.example.moim.match.entity;
 import com.example.moim.club.entity.Club;
 import com.example.moim.global.exception.ResponseCode;
 import com.example.moim.match.exception.advice.MatchControllerAdvice;
-import com.example.moim.schedule.entity.ScheduleVote;
 import com.example.moim.schedule.vote.entity.ScheduleVote;
 import com.example.moim.club.entity.UserClub;
 import com.example.moim.match.dto.MatchRecordInput;
