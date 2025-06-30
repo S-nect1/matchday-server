@@ -54,14 +54,31 @@ public class StatisticService {
 
         // 통합
         Statistic homeStatistic = statisticRepository.findByClubAndSeasonAndSportsType(match.getHomeClub(), currentSeason, SportsType.OVERALL)
-                .orElseThrow();
+                .orElseThrow(() -> new StatisticControllerAdvice(ResponseCode.STATISTIC_NOT_FOUND));
         Statistic awayStatistic = statisticRepository.findByClubAndSeasonAndSportsType(match.getAwayClub(), currentSeason, SportsType.OVERALL)
-                .orElseThrow();
+                .orElseThrow(() -> new StatisticControllerAdvice(ResponseCode.STATISTIC_NOT_FOUND));
         int homeRankLevel = homeStatistic.getTier().getLevel();
         int awayRankLevel = awayStatistic.getTier().getLevel();
 
-        StatisticDTO.mvpDTO homeMVPResult = statisticRepository.findTopScorerByClubAndSportsType(match.getHomeClub(), currentSeason, SportsType.OVERALL).get(0);
-        StatisticDTO.mvpDTO awayMVPResult = statisticRepository.findTopScorerByClubAndSportsType(match.getHomeClub(), currentSeason, SportsType.OVERALL).get(0);
+        StatisticDTO.mvpDTO homeMVPResult = statisticRepository
+                .findTopScorerByClubAndSportsType(
+                        match.getHomeClub(),
+                        currentSeason,
+                        SportsType.OVERALL
+                )
+                .stream()
+                .findFirst()
+                .orElse(new StatisticDTO.mvpDTO("No Data", 0L));
+
+        StatisticDTO.mvpDTO awayMVPResult = statisticRepository
+                .findTopScorerByClubAndSportsType(
+                        match.getAwayClub(),
+                        currentSeason,
+                        SportsType.OVERALL
+                )
+                .stream()
+                .findFirst()
+                .orElse(new StatisticDTO.mvpDTO("No Data", 0L));
 
         homeStatistic.updateStatistic(match.getHomeScore(), match.getHomeScore(), homeRankLevel, homeMVPResult.getName(), homeMVPResult.getGoalCount().intValue());
         awayStatistic.updateStatistic(match.getAwayScore(), match.getAwayScore(), awayRankLevel, awayMVPResult.getName(), awayMVPResult.getGoalCount().intValue());
@@ -98,7 +115,7 @@ public class StatisticService {
     }
 
     // 전적 조회
-    public StatisticDTO.StatisticResponse getStatistic(Long clubId, String targetSeason, String sportsType) {
+    public StatisticDTO.StatisticOutPut getStatistic(Long clubId, String targetSeason, String sportsType) {
 //        String currentSeason = Statistic.getCurrentSeason();
         SportsType targetSportsType = SportsType.valueOf(sportsType);
         Club club = clubRepository.findById(clubId)
@@ -106,6 +123,6 @@ public class StatisticService {
         Statistic statistic = statisticRepository.findByClubAndSeasonAndSportsType(club, targetSeason, targetSportsType)
                 .orElseThrow(() -> new StatisticControllerAdvice(ResponseCode.STATISTIC_NOT_FOUND));
 
-        return new StatisticDTO.StatisticResponse(statistic);
+        return new StatisticDTO.StatisticOutPut(statistic);
     }
 }

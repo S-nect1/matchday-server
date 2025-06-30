@@ -14,8 +14,8 @@ public class StatisticController {
 
     // 전적 조회(전적 메인)
     @GetMapping("/statistic/{clubId}")
-    public BaseResponse<StatisticDTO.StatisticResponse> getStatistic(@PathVariable Long clubId,
-                                                                     @RequestBody StatisticDTO.StatisticRequest request) {
+    public BaseResponse<StatisticDTO.StatisticOutPut> getStatistic(@PathVariable Long clubId,
+                                                                   @RequestBody StatisticDTO.StatisticInput request) {
         return BaseResponse.onSuccess(statisticService.getStatistic(clubId, request.getTargetSeason(), request.getTargetType()), ResponseCode.OK);
     }
 }

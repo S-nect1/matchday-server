@@ -7,14 +7,14 @@ import lombok.Data;
 public class StatisticDTO {
     @Data
     @AllArgsConstructor
-    public static class StatisticRequest {
+    public static class StatisticInput {
         private String targetSeason;
         private String targetType;
     }
 
     @Data
     @AllArgsConstructor
-    public static class StatisticResponse {
+    public static class StatisticOutPut {
         private String season;
         private String rank;
         private int point;
@@ -25,7 +25,7 @@ public class StatisticDTO {
         private String mvpName;
         private int mvpGoalCount;
 
-        public StatisticResponse(Statistic statistic) {
+        public StatisticOutPut(Statistic statistic) {
             this.season = statistic.getSeason();
             this.point = statistic.getPoint();
             this.winRate = statistic.getWinRate();
