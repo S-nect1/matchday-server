@@ -1,13 +1,12 @@
 package com.example.moim.schedule.controller;
 
-import com.example.moim.schedule.service.ScheduleService;
-import com.example.moim.schedule.dto.ScheduleDetailOutput;
-import com.example.moim.schedule.dto.ScheduleInput;
-import com.example.moim.schedule.dto.ScheduleOutput;
-import com.example.moim.schedule.dto.ScheduleSearchInput;
-import com.example.moim.schedule.dto.ScheduleUpdateInput;
-import com.example.moim.schedule.dto.ScheduleVoteInput;
+import com.example.moim.global.exception.BaseResponse;
+import com.example.moim.global.exception.ResponseCode;
+import com.example.moim.schedule.dto.*;
+import com.example.moim.schedule.service.ScheduleCommandService;
+import com.example.moim.schedule.service.ScheduleQueryService;
 import com.example.moim.user.dto.UserDetailsImpl;
+import com.example.moim.user.repository.UserRepository;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.MediaType;
@@ -18,56 +17,46 @@ import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
-public class ScheduleController implements ScheduleControllerDocs{
-    private final ScheduleService scheduleService;
+public class ScheduleController implements ScheduleControllerDocs {
+    private final ScheduleCommandService scheduleCommandService;
+    private final ScheduleQueryService scheduleQueryService;
 
-    @PostMapping(value = "/schedule")
-    public ScheduleOutput scheduleSave(@RequestBody @Valid ScheduleInput scheduleInput, @AuthenticationPrincipal UserDetailsImpl userDetailsImpl) {
-        return scheduleService.saveSchedule(scheduleInput, userDetailsImpl.getUser());
+    private final UserRepository userRepository;
+
+    @PostMapping(value = "/schedules")
+    public BaseResponse<ScheduleOutput> createSchedule(@RequestBody @Valid ScheduleInput scheduleInput, @AuthenticationPrincipal UserDetailsImpl userDetailsImpl) {
+        ScheduleOutput scheduleOutput = scheduleCommandService.saveSchedule(scheduleInput, userDetailsImpl.getUser());
+        return BaseResponse.onSuccess(scheduleOutput, ResponseCode.OK);
     }
 
-    @PatchMapping("/schedule")
-    public ScheduleOutput scheduleUpdate(@RequestBody ScheduleUpdateInput scheduleUpdateInput, @AuthenticationPrincipal UserDetailsImpl userDetailsImpl) {
-        return scheduleService.updateSchedule(scheduleUpdateInput, userDetailsImpl.getUser());
+    @PatchMapping("/schedules/{id}")
+    public BaseResponse<ScheduleOutput> updateSchedule(@RequestBody ScheduleUpdateInput scheduleUpdateInput, @PathVariable("id") Long id, @AuthenticationPrincipal UserDetailsImpl userDetailsImpl) {
+        ScheduleOutput scheduleOutput = scheduleCommandService.updateSchedule(scheduleUpdateInput, id, userDetailsImpl.getUser());
+        return BaseResponse.onSuccess(scheduleOutput, ResponseCode.OK);
     }
 
-    @GetMapping(value = "/schedule", produces = MediaType.APPLICATION_JSON_VALUE)
-    public List<ScheduleOutput> scheduleFind(@ModelAttribute ScheduleSearchInput scheduleSearchInput) {
-        return scheduleService.findSchedule(scheduleSearchInput);
+    @GetMapping(value = "/schedules", produces = MediaType.APPLICATION_JSON_VALUE)
+    public BaseResponse<List<ScheduleOutput>> searchScheduleListByMonth(@ModelAttribute ScheduleSearchMonthInput scheduleSearchMonthInput, @AuthenticationPrincipal UserDetailsImpl userDetailsImpl) {
+        List<ScheduleOutput> scheduleList = scheduleQueryService.findMonthlySchedulesWithFilter(scheduleSearchMonthInput, userDetailsImpl.getUser());
+        return BaseResponse.onSuccess(scheduleList, ResponseCode.OK);
     }
 
-    @GetMapping(value = "/schedule/day", produces = MediaType.APPLICATION_JSON_VALUE)
-    public List<ScheduleOutput> dayScheduleFind(@ModelAttribute ScheduleSearchInput scheduleSearchInput) {
-        return scheduleService.findDaySchedule(scheduleSearchInput);
+    @GetMapping(value = "/schedules/day", produces = MediaType.APPLICATION_JSON_VALUE)
+    public BaseResponse<List<ScheduleOutput>> searchScheduleListByDay(@ModelAttribute ScheduleSearchMonthInput scheduleSearchMonthInput, @AuthenticationPrincipal UserDetailsImpl userDetailsImpl) {
+        List<ScheduleOutput> scheduleList = scheduleQueryService.findScheduleByDay(scheduleSearchMonthInput, userDetailsImpl.getUser());
+        return BaseResponse.onSuccess(scheduleList, ResponseCode.OK);
     }
 
-    @GetMapping("/schedule/{id}")
-    public ScheduleDetailOutput scheduleDetailFind(@PathVariable Long id) {
-        return scheduleService.findScheduleDetail(id);
+    @GetMapping("/schedules/{id}")
+    public BaseResponse<ScheduleDetailOutput> getScheduleDetail(@PathVariable Long id, @AuthenticationPrincipal UserDetailsImpl userDetailsImpl) {
+        ScheduleDetailOutput scheduleDetail = scheduleQueryService.findScheduleDetail(id, userDetailsImpl.getUser());
+        return BaseResponse.onSuccess(scheduleDetail, ResponseCode.OK);
     }
 
-    @DeleteMapping("/schedule/{id}")
-    public void scheduleDelete(@PathVariable Long id) {
-        scheduleService.deleteSchedule(id);
+    @DeleteMapping("/schedules/{id}")
+    public BaseResponse<String> deleteSchedule(@PathVariable Long id, @AuthenticationPrincipal UserDetailsImpl userDetailsImpl) {
+//    public BaseResponse<String> deleteSchedule(@PathVariable Long id) {
+        String result = scheduleCommandService.deleteSchedule(id, userDetailsImpl.getUser());
+        return BaseResponse.onSuccess(result, ResponseCode.OK);
     }
-
-    @PatchMapping("/schedule/vote")
-    public void scheduleVote(@RequestBody ScheduleVoteInput scheduleVoteInput, @AuthenticationPrincipal UserDetailsImpl userDetailsImpl) {
-        scheduleService.voteSchedule(scheduleVoteInput, userDetailsImpl.getUser());
-    }
-
-    @PostMapping("/schedule/encourage/{id}")
-    public void voteEncourage(@PathVariable Long id) {
-        scheduleService.voteEncourage(id);
-    }
-
-    @PatchMapping("/schedule/close/{id}")
-    public void scheduleClose(@PathVariable Long id, @AuthenticationPrincipal UserDetailsImpl userDetailsImpl) {
-        scheduleService.closeSchedule(id, userDetailsImpl.getUser());
-    }
-
-//    @PostMapping("/schedule/comment")
-//    public void scheduleComment(@RequestBody @Valid CommentInput commentInput, @AuthenticationPrincipal UserDetailsImpl userDetailsImpl) {
-//        scheduleService.saveComment(commentInput, userDetailsImpl.getUser());
-//    }
 }

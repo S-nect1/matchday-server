@@ -14,7 +14,6 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
-import static org.junit.jupiter.api.Assertions.*;
 
 @DataJpaTest
 @SqlGroup({
@@ -33,9 +32,9 @@ class ScheduleRepositoryImplTest {
     void findByClubAndTime() {
         //given
         Club club = clubRepository.findById(3L).get();
-        LocalDateTime startTime = LocalDateTime.of(2024,3,10,9, 0,0);
+        LocalDateTime startTime = LocalDateTime.of(2024,3,1,0, 0,0);
         LocalDateTime endTime = LocalDateTime.now();
-        String search = "title";
+        String search = null;
         String category = "category";
         //when
         List<Schedule> result = scheduleRepository.findByClubAndTime(club, startTime, endTime, search, category);
@@ -46,13 +45,43 @@ class ScheduleRepositoryImplTest {
     }
 
     @Test
+    @DisplayName("동아리 별로 스케줄을 조회할 때, 잘못된 title 이 검색어로 포함되면 검색 결과가 나오지 않는다.")
+    void findByClubAndTime_wrong_title() {
+        //given
+        Club club = clubRepository.findById(3L).get();
+        LocalDateTime startTime = LocalDateTime.of(2024,3,1,0, 0,0);
+        LocalDateTime endTime = LocalDateTime.now();
+        String search = "alkdsjglksjglks";
+        String category = "category";
+        //when
+        List<Schedule> result = scheduleRepository.findByClubAndTime(club, startTime, endTime, search, category);
+        //then
+        assertThat(result.size()).isEqualTo(0);
+    }
+
+    @Test
+    @DisplayName("동아리 별로 스케줄을 조회할 때, 잘못된 category 를 입력해도 결과는 나온다.")
+    void findByClubAndTime_wrong_category() {
+        //given
+        Club club = clubRepository.findById(3L).get();
+        LocalDateTime startTime = LocalDateTime.of(2024,3,1,0, 0,0);
+        LocalDateTime endTime = LocalDateTime.now();
+        String search = null;
+        String category = "wrong";
+        //when
+        List<Schedule> result = scheduleRepository.findByClubAndTime(club, startTime, endTime, search, category);
+        //then
+        assertThat(result.size()).isEqualTo(2);
+    }
+
+    @Test
     void findScheduleById() {
         //given
         Long scheduleId = 1L;
         //when
-        Schedule result = scheduleRepository.findScheduleById(scheduleId);
+        Schedule result = scheduleRepository.findWithClubById(scheduleId);
         //then
         assertThat(result.getTitle()).isEqualTo("운동 매치 스케줄");
-        assertThat(result.getComment().get(0).getContents()).isEqualTo("회사 면접이 잡혀있어서 못 갑니다");
+        assertThat(result.getComments().get(0).getContents()).isEqualTo("회사 면접이 잡혀있어서 못 갑니다");
     }
 }

@@ -1,6 +1,7 @@
-package com.example.moim.schedule.entity;
+package com.example.moim.schedule.comment.entity;
 
 import com.example.moim.global.entity.BaseEntity;
+import com.example.moim.schedule.entity.Schedule;
 import com.example.moim.user.entity.User;
 import jakarta.persistence.*;
 import lombok.Getter;

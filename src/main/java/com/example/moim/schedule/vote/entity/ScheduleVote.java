@@ -1,6 +1,7 @@
-package com.example.moim.schedule.entity;
+package com.example.moim.schedule.vote.entity;
 
 import com.example.moim.global.entity.BaseEntity;
+import com.example.moim.schedule.entity.Schedule;
 import com.example.moim.user.entity.User;
 import jakarta.persistence.*;
 import lombok.Getter;
@@ -19,17 +20,17 @@ public class ScheduleVote extends BaseEntity {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "schedule_id")
     private Schedule schedule;
-    private String attendance;
+    private Boolean isAttendance;
 
-    public static ScheduleVote createScheduleVote(User user, Schedule schedule, String attendance) {
+    public static ScheduleVote createScheduleVote(User user, Schedule schedule, boolean isAttendance) {
         ScheduleVote scheduleVote = new ScheduleVote();
         scheduleVote.user = user;
         scheduleVote.schedule = schedule;
-        scheduleVote.attendance = attendance;
+        scheduleVote.isAttendance = isAttendance;
         return scheduleVote;
     }
 
-    public void changeAttendance(String attendance) {
-        this.attendance = attendance;
+    public void changeAttendance(boolean isAttendance) {
+        this.isAttendance = isAttendance;
     }
 }

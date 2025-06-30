@@ -69,7 +69,7 @@ public class SecurityConfig {
          * FIXME: 이건 API 수동 테스트할때만 필요한 것
          */
         httpSecurity.csrf(csrf -> csrf
-                .ignoringRequestMatchers("/club/**")
+                .ignoringRequestMatchers("/clubs/**", "/schedules/**", "/notices/**")
         );
         httpSecurity.csrf(csrf -> csrf.ignoringRequestMatchers("/notice/**"));
 
@@ -78,7 +78,7 @@ public class SecurityConfig {
         //http basic 인증 방식 disable
         httpSecurity.httpBasic(AbstractHttpConfigurer::disable);
         /**
-         * FIXME: 이건 API 수동 테스트할때만 필요한 것
+         * FIXME: 이건 API 수동 테스트할때만 필요한 것 : 주석 제거하기
          */
         //경로별 인가 작업
 //        httpSecurity.authorizeHttpRequests((auth) -> auth
@@ -92,7 +92,7 @@ public class SecurityConfig {
         httpSecurity.authorizeHttpRequests((auth) -> auth.anyRequest().permitAll());
 
         /**
-         * FIXME: 이건 API 수동 테스트할때만 필요한 것
+         * FIXME: 이건 API 수동 테스트할때만 필요한 것 : 주석 제거해야 함
          */
         //JWTFilter 등록
 //        httpSecurity

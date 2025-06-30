@@ -1,13 +1,13 @@
-package com.example.moim.match.dto;
+package com.example.moim.schedule.dto;
 
 import com.example.moim.match.entity.MatchApplication;
 import lombok.Data;
 
 @Data
-public class MatchApplyClubOutput {
+public class ScheduleMatchApplyClubOutput {
     private String title;
 
-    public MatchApplyClubOutput(MatchApplication matchApplication) {
+    public ScheduleMatchApplyClubOutput(MatchApplication matchApplication) {
         this.title = matchApplication.getClub().getTitle();
     }
 }

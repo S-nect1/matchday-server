@@ -159,7 +159,7 @@ class NotificationServiceTest {
                         .build()
         );
 
-        Club joinedClub = Club.createClub(
+        Club joinedClub = Club.from(
                 ClubInput.builder()
                         .title("Club Title")
                         .clubCategory("동아리")

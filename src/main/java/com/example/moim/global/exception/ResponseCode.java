@@ -13,7 +13,7 @@ import java.util.function.Predicate;
 public enum ResponseCode {
 
     // 정상 code
-    OK(HttpStatus.OK,"2000", "Ok"),
+    OK(HttpStatus.OK,"2000", "OK"),
 
     // Common Error
     _INTERNAL_SERVER_ERROR(HttpStatus.INTERNAL_SERVER_ERROR, "COMMON000", "서버 에러, 관리자에게 문의 바랍니다."),
@@ -21,6 +21,8 @@ public enum ResponseCode {
     _UNAUTHORIZED(HttpStatus.UNAUTHORIZED,"COMMON002","권한이 잘못되었습니다"),
     _METHOD_NOT_ALLOWED(HttpStatus.METHOD_NOT_ALLOWED, "COMMON003", "지원하지 않는 Http Method 입니다."),
     _FORBIDDEN(HttpStatus.FORBIDDEN, "COMMON004", "금지된 요청입니다."),
+    _INVALID_FORMAT(HttpStatus.BAD_REQUEST, "COMMON005", "날짜 형식이 잘못되었습니다."),
+    _MISMATCHED_INPUT(HttpStatus.BAD_REQUEST, "COMMON006", "필드 타입이 일치하지 않습니다."),
 
     // Member Error
     MEMBER_NOT_FOUND(HttpStatus.BAD_REQUEST, "MEMBER4001", "사용자가 없습니다."),
@@ -37,7 +39,8 @@ public enum ResponseCode {
     MATCH_APPLICATION_NOT_FOUND(HttpStatus.BAD_REQUEST, "MATCH4006", "올바른 매치가 아닙니다."),
     MATCH_TIME_OUT(HttpStatus.BAD_REQUEST, "MATCH4007", "매치가 종료된 후 48시간이 지났습니다."),
     MATCH_NOT_CONFIRMED(HttpStatus.BAD_REQUEST, "MATCH4008", "확정된 매치가 아닙니다."),
-    MATCH_DUPLICATED(HttpStatus.BAD_REQUEST, "MATCH4009", "해당 시간에 다른 매치가 존재합니다."),
+    MATCH_SCHEDULE_NOT_FOUND(HttpStatus.BAD_REQUEST, "MATCH4009", "매치 일정이 확정되지 않았거나, 존재하지 않습니다."),
+    MATCH_DUPLICATED(HttpStatus.BAD_REQUEST, "MATCH4010", "해당 시간에 다른 매치가 존재합니다."),
 
     // MatchUser Error
     MATCH_USER_NOT_FOUND(HttpStatus.BAD_REQUEST, "MATCHUSER4001", "가입된 모임이 없습니다."),
@@ -65,6 +68,9 @@ public enum ResponseCode {
     CLUB_CHECK_PASSWORD_INCORRECT(HttpStatus.UNAUTHORIZED, "CLUB4005", "모임 확인 비밀번호가 틀렸습니다."),
     CLUB_USER_ALREADY_JOINED(HttpStatus.CONFLICT, "CLUB4006", "해당 사용자는 이미 모임에 가입되어 있습니다."),
 
+    // Schedule Error
+    SCHEDULE_NOT_FOUND(HttpStatus.BAD_REQUEST, "SCHEDULE4001", "존재하지 않는 일정입니다."),
+
     // File Error
     FILE_MAX_SIZE_OVER(HttpStatus.PAYLOAD_TOO_LARGE, "FILE4001", "100MB 이하 파일만 업로드 할 수 있습니다."),
     FILE_CONTENT_TYPE_NOT_IMAGE(HttpStatus.UNSUPPORTED_MEDIA_TYPE, "FILE4002", "이미지 파일만 업로드할 수 있습니다."),
@@ -78,7 +84,9 @@ public enum ResponseCode {
     INVALID_ACTIVITY_AREA(HttpStatus.BAD_REQUEST, "ENUM4005", "유효하지 않은 지역입니다."),
     INVALID_MAIN_FOOT(HttpStatus.BAD_REQUEST, "ENUM4006", "유효하지 않은 주발입니다."),
     INVALID_SPORTS_TYPE(HttpStatus.BAD_REQUEST, "ENUM4007", "유효하지 않은 종목입니다."),
-    INVALID_CLUB_ROLE(HttpStatus.BAD_REQUEST, "ENUM4008", "유효하지 않은 모임 역할입니다.");
+    INVALID_CLUB_ROLE(HttpStatus.BAD_REQUEST, "ENUM4008", "유효하지 않은 모임 역할입니다."),
+    INVALID_SCHEDULE_CATEGORY(HttpStatus.BAD_REQUEST, "ENUM4009", "유효하지 않은 일정 종류입니다."),
+    INVALID_ATTENDANCE_TYPE(HttpStatus.BAD_REQUEST, "ENUM4010", "유효하지 않은 투표입니다.(참석/불참)");
 
     private final HttpStatus httpStatus;
     private final String code;

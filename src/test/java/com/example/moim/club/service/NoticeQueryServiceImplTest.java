@@ -88,7 +88,7 @@ public class NoticeQueryServiceImplTest {
     @DisplayName("동아리 별 공지들을 조회할 수 있다")
     void findNotice() {
         //given
-        Club club = Club.createClub(clubInput, null);
+        Club club = Club.from(clubInput, null);
         Notice notice = Notice.createNotice(club, noticeInput.getTitle(), noticeInput.getContent());
         User user = User.createUser(signupInput);
         UserClub userClub = UserClub.createUserClub(user, club);
@@ -113,7 +113,7 @@ public class NoticeQueryServiceImplTest {
     @DisplayName("동아리에 등록된 공지가 없을 경우 빈 리스트를 반환한다")
     void findNotice_zero_notice() {
         //given
-        Club club = Club.createClub(clubInput, null);
+        Club club = Club.from(clubInput, null);
         User user = User.createUser(signupInput);
         UserClub userClub = UserClub.createUserClub(user, club);
 
@@ -135,7 +135,7 @@ public class NoticeQueryServiceImplTest {
     @DisplayName("동아리에 등록된 공지를 조회하면 나중에 저장된 순으로 정렬되어 있다.")
     void findNotice_sort() {
         //given
-        Club club = Club.createClub(clubInput, null);
+        Club club = Club.from(clubInput, null);
         Notice notice = Notice.createNotice(club, noticeInput.getTitle(), noticeInput.getContent());
         ReflectionTestUtils.setField(notice, "id", 1L);
         LocalDateTime localDateTime = LocalDateTime.now();

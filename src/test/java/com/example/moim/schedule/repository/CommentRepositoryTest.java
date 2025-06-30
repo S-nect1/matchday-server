@@ -1,6 +1,7 @@
 package com.example.moim.schedule.repository;
 
-import com.example.moim.schedule.entity.Comment;
+import com.example.moim.schedule.comment.entity.Comment;
+import com.example.moim.schedule.comment.repository.CommentRepository;
 import com.example.moim.schedule.entity.Schedule;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;

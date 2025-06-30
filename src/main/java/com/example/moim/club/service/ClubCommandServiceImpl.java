@@ -41,7 +41,7 @@ public class ClubCommandServiceImpl implements ClubCommandService {
 
     @Transactional
     public ClubSaveOutput saveClub(User user, ClubInput clubInput) throws IOException {
-        Club club = clubRepository.save(Club.createClub(clubInput, fileService.upload(clubInput.getProfileImg(), "/club-profile")));
+        Club club = clubRepository.save(Club.from(clubInput, fileService.upload(clubInput.getProfileImg(), "/club-profile")));
         // 검색을 위한 저장
         saveClubSearch(club);
 
@@ -67,8 +67,8 @@ public class ClubCommandServiceImpl implements ClubCommandService {
         if (clubUpdateInput.getProfileImg() != null) {
             fileService.remove(club.getStoredImgName());
         }
+        club.update(clubUpdateInput, fileService.upload(clubUpdateInput.getProfileImg(), "/club-profile"));
 
-        club.updateClub(clubUpdateInput, fileService.upload(clubUpdateInput.getProfileImg(), "/club-profile"));
         // 검색 정보 동기화를 위한 처리
         club.getClubSearch().updateFrom(club);
         List<UserClubOutput> userList = userClubRepository.findAllByClub(club).stream().map(UserClubOutput::new).toList();
@@ -87,9 +87,7 @@ public class ClubCommandServiceImpl implements ClubCommandService {
             }
             club.plusMemberCount();
             UserClub userClub = userClubRepository.save(UserClub.createUserClub(user, club));
-            /**
-             * TODO: 알림 보내는 것 새로운 방식에 맞춰서 다시 구현해야 함
-             */
+
             eventPublisher.publishEvent(new ClubJoinEvent(user, club));
             return new UserClubOutput(userClub);
         }
@@ -146,7 +144,7 @@ public class ClubCommandServiceImpl implements ClubCommandService {
             throw new ClubControllerAdvice(ResponseCode.CLUB_CHECK_PASSWORD_INCORRECT);
         }
 
-        club.updateClubPassword(clubPswdUpdateInput.getNewPassword());
+        club.updatePassword(clubPswdUpdateInput.getNewPassword());
 
         return club.getTitle() + "의 비밀번호를 변경하였습니다.";
     }
@@ -178,7 +176,7 @@ public class ClubCommandServiceImpl implements ClubCommandService {
                 .allFieldsConcat(TextUtils.concatClean("|", club.getTitle(), club.getIntroduction(), club.getExplanation()))
                 .build();
 
-        club.updateClubSearch(clubSearchRepository.save(clubSearch));
+        club.updateSearch(clubSearchRepository.save(clubSearch));
     }
 
 //    @Transactional
