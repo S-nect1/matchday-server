@@ -4,7 +4,7 @@ import java.util.Arrays;
 import java.util.Optional;
 
 public enum SportsType {
-    SOCCER("축구"), FUTSAL("풋살");
+    SOCCER("축구"), FUTSAL("풋살"), OVERALL("전체");
     private final String koreanName;
 
     SportsType(String koreanName) {

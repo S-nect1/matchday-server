@@ -8,6 +8,7 @@ import com.example.moim.global.enums.*;
 import com.example.moim.global.exception.ResponseCode;
 import com.example.moim.global.util.file.model.FileInfo;
 import com.example.moim.match.entity.Match;
+import com.example.moim.statistic.entity.Statistic;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -85,6 +86,10 @@ public class Club extends BaseEntity {
         club.mainUniformColor = clubInput.getMainUniformColor();
         club.subUniformColor = clubInput.getSubUniformColor();
         club.memberCount = 1;
+
+        Statistic.createStatistic(club, SportsType.OVERALL);
+        Statistic.createStatistic(club, SportsType.FUTSAL);
+        Statistic.createStatistic(club, SportsType.SOCCER);
         return club;
     }
 
