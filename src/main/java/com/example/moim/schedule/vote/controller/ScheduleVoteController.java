@@ -21,25 +21,31 @@ public class ScheduleVoteController implements ScheduleVoteControllerDocs {
     private final UserRepository userRepository;
 
     @PostMapping("/schedules/{id}/vote")
-    public BaseResponse<String> createScheduleVote(@RequestBody ScheduleVoteInput scheduleVoteInput, @PathVariable("id") Long id, @AuthenticationPrincipal UserDetailsImpl userDetailsImpl) {
+//    public BaseResponse<String> createScheduleVote(@RequestBody ScheduleVoteInput scheduleVoteInput, @PathVariable("id") Long id, @AuthenticationPrincipal UserDetailsImpl userDetailsImpl) {
+    public BaseResponse<String> createScheduleVote(@RequestBody ScheduleVoteInput scheduleVoteInput, @PathVariable("id") Long id) {
 
-        String result = scheduleVoteService.voteSchedule(scheduleVoteInput, id, userDetailsImpl.getUser());
+        User user = userRepository.findById(1L).get();
+        String result = scheduleVoteService.voteSchedule(scheduleVoteInput, id, user);
 
         return BaseResponse.onSuccess(result, ResponseCode.OK);
     }
 
     @PostMapping("/schedules/{id}/encouragements")
-    public BaseResponse<String> encourageVote(@PathVariable Long id, @AuthenticationPrincipal UserDetailsImpl userDetailsImpl) {
+//    public BaseResponse<String> encourageVote(@PathVariable Long id, @AuthenticationPrincipal UserDetailsImpl userDetailsImpl) {
+    public BaseResponse<String> encourageVote(@PathVariable Long id) {
 
-        String result = scheduleVoteService.voteEncourage(id, userDetailsImpl.getUser());
+        User user = userRepository.findById(1L).get();
+        String result = scheduleVoteService.voteEncourage(id, user);
 
         return BaseResponse.onSuccess(result, ResponseCode.OK);
     }
 
     @PatchMapping("/schedules/{id}/close-actions")
-    public BaseResponse<String> closeScheduleVote(@PathVariable Long id, @AuthenticationPrincipal UserDetailsImpl userDetailsImpl) {
+//    public BaseResponse<String> closeScheduleVote(@PathVariable Long id, @AuthenticationPrincipal UserDetailsImpl userDetailsImpl) {
+    public BaseResponse<String> closeScheduleVote(@PathVariable Long id) {
 
-        String result = scheduleVoteService.closeScheduleVote(id, userDetailsImpl.getUser());
+        User user = userRepository.findById(1L).get();
+        String result = scheduleVoteService.closeScheduleVote(id, user);
 
         return BaseResponse.onSuccess(result, ResponseCode.OK);
     }

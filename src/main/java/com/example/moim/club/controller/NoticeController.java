@@ -23,23 +23,23 @@ public class NoticeController implements NoticeControllerDocs {
     private final UserRepository userRepository;
 
     @PostMapping("/notice/{clubId}")
-        public BaseResponse<NoticeOutput> saveNotice(@AuthenticationPrincipal UserDetailsImpl userDetailsImpl, @ModelAttribute NoticeInput noticeInput, @PathVariable("clubId") Long clubId) {
-//    public BaseResponse<NoticeOutput> saveNotice(@ModelAttribute NoticeInput noticeInput, @PathVariable("clubId") Long clubId) {
+//        public BaseResponse<NoticeOutput> saveNotice(@AuthenticationPrincipal UserDetailsImpl userDetailsImpl, @ModelAttribute NoticeInput noticeInput, @PathVariable("clubId") Long clubId) {
+    public BaseResponse<NoticeOutput> saveNotice(@ModelAttribute NoticeInput noticeInput, @PathVariable("clubId") Long clubId) {
         /**
          * FIXME: 컨트롤러 테스트용 코드
          */
-//        User user = userRepository.findById(3L).get();
-        NoticeOutput noticeOutput = noticeCommandService.saveNotice(userDetailsImpl.getUser(), noticeInput, clubId);
+        User user = userRepository.findById(3L).get();
+        NoticeOutput noticeOutput = noticeCommandService.saveNotice(user, noticeInput, clubId);
         return BaseResponse.onSuccess(noticeOutput, ResponseCode.OK);
     }
 
     @GetMapping("/notice/{clubId}")
-        public BaseResponse<Slice<NoticeOutput>> findNotices(@PathVariable Long clubId, @AuthenticationPrincipal UserDetailsImpl userDetailsImpl, @RequestParam("cursorId") Long cursorId) {
-//    public BaseResponse<Slice<NoticeOutput>> findNotices(@PathVariable Long clubId, @RequestParam(value = "cursorId", required = false) Long cursorId) {
+//        public BaseResponse<Slice<NoticeOutput>> findNotices(@PathVariable Long clubId, @AuthenticationPrincipal UserDetailsImpl userDetailsImpl, @RequestParam("cursorId") Long cursorId) {
+    public BaseResponse<Slice<NoticeOutput>> findNotices(@PathVariable Long clubId, @RequestParam(value = "cursorId", required = false) Long cursorId) {
         /**
          * FIXME: 컨트롤러 테스트용 코드
          */
-//        User user = userRepository.findById(1L).get();
-        return BaseResponse.onSuccess(noticeQueryService.findNotice(userDetailsImpl.getUser(), clubId, cursorId), ResponseCode.OK);
+        User user = userRepository.findById(1L).get();
+        return BaseResponse.onSuccess(noticeQueryService.findNotice(user, clubId, cursorId), ResponseCode.OK);
     }
 }

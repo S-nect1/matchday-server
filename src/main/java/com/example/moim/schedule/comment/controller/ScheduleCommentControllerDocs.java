@@ -11,5 +11,6 @@ import org.springframework.web.bind.annotation.RequestBody;
 @Tag(name = "일정 댓글 api")
 public interface ScheduleCommentControllerDocs {
     @Operation(summary = "일정에 댓글 남기기")
-    void scheduleComment(@RequestBody @Valid CommentInput commentInput, @AuthenticationPrincipal UserDetailsImpl userDetailsImpl);
+//    void scheduleComment(@RequestBody @Valid CommentInput commentInput, @AuthenticationPrincipal UserDetailsImpl userDetailsImpl);
+    void scheduleComment(@RequestBody @Valid CommentInput commentInput);
 }

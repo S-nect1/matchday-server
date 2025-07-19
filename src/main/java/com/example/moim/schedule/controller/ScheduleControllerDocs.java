@@ -19,22 +19,28 @@ import java.util.List;
 @Tag(name = "일정 api", description = "모임(club) 안에서 category에 따라 권한 부여. creator, admin / member, newmember")
 public interface ScheduleControllerDocs {
     @Operation(summary = "일정 생성", description = "startTime, endTime 형식은 yyyy-MM-dd HH:mm")
-    BaseResponse<ScheduleOutput> createSchedule(@RequestBody ScheduleInput scheduleInput, @AuthenticationPrincipal UserDetailsImpl userDetailsImpl);
+//    BaseResponse<ScheduleOutput> createSchedule(@RequestBody ScheduleInput scheduleInput, @AuthenticationPrincipal UserDetailsImpl userDetailsImpl);
+    BaseResponse<ScheduleOutput> createSchedule(@RequestBody ScheduleInput scheduleInput);
 
     @Operation(summary = "일정 수정", description = "startTime, endTime 형식은 yyyy-MM-dd HH:mm")
-    BaseResponse<ScheduleOutput> updateSchedule(@RequestBody ScheduleUpdateInput scheduleUpdateInput, @PathVariable Long scheduleId, @AuthenticationPrincipal UserDetailsImpl userDetailsImpl);
+//    BaseResponse<ScheduleOutput> updateSchedule(@RequestBody ScheduleUpdateInput scheduleUpdateInput, @PathVariable Long scheduleId, @AuthenticationPrincipal UserDetailsImpl userDetailsImpl);
+    BaseResponse<ScheduleOutput> updateSchedule(@RequestBody ScheduleUpdateInput scheduleUpdateInput, @PathVariable Long scheduleId);
 
     @Operation(summary = "한달 일정 조회", description = "카테고리는 친선 매치/정기 운동/대회/기타 중에 하나여야 합니다(띄어쓰기까지 포함)")
-    BaseResponse<List<ScheduleOutput>> searchScheduleListByMonth(@ModelAttribute ScheduleSearchMonthInput scheduleSearchMonthInput, @AuthenticationPrincipal UserDetailsImpl userDetailsImpl);
+//    BaseResponse<List<ScheduleOutput>> searchScheduleListByMonth(@ModelAttribute ScheduleSearchMonthInput scheduleSearchMonthInput, @AuthenticationPrincipal UserDetailsImpl userDetailsImpl);
+    BaseResponse<List<ScheduleOutput>> searchScheduleListByMonth(@ModelAttribute ScheduleSearchMonthInput scheduleSearchMonthInput);
 
     @Operation(summary = "하루 일정 조회", description = "쿼리파라미터 예시: /schedule/day?date=20240910&clubId=6&search=친선 경기&category=친선 경기")
-    BaseResponse<List<ScheduleOutput>> searchScheduleListByDay(@ModelAttribute ScheduleSearchMonthInput scheduleSearchMonthInput, @AuthenticationPrincipal UserDetailsImpl userDetailsImpl);
+//    BaseResponse<List<ScheduleOutput>> searchScheduleListByDay(@ModelAttribute ScheduleSearchMonthInput scheduleSearchMonthInput, @AuthenticationPrincipal UserDetailsImpl userDetailsImpl);
+    BaseResponse<List<ScheduleOutput>> searchScheduleListByDay(@ModelAttribute ScheduleSearchMonthInput scheduleSearchMonthInput);
 
     @Operation(summary = "일정 세부 조회", description = "참가면 attendance = attend, 참가 취소는 absent, 투표 안하면 notVote")
-    BaseResponse<ScheduleDetailOutput> getScheduleDetail(@PathVariable Long id, @AuthenticationPrincipal UserDetailsImpl userDetailsImpl);
+//    BaseResponse<ScheduleDetailOutput> getScheduleDetail(@PathVariable Long id, @AuthenticationPrincipal UserDetailsImpl userDetailsImpl);
+    BaseResponse<ScheduleDetailOutput> getScheduleDetail(@PathVariable Long id);
 
     @Operation(summary = "일정 삭제")
-    BaseResponse<String> deleteSchedule(@PathVariable Long id, @AuthenticationPrincipal UserDetailsImpl userDetailsImpl);
+//    BaseResponse<String> deleteSchedule(@PathVariable Long id, @AuthenticationPrincipal UserDetailsImpl userDetailsImpl);
+    BaseResponse<String> deleteSchedule(@PathVariable Long id);
 //    BaseResponse<String> deleteSchedule(@PathVariable Long id);
 
 }

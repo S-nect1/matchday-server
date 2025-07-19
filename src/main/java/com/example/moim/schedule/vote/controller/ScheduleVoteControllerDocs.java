@@ -10,11 +10,14 @@ import org.springframework.web.bind.annotation.RequestBody;
 
 public interface ScheduleVoteControllerDocs {
     @Operation(summary = "일정 참가 투표", description = "참여, 불참")
-    BaseResponse<String> createScheduleVote(@RequestBody ScheduleVoteInput scheduleVoteInput, @PathVariable("id") Long id, @AuthenticationPrincipal UserDetailsImpl userDetailsImpl);
+//    BaseResponse<String> createScheduleVote(@RequestBody ScheduleVoteInput scheduleVoteInput, @PathVariable("id") Long id, @AuthenticationPrincipal UserDetailsImpl userDetailsImpl);
+    BaseResponse<String> createScheduleVote(@RequestBody ScheduleVoteInput scheduleVoteInput, @PathVariable("id") Long id);
 
     @Operation(summary = "일정 참가 투표 독려")
-    BaseResponse<String> encourageVote(@PathVariable Long id, @AuthenticationPrincipal UserDetailsImpl userDetailsImpl);
+//    BaseResponse<String> encourageVote(@PathVariable Long id, @AuthenticationPrincipal UserDetailsImpl userDetailsImpl);
+    BaseResponse<String> encourageVote(@PathVariable Long id);
 
     @Operation(summary = "일정 참가 투표 마감")
-    BaseResponse<String> closeScheduleVote(@PathVariable Long id, @AuthenticationPrincipal UserDetailsImpl userDetailsImpl);
+//    BaseResponse<String> closeScheduleVote(@PathVariable Long id, @AuthenticationPrincipal UserDetailsImpl userDetailsImpl);
+    BaseResponse<String> closeScheduleVote(@PathVariable Long id);
 }
