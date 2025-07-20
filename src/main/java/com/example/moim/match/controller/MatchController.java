@@ -142,7 +142,7 @@ public class MatchController {
     }
 
     //매치 메인 페이지(대시보드)
-    @GetMapping("match/main/{clubId}")
+    @GetMapping("/match/main/{clubId}")
     public BaseResponse<MatchMainOutput> findMatchMain(@PathVariable Long clubId, @AuthenticationPrincipal UserDetailsImpl userDetailsImpl) {
         return BaseResponse.onSuccess(matchService.matchMainFind(clubId), ResponseCode.OK);
     }
