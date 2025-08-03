@@ -36,7 +36,7 @@ public class SwaggerConfig {
     private GroupedOpenApi buildGroupedOpenApi(String group, String basePackage) {
         return GroupedOpenApi.builder()
                 .group(group)
-                .pathsToMatch("/api/v1/**")
+//                .pathsToMatch("/api/v1/**")
                 .packagesToScan(basePackage)
                 .build();
     }
