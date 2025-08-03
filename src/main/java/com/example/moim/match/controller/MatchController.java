@@ -19,7 +19,7 @@ import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
-public class MatchController {
+public class MatchController implements MatchControllerDocs {
     private final MatchService matchService;
     private final ClubRepository clubRepository;
     private final MatchRepository matchRepository;

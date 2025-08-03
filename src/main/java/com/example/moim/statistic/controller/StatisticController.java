@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequiredArgsConstructor
-public class StatisticController {
+public class StatisticController implements StatisticControllerDocs {
     private StatisticService statisticService;
 
     // 전적 조회(전적 메인)
