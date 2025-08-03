@@ -17,13 +17,13 @@ VALUES (default, null, null, 'GYEONGGI', 'birthday', 'email', 'fcm_token', 'MAN'
 INSERT INTO users (user_id, created_date, updated_date, activity_area, birthday, email, fcm_token, gender, height, img_url, original_img_name, stored_img_name, main_foot, main_position, name, password, phone, refresh_token, role, sub_position, weight)
 VALUES (default, null, null, 'GYEONGGI', 'birthday', 'email', 'fcm_token', 'MAN', 180, null, null, null, 'BOTH', 'MANAGER', 'name', 'password', 'phone', 'refresh_token12345678910', 'USER', 'GK', 70);
 
-INSERT INTO user_club (id, created_date, updated_date, club_role, join_date, match_count, schedule_count, club_id, user_id)
-VALUES (default, null, null, 'STAFF', '2024-12-11', 2, 2, 1, 1);
+INSERT INTO user_club (id, created_date, updated_date, club_role, join_date, match_count, schedule_count, club_id, user_id, score)
+VALUES (default, null, null, 'STAFF', '2024-12-11', 2, 2, 1, 1, 0);
 ---- 3번 동아리에 가입한 유저들
-INSERT INTO user_club (id, created_date, updated_date, club_role, join_date, match_count, schedule_count, club_id, user_id)
-VALUES (default, null, null, 'STAFF', '2024-12-11', 2, 2, 3, 3);
-INSERT INTO user_club (id, created_date, updated_date, club_role, join_date, match_count, schedule_count, club_id, user_id)
-VALUES (default, null, null, 'STAFF', '2024-12-11', 2, 2, 3, 4);
+INSERT INTO user_club (id, created_date, updated_date, club_role, join_date, match_count, schedule_count, club_id, user_id, score)
+VALUES (default, null, null, 'STAFF', '2024-12-11', 2, 2, 3, 3, 0);
+INSERT INTO user_club (id, created_date, updated_date, club_role, join_date, match_count, schedule_count, club_id, user_id, score)
+VALUES (default, null, null, 'STAFF', '2024-12-11', 2, 2, 3, 4, 0);
 -- 스케줄 생성
 insert into `schedule` (id, club_id, title, location, start_time, end_time, min_people, category, note, attend, non_attend, is_close, view_count)
 values (1, 3, '운동 매치 스케줄', '서울시 마포구', '2024-03-11 14:30:00', '2024-03-11 17:30:00', 10, 'REGULAR_TRAINING', 'note', 10, 12, 0, 5);
